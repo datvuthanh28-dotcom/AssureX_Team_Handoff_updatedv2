@@ -1,14 +1,22 @@
 from app.warranty_routes import router as warranty_router
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy import inspect, select, text
 from sqlalchemy.orm import Session
 
 from app.database import Base, SessionLocal, engine, get_db
-from app.ml.model_service import predict_claim
+from app.ml.model_service import (
+    GOOGLE_INFERENCE_STATUS,
+    GOOGLE_MODEL_CONFIG,
+    MODEL_NAME,
+    MODEL_VERSION,
+    predict_claim,
+)
 from app.models import AuditLog, Claim, CustomerAccount
 from app.customer_routes import router as customer_router
 from app.auth_routes import (
@@ -58,6 +66,15 @@ def create_database_tables():
             "gtm_model_version": (
                 "ALTER TABLE claims ADD COLUMN gtm_model_version VARCHAR(64)"
             ),
+            "google_model_name": (
+                "ALTER TABLE claims ADD COLUMN google_model_name VARCHAR(100)"
+            ),
+            "google_model_version": (
+                "ALTER TABLE claims ADD COLUMN google_model_version VARCHAR(100)"
+            ),
+            "google_inference_status": (
+                "ALTER TABLE claims ADD COLUMN google_inference_status VARCHAR(50)"
+            ),
         }
         for column_name, statement in claim_migrations.items():
             if column_name not in claim_columns:
@@ -80,6 +97,10 @@ def create_database_tables():
             )
         }
         decision_migrations = {
+            "python_model_name": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN python_model_name VARCHAR(100)"
+            ),
             "python_model_version": (
                 "ALTER TABLE customer_claim_decisions "
                 "ADD COLUMN python_model_version VARCHAR(64)"
@@ -87,6 +108,34 @@ def create_database_tables():
             "gtm_model_version": (
                 "ALTER TABLE customer_claim_decisions "
                 "ADD COLUMN gtm_model_version VARCHAR(64)"
+            ),
+            "google_model_name": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN google_model_name VARCHAR(100)"
+            ),
+            "google_model_version": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN google_model_version VARCHAR(100)"
+            ),
+            "google_inference_status": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN google_inference_status VARCHAR(50)"
+            ),
+            "google_prediction": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN google_prediction VARCHAR(50)"
+            ),
+            "google_confidence": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN google_confidence FLOAT"
+            ),
+            "confidence_difference": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN confidence_difference FLOAT"
+            ),
+            "model_consistency_status": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN model_consistency_status VARCHAR(50)"
             ),
         }
         for column_name, statement in decision_migrations.items():
@@ -166,6 +215,9 @@ def predict(
         predicted_class=result["predicted_class"],
         confidence=result["confidence"],
         model_name=result["model_name"],
+        google_model_name=result["google_model"]["model_name"],
+        google_model_version=result["google_model"]["model_version"],
+        google_inference_status=result["google_model"]["inference_status"],
         python_model_version=result["model_version"],
         gtm_model_version=None,
     )
@@ -193,7 +245,9 @@ def predict(
         "confidence": result["confidence"],
         "probabilities": result["probabilities"],
         "model_name": result["model_name"],
+        "python_model_name": result["model_name"],
         "created_at": claim.created_at,
+        "google_inference": result["google_model"],
     }
 
 
@@ -250,14 +304,62 @@ def get_claim_detail(
         "predicted_class": claim.predicted_class,
         "confidence": claim.confidence,
         "model_name": claim.model_name,
+        "python_model_name": claim.model_name,
         "python_model_version": claim.python_model_version,
         "gtm_model_version": claim.gtm_model_version,
+        "google_model_name": claim.google_model_name,
+        "google_model_version": claim.google_model_version,
+        "google_inference_status": claim.google_inference_status,
         "analysis_timestamp": claim.created_at,
         "python_model_version": claim.python_model_version,
         "gtm_model_version": claim.gtm_model_version,
         "analysis_timestamp": claim.created_at,
         "created_at": claim.created_at,
     }
+
+
+@app.post("/api/claims/{claim_id}/analyze")
+def analyze_claim(
+    claim_id: str,
+    _: CustomerAccount = Depends(
+        require_roles("ADMIN", "SERVICE_CENTER", "REVIEWER")
+    ),
+    db: Session = Depends(get_db),
+):
+    claim = db.scalar(
+        select(Claim).where(Claim.claim_id == claim_id)
+    )
+    if claim is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"ClaimID {claim_id} not found.",
+        )
+
+    return JSONResponse(
+        status_code=503,
+        content={
+            "claim_id": claim_id,
+            "analysis_status": "google_model_not_connected",
+            "analysis_timestamp": datetime.now(timezone.utc).isoformat(),
+            "python_model": {
+                "name": MODEL_NAME,
+                "version": MODEL_VERSION,
+                "available": True,
+            },
+            "google_model": {
+                "name": GOOGLE_MODEL_CONFIG.get("name"),
+                "version": GOOGLE_MODEL_CONFIG.get("version"),
+                "inference_status": GOOGLE_INFERENCE_STATUS,
+                "prediction": None,
+                "confidence": None,
+            },
+            "decision_engine_status": "not_run",
+            "detail": (
+                "The selected Google Teachable Machine model is not connected "
+                "to runtime inference. No combined analysis or decision was created."
+            ),
+        },
+    )
 
 app.include_router(warranty_router)
 

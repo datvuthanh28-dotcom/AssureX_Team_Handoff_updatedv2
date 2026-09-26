@@ -42,6 +42,21 @@ class Claim(Base):
         nullable=True,
     )
 
+    google_model_name: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    google_model_version: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    google_inference_status: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
     python_model_version: Mapped[str | None] = mapped_column(
         String(64),
         nullable=True,
@@ -191,6 +206,46 @@ class CustomerClaimDecision(Base):
     model_name: Mapped[str] = mapped_column(
         String(100),
         nullable=False,
+    )
+
+    python_model_name: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    google_model_name: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    google_model_version: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
+    google_inference_status: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
+    google_prediction: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
+    )
+
+    google_confidence: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    confidence_difference: Mapped[float | None] = mapped_column(
+        Float,
+        nullable=True,
+    )
+
+    model_consistency_status: Mapped[str | None] = mapped_column(
+        String(50),
+        nullable=True,
     )
 
     python_model_version: Mapped[str | None] = mapped_column(

@@ -262,11 +262,35 @@ def serialize_claim(
         "model_name":
             decision.model_name,
 
+        "python_model_name":
+            decision.python_model_name or decision.model_name,
+
         "python_model_version":
             decision.python_model_version,
 
         "gtm_model_version":
             decision.gtm_model_version,
+
+        "google_model_name":
+            decision.google_model_name,
+
+        "google_model_version":
+            decision.google_model_version,
+
+        "google_inference_status":
+            decision.google_inference_status,
+
+        "google_prediction":
+            decision.google_prediction,
+
+        "google_confidence":
+            decision.google_confidence,
+
+        "confidence_difference":
+            decision.confidence_difference,
+
+        "model_consistency_status":
+            decision.model_consistency_status,
 
         "analysis_timestamp":
             decision.created_at,
@@ -538,6 +562,16 @@ def submit_customer_claim(
         prediction["confidence"],
     )
 
+    google_model = prediction["google_model"]
+    if google_model["inference_status"] != "connected":
+        reason = "Google model inference is not connected"
+        if reason not in decision_result["decision_reasons"]:
+            decision_result["decision_reasons"].append(reason)
+        if decision_result["final_decision"] != "Invalid Claim":
+            decision_result["final_decision"] = "Manual Review"
+            decision_result["customer_status"] = "Under Review"
+            decision_result["requires_admin_review"] = True
+
     # ---------------------------------------------
     # CUSTOMER STATUS
     #
@@ -547,7 +581,9 @@ def submit_customer_claim(
     # ---------------------------------------------
 
     customer_status = (
-        "Manual Review"
+        "Rejected"
+        if decision_result["final_decision"] == "Invalid Claim"
+        else "Manual Review"
         if decision_result["requires_admin_review"]
         else decision_result["customer_status"]
     )
@@ -575,6 +611,11 @@ def submit_customer_claim(
     derived_data = dict(
         feature_result["derived"]
     )
+    derived_data["google_model"] = {
+        "model_name": google_model["model_name"],
+        "model_version": google_model["model_version"],
+        "inference_status": google_model["inference_status"],
+    }
 
     if warranty_ocr_result:
         derived_data[
@@ -644,10 +685,34 @@ def submit_customer_claim(
         model_name=
             prediction["model_name"],
 
+        python_model_name=
+            prediction["model_name"],
+
         python_model_version=
             prediction["model_version"],
 
         gtm_model_version=None,
+
+        google_model_name=
+            google_model["model_name"],
+
+        google_model_version=
+            google_model["model_version"],
+
+        google_inference_status=
+            google_model["inference_status"],
+
+        google_prediction=None,
+
+        google_confidence=None,
+
+        confidence_difference=None,
+
+        model_consistency_status=(
+            "Uncertain Result"
+            if google_model["inference_status"] != "connected"
+            else None
+        ),
     )
 
     db.add(decision_record)
@@ -663,6 +728,9 @@ def submit_customer_claim(
             "python_prediction": prediction["predicted_class"],
             "python_confidence": prediction["confidence"],
             "python_model_version": prediction["model_version"],
+            "google_model_name": google_model["model_name"],
+            "google_model_version": google_model["model_version"],
+            "google_inference_status": google_model["inference_status"],
             "final_decision": decision_result["final_decision"],
             "decision_reasons": decision_result["decision_reasons"],
         },

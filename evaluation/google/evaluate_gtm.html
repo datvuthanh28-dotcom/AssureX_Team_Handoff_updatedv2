@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AssureX Teachable Machine Evaluation</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.5-alpha2/dist/teachablemachine-image.min.js"></script>
+    <style>
+      :root { color-scheme: light; font: 15px/1.5 "Segoe UI", sans-serif; color: #193047; background: #eef3f7; }
+      * { box-sizing: border-box; }
+      body { max-width: 1120px; margin: 0 auto; padding: 28px 20px 56px; }
+      h1, h2 { line-height: 1.2; }
+      h1 { margin-bottom: 8px; font-size: 28px; }
+      h2 { margin: 28px 0 12px; font-size: 19px; }
+      p { color: #546b7e; }
+      .controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 22px 0; }
+      label { display: grid; gap: 5px; color: #3e566a; font-weight: 600; }
+      select, button { min-height: 40px; padding: 8px 12px; border: 1px solid #cbd7e1; border-radius: 6px; background: #fff; color: inherit; font: inherit; }
+      button { border: 0; background: #176b67; color: #fff; font-weight: 700; cursor: pointer; }
+      button:disabled { opacity: .55; cursor: wait; }
+      #status { min-height: 28px; color: #176b67; font-weight: 700; }
+      #summary { padding: 14px 16px; border: 1px solid #d6e0e8; border-radius: 6px; background: #fff; white-space: pre-wrap; }
+      table { width: 100%; border-collapse: collapse; background: #fff; }
+      th, td { padding: 9px 10px; border-bottom: 1px solid #dce5ec; text-align: left; }
+      th { color: #415a70; background: #e4edf3; }
+      #predictions { max-height: 420px; overflow: auto; border: 1px solid #d6e0e8; }
+      .muted { color: #718394; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <h1>AssureX Google Teachable Machine Evaluation</h1>
+    <p>Runs the exported image model against Claim Summary Cards from the locked split manifest. The card image excludes the actual class and all model outputs.</p>
+    <p class="muted">G5-v2 is newly rendered without ClaimID in the image. The existing G5 export is evaluated only as a compatibility probe; this does not reproduce its missing original training-card representation or qualify it for model selection.</p>
+    <div class="controls">
+      <label>Model variant
+        <select id="variant">
+          <option value="A">Model A: existing G5 export</option>
+          <option value="B" disabled>Model B: artifact not provided</option>
+          <option value="C" disabled>Model C: artifact not provided</option>
+        </select>
+      </label>
+      <label>Split
+        <select id="split">
+          <option value="validation">Validation</option>
+          <option value="test">Locked test</option>
+        </select>
+      </label>
+      <button id="run">Evaluate selected split</button>
+      <button id="download" disabled>Download per-claim CSV</button>
+    </div>
+    <div id="status" role="status">Waiting.</div>
+    <h2>Metrics</h2>
+    <div id="summary">No evaluation run yet.</div>
+    <h2>Per-class metrics</h2>
+    <div id="classMetrics"></div>
+    <h2>Confusion matrix</h2>
+    <div id="confusion"></div>
+    <h2>Per-claim confidence output</h2>
+    <div id="predictions"></div>
+    <script>
+      const CLASS_ORDER = ["Invalid Claim", "Manual Review", "Valid Claim"];
+      const MANIFEST_URL = "/gtm_dataset/G5-v2/card_manifest.csv";
+      const VARIANTS = {
+        A: {
+          name: "Google Teachable Machine G5",
+          version: "google-g5-existing-20260925",
+          modelUrl: "/submission_final/gtm_model/model.json",
+          metadataUrl: "/submission_final/gtm_model/metadata.json",
+        },
+      };
+      let lastPredictions = [];
+
+      function parseCsv(text) {
+        const rows = [];
+        let row = [];
+        let field = "";
+        let quoted = false;
+        for (let index = 0; index < text.length; index++) {
+          const char = text[index];
+          if (quoted) {
+            if (char === '"' && text[index + 1] === '"') {
+              field += '"';
+              index++;
+            } else if (char === '"') {
+              quoted = false;
+            } else {
+              field += char;
+            }
+          } else if (char === '"') {
+            quoted = true;
+          } else if (char === ",") {
+            row.push(field);
+            field = "";
+          } else if (char === "\n") {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = "";
+          } else if (char !== "\r") {
+            field += char;
+          }
+        }
+        if (field || row.length) {
+          row.push(field);
+          rows.push(row);
+        }
+        const header = rows.shift().map((value) => value.replace(/^\uFEFF/, ""));
+        return rows.filter((values) => values.length === header.length)
+          .map((values) => Object.fromEntries(header.map((key, index) => [key, values[index]])));
+      }
+
+      function safeDivide(numerator, denominator) {
+        return denominator ? numerator / denominator : 0;
+      }
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+        })[char]);
+      }
+
+      function calculateMetrics(predictions) {
+        const matrix = Object.fromEntries(CLASS_ORDER.map((actual) => [
+          actual,
+          Object.fromEntries(CLASS_ORDER.map((predicted) => [predicted, 0])),
+        ]));
+        for (const item of predictions) matrix[item.ActualClass][item.PredictedClass]++;
+        const classes = CLASS_ORDER.map((label) => {
+          const tp = matrix[label][label];
+          const fp = CLASS_ORDER.reduce((sum, actual) => sum + matrix[actual][label], 0) - tp;
+          const fn = CLASS_ORDER.reduce((sum, predicted) => sum + matrix[label][predicted], 0) - tp;
+          const support = CLASS_ORDER.reduce((sum, predicted) => sum + matrix[label][predicted], 0);
+          const precision = safeDivide(tp, tp + fp);
+          const recall = safeDivide(tp, tp + fn);
+          return { label, precision, recall, f1: safeDivide(2 * precision * recall, precision + recall), support };
+        });
+        const correct = predictions.filter((item) => item.ActualClass === item.PredictedClass).length;
+        return {
+          accuracy: safeDivide(correct, predictions.length),
+          macroPrecision: classes.reduce((sum, item) => sum + item.precision, 0) / classes.length,
+          macroRecall: classes.reduce((sum, item) => sum + item.recall, 0) / classes.length,
+          macroF1: classes.reduce((sum, item) => sum + item.f1, 0) / classes.length,
+          classes,
+          matrix,
+        };
+      }
+
+      function renderResults(predictions, variant, split) {
+        const metrics = calculateMetrics(predictions);
+        document.getElementById("summary").textContent = [
+          `Model: ${variant.name} (${variant.version})`,
+          `Image dataset: G5-v2 | Split: ${split} | Claims: ${predictions.length}`,
+          `Accuracy: ${metrics.accuracy.toFixed(6)}`,
+          `Macro Precision: ${metrics.macroPrecision.toFixed(6)}`,
+          `Macro Recall: ${metrics.macroRecall.toFixed(6)}`,
+          `Macro F1: ${metrics.macroF1.toFixed(6)}`,
+          `Mean top confidence: ${(predictions.reduce((sum, item) => sum + item.TopConfidence, 0) / predictions.length).toFixed(6)}`,
+          "Model selection must use validation metrics only. Test metrics are final evaluation only.",
+        ].join("\n");
+        document.getElementById("classMetrics").innerHTML = `<table><thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr></thead><tbody>${metrics.classes.map((item) => `<tr><td>${escapeHtml(item.label)}</td><td>${item.precision.toFixed(6)}</td><td>${item.recall.toFixed(6)}</td><td>${item.f1.toFixed(6)}</td><td>${item.support}</td></tr>`).join("")}</tbody></table>`;
+        document.getElementById("confusion").innerHTML = `<table><thead><tr><th>Actual \\ Predicted</th>${CLASS_ORDER.map((label) => `<th>${escapeHtml(label)}</th>`).join("")}</tr></thead><tbody>${CLASS_ORDER.map((actual) => `<tr><th>${escapeHtml(actual)}</th>${CLASS_ORDER.map((predicted) => `<td>${metrics.matrix[actual][predicted]}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+        document.getElementById("predictions").innerHTML = `<table><thead><tr><th>ClaimID</th><th>Actual</th><th>Predicted</th><th>Confidence: Invalid</th><th>Confidence: Manual</th><th>Confidence: Valid</th><th>Top confidence</th></tr></thead><tbody>${predictions.map((item) => `<tr><td>${escapeHtml(item.ClaimID)}</td><td>${escapeHtml(item.ActualClass)}</td><td>${escapeHtml(item.PredictedClass)}</td><td>${item.ConfidenceInvalid.toFixed(6)}</td><td>${item.ConfidenceManual.toFixed(6)}</td><td>${item.ConfidenceValid.toFixed(6)}</td><td>${item.TopConfidence.toFixed(6)}</td></tr>`).join("")}</tbody></table>`;
+        document.getElementById("download").disabled = false;
+      }
+
+      async function runEvaluation() {
+        const runButton = document.getElementById("run");
+        const downloadButton = document.getElementById("download");
+        const status = document.getElementById("status");
+        const split = document.getElementById("split").value;
+        const variant = VARIANTS[document.getElementById("variant").value];
+        runButton.disabled = true;
+        downloadButton.disabled = true;
+        lastPredictions = [];
+        try {
+          if (!variant) throw new Error("The selected Google model artifact has not been provided.");
+          status.textContent = "Loading Teachable Machine model...";
+          const model = await tmImage.load(variant.modelUrl, variant.metadataUrl);
+          const labels = model.getClassLabels();
+          if (CLASS_ORDER.some((label) => !labels.includes(label))) {
+            throw new Error(`Model labels do not match the canonical classes: ${labels.join(", ")}`);
+          }
+          status.textContent = "Loading card manifest...";
+          const manifestResponse = await fetch(MANIFEST_URL);
+          if (!manifestResponse.ok) throw new Error(`Card manifest returned HTTP ${manifestResponse.status}`);
+          const manifest = parseCsv(await manifestResponse.text()).filter((row) => row.Split === split);
+          if (!manifest.length) throw new Error(`No cards found for ${split}`);
+          const ids = manifest.map((row) => row.ClaimID);
+          if (new Set(ids).size !== ids.length) throw new Error(`Duplicate ClaimID in ${split} manifest`);
+          const counts = Object.fromEntries(CLASS_ORDER.map((label) => [label, manifest.filter((row) => row.ActualClass === label).length]));
+          if (Object.values(counts).some((count) => count === 0)) throw new Error("The selected split is missing one or more classes");
+
+          for (let index = 0; index < manifest.length; index++) {
+            const row = manifest[index];
+            status.textContent = `Evaluating ${split} claim ${index + 1} / ${manifest.length}...`;
+            const image = new Image();
+            image.src = `/${row.RelativePath}`;
+            await new Promise((resolve, reject) => {
+              image.onload = resolve;
+              image.onerror = () => reject(new Error(`Could not load card ${row.RelativePath}`));
+            });
+            const outputs = await model.predict(image, false);
+            const probabilities = Object.fromEntries(outputs.map((output) => [output.className, output.probability]));
+            const top = outputs.reduce((best, output) => output.probability > best.probability ? output : best, outputs[0]);
+            lastPredictions.push({
+              ClaimID: row.ClaimID,
+              ActualClass: row.ActualClass,
+              PredictedClass: top.className,
+              ConfidenceInvalid: probabilities["Invalid Claim"],
+              ConfidenceManual: probabilities["Manual Review"],
+              ConfidenceValid: probabilities["Valid Claim"],
+              TopConfidence: top.probability,
+            });
+          }
+          renderResults(lastPredictions, variant, split);
+          status.textContent = `Completed ${split} evaluation for ${lastPredictions.length} cards.`;
+        } catch (error) {
+          status.textContent = `Evaluation failed: ${error.message}`;
+          document.getElementById("summary").textContent = "No metrics recorded.";
+        } finally {
+          runButton.disabled = false;
+        }
+      }
+
+      function csvEscape(value) {
+        const text = String(value ?? "");
+        return `"${text.replaceAll('"', '""')}"`;
+      }
+
+      function downloadPredictions() {
+        if (!lastPredictions.length) return;
+        const columns = Object.keys(lastPredictions[0]);
+        const csv = [columns.map(csvEscape).join(","), ...lastPredictions.map((row) => columns.map((column) => csvEscape(row[column])).join(","))].join("\r\n");
+        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `google-g5-${document.getElementById("split").value}-G5-v2-predictions.csv`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById("run").addEventListener("click", runEvaluation);
+      document.getElementById("download").addEventListener("click", downloadPredictions);
+    </script>
+  </body>
+</html>

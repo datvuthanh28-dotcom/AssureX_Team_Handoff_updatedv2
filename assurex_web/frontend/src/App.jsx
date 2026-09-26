@@ -1617,11 +1617,12 @@ function CustomerHome({
   hideIdentity,
 }) {
   const [claims, setClaims] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(Boolean(email))
 
   useEffect(() => {
     if (!email) {
       setClaims([])
+      setLoading(false)
       return
     }
 
@@ -2266,6 +2267,14 @@ function CustomerSubmit({
                       ? 'Manual Review'
                       : 'Automatic'
                   }
+                </strong>
+              </div>
+              <div>
+                <span>Google inference</span>
+                <strong>
+                  {decision.google_inference_status === 'not_connected'
+                    ? 'Not connected'
+                    : decision.google_prediction || 'Not run'}
                 </strong>
               </div>
             </div>
@@ -3242,12 +3251,13 @@ function CustomerClaims({
 }) {
   const [claims, setClaims] = useState([])
   const [selected, setSelected] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(Boolean(email))
 
   useEffect(() => {
     if (!email) {
       setClaims([])
       setSelected(null)
+      setLoading(false)
       return
     }
 
@@ -3381,6 +3391,14 @@ function CustomerClaims({
                 <div>
                   <span>GTM model version</span>
                   <strong>{selected.decision.gtm_model_version || 'Not run'}</strong>
+                </div>
+                <div>
+                  <span>Google inference</span>
+                  <strong>
+                    {selected.decision.google_inference_status === 'not_connected'
+                      ? 'Not connected'
+                      : selected.decision.google_prediction || 'Not run'}
+                  </strong>
                 </div>
                 <div>
                   <span>Analysis timestamp</span>

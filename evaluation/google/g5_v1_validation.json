@@ -1,0 +1,24 @@
+{
+  "model_name": "Google Teachable Machine G5",
+  "model_version": "google-g5-existing-20260925",
+  "dataset_version": "G5-v1",
+  "split": "validation",
+  "test_used_for_selection": false,
+  "claims": 225,
+  "accuracy": 0.3333333333333333,
+  "macro_precision": 0.11160714285714286,
+  "macro_recall": 0.3333333333333333,
+  "macro_f1": 0.16722408026755853,
+  "mean_top_confidence": 0.785571,
+  "per_class": {
+    "Invalid Claim": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "support": 75},
+    "Manual Review": {"precision": 0.33482142857142855, "recall": 1.0, "f1": 0.5016722408026756, "support": 75},
+    "Valid Claim": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "support": 75}
+  },
+  "confusion_matrix": {
+    "labels": ["Invalid Claim", "Manual Review", "Valid Claim"],
+    "rows_actual_columns_predicted": [[0, 74, 1], [0, 75, 0], [0, 75, 0]]
+  },
+  "selection_eligible": false,
+  "provenance_warning": "This is a real inference run on G5-v1 cards, but the original G5 training card renderer and manifest are missing. The exported model therefore sees a changed image representation and these metrics are not comparable to the historical G5 report. Model A/B/C selection requires common, provenance-matched card images. No test inference was run."
+}

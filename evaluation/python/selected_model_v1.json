@@ -1,0 +1,31 @@
+{
+  "selected_model": "Gradient Boosting",
+  "selected_version": "python-gradientboosting-v1",
+  "selection_metric": "validation_macro_f1",
+  "selection_reason": "Selected by validation macro F1; ties use macro recall, macro precision, then lower 5-fold CV standard deviation.",
+  "validation_metrics": {
+    "accuracy": 0.9688888888888889,
+    "precision": 0.9691704691704692,
+    "recall": 0.9688888888888889,
+    "f1": 0.9689450135405627,
+    "macro_precision": 0.9691704691704692,
+    "macro_recall": 0.9688888888888889,
+    "macro_f1": 0.9689450135405627,
+    "mean_top_confidence": 0.9296755690598808,
+    "cv_mean_f1": 0.965782024360563,
+    "cv_std_f1": 0.017960901883656642
+  },
+  "test_metrics": {
+    "accuracy": 0.9511111111111111,
+    "precision": 0.9534603738056161,
+    "recall": 0.9511111111111111,
+    "f1": 0.9512890110818489,
+    "macro_precision": 0.953460373805616,
+    "macro_recall": 0.9511111111111111,
+    "macro_f1": 0.9512890110818489,
+    "mean_top_confidence": 0.933312876469873
+  },
+  "dataset_version": "assurex-locked-split-5487c1f2d05b",
+  "random_seed": 20260925,
+  "test_accessed_after_selection": true
+}

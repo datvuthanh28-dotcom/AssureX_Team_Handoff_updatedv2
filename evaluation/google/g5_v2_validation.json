@@ -1,0 +1,24 @@
+{
+  "model_name": "Google Teachable Machine G5 compatibility probe",
+  "model_version": "google-g5-existing-20260925",
+  "dataset_version": "G5-v2",
+  "split": "validation",
+  "test_used_for_selection": false,
+  "selection_eligible": false,
+  "claims": 225,
+  "accuracy": 0.3333333333333333,
+  "macro_precision": 0.1111111111111111,
+  "macro_recall": 0.3333333333333333,
+  "macro_f1": 0.16666666666666666,
+  "mean_top_confidence": 0.817539,
+  "per_class": {
+    "Invalid Claim": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "support": 75},
+    "Manual Review": {"precision": 0.3333333333333333, "recall": 1.0, "f1": 0.5, "support": 75},
+    "Valid Claim": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "support": 75}
+  },
+  "confusion_matrix": {
+    "labels": ["Invalid Claim", "Manual Review", "Valid Claim"],
+    "rows_actual_columns_predicted": [[0, 75, 0], [0, 75, 0], [0, 75, 0]]
+  },
+  "provenance_warning": "This is a real validation inference run on G5-v2 no-ID cards. It is not eligible for model selection because the existing export's original training-card renderer, manifest, and full training configuration are missing. The existing model collapses all predictions to Manual Review on this representation. No test inference was run."
+}

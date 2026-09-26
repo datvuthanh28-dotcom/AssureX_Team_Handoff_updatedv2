@@ -1,0 +1,137 @@
+{
+  "dataset_version": "train-validation-1eb05da3f408",
+  "training_seed": 20260925,
+  "evaluation_split": "validation",
+  "test_set_used": false,
+  "identifier_columns": [
+    "ClaimID"
+  ],
+  "identifier_columns_excluded_from_features": true,
+  "full_feature_model": {
+    "version": "python-gradientboosting-v1",
+    "feature_count": 22,
+    "metrics": {
+      "accuracy": 0.9688888888888889,
+      "macro_precision": 0.9691704691704692,
+      "macro_recall": 0.9688888888888889,
+      "macro_f1": 0.9689450135405627,
+      "class_metrics": {
+        "Invalid Claim": {
+          "precision": 0.9864864864864865,
+          "recall": 0.9733333333333334,
+          "f1": 0.9798657718120806,
+          "support": 75
+        },
+        "Manual Review": {
+          "precision": 0.972972972972973,
+          "recall": 0.96,
+          "f1": 0.9664429530201343,
+          "support": 75
+        },
+        "Valid Claim": {
+          "precision": 0.948051948051948,
+          "recall": 0.9733333333333334,
+          "f1": 0.9605263157894737,
+          "support": 75
+        }
+      },
+      "cv_macro_f1_mean": 0.965782024360563,
+      "cv_macro_f1_std": 0.017960901883656642
+    }
+  },
+  "robustness_model": {
+    "algorithm": "GradientBoostingClassifier",
+    "feature_count": 8,
+    "features": [
+      "WarrantyCardAvailable",
+      "RepairReportAvailable",
+      "PreviousRepair",
+      "RepairCount",
+      "PriorClaimCount",
+      "ClaimAmount",
+      "OCRConfidence",
+      "ClaimSubmissionChannel"
+    ],
+    "excluded_rule_derived_features": [
+      "SerialNumberMatch",
+      "ProductModelConsistent",
+      "DuplicateClaimIndicator",
+      "ContradictionIndicator",
+      "ClaimReportingDelayDays",
+      "WarrantyRemainingDays",
+      "WarrantyStatus",
+      "ClaimReportingWithinPeriod",
+      "FaultCovered",
+      "MissingDocumentCount",
+      "AvailableDocumentCount",
+      "RequiredDocumentsComplete",
+      "PurchaseProofAvailable",
+      "HasRepairHistory"
+    ],
+    "hyperparameters": {
+      "learning_rate": 0.05,
+      "n_estimators": 150,
+      "random_state": 20260925
+    },
+    "metrics": {
+      "accuracy": 0.39111111111111113,
+      "macro_precision": 0.3956641604010025,
+      "macro_recall": 0.39111111111111113,
+      "macro_f1": 0.38509496342865285,
+      "class_metrics": {
+        "Invalid Claim": {
+          "precision": 0.3684210526315789,
+          "recall": 0.37333333333333335,
+          "f1": 0.3708609271523179,
+          "support": 75
+        },
+        "Manual Review": {
+          "precision": 0.42857142857142855,
+          "recall": 0.28,
+          "f1": 0.3387096774193548,
+          "support": 75
+        },
+        "Valid Claim": {
+          "precision": 0.39,
+          "recall": 0.52,
+          "f1": 0.44571428571428573,
+          "support": 75
+        }
+      },
+      "cv_macro_f1_mean": 0.35717866000258397,
+      "cv_macro_f1_std": 0.013095248798017831
+    }
+  },
+  "validation_macro_f1_difference_robust_minus_full": -0.5838500501119099,
+  "training_rule_feature_bins_with_10plus_records_and_single_class": {
+    "SerialNumberMatch": [
+      {
+        "value": "No",
+        "class": "Invalid Claim",
+        "support": 21
+      }
+    ],
+    "DuplicateClaimIndicator": [
+      {
+        "value": "Yes",
+        "class": "Invalid Claim",
+        "support": 17
+      }
+    ],
+    "WarrantyStatus": [
+      {
+        "value": "Expired",
+        "class": "Invalid Claim",
+        "support": 122
+      }
+    ],
+    "FaultCovered": [
+      {
+        "value": "No",
+        "class": "Invalid Claim",
+        "support": 183
+      }
+    ]
+  },
+  "interpretation": "The full model includes outputs derived by warranty/document rules. Pure-class bins and the robustness performance gap indicate that the full-feature score partly reflects those encoded rules; it must not be interpreted as independent evidence of generalization."
+}

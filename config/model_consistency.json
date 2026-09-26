@@ -1,0 +1,16 @@
+{
+  "status": "not_calibrated",
+  "minimum_confidence": null,
+  "strong_match_max_difference": null,
+  "acceptable_match_max_difference": null,
+  "weak_match_max_difference": null,
+  "supported_statuses": [
+    "Strong Match",
+    "Acceptable Match",
+    "Weak Match",
+    "Model Disagreement",
+    "Uncertain Result"
+  ],
+  "calibration_split": "validation",
+  "reason": "The existing GTM export predicts Manual Review for all 225 no-ID G5-v2 validation cards (Macro F1 0.166667), and its original training-card renderer/configuration are unavailable. G5-v1 also included ClaimID in rendered pixels. Do not calibrate cross-model confidence thresholds until three Google variants have validation predictions on the same verified card representation."
+}
