@@ -1654,14 +1654,6 @@ function CustomerHome({
         eyebrow="AssureX Customer Portal"
         title="Warranty Claims"
         description="Submit warranty claims and track their progress."
-        action={
-          <button
-            className="button primary"
-            onClick={() => onNavigate('submit')}
-          >
-            + Submit Claim
-          </button>
-        }
       />
 
       {!hideIdentity && (

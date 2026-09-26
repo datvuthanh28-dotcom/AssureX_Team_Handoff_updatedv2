@@ -5,6 +5,8 @@
 =================================================== */
 
 body.customer-light {
+  min-width: 0;
+  color-scheme: light;
   --ax-bg: #f4f6fb;
   --ax-surface: #ffffff;
   --ax-border: #e4e8f1;
@@ -22,7 +24,7 @@ body.customer-light {
   --ax-danger-soft: #fbeaea;
   --ax-shadow: 0 1px 2px rgba(16, 24, 48, 0.04),
     0 8px 24px rgba(16, 24, 48, 0.06);
-  --ax-radius: 14px;
+  --ax-radius: 8px;
 
   background: var(--ax-bg) !important;
   color: var(--ax-text);
@@ -36,6 +38,8 @@ body.customer-light .app-shell {
 /* ---------- Sidebar ---------- */
 
 body.customer-light .sidebar {
+  position: static;
+  height: auto;
   background: var(--ax-surface);
   border-right: 1px solid var(--ax-border);
   box-shadow: none;
@@ -1074,17 +1078,222 @@ body.customer-light .login-aside {
   }
 
   body.customer-light .sidebar {
-    position: relative;
+    position: static;
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--ax-border);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "brand account logout"
+      "nav nav nav";
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 20px 10px;
+  }
+
+  body.customer-light .brand {
+    grid-area: brand;
+    min-width: 0;
+    margin: 0;
+  }
+
+  body.customer-light .sidebar-section-label {
+    display: none;
+  }
+
+  body.customer-light .nav-menu {
+    grid-area: nav;
+    min-width: 0;
+    width: 100%;
+    flex-direction: row;
+    gap: 6px;
+    margin: 0 -20px;
+    overflow-x: auto;
+    padding: 0 20px 2px;
+    scrollbar-width: thin;
+  }
+
+  body.customer-light .nav-item {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+    padding: 9px 12px;
+  }
+
+  body.customer-light .account-card {
+    grid-area: account;
+    min-width: 0;
+    margin: 0;
+    padding: 6px;
+    border: 0;
+    background: transparent;
+  }
+
+  body.customer-light .logout-button {
+    grid-area: logout;
+    width: auto;
+    margin: 0;
+    padding: 8px 10px;
+    white-space: nowrap;
+  }
+
+  body.customer-light .guest-actions {
+    grid-column: 2 / 4;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  body.customer-light .guest-actions p {
+    display: none;
+  }
+
+  body.customer-light .guest-actions .button,
+  body.customer-light .guest-actions .logout-button {
+    width: auto;
+    margin: 0;
+    padding: 8px 11px;
+    white-space: nowrap;
+  }
+
+  body.customer-light .customer-admin-link {
+    margin: 0;
+    white-space: nowrap;
   }
 
   body.customer-light .main-content {
-    padding: 24px 20px 48px;
+    padding: 24px 24px 48px;
   }
 
   body.customer-light .stats-grid,
+  body.customer-light .decision-summary-grid,
+  body.customer-light .detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.customer-light .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body.customer-light .customer-hero,
+  body.customer-light .hero-card {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 20px;
+    padding: 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  body.customer-light .sidebar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand brand"
+      "account logout"
+      "nav nav";
+    gap: 8px;
+    padding: 10px 12px 8px;
+  }
+
+  body.customer-light .brand {
+    gap: 8px;
+  }
+
+  body.customer-light .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+
+  body.customer-light .brand h2 {
+    font-size: 15px;
+  }
+
+  body.customer-light .brand p {
+    font-size: 11px;
+  }
+
+  body.customer-light .nav-menu {
+    margin-right: -12px;
+    margin-left: -12px;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  body.customer-light .guest-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  body.customer-light .guest-actions .button,
+  body.customer-light .guest-actions .logout-button {
+    grid-area: auto;
+    width: 100%;
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  body.customer-light .customer-admin-link {
+    justify-self: stretch;
+    padding: 8px 2px;
+    text-align: center;
+  }
+
+  body.customer-light .main-content {
+    padding: 20px 16px 36px;
+  }
+
+  body.customer-light .page-header {
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  body.customer-light .page-header h1 {
+    font-size: 26px;
+  }
+
+  body.customer-light .page-header > .button {
+    padding: 9px 11px;
+    font-size: 12px;
+  }
+
+  body.customer-light .stats-grid {
+    gap: 10px;
+  }
+
+  body.customer-light .stat-card {
+    padding: 14px;
+  }
+
+  body.customer-light .stat-card strong {
+    font-size: 25px;
+  }
+
+  body.customer-light .stat-card small {
+    line-height: 1.35;
+  }
+
+  body.customer-light .customer-hero,
+  body.customer-light .hero-card {
+    padding: 22px;
+    margin: 18px 0 22px;
+  }
+
+  body.customer-light .customer-hero h2,
+  body.customer-light .hero-card h2 {
+    font-size: 22px;
+  }
+
+  body.customer-light .customer-hero .button {
+    width: 100%;
+  }
+
   body.customer-light .form-grid,
   body.customer-light .decision-summary-grid,
   body.customer-light .detail-grid {
