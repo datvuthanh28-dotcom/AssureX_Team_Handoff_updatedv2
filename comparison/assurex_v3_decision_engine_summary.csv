@@ -1,0 +1,13 @@
+﻿Metric,Value
+Claims,225.0
+Prediction matches,196.0
+Prediction disagreements,29.0
+Mean top-confidence difference,0.08849965376578806
+Strong Match,126.0
+Acceptable Match,52.0
+Weak Match,14.0
+Model Disagreement,29.0
+Uncertain Result,4.0
+Likely Valid,69.0
+Likely Invalid,22.0
+Manual Review Required,134.0

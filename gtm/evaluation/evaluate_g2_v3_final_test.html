@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AssureX - G2 V3 Final GTM Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.11.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+body{font-family:Arial,sans-serif;max-width:1180px;margin:28px auto;padding:0 18px;color:#111}
+h1,h2{margin-bottom:10px}
+.box{border:1px solid #ddd;border-radius:10px;padding:18px;margin:16px 0;background:#fff}
+pre{background:#f5f5f5;padding:14px;border-radius:8px;white-space:pre-wrap}
+.pass{color:#0a7d18;font-weight:700}
+.fail{color:#b00020;font-weight:700}
+button{padding:10px 16px;margin:4px 8px 4px 0;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.55}
+table{border-collapse:collapse;width:100%;margin-top:14px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#eee}
+.progress{font-family:monospace}
+.small{font-size:13px;color:#555}
+</style>
+</head>
+<body>
+
+<h1>AssureX Claim Engine — G2 V3 Final GTM Test</h1>
+<p><b>Purpose:</b> open the locked GTM Test set once, using the frozen G2 champion only.</p>
+
+<div class="box">
+  <h2>1. Frozen G2 integrity check</h2>
+  <button id="verifyBtn" onclick="verifyFrozenModel()">Verify frozen G2</button>
+  <div id="verifyStatus">Not verified.</div>
+</div>
+
+<div class="box">
+  <h2>2. Locked Test integrity check</h2>
+  <button id="datasetBtn" onclick="verifyTestDataset()">Verify locked Test</button>
+  <div id="datasetStatus">Not verified.</div>
+</div>
+
+<div class="box">
+  <h2>3. Final Test — run once</h2>
+  <button id="runBtn" onclick="runFinalTest()" disabled>Run G2 Final Test</button>
+  <div id="progress" class="progress">Waiting.</div>
+</div>
+
+<div class="box">
+  <h2>Final Test Results</h2>
+  <div id="results">No final-test results yet.</div>
+  <div style="margin-top:14px">
+    <button id="predBtn" onclick="downloadPredictions()" disabled>Download predictions CSV</button>
+    <button id="metricsBtn" onclick="downloadMetrics()" disabled>Download metrics CSV</button>
+    <button id="cmBtn" onclick="downloadConfusion()" disabled>Download confusion matrix CSV</button>
+  </div>
+</div>
+
+<script>
+const MODEL_BASE = "../models/G2_V3/";
+const MANIFEST_URL = "../../gtm_dataset/G2_V3/card_manifest.csv";
+
+const EXPECTED_SHA256 = {
+  "metadata.json": "8f5c4f5454609df5e1b7232ac20e1f5262723890d409c14ed5f713514aec5065",
+  "model.json": "6041d72fc8f2042979d20f51b53f25502be9ad7ee88e0f02f288b38f77c6f700",
+  "weights.bin": "fdf6c91999ef58d21638ecd2f7b42a901a9db12f538c6adbab611799d2386aba"
+};
+
+const CLASS_ORDER = ["Invalid Claim","Manual Review","Valid Claim"];
+
+let model = null;
+let testRows = [];
+let modelVerified = false;
+let datasetVerified = false;
+let finalPredictions = [];
+let finalMetrics = [];
+let finalConfusion = [];
+
+function hex(buffer){
+  return [...new Uint8Array(buffer)]
+    .map(b => b.toString(16).padStart(2,"0")).join("");
+}
+
+async function sha256Url(url){
+  const res = await fetch(url, {cache:"no-store"});
+  if(!res.ok) throw new Error(`Cannot fetch ${url}: ${res.status}`);
+  const buf = await res.arrayBuffer();
+  const digest = await crypto.subtle.digest("SHA-256", buf);
+  return hex(digest);
+}
+
+function enableRunIfReady(){
+  document.getElementById("runBtn").disabled = !(modelVerified && datasetVerified);
+}
+
+async function verifyFrozenModel(){
+  const out = document.getElementById("verifyStatus");
+  out.innerHTML = "Checking SHA-256...";
+  try{
+    const lines = [];
+    for(const [file, expected] of Object.entries(EXPECTED_SHA256)){
+      const actual = await sha256Url(MODEL_BASE + file);
+      const ok = actual === expected;
+      lines.push(`${file}: ${ok ? "PASS" : "FAIL"}\n  ${actual}`);
+      if(!ok) throw new Error(`${file} SHA-256 mismatch`);
+    }
+
+    model = await tmImage.load(
+      MODEL_BASE + "model.json",
+      MODEL_BASE + "metadata.json"
+    );
+
+    const labels = model.getClassLabels();
+    const labelOk =
+      labels.length === CLASS_ORDER.length &&
+      CLASS_ORDER.every(x => labels.includes(x));
+
+    if(!labelOk){
+      throw new Error("G2 class labels do not match expected classes: " + labels.join(", "));
+    }
+
+    modelVerified = true;
+    out.innerHTML =
+      `<div class="pass">PASS — frozen G2 model hash and class labels verified.</div>` +
+      `<pre>${lines.join("\n")}\nClasses: ${labels.join(" | ")}</pre>`;
+    enableRunIfReady();
+  }catch(err){
+    modelVerified = false;
+    out.innerHTML = `<div class="fail">FAIL — ${err.message}</div>`;
+    enableRunIfReady();
+  }
+}
+
+async function verifyTestDataset(){
+  const out = document.getElementById("datasetStatus");
+  out.innerHTML = "Checking Test manifest...";
+  try{
+    const res = await fetch(MANIFEST_URL, {cache:"no-store"});
+    if(!res.ok) throw new Error(`Cannot fetch manifest: ${res.status}`);
+    const csv = await res.text();
+
+    const parsed = Papa.parse(csv, {
+      header:true,
+      skipEmptyLines:true
+    });
+
+    if(parsed.errors.length){
+      throw new Error("Manifest CSV parse error");
+    }
+
+    testRows = parsed.data.filter(
+      r => String(r.Split).trim().toLowerCase() === "test"
+    );
+
+    if(testRows.length !== 225){
+      throw new Error(`Expected 225 Test images, found ${testRows.length}`);
+    }
+
+    const ids = new Set(testRows.map(r => r.ClaimID));
+    if(ids.size !== 225){
+      throw new Error(`Expected 225 unique Test ClaimIDs, found ${ids.size}`);
+    }
+
+    const counts = {};
+    CLASS_ORDER.forEach(c => counts[c] = 0);
+    testRows.forEach(r => {
+      if(!(r.ActualClass in counts)){
+        throw new Error(`Unexpected class: ${r.ActualClass}`);
+      }
+      counts[r.ActualClass]++;
+    });
+
+    for(const c of CLASS_ORDER){
+      if(counts[c] !== 75){
+        throw new Error(`Expected 75 ${c}, found ${counts[c]}`);
+      }
+    }
+
+    const leakedTarget = testRows.some(
+      r => String(r.TargetRendered).trim().toLowerCase() === "true"
+    );
+    const leakedId = testRows.some(
+      r => String(r.ClaimIDRendered).trim().toLowerCase() === "true"
+    );
+    if(leakedTarget) throw new Error("TargetRendered=TRUE found in Test");
+    if(leakedId) throw new Error("ClaimIDRendered=TRUE found in Test");
+
+    datasetVerified = true;
+    out.innerHTML =
+      `<div class="pass">PASS — locked Test verified.</div>` +
+      `<pre>Test claims/images : 225\nUnique ClaimIDs    : 225\nInvalid Claim      : ${counts["Invalid Claim"]}\nManual Review      : ${counts["Manual Review"]}\nValid Claim        : ${counts["Valid Claim"]}\nTarget rendered    : NO\nClaimID rendered   : NO</pre>`;
+    enableRunIfReady();
+  }catch(err){
+    datasetVerified = false;
+    out.innerHTML = `<div class="fail">FAIL — ${err.message}</div>`;
+    enableRunIfReady();
+  }
+}
+
+function loadImage(url){
+  return new Promise((resolve,reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("Cannot load image: " + url));
+    img.src = url;
+  });
+}
+
+function safeNum(x){
+  const n = Number(x);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function computeMetrics(rows){
+  const confusion = {};
+  CLASS_ORDER.forEach(a => {
+    confusion[a] = {};
+    CLASS_ORDER.forEach(p => confusion[a][p] = 0);
+  });
+
+  let correct = 0;
+  let confSum = 0;
+
+  rows.forEach(r => {
+    confusion[r.ActualClass][r.PredictedClass]++;
+    if(r.Correct === "YES") correct++;
+    confSum += safeNum(r.Confidence);
+  });
+
+  const perClass = CLASS_ORDER.map(c => {
+    const tp = confusion[c][c];
+    const fp = CLASS_ORDER.reduce((s,a) => s + (a === c ? 0 : confusion[a][c]), 0);
+    const fn = CLASS_ORDER.reduce((s,p) => s + (p === c ? 0 : confusion[c][p]), 0);
+
+    const precision = tp + fp ? tp / (tp + fp) : 0;
+    const recall = tp + fn ? tp / (tp + fn) : 0;
+    const f1 = precision + recall ? 2 * precision * recall / (precision + recall) : 0;
+
+    return {Class:c, Precision:precision, Recall:recall, F1:f1, Support:75};
+  });
+
+  const accuracy = correct / rows.length;
+  const macroPrecision = perClass.reduce((s,x)=>s+x.Precision,0) / perClass.length;
+  const macroRecall = perClass.reduce((s,x)=>s+x.Recall,0) / perClass.length;
+  const macroF1 = perClass.reduce((s,x)=>s+x.F1,0) / perClass.length;
+  const meanConfidence = confSum / rows.length;
+
+  return {
+    correct,
+    incorrect: rows.length - correct,
+    accuracy,
+    macroPrecision,
+    macroRecall,
+    macroF1,
+    meanConfidence,
+    perClass,
+    confusion
+  };
+}
+
+async function runFinalTest(){
+  if(!(modelVerified && datasetVerified && model)){
+    alert("Verify frozen G2 and locked Test first.");
+    return;
+  }
+
+  if(finalPredictions.length){
+    alert("Final Test already ran in this page session. Reloading/re-running is intentionally blocked.");
+    return;
+  }
+
+  document.getElementById("runBtn").disabled = true;
+  const progress = document.getElementById("progress");
+
+  try{
+    const rows = [...testRows].sort((a,b) =>
+      String(a.ClaimID).localeCompare(String(b.ClaimID))
+    );
+
+    const out = [];
+
+    for(let i=0;i<rows.length;i++){
+      const r = rows[i];
+
+      progress.textContent =
+        `Running frozen G2 on locked Test: ${i+1} / ${rows.length} — ${r.ClaimID}`;
+
+      const imageUrl = "../../" + String(r.RelativePath).replace(/^\/+/,"");
+      const img = await loadImage(imageUrl);
+      const preds = await model.predict(img, false);
+
+      const probs = {};
+      preds.forEach(p => probs[p.className] = Number(p.probability));
+
+      let best = preds[0];
+      for(const p of preds){
+        if(p.probability > best.probability) best = p;
+      }
+
+      out.push({
+        ClaimID: r.ClaimID,
+        ActualClass: r.ActualClass,
+        CardFilename: r.Filename,
+        PredictedClass: best.className,
+        P_Invalid_Claim: safeNum(probs["Invalid Claim"]),
+        P_Manual_Review: safeNum(probs["Manual Review"]),
+        P_Valid_Claim: safeNum(probs["Valid Claim"]),
+        Confidence: safeNum(best.probability),
+        Correct: best.className === r.ActualClass ? "YES" : "NO"
+      });
+    }
+
+    finalPredictions = out;
+    const m = computeMetrics(out);
+
+    finalMetrics = [
+      {Metric:"TestClaims", Value:225},
+      {Metric:"Correct", Value:m.correct},
+      {Metric:"Incorrect", Value:m.incorrect},
+      {Metric:"Accuracy", Value:m.accuracy},
+      {Metric:"MacroPrecision", Value:m.macroPrecision},
+      {Metric:"MacroRecall", Value:m.macroRecall},
+      {Metric:"MacroF1", Value:m.macroF1},
+      {Metric:"MeanConfidence", Value:m.meanConfidence},
+      {Metric:"TestUsed", Value:"YES"},
+      {Metric:"FrozenModel", Value:"G2_V3"}
+    ];
+
+    m.perClass.forEach(x => {
+      finalMetrics.push({Metric:`${x.Class}_Precision`, Value:x.Precision});
+      finalMetrics.push({Metric:`${x.Class}_Recall`, Value:x.Recall});
+      finalMetrics.push({Metric:`${x.Class}_F1`, Value:x.F1});
+    });
+
+    finalConfusion = [];
+    CLASS_ORDER.forEach(a => {
+      CLASS_ORDER.forEach(p => {
+        finalConfusion.push({
+          ActualClass:a,
+          PredictedClass:p,
+          Count:m.confusion[a][p]
+        });
+      });
+    });
+
+    let html = `
+      <div class="pass">PASS: G2 FINAL TEST completed on the locked 225-claim Test set.</div>
+      <pre>
+Test claims      : 225
+Correct          : ${m.correct}
+Incorrect        : ${m.incorrect}
+
+Accuracy         : ${m.accuracy.toFixed(6)}
+Macro Precision  : ${m.macroPrecision.toFixed(6)}
+Macro Recall     : ${m.macroRecall.toFixed(6)}
+Macro F1         : ${m.macroF1.toFixed(6)}
+Mean Confidence  : ${m.meanConfidence.toFixed(6)}
+
+TEST USED        : YES
+MODEL            : FROZEN G2_V3
+      </pre>
+      <h3>Per-Class Metrics</h3>
+      <table>
+      <tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1</th><th>Support</th></tr>`;
+
+    m.perClass.forEach(x => {
+      html += `<tr>
+        <td>${x.Class}</td>
+        <td>${x.Precision.toFixed(6)}</td>
+        <td>${x.Recall.toFixed(6)}</td>
+        <td>${x.F1.toFixed(6)}</td>
+        <td>${x.Support}</td>
+      </tr>`;
+    });
+
+    html += `</table><h3>Confusion Matrix</h3><table><tr><th>Actual \\ Predicted</th>`;
+    CLASS_ORDER.forEach(p => html += `<th>${p}</th>`);
+    html += `</tr>`;
+
+    CLASS_ORDER.forEach(a => {
+      html += `<tr><th>${a}</th>`;
+      CLASS_ORDER.forEach(p => html += `<td>${m.confusion[a][p]}</td>`);
+      html += `</tr>`;
+    });
+    html += `</table>`;
+
+    document.getElementById("results").innerHTML = html;
+    progress.textContent = "FINAL TEST COMPLETE — do not use Test for further GTM selection.";
+
+    document.getElementById("predBtn").disabled = false;
+    document.getElementById("metricsBtn").disabled = false;
+    document.getElementById("cmBtn").disabled = false;
+  }catch(err){
+    document.getElementById("results").innerHTML =
+      `<div class="fail">FINAL TEST FAILED before completion — ${err.message}</div>`;
+    progress.textContent = "Stopped due to error.";
+  }
+}
+
+function downloadCSV(rows, filename){
+  const csv = Papa.unparse(rows);
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function downloadPredictions(){
+  downloadCSV(finalPredictions, "assurex_v3_gtm_g2_final_test_predictions.csv");
+}
+function downloadMetrics(){
+  downloadCSV(finalMetrics, "assurex_v3_gtm_g2_final_test_metrics.csv");
+}
+function downloadConfusion(){
+  downloadCSV(finalConfusion, "assurex_v3_gtm_g2_final_test_confusion_matrix.csv");
+}
+</script>
+
+<p class="small">
+This page intentionally blocks a second run in the same browser session after a successful Final Test.
+</p>
+</body>
+</html>

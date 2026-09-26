@@ -1,0 +1,69 @@
+﻿Iteration,Attempt,FeatureCount,CandidateRemoved,CandidateReason,Decision,ValidationAccuracy,ValidationMacroF1,DeltaVsPreviousF1,DeltaVsBaselineF1
+0,0,81,,Baseline,BASELINE,0.9822222222222222,0.9822179068132484,0.0,0.0
+1,1,80,BrowserFamily,Known noise + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+2,2,79,RandomScore,Known noise + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+3,3,78,SubmissionMinute,Known noise + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+4,4,77,UiTheme,Known noise + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+5,5,76,ApplicableWarrantyMonths,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+6,6,75,AvailableDocumentCount,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+7,7,74,ClaimAmount,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+8,8,73,ClaimAmountRatio,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+9,9,72,CriticalDocumentMissing,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+10,10,71,DamageType,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+11,11,70,ElectronicWarrantyAvailable,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+12,12,69,HasPreviousReplacement,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+13,13,68,HasRepairHistory,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+14,14,67,PreviousRepair,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+15,15,66,PreviousRepairCost,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+16,16,65,PreviousReplacement,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+17,17,64,PurchaseProofAvailable,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+18,18,63,ReceiptAvailable,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+19,19,62,SpecialComponentWarrantyStatus,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+20,20,61,WarrantyCardAvailable,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+21,21,60,RequiredDocumentCoverageRatio,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+22,22,59,AffectedUnit,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+23,23,58,AvailableRequiredDocumentCount,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+24,24,57,WarrantyStatus,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+25,25,56,BatteryDiagnosticAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+26,26,55,BatterySymptomReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+27,27,54,Brand,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+28,28,53,ClaimDayOfWeek,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+29,29,52,ClaimMonth,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+30,30,51,ClaimSubmissionChannel,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+31,31,50,ClaimedComponent,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+32,32,49,ComponentIdentityEvidenceAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+33,33,48,MissingRequiredDocumentCount,Known redundancy + low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+34,34,47,ComponentWarrantyEligible,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+35,35,46,ConsumableTypeUsed,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+36,36,45,CustomerIssueArea,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+37,37,44,CustomerReportedDamageIndicator,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+38,38,43,DocumentDuplicateIndicator,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+39,39,42,ErrorCodeAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+40,40,41,ExtendedWarranty,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+41,41,40,FaultEvidenceAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+42,42,39,FaultType,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+43,43,38,ForeignObjectIncidentReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+44,44,37,InstallationEvidenceAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+45,45,36,IntermittentIssueReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+46,46,35,LiquidExposureReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+47,47,34,PhysicalDamageReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+48,48,33,PriorClaimCount,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+49,49,32,ProductAgeDays,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+50,50,31,ProductCategory,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+51,51,30,ProductImageAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+52,52,29,ProductPurchasePrice,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+53,53,28,ProductSubtype,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+54,54,27,RecentReinstallationReported,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+55,55,26,RepairCount,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+56,56,25,RepairReportAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+57,57,24,ReplacementWithinWarranty,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+58,58,23,ReportingDeadlineDays,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+59,59,22,RequiredDocumentCount,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+60,60,21,ScreenFaultImageAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+61,61,20,SerialEvidenceAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+62,62,19,ServiceDiagnosticAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+63,63,18,UnknownRequiredDocumentCount,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+64,64,17,UsageMeterEvidenceAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+65,65,16,UsageType,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+66,66,15,WarrantyDurationMonths,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0
+67,67,14,WarrantyProofAvailable,Low permutation importance,ACCEPT_REMOVE,0.9822222222222222,0.9822179068132484,0.0,0.0

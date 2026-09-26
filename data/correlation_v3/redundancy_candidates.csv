@@ -1,0 +1,24 @@
+﻿AssociationType,FeatureA,FeatureB,PrimaryMeasure,MeasureName,Strength,Action
+Categorical-Categorical,PreviousReplacement,ReplacementWithinWarranty,0.9996661659062375,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,RepairReportAvailable,PreviousRepair,0.999627074385689,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,PreviousRepair,RepairAuthorized,0.9993322202928082,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,ProductCategory,ProductSubtype,0.9929375272271017,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,CustomerIssueArea,FaultDescription,0.982214723322688,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,FaultType,FaultDescription,0.9779147224073658,CramersV,Very strong,Review later; do not drop automatically
+Numeric-Numeric,RepairCount,PreviousRepairCost,0.9600546475323725,"max(|Pearson|, |Spearman|)",Very strong,Review later; do not drop automatically
+Categorical-Categorical,FaultDescription,AffectedUnit,0.8987167253832172,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,CustomerIssueArea,AffectedUnit,0.8777717617009758,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,ProductCategory,CustomerIssueArea,0.8265722627811247,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ProductCategory,FaultDescription,0.8254654596729786,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,CustomerIssueArea,ClaimedComponent,0.732165674076036,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ClaimedComponent,FaultDescription,0.7266101592987225,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,AffectedUnit,InstallationEvidenceAvailable,0.7130606834931579,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,CustomerIssueArea,FaultType,0.7104280251309542,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,RepairReportAvailable,RepairAuthorized,0.7081207238674421,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,RecentReinstallationReported,InstallationEvidenceAvailable,0.7078006433379771,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ConsumableTypeUsed,UsageMeterEvidenceAvailable,0.7065695077706728,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ProductCategory,InstallationEvidenceAvailable,0.7042669834430235,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ProductCategory,UsageMeterEvidenceAvailable,0.7042669834430235,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ClaimedComponent,ServiceDiagnosticAvailable,0.7032292521030893,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ClaimedComponent,ScreenFaultImageAvailable,0.7023674061912991,CramersV,Strong,Review later; do not drop automatically
+Categorical-Categorical,ClaimedComponent,ComponentIdentityEvidenceAvailable,0.702367406191299,CramersV,Strong,Review later; do not drop automatically

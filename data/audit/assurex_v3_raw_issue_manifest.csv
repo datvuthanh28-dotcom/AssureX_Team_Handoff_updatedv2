@@ -1,0 +1,1546 @@
+﻿RecordID,ClaimID,IssueCount,IssueTags
+REC01254,CLM01259,1,missing:WarrantyCardAvailable
+REC01412,CLM00439,0,
+REC01304,CLM01257,2,category_format:WarrantyCardAvailable | missing:ModelNumber
+REC01071,CLM01299,0,
+REC00945,CLM01462,1,missing:Brand
+REC01194,CLM01255,1,missing:ClaimAmount
+REC00971,CLM00080,1,invalid:WarrantyDurationMonths
+REC00234,CLM01360,0,
+REC00218,CLM01020,1,missing:WarrantyCardAvailable
+REC01397,CLM00054,0,
+REC00555,CLM00188,1,invalid:ClaimAmount
+REC00789,CLM00917,0,
+REC00405,CLM00360,0,
+REC00248,CLM00873,0,
+REC-DUP-0016,CLM00428,1,exact_duplicate_of:REC00928
+REC01087,CLM00592,0,
+REC00813,CLM00757,0,
+REC00458,CLM01009,3,category_format:SerialNumberMatch | missing:ReceiptAvailable | missing:RepairReportAvailable
+REC01459,CLM00444,1,missing:PreviousRepairCost
+REC00065,CLM00857,1,missing:ClaimAmount
+REC00514,CLM00987,0,
+REC00632,CLM00664,0,
+REC01421,CLM00339,0,
+REC01155,CLM00569,0,
+REC01480,CLM01117,0,
+REC01497,CLM00085,0,
+REC00316,CLM01209,0,
+REC00732,CLM00609,1,missing:PreviousRepairCost
+REC00058,CLM00489,2,missing:ModelNumber | missing:RepairReportAvailable
+REC00637,CLM00097,0,
+REC00360,CLM01019,0,
+REC00423,CLM00548,2,category_format:ContradictionIndicator | missing:ReceiptAvailable
+REC01147,CLM00425,1,missing:ProductImageAvailable
+REC00376,CLM00414,1,missing:RepairReportAvailable
+REC01212,CLM01355,1,missing:RepairReportAvailable
+REC01386,CLM00107,1,missing:ClaimAmount
+REC00727,CLM00487,1,missing:RepairReportAvailable
+REC00921,CLM00466,2,missing:PreviousRepairCost | missing:ReceiptAvailable
+REC00156,CLM01233,1,missing:ClaimAmount
+REC01237,CLM00829,0,
+REC00685,CLM00647,0,
+REC00668,CLM00902,1,missing:ClaimAmount
+REC01039,CLM00542,0,
+REC-DUP-0030,CLM01277,1,exact_duplicate_of:REC00735
+REC00540,CLM00370,2,missing:Brand | missing:OCRConfidence
+REC00591,CLM00169,2,category_format:ProductImageAvailable | missing:WarrantyCardAvailable
+REC-DUP-0017,CLM01455,1,exact_duplicate_of:REC01387
+REC00166,CLM01424,1,missing:WarrantyCardAvailable
+REC01307,CLM01086,1,missing:PreviousRepairCost
+REC00810,CLM00893,1,missing:ReceiptAvailable
+REC00857,CLM00440,0,
+REC01435,CLM00743,1,category_format:WarrantyCardAvailable
+REC00516,CLM00477,1,missing:PreviousRepairCost
+REC01310,CLM01043,1,category_format:PreviousRepair
+REC01413,CLM00133,1,missing:PreviousRepairCost
+REC01331,CLM01334,0,
+REC00660,CLM00772,2,category_format:WarrantyCardAvailable | missing:RepairReportAvailable
+REC01061,CLM00115,0,
+REC00604,CLM00788,2,missing:FaultEvidenceAvailable | missing:ProductImageAvailable
+REC00894,CLM00190,0,
+REC00259,CLM00197,0,
+REC00414,CLM00302,1,category_format:PreviousReplacement
+REC00239,CLM00726,1,missing:RepairReportAvailable
+REC01143,CLM00462,1,missing:SerialEvidenceAvailable
+REC01172,CLM01109,1,missing:RepairReportAvailable
+REC00929,CLM01210,1,missing:RepairReportAvailable
+REC01185,CLM00714,0,
+REC00569,CLM01051,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC00926,CLM00545,1,missing:OCRConfidence
+REC00621,CLM00616,0,
+REC00005,CLM00119,0,
+REC01208,CLM01481,0,
+REC01496,CLM01011,1,missing:PreviousRepairCost
+REC01416,CLM00289,3,category_format:PreviousReplacement | category_format:ReplacementWithinWarranty | missing:SerialEvidenceAvailable
+REC00891,CLM00022,2,category_format:ReceiptAvailable | missing:FaultEvidenceAvailable
+REC01366,CLM00155,0,
+REC01166,CLM00908,0,
+REC01284,CLM00771,1,missing:WarrantyCardAvailable
+REC00529,CLM00284,1,missing:ReceiptAvailable
+REC00410,CLM00808,0,
+REC00437,CLM00779,3,category_format:ProductImageAvailable | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC01275,CLM01179,1,category_format:ProductModelConsistent
+REC00499,CLM00602,0,
+REC01080,CLM01405,2,category_format:SerialNumberMatch | missing:PreviousRepairCost
+REC01343,CLM00831,1,missing:RepairReportAvailable
+REC-DUP-0033,CLM00531,1,near_duplicate_of:REC00257
+REC00725,CLM00791,2,category_format:DocumentDuplicateIndicator | missing:PreviousRepairCost
+REC01241,CLM01087,0,
+REC01169,CLM00145,1,missing:PreviousRepairCost
+REC00378,CLM01289,0,
+REC01130,CLM01223,3,category_format:ContradictionIndicator | missing:OCRConfidence | missing:RepairReportAvailable
+REC00667,CLM00690,1,missing:ProductImageAvailable
+REC00905,CLM00705,2,missing:FaultEvidenceAvailable | missing:ReceiptAvailable
+REC01411,CLM00687,0,
+REC00106,CLM01419,2,category_format:DocumentDuplicateIndicator | missing:WarrantyCardAvailable
+REC01261,CLM00792,0,
+REC00563,CLM00310,1,missing:FaultEvidenceAvailable
+REC00038,CLM00319,1,missing:PreviousRepairCost
+REC01445,CLM01169,0,
+REC00313,CLM00277,1,missing:Brand
+REC00876,CLM00210,1,missing:FaultEvidenceAvailable
+REC00292,CLM00220,0,
+REC00419,CLM01000,3,invalid:OCRConfidence | invalid:PriorClaimCount | missing:RepairReportAvailable
+REC00834,CLM01267,0,
+REC00274,CLM00139,0,
+REC00327,CLM01308,0,
+REC01375,CLM01329,0,
+REC00993,CLM00752,1,missing:RepairReportAvailable
+REC00061,CLM00014,1,category_format:DuplicateClaimIndicator
+REC01062,CLM00476,0,
+REC01423,CLM00313,1,invalid:OCRConfidence
+REC00839,CLM00308,1,category_format:FaultEvidenceAvailable
+REC00393,CLM01359,0,
+REC00622,CLM01121,0,
+REC00067,CLM00528,1,missing:OCRConfidence
+REC00082,CLM00406,0,
+REC00553,CLM00581,0,
+REC00691,CLM00015,0,
+REC00780,CLM01091,3,category_format:SerialEvidenceAvailable | missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC01490,CLM01097,0,
+REC00988,CLM00832,1,category_format:ReplacementWithinWarranty
+REC00341,CLM00611,2,category_format:ClaimSubmissionChannel | category_format:ProductImageAvailable
+REC00860,CLM00083,1,missing:RepairReportAvailable
+REC01231,CLM00624,1,missing:SerialEvidenceAvailable
+REC00245,CLM01232,1,category_format:Brand
+REC00265,CLM00828,1,missing:RepairReportAvailable
+REC00270,CLM00554,2,category_format:FaultEvidenceAvailable | category_format:ProductModelConsistent
+REC00954,CLM00767,2,category_format:DocumentDuplicateIndicator | category_format:WarrantyCardAvailable
+REC00361,CLM00625,1,missing:ProductImageAvailable
+REC00040,CLM00590,0,
+REC00762,CLM00520,0,
+REC00966,CLM00761,0,
+REC00110,CLM01036,0,
+REC01279,CLM01118,0,
+REC00428,CLM00854,1,missing:ProductImageAvailable
+REC00760,CLM01215,0,
+REC00264,CLM01178,2,category_format:RepairAuthorized | missing:FaultEvidenceAvailable
+REC00722,CLM00711,1,category_format:ClaimSubmissionChannel
+REC00375,CLM00838,0,
+REC00990,CLM00615,0,
+REC00502,CLM00499,2,missing:ClaimAmount | missing:FaultEvidenceAvailable
+REC00049,CLM01326,1,missing:RepairReportAvailable
+REC-DUP-0011,CLM01139,1,exact_duplicate_of:REC01298
+REC01330,CLM01395,1,missing:ProductImageAvailable
+REC00532,CLM00626,1,missing:RepairReportAvailable
+REC00283,CLM00513,2,category_format:ProductModelConsistent | missing:FaultEvidenceAvailable
+REC-DUP-0028,CLM00204,1,exact_duplicate_of:REC00663
+REC00729,CLM00550,0,
+REC00979,CLM00994,2,category_format:DocumentDuplicateIndicator | missing:PreviousRepairCost
+REC00253,CLM01176,0,
+REC01426,CLM00373,0,
+REC01222,CLM01214,1,category_format:DocumentDuplicateIndicator
+REC00720,CLM00212,3,missing:FaultEvidenceAvailable | missing:OCRConfidence | missing:PreviousRepairCost
+REC01499,CLM00830,0,
+REC00124,CLM00653,0,
+REC00366,CLM00693,1,missing:SerialEvidenceAvailable
+REC00956,CLM00836,0,
+REC00383,CLM00855,1,missing:RepairReportAvailable
+REC-DUP-0045,CLM01356,1,near_duplicate_of:REC00187
+REC00775,CLM00095,0,
+REC00395,CLM00935,1,missing:SerialEvidenceAvailable
+REC00231,CLM01104,1,missing:ReceiptAvailable
+REC00071,CLM00648,1,missing:ProductImageAvailable
+REC00680,CLM00116,0,
+REC00755,CLM01283,1,missing:SerialEvidenceAvailable
+REC00447,CLM01410,2,invalid:ClaimAmount | missing:ProductImageAvailable
+REC00073,CLM00971,1,category_format:PreviousRepair
+REC00406,CLM00395,1,missing:WarrantyCardAvailable
+REC00858,CLM00399,0,
+REC00924,CLM00785,0,
+REC00191,CLM01433,0,
+REC00612,CLM01070,2,category_format:ReceiptAvailable | missing:FaultEvidenceAvailable
+REC00320,CLM00396,0,
+REC00533,CLM00818,1,missing:WarrantyCardAvailable
+REC00826,CLM00324,1,missing:FaultEvidenceAvailable
+REC00456,CLM00231,0,
+REC00032,CLM00200,0,
+REC01298,CLM01139,0,
+REC01003,CLM01103,0,
+REC01487,CLM01222,0,
+REC00893,CLM00321,3,invalid:ClaimAmount | missing:ModelNumber | missing:SerialEvidenceAvailable
+REC00790,CLM00065,0,
+REC00572,CLM01174,1,logical_date:FaultBeforePurchase
+REC00258,CLM01380,0,
+REC00279,CLM00279,0,
+REC00431,CLM01384,3,category_format:ContradictionIndicator | invalid_date:FaultDate | missing:PreviousRepairCost
+REC00665,CLM01418,0,
+REC01313,CLM01285,2,category_format:RepairReportAvailable | missing:FaultEvidenceAvailable
+REC00284,CLM00142,0,
+REC00601,CLM01327,1,missing:ProductImageAvailable
+REC00107,CLM01004,0,
+REC00999,CLM00960,1,missing:WarrantyCardAvailable
+REC01437,CLM00746,0,
+REC01082,CLM00297,1,category_format:WarrantyCardAvailable
+REC00519,CLM00918,1,missing:OCRConfidence
+REC00014,CLM01138,1,missing:FaultEvidenceAvailable
+REC01142,CLM01099,1,missing:FaultEvidenceAvailable
+REC00583,CLM00852,1,missing:ModelNumber
+REC01221,CLM00001,0,
+REC01016,CLM00270,1,missing:OCRConfidence
+REC00781,CLM00055,0,
+REC00039,CLM00848,2,category_format:DuplicateClaimIndicator | category_format:ProductModelConsistent
+REC00116,CLM01443,2,category_format:PreviousReplacement | missing:PreviousRepairCost
+REC00521,CLM00871,1,category_format:RepairAuthorized
+REC00800,CLM01125,1,missing:ClaimAmount
+REC00454,CLM00699,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC00791,CLM00325,1,missing:WarrantyCardAvailable
+REC00607,CLM00549,2,missing:FaultEvidenceAvailable | missing:OCRConfidence
+REC01138,CLM00583,3,invalid:RepairCount | missing:ProductImageAvailable | missing:SerialEvidenceAvailable
+REC00703,CLM00265,0,
+REC00435,CLM01075,1,invalid_date:PurchaseDate
+REC01436,CLM00044,1,missing:RepairReportAvailable
+REC00574,CLM01461,0,
+REC00899,CLM01399,1,missing:SerialEvidenceAvailable
+REC00935,CLM01187,1,missing:ReceiptAvailable
+REC00807,CLM01437,1,category_format:FaultEvidenceAvailable
+REC00318,CLM01447,1,category_format:DuplicateClaimIndicator
+REC01350,CLM00723,0,
+REC00507,CLM00530,0,
+REC00975,CLM00076,0,
+REC00168,CLM00684,1,missing:RepairReportAvailable
+REC00774,CLM01106,1,category_format:ExtendedWarranty
+REC01315,CLM00912,0,
+REC01474,CLM01171,0,
+REC00070,CLM01436,0,
+REC00752,CLM00944,1,missing:OCRConfidence
+REC00371,CLM00419,1,missing:RepairReportAvailable
+REC00560,CLM00293,1,missing:Brand
+REC01050,CLM00192,1,category_format:DuplicateClaimIndicator
+REC01209,CLM01226,1,missing:OCRConfidence
+REC00856,CLM01303,0,
+REC00266,CLM00437,1,category_format:DuplicateClaimIndicator
+REC00328,CLM00672,1,missing:PreviousRepairCost
+REC01004,CLM01496,0,
+REC00976,CLM01320,0,
+REC01226,CLM00679,3,invalid:ClaimAmount | missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00262,CLM01477,0,
+REC00200,CLM00430,0,
+REC00045,CLM00422,0,
+REC00090,CLM01115,1,missing:PreviousRepairCost
+REC01197,CLM01318,0,
+REC00083,CLM00254,0,
+REC01044,CLM01271,1,missing:FaultEvidenceAvailable
+REC00287,CLM00161,4,category_format:ClaimSubmissionChannel | missing:PreviousRepairCost | missing:ReceiptAvailable | missing:RepairReportAvailable
+REC-DUP-0012,CLM01241,1,exact_duplicate_of:REC01407
+REC-DUP-0002,CLM01097,1,exact_duplicate_of:REC01490
+REC00568,CLM01044,0,
+REC00827,CLM00077,1,invalid_date:FaultDate
+REC00087,CLM01151,0,
+REC00638,CLM01108,1,missing:ProductImageAvailable
+REC01400,CLM01458,0,
+REC00441,CLM00812,1,missing:RepairReportAvailable
+REC00382,CLM00052,1,missing:WarrantyCardAvailable
+REC-DUP-0032,CLM00520,1,near_duplicate_of:REC00762
+REC00848,CLM01084,0,
+REC00941,CLM00130,1,category_format:PreviousReplacement
+REC00998,CLM00659,2,category_format:ProductModelConsistent | missing:ReceiptAvailable
+REC01173,CLM01021,2,category_format:ClaimSubmissionChannel | missing:ClaimAmount
+REC00815,CLM00762,1,missing:PreviousRepairCost
+REC00961,CLM01240,0,
+REC01063,CLM00110,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00690,CLM00329,2,category_format:SerialNumberMatch | missing:WarrantyCardAvailable
+REC00162,CLM00475,1,category_format:PreviousRepair
+REC00513,CLM01135,0,
+REC01123,CLM00205,1,missing:RepairReportAvailable
+REC01477,CLM00597,0,
+REC00112,CLM00241,0,
+REC-DUP-0013,CLM01400,1,exact_duplicate_of:REC00562
+REC00227,CLM00660,2,category_format:SerialEvidenceAvailable | missing:FaultEvidenceAvailable
+REC00542,CLM01484,1,category_format:DuplicateClaimIndicator
+REC00946,CLM00559,1,missing:FaultEvidenceAvailable
+REC00913,CLM01314,2,missing:FaultEvidenceAvailable | missing:ModelNumber
+REC00969,CLM01371,1,missing:RepairReportAvailable
+REC00663,CLM00204,1,category_format:FaultEvidenceAvailable
+REC01164,CLM00585,0,
+REC00247,CLM00904,1,missing:RepairReportAvailable
+REC00662,CLM00717,0,
+REC01134,CLM00541,0,
+REC00421,CLM00562,0,
+REC00511,CLM01483,1,missing:WarrantyCardAvailable
+REC01227,CLM00567,1,missing:WarrantyCardAvailable
+REC00959,CLM01229,1,missing:ReceiptAvailable
+REC00158,CLM00775,0,
+REC00463,CLM01085,2,category_format:ProductImageAvailable | missing:ReceiptAvailable
+REC00836,CLM01055,2,invalid:ClaimAmount | invalid_date:ClaimDate
+REC00546,CLM01330,0,
+REC01090,CLM00072,1,missing:ProductImageAvailable
+REC01204,CLM00150,1,missing:FaultEvidenceAvailable
+REC00749,CLM01300,0,
+REC00508,CLM00605,2,category_format:ProductModelConsistent | missing:PreviousRepairCost
+REC00418,CLM00841,0,
+REC01103,CLM00952,2,missing:OCRConfidence | missing:ProductImageAvailable
+REC01357,CLM00896,1,category_format:ProductImageAvailable
+REC00635,CLM01069,0,
+REC00838,CLM00642,1,category_format:ContradictionIndicator
+REC-DUP-0044,CLM00740,1,near_duplicate_of:REC01108
+REC01200,CLM01079,1,missing:SerialEvidenceAvailable
+REC00849,CLM01054,1,missing:RepairReportAvailable
+REC00482,CLM00701,1,missing:OCRConfidence
+REC00977,CLM00725,1,missing:WarrantyCardAvailable
+REC01440,CLM01403,2,category_format:ReplacementWithinWarranty | missing:FaultEvidenceAvailable
+REC00445,CLM01261,0,
+REC00121,CLM01404,1,category_format:ExtendedWarranty
+REC00906,CLM00691,2,missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC00111,CLM00353,2,category_format:ReplacementWithinWarranty | missing:OCRConfidence
+REC01240,CLM00006,0,
+REC01464,CLM00923,0,
+REC00883,CLM01315,0,
+REC00559,CLM01144,0,
+REC01354,CLM00088,0,
+REC01238,CLM00441,0,
+REC00997,CLM00025,1,missing:PreviousRepairCost
+REC00829,CLM00446,0,
+REC00477,CLM01061,0,
+REC00503,CLM00317,0,
+REC-DUP-0041,CLM00687,1,near_duplicate_of:REC01411
+REC00450,CLM00287,0,
+REC00174,CLM00719,0,
+REC01017,CLM00003,0,
+REC00794,CLM01013,0,
+REC00879,CLM00820,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC00600,CLM00758,0,
+REC01364,CLM01185,1,missing:ClaimAmount
+REC00436,CLM00564,2,missing:ClaimAmount | missing:OCRConfidence
+REC00009,CLM00876,1,missing:WarrantyCardAvailable
+REC00466,CLM00073,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC01288,CLM00178,1,missing:RepairReportAvailable
+REC00085,CLM00262,0,
+REC00925,CLM01148,3,category_format:Brand | category_format:ReceiptAvailable | missing:RepairReportAvailable
+REC00890,CLM00756,0,
+REC01438,CLM00862,2,missing:ProductImageAvailable | missing:RepairReportAvailable
+REC00094,CLM00622,0,
+REC00022,CLM01170,1,missing:RepairReportAvailable
+REC00674,CLM01485,1,category_format:PreviousReplacement
+REC00109,CLM00628,0,
+REC-DUP-0019,CLM01158,1,exact_duplicate_of:REC00874
+REC01301,CLM00379,2,invalid:PreviousRepairCost | missing:RepairReportAvailable
+REC00536,CLM01088,0,
+REC01033,CLM00966,1,category_format:ReplacementWithinWarranty
+REC00288,CLM00506,0,
+REC00280,CLM00627,1,missing:SerialEvidenceAvailable
+REC00311,CLM00897,0,
+REC00811,CLM00209,2,category_format:PreviousRepair | missing:RepairReportAvailable
+REC01407,CLM01241,1,category_format:SerialNumberMatch
+REC00337,CLM01244,0,
+REC01043,CLM00217,0,
+REC01121,CLM00606,2,invalid:ClaimAmount | missing:SerialEvidenceAvailable
+REC01051,CLM00561,1,missing:ReceiptAvailable
+REC00016,CLM00998,0,
+REC01027,CLM00610,1,category_format:RepairAuthorized
+REC00178,CLM00382,1,missing:RepairReportAvailable
+REC00185,CLM01014,2,missing:PreviousRepairCost | missing:RepairReportAvailable
+REC00050,CLM00589,1,invalid_date:PurchaseDate
+REC01137,CLM00886,1,missing:RepairReportAvailable
+REC00933,CLM01126,1,missing:OCRConfidence
+REC01113,CLM00407,2,missing:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC00932,CLM00778,0,
+REC00017,CLM01034,0,
+REC00835,CLM00593,3,invalid:RepairCount | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC01450,CLM00907,1,missing:WarrantyCardAvailable
+REC00767,CLM01363,0,
+REC01101,CLM01165,0,
+REC01088,CLM00166,3,missing:OCRConfidence | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC01124,CLM00300,0,
+REC00046,CLM01379,0,
+REC00664,CLM01278,0,
+REC01075,CLM01107,0,
+REC00349,CLM00201,3,category_format:DocumentDuplicateIndicator | category_format:SerialEvidenceAvailable | invalid:PriorClaimCount
+REC01255,CLM00905,0,
+REC00036,CLM01199,1,missing:PreviousRepairCost
+REC00012,CLM00421,1,invalid:WarrantyDurationMonths
+REC-DUP-0040,CLM01131,1,near_duplicate_of:REC00566
+REC01290,CLM00304,1,missing:OCRConfidence
+REC00478,CLM00931,1,missing:FaultEvidenceAvailable
+REC01151,CLM00601,2,category_format:Brand | missing:OCRConfidence
+REC01294,CLM00572,1,missing:FaultEvidenceAvailable
+REC00459,CLM01074,1,missing:PreviousRepairCost
+REC01193,CLM00087,0,
+REC00164,CLM01102,1,category_format:Brand
+REC00024,CLM01270,1,missing:RepairReportAvailable
+REC00880,CLM01096,1,missing:ReceiptAvailable
+REC01306,CLM00859,1,category_format:PreviousReplacement
+REC01215,CLM00102,0,
+REC00134,CLM00053,1,category_format:PreviousRepair
+REC00089,CLM00940,2,invalid_date:FaultDate | missing:OCRConfidence
+REC-DUP-0038,CLM00600,1,near_duplicate_of:REC00515
+REC00547,CLM01298,1,missing:ReceiptAvailable
+REC01181,CLM01423,1,missing:FaultEvidenceAvailable
+REC00093,CLM01168,3,category_format:ContradictionIndicator | category_format:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC01073,CLM01213,0,
+REC00236,CLM00674,1,missing:FaultEvidenceAvailable
+REC00075,CLM00180,0,
+REC00537,CLM00517,1,missing:RepairReportAvailable
+REC01199,CLM00884,0,
+REC00896,CLM00575,1,missing:RepairReportAvailable
+REC01422,CLM00745,0,
+REC00145,CLM00547,0,
+REC00910,CLM01381,0,
+REC00981,CLM00082,0,
+REC00844,CLM00389,1,missing:PreviousRepairCost
+REC00068,CLM00420,0,
+REC00291,CLM01046,2,category_format:ProductModelConsistent | missing:WarrantyCardAvailable
+REC00138,CLM01023,1,category_format:RepairAuthorized
+REC00380,CLM00252,1,missing:RepairReportAvailable
+REC00296,CLM01407,1,missing:PreviousRepairCost
+REC01013,CLM01150,0,
+REC00195,CLM01180,0,
+REC00700,CLM00464,1,missing:ClaimAmount
+REC00449,CLM00755,0,
+REC01271,CLM01337,3,invalid_date:FaultDate | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC01045,CLM01472,3,missing:PreviousRepairCost | missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC00008,CLM00704,1,category_format:ProductModelConsistent
+REC00809,CLM00524,0,
+REC00934,CLM00056,1,missing:PreviousRepairCost
+REC-DUP-0009,CLM00726,1,exact_duplicate_of:REC00239
+REC00843,CLM00236,0,
+REC01156,CLM00759,1,missing:OCRConfidence
+REC01171,CLM01189,1,missing:RepairReportAvailable
+REC00183,CLM01152,1,missing:SerialEvidenceAvailable
+REC00710,CLM01306,0,
+REC00914,CLM00434,0,
+REC00517,CLM00500,2,missing:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC01196,CLM01374,0,
+REC00714,CLM00275,1,missing:ProductImageAvailable
+REC00528,CLM01218,0,
+REC00019,CLM01230,0,
+REC-DUP-0043,CLM01292,1,near_duplicate_of:REC00306
+REC00092,CLM01212,2,category_format:Brand | missing:RepairReportAvailable
+REC01370,CLM00417,0,
+REC00987,CLM01411,0,
+REC00978,CLM00333,1,missing:RepairReportAvailable
+REC01213,CLM00338,1,missing:Brand
+REC00878,CLM01201,0,
+REC01457,CLM01409,4,category_format:DocumentDuplicateIndicator | missing:PreviousRepairCost | missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC00968,CLM01110,3,invalid_date:ClaimDate | missing:ModelNumber | missing:WarrantyCardAvailable
+REC00869,CLM00941,1,missing:ReceiptAvailable
+REC-DUP-0027,CLM00688,1,exact_duplicate_of:REC00359
+REC00944,CLM00770,2,missing:FaultEvidenceAvailable | missing:ReceiptAvailable
+REC00386,CLM01390,1,missing:WarrantyCardAvailable
+REC01314,CLM00671,0,
+REC01316,CLM01321,1,missing:SerialEvidenceAvailable
+REC00576,CLM00986,0,
+REC00275,CLM01231,0,
+REC00527,CLM00735,0,
+REC01309,CLM01347,0,
+REC00494,CLM01370,0,
+REC01378,CLM00104,0,
+REC00757,CLM00431,3,missing:RepairReportAvailable | missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC01228,CLM00305,0,
+REC00474,CLM00367,0,
+REC00047,CLM00964,2,category_format:RepairAuthorized | missing:RepairReportAvailable
+REC01267,CLM00458,1,missing:ModelNumber
+REC00464,CLM01095,1,missing:ProductImageAvailable
+REC01165,CLM01428,0,
+REC01439,CLM00137,0,
+REC01368,CLM01275,1,missing:RepairReportAvailable
+REC00626,CLM00295,4,missing:OCRConfidence | missing:ProductImageAvailable | missing:SerialNumber | missing:WarrantyCardAvailable
+REC00385,CLM01434,0,
+REC01174,CLM00228,1,category_format:PreviousRepair
+REC-DUP-0025,CLM00765,1,exact_duplicate_of:REC00485
+REC00581,CLM01348,0,
+REC00113,CLM01497,0,
+REC01104,CLM00322,0,
+REC01475,CLM01467,0,
+REC00420,CLM01250,2,missing:ClaimAmount | missing:PreviousRepairCost
+REC01428,CLM01316,1,missing:RepairReportAvailable
+REC00424,CLM00980,1,missing:ReceiptAvailable
+REC00522,CLM01112,1,category_format:RepairAuthorized
+REC00352,CLM00084,0,
+REC01230,CLM01309,1,category_format:PreviousRepair
+REC00035,CLM01470,0,
+REC00524,CLM00485,2,category_format:PreviousRepair | missing:RepairReportAvailable
+REC00152,CLM00402,0,
+REC01149,CLM01172,2,missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC00870,CLM00934,1,missing:PreviousRepairCost
+REC01081,CLM01254,0,
+REC00367,CLM00271,1,missing:PreviousRepairCost
+REC00196,CLM01420,1,missing:ModelNumber
+REC00433,CLM00921,1,category_format:ProductImageAvailable
+REC00874,CLM01158,0,
+REC01243,CLM00824,1,missing:ModelNumber
+REC01210,CLM00206,1,missing:SerialNumber
+REC00250,CLM00681,0,
+REC00994,CLM00603,0,
+REC00226,CLM01401,0,
+REC00816,CLM01198,2,missing:Brand | missing:ReceiptAvailable
+REC00130,CLM01052,0,
+REC00126,CLM00503,2,missing:ProductImageAvailable | missing:ReceiptAvailable
+REC01498,CLM00929,1,missing:FaultEvidenceAvailable
+REC00538,CLM00885,2,invalid:ClaimAmount | missing:PreviousRepairCost
+REC00344,CLM00251,0,
+REC00364,CLM00870,1,invalid:RepairCount
+REC00353,CLM00945,0,
+REC00098,CLM01364,1,missing:ProductImageAvailable
+REC00773,CLM00096,1,category_format:DuplicateClaimIndicator
+REC00964,CLM01256,1,category_format:ClaimSubmissionChannel
+REC00006,CLM01487,2,category_format:DocumentDuplicateIndicator | category_format:RepairAuthorized
+REC00002,CLM00641,0,
+REC00916,CLM01362,1,missing:WarrantyCardAvailable
+REC01202,CLM01156,0,
+REC00699,CLM00474,0,
+REC00943,CLM00039,0,
+REC01382,CLM01028,1,missing:OCRConfidence
+REC01424,CLM00400,0,
+REC00909,CLM01064,1,missing:RepairReportAvailable
+REC01257,CLM01227,1,category_format:ContradictionIndicator
+REC00373,CLM01276,0,
+REC00492,CLM00105,1,missing:PreviousRepairCost
+REC00671,CLM00378,3,missing:PreviousRepairCost | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC01108,CLM00740,0,
+REC01369,CLM01078,0,
+REC01395,CLM01217,0,
+REC00864,CLM01293,2,missing:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC00957,CLM00978,1,missing:SerialEvidenceAvailable
+REC00655,CLM00949,0,
+REC01488,CLM00794,1,missing:ProductImageAvailable
+REC01276,CLM00892,0,
+REC00995,CLM01414,4,category_format:ReplacementWithinWarranty | category_format:WarrantyCardAvailable | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00534,CLM00035,0,
+REC00917,CLM00943,1,invalid:RepairCount
+REC00564,CLM01204,0,
+REC01471,CLM00919,0,
+REC00602,CLM00013,0,
+REC00509,CLM00461,0,
+REC00230,CLM00676,1,missing:PreviousRepairCost
+REC00750,CLM00135,1,invalid:ClaimAmount
+REC00618,CLM00844,3,category_format:DuplicateClaimIndicator | category_format:ReceiptAvailable | missing:FaultEvidenceAvailable
+REC00290,CLM00369,1,missing:SerialNumber
+REC01312,CLM01149,1,missing:WarrantyCardAvailable
+REC-DUP-0008,CLM00583,1,exact_duplicate_of:REC01138
+REC00772,CLM01335,0,
+REC00330,CLM00246,2,missing:ProductImageAvailable | missing:SerialEvidenceAvailable
+REC00598,CLM00122,0,
+REC00530,CLM00156,0,
+REC01345,CLM00219,0,
+REC01048,CLM00849,3,invalid_date:PurchaseDate | missing:ProductImageAvailable | missing:RepairReportAvailable
+REC00272,CLM00977,2,category_format:ExtendedWarranty | missing:PreviousRepairCost
+REC00149,CLM00574,0,
+REC00980,CLM00920,1,missing:ReceiptAvailable
+REC01449,CLM00936,1,missing:ProductImageAvailable
+REC00173,CLM00359,0,
+REC01333,CLM01193,0,
+REC00135,CLM00330,0,
+REC-DUP-0015,CLM00565,1,exact_duplicate_of:REC00771
+REC00825,CLM00183,0,
+REC00936,CLM01007,1,missing:ProductImageAvailable
+REC01383,CLM00638,0,
+REC01126,CLM01493,0,
+REC01158,CLM00502,0,
+REC00396,CLM00682,2,category_format:SerialNumberMatch | missing:RepairReportAvailable
+REC00670,CLM00837,0,
+REC00095,CLM01001,1,logical_date:FaultBeforePurchase
+REC00358,CLM01307,1,missing:RepairReportAvailable
+REC01278,CLM00397,0,
+REC-DUP-0006,CLM00402,1,exact_duplicate_of:REC00152
+REC01064,CLM00450,2,category_format:SerialNumberMatch | missing:RepairReportAvailable
+REC00310,CLM00703,0,
+REC00854,CLM00988,0,
+REC00325,CLM00817,0,
+REC00740,CLM00888,1,category_format:RepairReportAvailable
+REC-DUP-0021,CLM01100,1,exact_duplicate_of:REC00355
+REC01485,CLM00938,1,category_format:ExtendedWarranty
+REC00381,CLM01387,1,missing:FaultEvidenceAvailable
+REC00484,CLM00423,2,category_format:ProductImageAvailable | missing:FaultEvidenceAvailable
+REC00504,CLM00742,1,missing:WarrantyCardAvailable
+REC00970,CLM01341,1,missing:OCRConfidence
+REC00892,CLM01412,2,category_format:WarrantyCardAvailable | missing:SerialEvidenceAvailable
+REC01479,CLM00046,1,missing:SerialEvidenceAvailable
+REC00862,CLM00186,1,missing:ReceiptAvailable
+REC01153,CLM00026,0,
+REC00819,CLM01005,0,
+REC00619,CLM00376,1,missing:ProductImageAvailable
+REC00853,CLM01190,0,
+REC00127,CLM00933,2,missing:PreviousRepairCost | missing:SerialEvidenceAvailable
+REC01008,CLM00501,0,
+REC01431,CLM00283,0,
+REC00198,CLM00937,1,missing:RepairReportAvailable
+REC00726,CLM00218,0,
+REC00902,CLM01361,2,category_format:DocumentDuplicateIndicator | missing:FaultEvidenceAvailable
+REC00721,CLM00872,1,missing:ClaimAmount
+REC01148,CLM00335,0,
+REC01484,CLM00272,0,
+REC01078,CLM00552,1,missing:PreviousRepairCost
+REC00951,CLM01143,2,category_format:FaultEvidenceAvailable | missing:ProductImageAvailable
+REC00169,CLM01050,2,category_format:RepairReportAvailable | missing:ProductImageAvailable
+REC01446,CLM01188,2,invalid:PreviousRepairCost | missing:RepairReportAvailable
+REC00475,CLM01032,2,category_format:PreviousRepair | category_format:ProductCategory
+REC01178,CLM01012,1,missing:RepairReportAvailable
+REC00186,CLM00860,0,
+REC00577,CLM00596,0,
+REC01239,CLM01197,0,
+REC01065,CLM01157,1,category_format:PreviousRepair
+REC00211,CLM00591,1,missing:OCRConfidence
+REC00010,CLM00652,1,missing:OCRConfidence
+REC00237,CLM01494,2,logical_date:FaultBeforePurchase | missing:OCRConfidence
+REC01318,CLM00880,0,
+REC00220,CLM00869,0,
+REC01389,CLM01465,0,
+REC01352,CLM01246,1,category_format:ClaimSubmissionChannel
+REC00335,CLM00675,2,missing:ReceiptAvailable | missing:SerialEvidenceAvailable
+REC01493,CLM00643,1,missing:SerialEvidenceAvailable
+REC00171,CLM00867,2,category_format:ReceiptAvailable | missing:PreviousRepairCost
+REC01291,CLM00131,3,category_format:Brand | category_format:ReceiptAvailable | missing:RepairReportAvailable
+REC00444,CLM00368,5,category_format:ProductImageAvailable | category_format:SerialNumberMatch | invalid:PreviousRepairCost | missing:Brand | missing:FaultEvidenceAvailable
+REC00332,CLM00062,0,
+REC00136,CLM00470,3,category_format:ProductImageAvailable | invalid:OCRConfidence | missing:RepairReportAvailable
+REC00302,CLM00713,0,
+REC-DUP-0018,CLM00040,1,exact_duplicate_of:REC01390
+REC00940,CLM00760,1,missing:ReceiptAvailable
+REC01399,CLM00023,0,
+REC00102,CLM00443,1,category_format:DuplicateClaimIndicator
+REC-DUP-0024,CLM01345,1,exact_duplicate_of:REC01018
+REC01211,CLM01354,2,category_format:DocumentDuplicateIndicator | missing:ProductImageAvailable
+REC00189,CLM00364,2,missing:Brand | missing:RepairReportAvailable
+REC00400,CLM01166,1,missing:ReceiptAvailable
+REC00243,CLM00164,2,category_format:FaultEvidenceAvailable | invalid:OCRConfidence
+REC00299,CLM00685,1,invalid:OCRConfidence
+REC01086,CLM00416,0,
+REC01105,CLM01245,1,missing:OCRConfidence
+REC00473,CLM00079,0,
+REC00823,CLM00510,0,
+REC01339,CLM01274,1,category_format:RepairAuthorized
+REC00157,CLM00780,1,missing:FaultEvidenceAvailable
+REC00747,CLM00146,0,
+REC01084,CLM00348,0,
+REC00938,CLM00766,1,missing:RepairReportAvailable
+REC01396,CLM00185,0,
+REC01326,CLM00203,1,category_format:PreviousRepair
+REC00479,CLM00789,0,
+REC01223,CLM01258,4,invalid_date:PurchaseDate | missing:ProductImageAvailable | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00498,CLM01490,1,missing:PreviousRepairCost
+REC01049,CLM00418,0,
+REC00059,CLM00634,2,category_format:DuplicateClaimIndicator | missing:SerialEvidenceAvailable
+REC00359,CLM00688,1,missing:ProductImageAvailable
+REC00678,CLM01426,2,missing:ReceiptAvailable | missing:RepairReportAvailable
+REC01434,CLM00349,0,
+REC00255,CLM01287,1,missing:WarrantyCardAvailable
+REC00736,CLM00266,1,missing:ModelNumber
+REC00617,CLM00451,1,invalid:OCRConfidence
+REC00357,CLM01161,1,category_format:Brand
+REC00518,CLM00776,1,missing:FaultEvidenceAvailable
+REC01460,CLM00211,0,
+REC01337,CLM01105,0,
+REC00232,CLM00805,0,
+REC00379,CLM00296,1,missing:FaultEvidenceAvailable
+REC00235,CLM00697,1,missing:ModelNumber
+REC01289,CLM00093,0,
+REC00119,CLM00267,2,category_format:FaultEvidenceAvailable | invalid:PriorClaimCount
+REC-DUP-0035,CLM00709,1,near_duplicate_of:REC00645
+REC00851,CLM00505,0,
+REC00974,CLM00047,1,missing:RepairReportAvailable
+REC00847,CLM01127,0,
+REC00931,CLM01478,2,category_format:Brand | category_format:FaultEvidenceAvailable
+REC01009,CLM00807,0,
+REC00705,CLM00696,1,missing:ReceiptAvailable
+REC01131,CLM00927,1,category_format:ReplacementWithinWarranty
+REC00471,CLM00842,1,missing:SerialEvidenceAvailable
+REC00204,CLM00196,0,
+REC00950,CLM01408,0,
+REC00640,CLM01155,1,missing:RepairReportAvailable
+REC00735,CLM01277,1,missing:FaultEvidenceAvailable
+REC01216,CLM00741,0,
+REC00238,CLM00996,1,missing:SerialEvidenceAvailable
+REC01030,CLM00786,2,category_format:SerialNumberMatch | missing:RepairReportAvailable
+REC00167,CLM00092,1,missing:Brand
+REC00631,CLM00273,1,category_format:SerialEvidenceAvailable
+REC00696,CLM01111,4,missing:Brand | missing:OCRConfidence | missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC01127,CLM00947,0,
+REC01079,CLM00508,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC01394,CLM01297,1,missing:OCRConfidence
+REC00820,CLM00706,1,invalid:OCRConfidence
+REC00628,CLM01093,0,
+REC00430,CLM00086,1,missing:ReceiptAvailable
+REC00489,CLM00148,1,missing:RepairReportAvailable
+REC00223,CLM00299,0,
+REC00434,CLM01177,0,
+REC01500,CLM00990,0,
+REC00408,CLM00327,0,
+REC01473,CLM00260,2,invalid_date:PurchaseDate | missing:SerialEvidenceAvailable
+REC00453,CLM00801,0,
+REC00182,CLM00813,1,category_format:ContradictionIndicator
+REC01334,CLM00663,1,missing:WarrantyCardAvailable
+REC00319,CLM00064,0,
+REC00122,CLM01253,0,
+REC00785,CLM00250,1,missing:WarrantyCardAvailable
+REC00285,CLM00612,1,category_format:RepairReportAvailable
+REC00805,CLM00177,2,category_format:ProductCategory | missing:WarrantyCardAvailable
+REC01145,CLM00898,0,
+REC01414,CLM00798,2,category_format:ReplacementWithinWarranty | invalid:WarrantyDurationMonths
+REC00647,CLM00255,0,
+REC01328,CLM00496,1,missing:FaultEvidenceAvailable
+REC01042,CLM00074,1,missing:RepairReportAvailable
+REC00803,CLM00027,0,
+REC00476,CLM00734,3,invalid:PriorClaimCount | missing:ReceiptAvailable | missing:RepairReportAvailable
+REC00923,CLM01113,4,category_format:ExtendedWarranty | invalid:RepairCount | missing:ClaimAmount | missing:RepairReportAvailable
+REC01444,CLM01273,1,missing:WarrantyCardAvailable
+REC00496,CLM00316,1,missing:FaultEvidenceAvailable
+REC01040,CLM01325,0,
+REC00639,CLM00237,0,
+REC00043,CLM00913,1,missing:ClaimAmount
+REC00483,CLM00529,1,missing:RepairReportAvailable
+REC00151,CLM01398,0,
+REC00118,CLM00582,1,missing:Brand
+REC00657,CLM00787,0,
+REC01235,CLM00098,1,missing:WarrantyCardAvailable
+REC00927,CLM01350,2,category_format:DocumentDuplicateIndicator | invalid:ClaimAmount
+REC01091,CLM00037,0,
+REC00117,CLM00301,0,
+REC01365,CLM01268,1,invalid:ClaimAmount
+REC01494,CLM00879,0,
+REC00432,CLM00050,0,
+REC01447,CLM00232,1,missing:FaultEvidenceAvailable
+REC00712,CLM01175,5,category_format:ClaimSubmissionChannel | category_format:SerialEvidenceAvailable | missing:FaultEvidenceAvailable | missing:OCRConfidence | missing:WarrantyCardAvailable
+REC00051,CLM00479,1,missing:SerialEvidenceAvailable
+REC01096,CLM01134,0,
+REC00824,CLM00968,2,missing:Brand | missing:RepairReportAvailable
+REC00756,CLM01002,3,category_format:ClaimSubmissionChannel | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00744,CLM00005,2,missing:FaultEvidenceAvailable | missing:OCRConfidence
+REC00717,CLM00809,0,
+REC00416,CLM00264,0,
+REC00148,CLM00170,0,
+REC01321,CLM00394,1,missing:ProductImageAvailable
+REC01198,CLM00967,0,
+REC00575,CLM00482,0,
+REC00922,CLM01311,0,
+REC01201,CLM01351,1,category_format:ClaimSubmissionChannel
+REC00695,CLM00032,0,
+REC00646,CLM00509,1,missing:RepairReportAvailable
+REC01283,CLM00303,2,missing:ReceiptAvailable | missing:WarrantyCardAvailable
+REC00021,CLM00011,3,category_format:DocumentDuplicateIndicator | category_format:ReplacementWithinWarranty | missing:FaultEvidenceAvailable
+REC01358,CLM00962,0,
+REC00384,CLM00497,0,
+REC00273,CLM01080,1,missing:OCRConfidence
+REC00390,CLM00850,2,category_format:DuplicateClaimIndicator | invalid_date:FaultDate
+REC00305,CLM00599,0,
+REC01456,CLM00662,0,
+REC01140,CLM01448,2,category_format:ProductCategory | missing:OCRConfidence
+REC00850,CLM00061,1,missing:WarrantyCardAvailable
+REC00063,CLM00112,0,
+REC-DUP-0042,CLM00442,1,near_duplicate_of:REC00865
+REC00412,CLM00030,1,missing:WarrantyCardAvailable
+REC00570,CLM00342,1,missing:PreviousRepairCost
+REC00609,CLM01003,2,category_format:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00452,CLM01396,4,category_format:ProductModelConsistent | category_format:SerialNumberMatch | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC00984,CLM00665,3,category_format:ClaimSubmissionChannel | missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC01253,CLM00140,2,category_format:ProductCategory | category_format:WarrantyCardAvailable
+REC00793,CLM01191,1,missing:FaultEvidenceAvailable
+REC00340,CLM00579,0,
+REC00076,CLM00576,0,
+REC00550,CLM00866,0,
+REC01247,CLM01098,2,missing:PreviousRepairCost | missing:RepairReportAvailable
+REC00362,CLM01053,1,category_format:ContradictionIndicator
+REC00263,CLM00043,2,category_format:SerialNumberMatch | missing:WarrantyCardAvailable
+REC00007,CLM01290,2,missing:ReceiptAvailable | missing:WarrantyCardAvailable
+REC00985,CLM01249,1,missing:ClaimAmount
+REC00677,CLM00059,1,missing:RepairReportAvailable
+REC00457,CLM00294,1,invalid:ClaimAmount
+REC00837,CLM00733,1,category_format:FaultEvidenceAvailable
+REC00052,CLM00514,0,
+REC01219,CLM01065,0,
+REC01467,CLM01129,2,category_format:WarrantyCardAvailable | missing:ModelNumber
+REC-DUP-0022,CLM00498,1,exact_duplicate_of:REC00188
+REC00551,CLM00274,1,category_format:PreviousRepair
+REC01100,CLM01454,0,
+REC01034,CLM00948,0,
+REC00165,CLM00100,1,missing:FaultEvidenceAvailable
+REC01373,CLM00010,2,category_format:ClaimSubmissionChannel | category_format:ContradictionIndicator
+REC00711,CLM00577,1,missing:SerialEvidenceAvailable
+REC00221,CLM01173,0,
+REC00723,CLM00106,0,
+REC00708,CLM01389,0,
+REC01342,CLM00720,2,missing:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC00003,CLM01432,0,
+REC00949,CLM00153,2,category_format:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00030,CLM00362,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC00309,CLM00181,0,
+REC01419,CLM01265,1,missing:WarrantyCardAvailable
+REC01028,CLM00658,0,
+REC00286,CLM01452,1,missing:SerialEvidenceAvailable
+REC00769,CLM00473,2,logical_date:FaultBeforePurchase | missing:FaultEvidenceAvailable
+REC01483,CLM00341,2,category_format:ReceiptAvailable | missing:PreviousRepairCost
+REC00188,CLM00498,2,category_format:DocumentDuplicateIndicator | missing:FaultEvidenceAvailable
+REC00301,CLM01486,0,
+REC01461,CLM00109,1,category_format:FaultEvidenceAvailable
+REC01367,CLM01280,0,
+REC01432,CLM01183,0,
+REC-DUP-0001,CLM00116,1,exact_duplicate_of:REC00680
+REC01448,CLM01211,3,missing:FaultEvidenceAvailable | missing:PreviousRepairCost | missing:SerialEvidenceAvailable
+REC00461,CLM01142,1,missing:ReceiptAvailable
+REC00346,CLM01162,1,category_format:ProductModelConsistent
+REC00020,CLM01296,2,missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC01032,CLM00460,5,category_format:ClaimSubmissionChannel | category_format:WarrantyCardAvailable | invalid:PreviousRepairCost | missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00666,CLM00632,1,category_format:Brand
+REC00054,CLM01471,2,missing:FaultEvidenceAvailable | missing:ReceiptAvailable
+REC00948,CLM00392,0,
+REC01293,CLM00635,2,category_format:ClaimSubmissionChannel | missing:PreviousRepairCost
+REC00451,CLM00463,2,category_format:ProductCategory | missing:SerialEvidenceAvailable
+REC00683,CLM01082,0,
+REC00170,CLM00151,0,
+REC00469,CLM00067,2,category_format:ProductModelConsistent | missing:FaultEvidenceAvailable
+REC00840,CLM00739,0,
+REC00104,CLM01457,0,
+REC00137,CLM01216,0,
+REC01362,CLM00748,0,
+REC01295,CLM00523,0,
+REC00960,CLM00031,0,
+REC00603,CLM01353,2,category_format:WarrantyCardAvailable | missing:PreviousRepairCost
+REC00187,CLM01356,0,
+REC00429,CLM01322,0,
+REC01163,CLM00555,1,missing:SerialEvidenceAvailable
+REC00939,CLM00388,0,
+REC00821,CLM00666,0,
+REC01229,CLM01137,0,
+REC00738,CLM00544,1,missing:PreviousRepairCost
+REC00654,CLM00051,0,
+REC00842,CLM00012,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC01046,CLM00323,2,missing:Brand | missing:PreviousRepairCost
+REC00658,CLM00909,1,missing:FaultEvidenceAvailable
+REC00470,CLM00288,1,missing:PreviousRepairCost
+REC00501,CLM00712,0,
+REC00588,CLM00286,0,
+REC00300,CLM00213,0,
+REC00525,CLM00004,1,invalid:WarrantyDurationMonths
+REC01251,CLM00242,2,category_format:DuplicateClaimIndicator | missing:OCRConfidence
+REC01469,CLM00915,2,invalid_date:ClaimDate | missing:ReceiptAvailable
+REC00751,CLM00594,1,missing:OCRConfidence
+REC00160,CLM00409,0,
+REC00587,CLM01042,0,
+REC00786,CLM01066,1,missing:WarrantyCardAvailable
+REC00616,CLM00410,1,category_format:ProductImageAvailable
+REC01470,CLM00132,1,missing:WarrantyCardAvailable
+REC01057,CLM00118,1,missing:ProductImageAvailable
+REC01344,CLM00008,2,missing:ClaimAmount | missing:ProductImageAvailable
+REC00903,CLM00249,5,category_format:ProductModelConsistent | missing:FaultEvidenceAvailable | missing:OCRConfidence | missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC00427,CLM01376,0,
+REC00468,CLM00380,0,
+REC00142,CLM00224,1,missing:RepairReportAvailable
+REC00599,CLM00311,2,missing:OCRConfidence | missing:WarrantyCardAvailable
+REC00397,CLM00386,0,
+REC00615,CLM00680,1,missing:ModelNumber
+REC00267,CLM01092,2,invalid:PriorClaimCount | missing:OCRConfidence
+REC01074,CLM00683,0,
+REC00490,CLM00750,0,
+REC00698,CLM00068,1,category_format:ProductImageAvailable
+REC00072,CLM00668,0,
+REC00741,CLM01500,1,missing:OCRConfidence
+REC01282,CLM00478,3,missing:PreviousRepairCost | missing:ReceiptAvailable | missing:RepairReportAvailable
+REC00562,CLM01400,1,missing:FaultEvidenceAvailable
+REC00625,CLM00041,0,
+REC00154,CLM01221,2,invalid_date:PurchaseDate | missing:ClaimAmount
+REC00018,CLM00347,0,
+REC00048,CLM01008,0,
+REC00460,CLM01041,0,
+REC00155,CLM00383,0,
+REC00915,CLM01262,1,category_format:ProductModelConsistent
+REC01154,CLM00328,0,
+REC00579,CLM00694,0,
+REC00212,CLM00747,0,
+REC01425,CLM01302,1,category_format:SerialNumberMatch
+REC00413,CLM00427,2,missing:OCRConfidence | missing:SerialEvidenceAvailable
+REC00339,CLM00143,2,missing:ProductImageAvailable | missing:RepairReportAvailable
+REC01015,CLM00689,0,
+REC00465,CLM01386,1,missing:FaultEvidenceAvailable
+REC01038,CLM00042,0,
+REC01388,CLM00584,0,
+REC00573,CLM00256,1,category_format:ExtendedWarranty
+REC00440,CLM00214,0,
+REC01406,CLM01284,0,
+REC00079,CLM01068,1,category_format:DocumentDuplicateIndicator
+REC01218,CLM01495,0,
+REC01285,CLM00336,0,
+REC00312,CLM00222,0,
+REC00585,CLM00175,2,missing:OCRConfidence | missing:RepairReportAvailable
+REC00701,CLM00891,0,
+REC00233,CLM00878,0,
+REC00920,CLM00238,0,
+REC00179,CLM00773,0,
+REC00630,CLM01450,1,category_format:ContradictionIndicator
+REC01256,CLM01368,1,missing:WarrantyCardAvailable
+REC00398,CLM00764,0,
+REC01453,CLM01375,0,
+REC00911,CLM00472,2,missing:ClaimAmount | missing:ModelNumber
+REC00064,CLM00732,1,missing:ProductImageAvailable
+REC00181,CLM00193,0,
+REC01264,CLM01206,0,
+REC01133,CLM00889,1,missing:ProductImageAvailable
+REC00900,CLM00452,0,
+REC00308,CLM00233,0,
+REC00276,CLM00650,2,category_format:ProductCategory | missing:SerialEvidenceAvailable
+REC01068,CLM01060,0,
+REC00578,CLM00291,1,missing:SerialEvidenceAvailable
+REC00610,CLM00152,1,category_format:ReplacementWithinWarranty
+REC00214,CLM00125,0,
+REC00543,CLM01247,2,category_format:DuplicateClaimIndicator | missing:FaultEvidenceAvailable
+REC00882,CLM00637,1,missing:PreviousRepairCost
+REC00863,CLM01357,1,category_format:ProductCategory
+REC00377,CLM01235,0,
+REC00867,CLM01286,1,missing:WarrantyCardAvailable
+REC00947,CLM00957,0,
+REC01161,CLM00465,1,missing:WarrantyCardAvailable
+REC01329,CLM01089,0,
+REC00394,CLM01453,1,missing:FaultEvidenceAvailable
+REC01191,CLM00537,1,missing:ProductImageAvailable
+REC00641,CLM00814,0,
+REC01481,CLM00057,2,category_format:WarrantyCardAvailable | missing:ModelNumber
+REC01466,CLM01147,1,category_format:DuplicateClaimIndicator
+REC01244,CLM01202,1,category_format:ReceiptAvailable
+REC00828,CLM01015,1,missing:PreviousRepairCost
+REC00919,CLM01205,0,
+REC00887,CLM00678,1,missing:ReceiptAvailable
+REC00719,CLM01035,0,
+REC00846,CLM00881,0,
+REC00709,CLM00307,1,missing:ReceiptAvailable
+REC01077,CLM00488,1,missing:ReceiptAvailable
+REC00580,CLM00586,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC01347,CLM00539,0,
+REC00281,CLM00901,1,missing:WarrantyCardAvailable
+REC00597,CLM00445,1,missing:SerialEvidenceAvailable
+REC01097,CLM00511,1,missing:SerialNumber
+REC01384,CLM01498,1,category_format:ProductModelConsistent
+REC00120,CLM00381,1,missing:FaultEvidenceAvailable
+REC01348,CLM01059,1,missing:ClaimAmount
+REC01277,CLM01124,0,
+REC00855,CLM01317,0,
+REC01305,CLM01391,0,
+REC00986,CLM01234,1,missing:ProductImageAvailable
+REC00044,CLM00979,0,
+REC01269,CLM01027,0,
+REC01111,CLM01159,1,missing:PreviousRepairCost
+REC00761,CLM00259,1,category_format:ReplacementWithinWarranty
+REC01110,CLM01312,1,missing:FaultEvidenceAvailable
+REC00548,CLM01394,1,missing:PreviousRepairCost
+REC01067,CLM00910,2,missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC00331,CLM00961,1,missing:ReceiptAvailable
+REC01059,CLM01358,0,
+REC00557,CLM01439,0,
+REC00895,CLM00804,1,missing:RepairReportAvailable
+REC00426,CLM00781,0,
+REC00982,CLM01196,1,missing:RepairReportAvailable
+REC01338,CLM01435,0,
+REC00493,CLM01073,1,missing:RepairReportAvailable
+REC00676,CLM00282,1,missing:ProductImageAvailable
+REC01024,CLM00018,0,
+REC00942,CLM01473,0,
+REC01325,CLM01119,1,category_format:ReceiptAvailable
+REC00754,CLM01372,1,missing:FaultEvidenceAvailable
+REC00401,CLM00631,1,missing:RepairReportAvailable
+REC00881,CLM00727,0,
+REC01177,CLM00525,0,
+REC00866,CLM01133,0,
+REC00582,CLM00415,1,missing:SerialEvidenceAvailable
+REC00031,CLM01154,1,missing:SerialEvidenceAvailable
+REC01351,CLM00066,1,missing:SerialEvidenceAvailable
+REC00806,CLM00655,2,category_format:ReceiptAvailable | missing:WarrantyCardAvailable
+REC00161,CLM00101,0,
+REC00026,CLM00493,1,missing:FaultEvidenceAvailable
+REC00345,CLM00184,0,
+REC00779,CLM00024,1,missing:SerialEvidenceAvailable
+REC01167,CLM00669,1,missing:WarrantyCardAvailable
+REC00784,CLM00171,0,
+REC00510,CLM01382,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC01417,CLM01228,0,
+REC01092,CLM01464,0,
+REC00409,CLM01130,0,
+REC01341,CLM00486,0,
+REC00069,CLM01040,0,
+REC00150,CLM01022,0,
+REC-DUP-0004,CLM01456,1,exact_duplicate_of:REC00526
+REC00228,CLM00856,0,
+REC00539,CLM00248,0,
+REC01336,CLM00698,1,category_format:DocumentDuplicateIndicator
+REC00804,CLM00645,0,
+REC01114,CLM00737,1,missing:FaultEvidenceAvailable
+REC00370,CLM00527,0,
+REC01429,CLM00607,0,
+REC00648,CLM01272,0,
+REC00254,CLM00069,2,category_format:PreviousReplacement | invalid:OCRConfidence
+REC00679,CLM00314,0,
+REC00589,CLM01492,0,
+REC00918,CLM01417,0,
+REC01323,CLM00182,0,
+REC01207,CLM00411,1,category_format:ProductImageAvailable
+REC01377,CLM01071,0,
+REC00297,CLM00136,1,invalid:PreviousRepairCost
+REC01463,CLM00851,1,invalid_date:ClaimDate
+REC00872,CLM00468,0,
+REC00832,CLM00351,0,
+REC01451,CLM00954,2,invalid:OCRConfidence | missing:RepairReportAvailable
+REC00871,CLM01392,0,
+REC00830,CLM00401,1,missing:FaultEvidenceAvailable
+REC01405,CLM01488,0,
+REC00788,CLM01260,1,missing:ModelNumber
+REC01303,CLM01385,0,
+REC01047,CLM00521,0,
+REC00355,CLM01100,0,
+REC01287,CLM00793,1,invalid:PreviousRepairCost
+REC00193,CLM01194,2,category_format:ProductCategory | missing:ProductImageAvailable
+REC00315,CLM00782,0,
+REC01168,CLM00375,1,category_format:SerialEvidenceAvailable
+REC00015,CLM01343,1,missing:RepairReportAvailable
+REC00526,CLM01456,0,
+REC01139,CLM00702,1,missing:WarrantyCardAvailable
+REC00669,CLM01430,0,
+REC00080,CLM00371,1,missing:PreviousRepairCost
+REC00653,CLM00795,0,
+REC01162,CLM01094,1,category_format:SerialNumberMatch
+REC00304,CLM00728,0,
+REC01359,CLM00438,1,category_format:FaultEvidenceAvailable
+REC00203,CLM01474,0,
+REC00907,CLM00433,2,category_format:Brand | missing:ReceiptAvailable
+REC00650,CLM00816,0,
+REC01187,CLM00823,1,missing:RepairReportAvailable
+REC00105,CLM00519,0,
+REC00391,CLM00700,3,category_format:DocumentDuplicateIndicator | missing:OCRConfidence | missing:WarrantyCardAvailable
+REC00001,CLM00344,1,missing:WarrantyCardAvailable
+REC01157,CLM01049,1,category_format:DuplicateClaimIndicator
+REC00487,CLM00467,1,category_format:FaultEvidenceAvailable
+REC00535,CLM00343,0,
+REC00078,CLM00091,1,missing:RepairReportAvailable
+REC01234,CLM01373,1,missing:RepairReportAvailable
+REC01372,CLM00320,1,category_format:FaultEvidenceAvailable
+REC01491,CLM00976,2,missing:FaultEvidenceAvailable | missing:ReceiptAvailable
+REC00770,CLM00276,1,missing:WarrantyCardAvailable
+REC00056,CLM00618,0,
+REC00889,CLM00424,0,
+REC01392,CLM00989,1,missing:RepairReportAvailable
+REC-DUP-0034,CLM01150,1,near_duplicate_of:REC01013
+REC01356,CLM00194,0,
+REC01393,CLM00651,0,
+REC00688,CLM00138,1,missing:RepairReportAvailable
+REC00207,CLM01466,0,
+REC01248,CLM00387,2,category_format:SerialEvidenceAvailable | missing:OCRConfidence
+REC00334,CLM00546,0,
+REC01452,CLM00946,0,
+REC00103,CLM00221,0,
+REC00443,CLM00621,1,missing:OCRConfidence
+REC01302,CLM00673,0,
+REC00256,CLM00127,0,
+REC01274,CLM00983,0,
+REC01160,CLM01459,1,category_format:ContradictionIndicator
+REC01260,CLM01029,0,
+REC01089,CLM00882,0,
+REC00861,CLM00963,1,missing:FaultEvidenceAvailable
+REC01387,CLM01455,0,
+REC01002,CLM01136,1,category_format:PreviousReplacement
+REC00822,CLM00504,0,
+REC00520,CLM00484,4,category_format:PreviousRepair | missing:Brand | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC00422,CLM00075,0,
+REC01296,CLM00229,1,missing:ReceiptAvailable
+REC00269,CLM00124,3,invalid:PreviousRepairCost | missing:ClaimAmount | missing:OCRConfidence
+REC00215,CLM01186,0,
+REC01319,CLM00158,1,category_format:ProductModelConsistent
+REC01322,CLM01164,1,category_format:ProductCategory
+REC00303,CLM00366,0,
+REC00074,CLM00365,1,missing:SerialEvidenceAvailable
+REC00271,CLM01123,0,
+REC00571,CLM00326,1,missing:SerialEvidenceAvailable
+REC00229,CLM00903,1,category_format:ContradictionIndicator
+REC00251,CLM00456,2,missing:ClaimAmount | missing:PreviousRepairCost
+REC00606,CLM00810,1,missing:Brand
+REC01022,CLM01344,0,
+REC00777,CLM00538,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC00558,CLM01128,0,
+REC00480,CLM01352,1,missing:SerialEvidenceAvailable
+REC00873,CLM00914,0,
+REC00368,CLM01449,1,missing:RepairReportAvailable
+REC00184,CLM00309,1,missing:RepairReportAvailable
+REC01083,CLM00247,0,
+REC-DUP-0014,CLM01041,1,exact_duplicate_of:REC00460
+REC01273,CLM00491,2,missing:ReceiptAvailable | missing:SerialEvidenceAvailable
+REC01327,CLM01323,0,
+REC00737,CLM00492,1,missing:FaultEvidenceAvailable
+REC01258,CLM00932,0,
+REC00177,CLM00534,0,
+REC01058,CLM01242,0,
+REC01266,CLM00835,0,
+REC01129,CLM01304,1,missing:ClaimAmount
+REC00505,CLM01431,2,category_format:ExtendedWarranty | category_format:ProductCategory
+REC00392,CLM00724,1,missing:RepairReportAvailable
+REC01107,CLM01269,1,missing:ProductImageAvailable
+REC01069,CLM01026,0,
+REC00206,CLM01378,0,
+REC00768,CLM00227,1,missing:WarrantyCardAvailable
+REC01265,CLM00692,2,category_format:FaultEvidenceAvailable | missing:PreviousRepairCost
+REC01486,CLM00783,2,missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC00348,CLM00384,1,category_format:RepairAuthorized
+REC01376,CLM00436,2,category_format:ProductImageAvailable | missing:WarrantyCardAvailable
+REC00782,CLM00253,0,
+REC00716,CLM00825,0,
+REC00877,CLM00953,2,category_format:ClaimSubmissionChannel | missing:WarrantyCardAvailable
+REC00730,CLM00404,3,category_format:DuplicateClaimIndicator | missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC00329,CLM01339,0,
+REC00778,CLM00292,1,missing:PreviousRepairCost
+REC01249,CLM00958,1,missing:PreviousRepairCost
+REC01409,CLM00843,0,
+REC00354,CLM00157,1,missing:RepairReportAvailable
+REC00402,CLM00332,1,missing:SerialEvidenceAvailable
+REC00041,CLM00435,0,
+REC00765,CLM01163,2,missing:OCRConfidence | missing:WarrantyCardAvailable
+REC00541,CLM00749,0,
+REC00323,CLM00034,2,missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC01076,CLM00483,1,missing:ProductImageAvailable
+REC01415,CLM00598,1,missing:FaultEvidenceAvailable
+REC00661,CLM00955,1,missing:ClaimAmount
+REC00326,CLM01413,1,missing:SerialEvidenceAvailable
+REC00365,CLM00480,2,category_format:DuplicateClaimIndicator | missing:RepairReportAvailable
+REC01054,CLM00942,0,
+REC01093,CLM00372,3,missing:OCRConfidence | missing:PreviousRepairCost | missing:SerialEvidenceAvailable
+REC01176,CLM00617,0,
+REC01135,CLM00285,0,
+REC00013,CLM00629,1,category_format:Brand
+REC01427,CLM00969,2,missing:PreviousRepairCost | missing:ReceiptAvailable
+REC01118,CLM00930,0,
+REC00277,CLM00033,1,missing:RepairReportAvailable
+REC00306,CLM01292,2,missing:ModelNumber | missing:WarrantyCardAvailable
+REC01014,CLM00578,0,
+REC00620,CLM00089,0,
+REC00958,CLM01438,1,missing:FaultEvidenceAvailable
+REC01031,CLM00331,0,
+REC00996,CLM00999,0,
+REC00252,CLM00763,0,
+REC00025,CLM00715,0,
+REC00027,CLM00926,0,
+REC00731,CLM01083,0,
+REC00692,CLM00716,0,
+REC00197,CLM01058,1,missing:RepairReportAvailable
+REC00403,CLM00312,0,
+REC00645,CLM00709,3,invalid:PriorClaimCount | missing:ClaimAmount | missing:WarrantyCardAvailable
+REC00387,CLM00656,0,
+REC00831,CLM00970,1,missing:ReceiptAvailable
+REC01320,CLM00821,0,
+REC00086,CLM00708,0,
+REC01355,CLM01056,1,missing:FaultEvidenceAvailable
+REC01055,CLM00038,0,
+REC00246,CLM00457,2,category_format:ClaimSubmissionChannel | category_format:ProductCategory
+REC00324,CLM00078,2,category_format:ExtendedWarranty | missing:SerialEvidenceAvailable
+REC00096,CLM00208,1,missing:FaultEvidenceAvailable
+REC01404,CLM00121,2,invalid:OCRConfidence | missing:ProductImageAvailable
+REC01023,CLM00874,1,missing:ReceiptAvailable
+REC01391,CLM00754,0,
+REC00652,CLM01141,1,missing:OCRConfidence
+REC00875,CLM00633,1,missing:ReceiptAvailable
+REC01175,CLM00649,0,
+REC01443,CLM00518,1,missing:ProductImageAvailable
+REC01454,CLM01383,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC00759,CLM00268,1,missing:WarrantyCardAvailable
+REC00544,CLM01031,0,
+REC00442,CLM00571,0,
+REC01214,CLM01421,0,
+REC00369,CLM00868,1,missing:ReceiptAvailable
+REC00886,CLM00710,2,missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00787,CLM00718,1,missing:PreviousRepairCost
+REC01482,CLM00172,0,
+REC00224,CLM00864,2,missing:ReceiptAvailable | missing:WarrantyCardAvailable
+REC00062,CLM00558,1,missing:SerialEvidenceAvailable
+REC01242,CLM01365,1,category_format:ProductModelConsistent
+REC01000,CLM00722,1,missing:ReceiptAvailable
+REC01442,CLM01328,0,
+REC00733,CLM00448,1,missing:PreviousRepairCost
+REC01036,CLM01038,1,missing:OCRConfidence
+REC01492,CLM01243,2,category_format:SerialEvidenceAvailable | missing:RepairReportAvailable
+REC00213,CLM00432,1,category_format:FaultEvidenceAvailable
+REC01019,CLM01132,3,category_format:DocumentDuplicateIndicator | category_format:WarrantyCardAvailable | missing:RepairReportAvailable
+REC00845,CLM01016,0,
+REC00593,CLM00790,2,category_format:ReceiptAvailable | missing:Brand
+REC00205,CLM01252,0,
+REC01182,CLM01219,0,
+REC01184,CLM00230,2,missing:ModelNumber | missing:WarrantyCardAvailable
+REC01037,CLM01281,0,
+REC00240,CLM00195,0,
+REC01125,CLM00239,1,category_format:DuplicateClaimIndicator
+REC00298,CLM00993,1,missing:ReceiptAvailable
+REC00004,CLM01207,0,
+REC00439,CLM00619,0,
+REC01286,CLM00570,0,
+REC01195,CLM00160,0,
+REC01170,CLM00992,1,missing:FaultEvidenceAvailable
+REC00694,CLM00071,0,
+REC01206,CLM01332,1,missing:SerialEvidenceAvailable
+REC00342,CLM00223,1,missing:SerialEvidenceAvailable
+REC00257,CLM00531,2,category_format:DocumentDuplicateIndicator | missing:ClaimAmount
+REC00594,CLM00385,1,category_format:ReplacementWithinWarranty
+REC00278,CLM01025,0,
+REC00512,CLM01338,0,
+REC00057,CLM01208,0,
+REC00172,CLM01346,1,missing:RepairReportAvailable
+REC00792,CLM00822,2,category_format:FaultEvidenceAvailable | category_format:ProductCategory
+REC00249,CLM00730,2,category_format:ReplacementWithinWarranty | missing:ProductImageAvailable
+REC00590,CLM01468,1,missing:RepairReportAvailable
+REC00350,CLM00355,1,invalid_date:FaultDate
+REC00241,CLM00833,0,
+REC00930,CLM01294,3,category_format:PreviousRepair | category_format:ReplacementWithinWarranty | missing:PreviousRepairCost
+REC01099,CLM00315,0,
+REC00556,CLM00390,0,
+REC01018,CLM01345,0,
+REC00802,CLM01081,1,missing:PreviousRepairCost
+REC00983,CLM00235,2,invalid_date:FaultDate | missing:RepairReportAvailable
+REC01455,CLM00512,3,category_format:ExtendedWarranty | missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC00143,CLM01442,2,invalid:PriorClaimCount | missing:SerialEvidenceAvailable
+REC00649,CLM00374,1,missing:ProductImageAvailable
+REC00746,CLM00481,1,missing:WarrantyCardAvailable
+REC00953,CLM00202,0,
+REC01398,CLM01295,0,
+REC00146,CLM01446,1,missing:SerialEvidenceAvailable
+REC00955,CLM00551,0,
+REC00672,CLM00114,0,
+REC00333,CLM00768,0,
+REC00336,CLM00535,0,
+REC-DUP-0039,CLM00898,1,near_duplicate_of:REC01145
+REC00745,CLM00494,0,
+REC01308,CLM00240,1,missing:FaultEvidenceAvailable
+REC-DUP-0010,CLM00253,1,exact_duplicate_of:REC00782
+REC00289,CLM01291,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00438,CLM00356,0,
+REC01385,CLM00959,1,missing:SerialEvidenceAvailable
+REC00686,CLM01251,1,missing:OCRConfidence
+REC00202,CLM00244,1,missing:Brand
+REC00713,CLM00280,2,category_format:FaultEvidenceAvailable | missing:SerialEvidenceAvailable
+REC01189,CLM00154,2,category_format:Brand | missing:OCRConfidence
+REC00242,CLM00363,1,missing:ProductImageAvailable
+REC01252,CLM00587,1,category_format:ExtendedWarranty
+REC00689,CLM01263,1,missing:ReceiptAvailable
+REC00795,CLM01377,3,missing:FaultEvidenceAvailable | missing:OCRConfidence | missing:RepairReportAvailable
+REC01029,CLM00020,0,
+REC01371,CLM01340,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00034,CLM01463,0,
+REC00783,CLM00174,1,missing:RepairReportAvailable
+REC00715,CLM00557,0,
+REC00500,CLM00412,1,category_format:ExtendedWarranty
+REC00841,CLM00806,0,
+REC00139,CLM01415,1,category_format:ContradictionIndicator
+REC00208,CLM00426,1,invalid:OCRConfidence
+REC01259,CLM00134,1,missing:FaultEvidenceAvailable
+REC00801,CLM01336,1,missing:WarrantyCardAvailable
+REC00321,CLM00318,0,
+REC00743,CLM00176,0,
+REC00128,CLM00865,0,
+REC00495,CLM00753,1,category_format:ContradictionIndicator
+REC01292,CLM00900,0,
+REC00748,CLM00729,0,
+REC00244,CLM01195,1,category_format:ProductModelConsistent
+REC00322,CLM00453,0,
+REC00190,CLM01017,1,missing:WarrantyCardAvailable
+REC00293,CLM01491,0,
+REC00643,CLM00826,1,missing:RepairReportAvailable
+REC00627,CLM00447,0,
+REC00718,CLM00173,1,missing:RepairReportAvailable
+REC00989,CLM00922,2,category_format:ClaimSubmissionChannel | missing:SerialNumber
+REC01272,CLM00861,1,missing:PreviousRepairCost
+REC00088,CLM01037,0,
+REC00338,CLM00654,0,
+REC01420,CLM00815,2,category_format:ReceiptAvailable | missing:ProductImageAvailable
+REC01094,CLM00187,0,
+REC01401,CLM00128,1,missing:PreviousRepairCost
+REC01026,CLM01024,1,missing:ProductImageAvailable
+REC00675,CLM01422,2,missing:PreviousRepairCost | missing:SerialNumber
+REC00100,CLM00667,2,missing:FaultEvidenceAvailable | missing:OCRConfidence
+REC00294,CLM00490,2,missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC00081,CLM00526,0,
+REC00898,CLM00911,0,
+REC00644,CLM01010,1,missing:RepairReportAvailable
+REC-DUP-0007,CLM01127,1,exact_duplicate_of:REC00847
+REC01465,CLM01406,0,
+REC01280,CLM00019,0,
+REC00295,CLM00354,1,missing:ClaimAmount
+REC00523,CLM00278,1,missing:PreviousRepairCost
+REC00077,CLM00951,0,
+REC-DUP-0036,CLM00901,1,near_duplicate_of:REC00281
+REC00351,CLM00408,3,missing:Brand | missing:ProductImageAvailable | missing:WarrantyCardAvailable
+REC01335,CLM00863,1,missing:PreviousRepairCost
+REC00636,CLM00141,0,
+REC00531,CLM01067,1,category_format:ProductModelConsistent
+REC00684,CLM01393,0,
+REC00144,CLM00123,0,
+REC00549,CLM01225,0,
+REC00404,CLM00636,2,logical_date:FaultBeforePurchase | missing:FaultEvidenceAvailable
+REC01380,CLM01181,2,missing:ReceiptAvailable | missing:RepairReportAvailable
+REC01192,CLM01441,0,
+REC00147,CLM00819,0,
+REC00411,CLM00956,1,category_format:ProductModelConsistent
+REC00613,CLM01182,1,missing:ReceiptAvailable
+REC01324,CLM00925,2,category_format:ContradictionIndicator | missing:OCRConfidence
+REC01458,CLM01460,0,
+REC00656,CLM01120,3,category_format:DuplicateClaimIndicator | missing:FaultEvidenceAvailable | missing:SerialEvidenceAvailable
+REC00101,CLM00580,0,
+REC00952,CLM01077,0,
+REC01052,CLM00471,1,category_format:ProductModelConsistent
+REC01476,CLM01203,0,
+REC00972,CLM00630,4,missing:PreviousRepairCost | missing:ReceiptAvailable | missing:SerialEvidenceAvailable | missing:WarrantyCardAvailable
+REC01011,CLM00162,2,category_format:ClaimSubmissionChannel | missing:RepairReportAvailable
+REC00912,CLM00058,0,
+REC00132,CLM00199,3,category_format:Brand | category_format:ProductImageAvailable | missing:ClaimAmount
+REC00023,CLM00686,3,category_format:DocumentDuplicateIndicator | category_format:DuplicateClaimIndicator | missing:SerialEvidenceAvailable
+REC00175,CLM00568,0,
+REC01159,CLM01047,2,missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC00123,CLM00306,2,missing:ReceiptAvailable | missing:RepairReportAvailable
+REC01152,CLM00144,0,
+REC00217,CLM01039,1,category_format:ProductImageAvailable
+REC-DUP-0005,CLM01162,1,exact_duplicate_of:REC00346
+REC01311,CLM00670,1,missing:SerialEvidenceAvailable
+REC00268,CLM01476,1,category_format:WarrantyCardAvailable
+REC00222,CLM00340,2,category_format:ReplacementWithinWarranty | category_format:WarrantyCardAvailable
+REC01408,CLM01224,1,category_format:FaultEvidenceAvailable
+REC01349,CLM01469,0,
+REC00605,CLM01090,0,
+REC00363,CLM01482,0,
+REC00053,CLM01397,0,
+REC01056,CLM00377,0,
+REC00764,CLM01305,1,missing:RepairReportAvailable
+REC01021,CLM00982,0,
+REC00814,CLM01440,1,invalid_date:ClaimDate
+REC00261,CLM00281,1,invalid:RepairCount
+REC01468,CLM00258,1,missing:RepairReportAvailable
+REC00467,CLM00588,1,missing:WarrantyCardAvailable
+REC01489,CLM00928,0,
+REC00545,CLM01445,1,missing:PreviousRepairCost
+REC00928,CLM00428,1,missing:PreviousRepairCost
+REC00852,CLM00334,1,missing:Brand
+REC01495,CLM01236,0,
+REC00506,CLM01145,1,category_format:ContradictionIndicator
+REC01225,CLM00129,0,
+REC-DUP-0003,CLM01207,1,exact_duplicate_of:REC00004
+REC00472,CLM01425,0,
+REC-DUP-0026,CLM00117,1,exact_duplicate_of:REC01188
+REC00125,CLM00017,0,
+REC01053,CLM01369,1,missing:ReceiptAvailable
+REC00307,CLM00234,1,invalid:RepairCount
+REC01001,CLM01114,2,missing:ClaimAmount | missing:FaultEvidenceAvailable
+REC00624,CLM01319,0,
+REC00796,CLM00179,0,
+REC00485,CLM00765,1,missing:ReceiptAvailable
+REC00481,CLM00646,1,category_format:RepairReportAvailable
+REC01353,CLM00216,1,invalid:ClaimAmount
+REC00808,CLM00595,0,
+REC01066,CLM01238,0,
+REC00028,CLM00290,3,missing:PreviousRepairCost | missing:ReceiptAvailable | missing:RepairReportAvailable
+REC00742,CLM01140,2,category_format:ContradictionIndicator | category_format:PreviousReplacement
+REC00491,CLM00226,0,
+REC01217,CLM00126,3,category_format:RepairReportAvailable | missing:ProductImageAvailable | missing:ReceiptAvailable
+REC01186,CLM00877,1,missing:FaultEvidenceAvailable
+REC00642,CLM00540,1,missing:ReceiptAvailable
+REC01374,CLM00784,0,
+REC01070,CLM00858,0,
+REC01025,CLM01479,0,
+REC00724,CLM00840,0,
+REC01141,CLM00769,0,
+REC00011,CLM01220,0,
+REC01263,CLM00403,1,category_format:PreviousRepair
+REC01072,CLM01018,3,category_format:ReplacementWithinWarranty | missing:ClaimAmount | missing:SerialEvidenceAvailable
+REC01361,CLM00916,0,
+REC01433,CLM00623,4,invalid:ClaimAmount | missing:FaultEvidenceAvailable | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC00771,CLM00565,1,missing:RepairReportAvailable
+REC00448,CLM00198,2,missing:FaultEvidenceAvailable | missing:SerialEvidenceAvailable
+REC00210,CLM01030,2,missing:OCRConfidence | missing:WarrantyCardAvailable
+REC01340,CLM00081,0,
+REC01180,CLM00357,0,
+REC01144,CLM01033,1,missing:SerialEvidenceAvailable
+REC00992,CLM01045,0,
+REC01060,CLM00899,0,
+REC00407,CLM00398,0,
+REC00812,CLM00985,0,
+REC01136,CLM00721,2,category_format:ProductImageAvailable | missing:PreviousRepairCost
+REC00561,CLM00731,2,missing:FaultEvidenceAvailable | missing:WarrantyCardAvailable
+REC-DUP-0037,CLM00352,1,near_duplicate_of:REC00115
+REC-DUP-0023,CLM01034,1,exact_duplicate_of:REC00017
+REC01020,CLM00803,2,missing:FaultEvidenceAvailable | missing:SerialEvidenceAvailable
+REC-DUP-0029,CLM01267,1,exact_duplicate_of:REC00834
+REC00565,CLM01184,1,missing:Brand
+REC00084,CLM01057,0,
+REC00888,CLM00657,0,
+REC00707,CLM00875,0,
+REC00592,CLM00556,0,
+REC00728,CLM00950,2,category_format:RepairAuthorized | missing:PreviousRepairCost
+REC01472,CLM00263,2,category_format:ClaimSubmissionChannel | missing:OCRConfidence
+REC01281,CLM01279,1,missing:FaultEvidenceAvailable
+REC01102,CLM00995,0,
+REC01098,CLM01288,0,
+REC00629,CLM01063,1,category_format:WarrantyCardAvailable
+REC00140,CLM00405,1,missing:WarrantyCardAvailable
+REC00389,CLM00845,0,
+REC00687,CLM01444,1,category_format:FaultEvidenceAvailable
+REC01035,CLM00883,0,
+REC00817,CLM00393,1,category_format:DocumentDuplicateIndicator
+REC00055,CLM01264,1,missing:SerialEvidenceAvailable
+REC00739,CLM00103,1,missing:ProductImageAvailable
+REC00515,CLM00600,1,missing:FaultEvidenceAvailable
+REC01270,CLM00677,0,
+REC01150,CLM00449,1,category_format:SerialNumberMatch
+REC00180,CLM00553,0,
+REC00697,CLM00973,1,missing:OCRConfidence
+REC01410,CLM00495,1,missing:RepairReportAvailable
+REC00372,CLM01429,3,category_format:ClaimSubmissionChannel | category_format:ExtendedWarranty | category_format:RepairReportAvailable
+REC00859,CLM00939,0,
+REC01146,CLM00924,1,missing:RepairReportAvailable
+REC00486,CLM00045,0,
+REC01179,CLM00507,0,
+REC01007,CLM01342,2,category_format:Brand | missing:PreviousRepairCost
+REC00417,CLM00644,1,missing:ClaimAmount
+REC01245,CLM01192,0,
+REC00129,CLM00163,1,missing:Brand
+REC00704,CLM00189,1,missing:RepairReportAvailable
+REC01183,CLM00532,1,category_format:Brand
+REC00552,CLM01122,1,category_format:ContradictionIndicator
+REC00868,CLM00048,1,missing:OCRConfidence
+REC00554,CLM00049,0,
+REC01233,CLM00269,0,
+REC00201,CLM01333,0,
+REC00797,CLM00839,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC01262,CLM00337,1,invalid_date:PurchaseDate
+REC01250,CLM01248,1,missing:PreviousRepairCost
+REC00314,CLM00036,2,missing:ProductImageAvailable | missing:ReceiptAvailable
+REC00029,CLM00695,1,missing:WarrantyCardAvailable
+REC01115,CLM00298,2,missing:ClaimAmount | missing:SerialEvidenceAvailable
+REC00060,CLM00060,2,category_format:DuplicateClaimIndicator | missing:ModelNumber
+REC00614,CLM01266,1,missing:WarrantyCardAvailable
+REC01379,CLM01101,1,missing:ReceiptAvailable
+REC01390,CLM00040,0,
+REC01188,CLM00117,1,missing:ClaimAmount
+REC00595,CLM00846,0,
+REC01122,CLM00108,1,missing:ReceiptAvailable
+REC01106,CLM00984,0,
+REC01381,CLM00346,2,category_format:PreviousRepair | missing:SerialEvidenceAvailable
+REC01317,CLM00029,2,category_format:ReplacementWithinWarranty | missing:ProductImageAvailable
+REC00567,CLM00566,0,
+REC01430,CLM00799,1,missing:ReceiptAvailable
+REC00991,CLM01153,0,
+REC00115,CLM00352,0,
+REC00163,CLM01402,0,
+REC00897,CLM00225,2,category_format:WarrantyCardAvailable | missing:FaultEvidenceAvailable
+REC01332,CLM00243,0,
+REC00693,CLM00515,0,
+REC01112,CLM00974,2,missing:ModelNumber | missing:OCRConfidence
+REC00758,CLM00149,1,missing:RepairReportAvailable
+REC-DUP-0020,CLM00957,1,exact_duplicate_of:REC00947
+REC00219,CLM01324,0,
+REC00967,CLM01282,1,missing:OCRConfidence
+REC00199,CLM00094,0,
+REC00702,CLM00614,1,invalid:OCRConfidence
+REC01095,CLM00853,0,
+REC01085,CLM00981,1,missing:ModelNumber
+REC00225,CLM01366,1,category_format:ReceiptAvailable
+REC00904,CLM00391,0,
+REC00260,CLM01072,1,missing:Brand
+REC01012,CLM00167,0,
+REC00446,CLM01499,1,missing:SerialEvidenceAvailable
+REC01220,CLM01475,1,category_format:ContradictionIndicator
+REC00462,CLM01006,0,
+REC00415,CLM00894,1,category_format:RepairAuthorized
+REC00963,CLM00099,1,missing:PreviousRepairCost
+REC00131,CLM00165,2,missing:ClaimAmount | missing:ModelNumber
+REC01224,CLM00009,0,
+REC01268,CLM00827,2,invalid_date:FaultDate | missing:WarrantyCardAvailable
+REC00399,CLM00215,1,missing:ModelNumber
+REC00901,CLM00543,1,missing:SerialEvidenceAvailable
+REC01403,CLM00429,3,category_format:PreviousRepair | category_format:RepairReportAvailable | missing:RepairReportAvailable
+REC01232,CLM00811,0,
+REC00623,CLM00906,0,
+REC00799,CLM00802,3,missing:PreviousRepairCost | missing:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC01203,CLM00975,1,missing:RepairReportAvailable
+REC00425,CLM00661,0,
+REC00097,CLM00847,0,
+REC01120,CLM01313,0,
+REC01441,CLM00997,0,
+REC00176,CLM00744,2,missing:PreviousRepairCost | missing:SerialEvidenceAvailable
+REC00884,CLM00895,0,
+REC00159,CLM00777,0,
+REC00566,CLM01131,1,category_format:PreviousRepair
+REC00608,CLM00796,1,missing:FaultEvidenceAvailable
+REC00753,CLM00007,1,missing:FaultEvidenceAvailable
+REC01117,CLM00751,0,
+REC01462,CLM00063,2,category_format:PreviousRepair | missing:FaultEvidenceAvailable
+REC01297,CLM01367,1,invalid:PreviousRepairCost
+REC00908,CLM00887,1,invalid:PreviousRepairCost
+REC00066,CLM01416,2,category_format:RepairReportAvailable | invalid:PreviousRepairCost
+REC01246,CLM00890,0,
+REC01109,CLM00774,1,missing:WarrantyCardAvailable
+REC00497,CLM00608,0,
+REC01360,CLM00168,2,category_format:ClaimSubmissionChannel | missing:WarrantyCardAvailable
+REC00818,CLM01160,0,
+REC00682,CLM00021,3,category_format:ClaimSubmissionChannel | category_format:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00973,CLM00207,1,invalid:ClaimAmount
+REC00091,CLM01301,0,
+REC00763,CLM00707,1,category_format:DocumentDuplicateIndicator
+REC00042,CLM00573,2,missing:ModelNumber | missing:OCRConfidence
+REC00766,CLM00454,2,category_format:RepairReportAvailable | missing:SerialEvidenceAvailable
+REC01300,CLM01116,1,missing:SerialEvidenceAvailable
+REC00706,CLM00120,1,missing:PreviousRepairCost
+REC00099,CLM00070,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC00153,CLM00350,0,
+REC-DUP-0031,CLM00414,1,near_duplicate_of:REC00376
+REC01346,CLM01489,1,missing:PreviousRepairCost
+REC00114,CLM01062,1,category_format:FaultEvidenceAvailable
+REC01236,CLM00620,2,category_format:Brand | missing:SerialNumber
+REC00798,CLM01310,1,missing:PreviousRepairCost
+REC01041,CLM00147,1,missing:FaultEvidenceAvailable
+REC00937,CLM01388,2,category_format:RepairAuthorized | missing:ClaimAmount
+REC00659,CLM00455,1,category_format:DocumentDuplicateIndicator
+REC01363,CLM01451,2,category_format:WarrantyCardAvailable | missing:ProductImageAvailable
+REC00776,CLM00639,0,
+REC00317,CLM00016,1,missing:SerialEvidenceAvailable
+REC01006,CLM00640,1,missing:RepairReportAvailable
+REC00388,CLM00191,0,
+REC00833,CLM00361,0,
+REC00455,CLM00738,1,missing:FaultEvidenceAvailable
+REC01190,CLM01331,1,missing:SerialEvidenceAvailable
+REC00037,CLM00257,1,missing:PreviousRepairCost
+REC00885,CLM00536,0,
+REC00282,CLM00090,0,
+REC01128,CLM01349,2,missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00133,CLM01480,3,category_format:ContradictionIndicator | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00965,CLM00469,1,missing:RepairReportAvailable
+REC01205,CLM00560,2,missing:PreviousRepairCost | missing:WarrantyCardAvailable
+REC01005,CLM00604,0,
+REC01010,CLM00972,5,category_format:RepairAuthorized | category_format:ReplacementWithinWarranty | missing:ClaimAmount | missing:PreviousRepairCost | missing:RepairReportAvailable
+REC01116,CLM01146,1,missing:PreviousRepairCost
+REC00596,CLM01048,0,
+REC01402,CLM01200,0,
+REC01478,CLM00834,0,
+REC00343,CLM00800,1,missing:WarrantyCardAvailable
+REC00192,CLM00028,1,missing:ProductImageAvailable
+REC00216,CLM00516,2,missing:FaultEvidenceAvailable | missing:RepairReportAvailable
+REC00347,CLM01239,0,
+REC00734,CLM00111,1,invalid:RepairCount
+REC00611,CLM00797,1,missing:SerialEvidenceAvailable
+REC01418,CLM00113,0,
+REC00586,CLM00613,0,
+REC00108,CLM01076,0,
+REC00374,CLM00002,0,
+REC00634,CLM01167,0,
+REC00633,CLM00345,1,missing:FaultEvidenceAvailable
+REC00033,CLM01237,0,
+REC00141,CLM00965,1,missing:PreviousRepairCost
+REC00209,CLM00245,1,missing:RepairReportAvailable
+REC00673,CLM00533,1,missing:PreviousRepairCost
+REC00488,CLM00459,0,
+REC01299,CLM00563,4,category_format:ContradictionIndicator | missing:OCRConfidence | missing:RepairReportAvailable | missing:WarrantyCardAvailable
+REC00194,CLM00358,0,
+REC00681,CLM01427,0,
+REC01132,CLM00261,2,missing:ClaimAmount | missing:RepairReportAvailable
+REC01119,CLM00522,1,missing:RepairReportAvailable
+REC00356,CLM00159,0,
+REC00651,CLM00413,1,invalid:RepairCount
+REC00584,CLM00991,0,
+REC00962,CLM00736,0,
+REC00865,CLM00442,0,

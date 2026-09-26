@@ -1,0 +1,13 @@
+﻿Metric,Value
+InputRows,1500
+OutputRows,1500
+InputColumns,94
+OutputColumns,83
+PredictorCandidates,81
+StructuralColumnsRemoved,11
+DroppedColumns,RecordID | CustomerID | ProductID | ModelNumber | SerialNumber | PurchaseDate | ClaimDate | FaultDate | FaultDescription | InternalBatchCode | WarrantyExpiryDate
+KnownNoiseRetained,BrowserFamily | SubmissionMinute | UiTheme | RandomScore
+TargetUsedForFiltering,NO
+CorrelationBasedRemoval,NO
+ImportanceBasedRemoval,NO
+ModelTrainingPerformed,NO

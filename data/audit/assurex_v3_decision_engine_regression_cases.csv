@@ -1,0 +1,3 @@
+﻿ClaimID,ClaimClass,Predicted,Confidence,PreviousRepair,RepairAuthorized,RepairReportAvailable,RepairReportState,RequiredDocumentsComplete,MissingDocumentCount,CriticalDocumentMissing,DecisionEngineRegressionTrigger,ExpectedDecisionEngineOutcome
+CLM01188,Manual Review,Valid Claim,0.8042346909559079,Yes,Yes,,Unknown,Unknown,0.0,No,Manual Review: previous repair exists but repair report availability is unknown,Manual Review
+CLM01148,Manual Review,Valid Claim,0.7825008911271463,Yes,Yes,,Unknown,Unknown,0.0,No,Manual Review: previous repair exists but repair report availability is unknown,Manual Review

@@ -1,0 +1,15 @@
+Feature,Selected,FrozenOrder
+RepairAuthorized,True,1
+SerialNumberMatch,True,2
+ProductModelConsistent,True,3
+DuplicateClaimIndicator,True,4
+ContradictionIndicator,True,5
+OCRConfidence,True,6
+ClaimReportingDelayDays,True,7
+WarrantyRemainingDays,True,8
+ClaimReportingWithinPeriod,True,9
+FaultCovered,True,10
+RequiredDocumentsComplete,True,11
+MissingDocumentCount,True,12
+ProductIdentityMatch,True,13
+OCRQualityBand,True,14

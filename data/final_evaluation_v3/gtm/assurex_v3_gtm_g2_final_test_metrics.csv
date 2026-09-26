@@ -1,0 +1,20 @@
+Metric,Value
+TestClaims,225
+Correct,194
+Incorrect,31
+Accuracy,0.8622222222222222
+MacroPrecision,0.8752403846153847
+MacroRecall,0.8622222222222223
+MacroF1,0.8610170510208374
+MeanConfidence,0.8767154392931197
+TestUsed,YES
+FrozenModel,G2_V3
+Invalid Claim_Precision,0.9538461538461539
+Invalid Claim_Recall,0.8266666666666667
+Invalid Claim_F1,0.8857142857142857
+Manual Review_Precision,0.890625
+Manual Review_Recall,0.76
+Manual Review_F1,0.8201438848920863
+Valid Claim_Precision,0.78125
+Valid Claim_Recall,1
+Valid Claim_F1,0.8771929824561403

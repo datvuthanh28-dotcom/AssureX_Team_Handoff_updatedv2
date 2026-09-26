@@ -1,0 +1,9 @@
+﻿Metric,Value
+InputRows,1500
+OutputRows,1500
+InputColumns,64
+OutputColumns,94
+EngineeredFeatureCount,30
+TargetUsed,NO
+ImputationPerformed,NO
+FeatureSelectionPerformed,NO

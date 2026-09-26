@@ -1,0 +1,229 @@
+{
+  "version": "2.0.0",
+  "design": "common_form_plus_dynamic_questions",
+
+  "common": {
+    "customer_fields": [
+      "FullName",
+      "Email",
+      "Phone"
+    ],
+
+    "product_fields": [
+      "ProductCategory",
+      "ProductSubtype",
+      "ProductName",
+      "Brand",
+      "ModelNumber",
+      "ProductIdentityValue",
+      "PurchaseDate",
+      "PurchasePrice",
+      "Retailer",
+      "ExtendedWarranty"
+    ],
+
+    "claim_fields": [
+      "FaultType",
+      "FaultDate",
+      "FaultDescription",
+      "ClaimAmount",
+      "PreviousRepair",
+      "PreviousReplacement"
+    ]
+  },
+
+  "categories": {
+    "Laptop": {
+      "product_subtypes": [
+        "Consumer Laptop",
+        "Business Laptop",
+        "Gaming Laptop",
+        "2-in-1"
+      ],
+      "issue_areas": [
+        "Device",
+        "Battery",
+        "Charger",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "PhysicalDamageReported",
+        "LiquidExposureReported",
+        "BatterySymptomReported"
+      ]
+    },
+
+    "Smartphone": {
+      "product_subtypes": [
+        "Standard Smartphone",
+        "Foldable Smartphone",
+        "Rugged Smartphone"
+      ],
+      "issue_areas": [
+        "Phone",
+        "Battery",
+        "Charger",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "PhysicalDamageReported",
+        "LiquidExposureReported",
+        "BatterySymptomReported"
+      ]
+    },
+
+    "Television": {
+      "product_subtypes": [
+        "LED",
+        "QLED",
+        "OLED",
+        "Mini-LED"
+      ],
+      "issue_areas": [
+        "Power",
+        "Picture",
+        "Sound",
+        "Connection",
+        "Remote Control",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "PhysicalDamageReported",
+        "IntermittentIssueReported"
+      ]
+    },
+
+    "Refrigerator": {
+      "product_subtypes": [
+        "Single Door",
+        "Double Door",
+        "Side-by-Side",
+        "French Door"
+      ],
+      "issue_areas": [
+        "Cooling",
+        "Power",
+        "Water Leakage",
+        "Noise",
+        "Other",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "UsageType",
+        "ErrorCodeAvailable"
+      ]
+    },
+
+    "Washing Machine": {
+      "product_subtypes": [
+        "Front Load",
+        "Top Load",
+        "Washer Dryer"
+      ],
+      "issue_areas": [
+        "Power",
+        "Washing",
+        "Spinning",
+        "Water Supply or Drain",
+        "Water Leakage",
+        "Noise",
+        "Other",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "UsageType",
+        "ErrorCodeAvailable",
+        "ForeignObjectIncidentReported"
+      ]
+    },
+
+    "Air Conditioner": {
+      "product_subtypes": [
+        "Split",
+        "Window",
+        "Cassette",
+        "Portable"
+      ],
+      "issue_areas": [
+        "Indoor Unit",
+        "Outdoor Unit",
+        "Both",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "AffectedUnit",
+        "RecentReinstallationReported",
+        "ErrorCodeAvailable"
+      ]
+    },
+
+    "Camera": {
+      "product_subtypes": [
+        "Mirrorless",
+        "DSLR",
+        "Compact",
+        "Action Camera"
+      ],
+      "issue_areas": [
+        "Camera Body",
+        "Lens",
+        "Battery",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "PhysicalDamageReported",
+        "LiquidExposureReported",
+        "BatterySymptomReported"
+      ]
+    },
+
+    "Printer": {
+      "product_subtypes": [
+        "Inkjet",
+        "Laser",
+        "Thermal"
+      ],
+      "issue_areas": [
+        "Printing",
+        "Paper Feed",
+        "Connection",
+        "Power",
+        "Ink or Toner",
+        "Other",
+        "Not Sure"
+      ],
+      "simple_questions": [
+        "ErrorCodeAvailable",
+        "ConsumableTypeUsed",
+        "ForeignObjectIncidentReported"
+      ]
+    }
+  },
+
+  "evidence_ui": {
+    "main_groups": [
+      {
+        "name": "PurchaseOrWarrantyProof",
+        "label": "Receipt or warranty document"
+      },
+      {
+        "name": "ProductIdentityEvidence",
+        "label": "Photo of product serial, IMEI or product label"
+      },
+      {
+        "name": "FaultEvidence",
+        "label": "Photo or video showing the problem"
+      }
+    ],
+
+    "conditional_groups": [
+      "PreviousRepairDocument",
+      "InstallationDocument",
+      "BatteryCheckDocument",
+      "ScreenFaultPhoto",
+      "ServiceCenterReport",
+      "ComponentSerialPhoto",
+      "PrinterStatusPage"
+    ]
+  }
+}

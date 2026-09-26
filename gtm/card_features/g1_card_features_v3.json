@@ -1,0 +1,145 @@
+{
+  "feature_set": "G1",
+  "description": "Visual ablation iteration G1. Removes weak/noisy/contextual fields from G0 while retaining warranty, evidence, repair, identity, duplicate and contradiction signals.",
+  "image_width": 1200,
+  "image_height": 1550,
+  "train_variants": 2,
+  "validation_variants": 1,
+  "test_variants": 1,
+  "groups": [
+    {
+      "name": "Product & Claim",
+      "fields": [
+        {
+          "column": "ProductCategory",
+          "label": "Product category"
+        },
+        {
+          "column": "ClaimedComponent",
+          "label": "Component"
+        }
+      ]
+    },
+    {
+      "name": "Warranty",
+      "fields": [
+        {
+          "column": "WarrantyStatus",
+          "label": "Warranty status"
+        },
+        {
+          "column": "WarrantyRemainingDays",
+          "label": "Remaining days"
+        },
+        {
+          "column": "ComponentWarrantyEligible",
+          "label": "Component eligible"
+        }
+      ]
+    },
+    {
+      "name": "Fault & Timing",
+      "fields": [
+        {
+          "column": "FaultType",
+          "label": "Fault"
+        },
+        {
+          "column": "DamageType",
+          "label": "Damage type"
+        },
+        {
+          "column": "FaultCovered",
+          "label": "Fault covered"
+        },
+        {
+          "column": "ClaimReportingDelayDays",
+          "label": "Reporting delay"
+        },
+        {
+          "column": "ClaimReportingWithinPeriod",
+          "label": "Within deadline"
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "fields": [
+        {
+          "column": "WarrantyProofAvailable",
+          "label": "Warranty proof"
+        },
+        {
+          "column": "SerialEvidenceAvailable",
+          "label": "Serial evidence"
+        },
+        {
+          "column": "FaultEvidenceAvailable",
+          "label": "Fault evidence"
+        },
+        {
+          "column": "MissingDocumentCount",
+          "label": "Missing docs"
+        },
+        {
+          "column": "RequiredDocumentsComplete",
+          "label": "Required docs"
+        },
+        {
+          "column": "CriticalDocumentMissing",
+          "label": "Critical doc missing"
+        }
+      ]
+    },
+    {
+      "name": "Repair History",
+      "fields": [
+        {
+          "column": "PreviousRepair",
+          "label": "Previous repair"
+        },
+        {
+          "column": "RepairAuthorized",
+          "label": "Repair authorized"
+        },
+        {
+          "column": "RepairReportAvailable",
+          "label": "Repair report"
+        }
+      ]
+    },
+    {
+      "name": "Verification & Evidence",
+      "fields": [
+        {
+          "column": "SerialNumberMatch",
+          "label": "Serial match"
+        },
+        {
+          "column": "ProductIdentityMatch",
+          "label": "Identity match"
+        },
+        {
+          "column": "ProductModelConsistent",
+          "label": "Model consistent"
+        },
+        {
+          "column": "DuplicateClaimIndicator",
+          "label": "Duplicate claim"
+        },
+        {
+          "column": "DocumentDuplicateIndicator",
+          "label": "Duplicate document"
+        },
+        {
+          "column": "ContradictionIndicator",
+          "label": "Contradiction"
+        },
+        {
+          "column": "OCRConfidence",
+          "label": "OCR confidence"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "version": "3.0.0",
+  "input": "comparison/assurex_v3_model_comparison_base.csv",
+  "output": "comparison/assurex_v3_model_comparison_final.csv",
+  "claims": 225,
+  "test_set_modified": false,
+  "python_model_retrained": false,
+  "gtm_model_retrained": false,
+  "decision_engine_is_trained_model": false,
+  "threshold_config": "config/decision_thresholds.json",
+  "final_decision_labels": [
+    "Likely Valid",
+    "Likely Invalid",
+    "Manual Review Required"
+  ]
+}

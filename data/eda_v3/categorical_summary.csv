@@ -1,0 +1,45 @@
+﻿Column,UniqueCount,MostFrequentValue,MostFrequentCount,MostFrequentPercent,TopValues
+AffectedUnit,5,Not Applicable,1311,87.4,Not Applicable:1311 | Indoor Unit:78 | Outdoor Unit:56 | Both:39 | Not Sure:16
+BatteryDiagnosticAvailable,3,Not Applicable,1454,96.9333,Not Applicable:1454 | Yes:32 | No:14
+BatterySymptomReported,4,Not Applicable,1326,88.4,Not Applicable:1326 | Yes:139 | No:23 | Unknown:12
+Brand,5,Aster,371,24.7333,Aster:371 | PrimeView:304 | HomePro:277 | ZenCore:264 | NovaTech:262 | <MISSING>:22
+BrowserFamily,5,Chrome,321,21.4,Chrome:321 | MobileWebView:313 | Edge:300 | Firefox:286 | Safari:280
+ClaimSubmissionChannel,4,Web,545,36.3333,Web:545 | Mobile App:401 | Service Center:371 | Email:183
+ClaimedComponent,12,Main Unit,1057,70.4667,Main Unit:1057 | Camera Body:154 | Compressor:75 | Battery:61 | Print Head:23 | Motor:23 | Power Adapter:22 | Lens:21 | Display Panel:17 | Charger:17
+ComponentIdentityEvidenceAvailable,3,Not Applicable,1479,98.6,Not Applicable:1479 | Yes:20 | No:1
+ConsumableTypeUsed,4,Not Applicable,1333,88.8667,Not Applicable:1333 | Original:116 | Compatible:36 | Unknown:15
+ContradictionIndicator,2,No,1454,96.9333,No:1454 | Yes:46
+CustomerIssueArea,25,Power,159,10.6,Power:159 | Phone:140 | Camera Body:138 | Device:138 | Not Sure:108 | Water Leakage:79 | Indoor Unit:78 | Connection:76 | Noise:74 | Battery:58
+DamageType,23,Manufacturing Defect,423,28.2,Manufacturing Defect:423 | Internal Component Failure:422 | Electrical Failure:408 | Normal Wear:37 | Physical Damage:36 | Misuse:36 | Accidental Damage:33 | Water Damage:28 | Liquid Damage:14 | Improper Wall Mounting:7
+DocumentDuplicateIndicator,2,No,1459,97.2667,No:1459 | Yes:41
+DuplicateClaimIndicator,2,No,1470,98.0,No:1470 | Yes:30
+ElectronicWarrantyAvailable,2,Yes,863,57.5333,Yes:863 | No:637
+ErrorCodeAvailable,4,Not Applicable,782,52.1333,Not Applicable:782 | No:432 | Yes:216 | Unknown:70
+ExtendedWarranty,2,No,1322,88.1333,No:1322 | Yes:178
+FaultDescription,77,Customer reports power failure affecting power.,159,10.6,Customer reports power failure affecting power.:159 | Customer reports water leakage affecting water leakage.:79 | Customer reports connectivity issue affecting connection.:76 | Customer reports noise affecting noise.:74 | Customer reports display failure affecting picture.:44 | Customer reports audio failure affecting sound.:43 | Customer reports mechanical failure affecting printing.:41 | Customer reports cooling failure affecting cooling.:35 | Customer reports battery problem affecting device.:35 | Customer reports mechanical failure affecting other.:34
+FaultEvidenceAvailable,2,Yes,1219,81.2667,Yes:1219 | No:178 | <MISSING>:103
+FaultType,12,Power Failure,336,22.4,Power Failure:336 | Connectivity Issue:201 | Display Failure:172 | Water Leakage:133 | Noise:132 | Battery Problem:129 | Mechanical Failure:125 | Cooling Failure:75 | Overheating:73 | Audio Failure:54
+ForeignObjectIncidentReported,4,Not Applicable,1155,77.0,Not Applicable:1155 | No:300 | Yes:26 | Unknown:19
+InstallationEvidenceAvailable,3,Not Applicable,1311,87.4,Not Applicable:1311 | Yes:164 | No:25
+IntermittentIssueReported,4,Not Applicable,1298,86.5333,Not Applicable:1298 | No:116 | Yes:72 | Unknown:14
+LiquidExposureReported,4,Not Applicable,920,61.3333,Not Applicable:920 | No:499 | Yes:43 | Unknown:38
+PhysicalDamageReported,4,Not Applicable,718,47.8667,Not Applicable:718 | No:656 | Yes:67 | Unknown:59
+PreviousRepair,2,No,1089,72.6,No:1089 | Yes:411
+PreviousReplacement,2,No,1355,90.3333,No:1355 | Yes:145
+ProductCategory,8,Television,202,13.4667,Television:202 | Laptop:198 | Smartphone:192 | Camera:190 | Air Conditioner:189 | Refrigerator:184 | Washing Machine:178 | Printer:167
+ProductImageAvailable,2,Yes,1335,89.0,Yes:1335 | No:103 | <MISSING>:62
+ProductModelConsistent,2,Yes,1446,96.4,Yes:1446 | No:54
+ProductSubtype,29,Rugged Smartphone,72,4.8,Rugged Smartphone:72 | Foldable Smartphone:69 | LED:69 | Gaming Laptop:64 | Top Load:63 | Washer Dryer:61 | Laser:59 | Portable:58 | Inkjet:56 | Single Door:54
+ReceiptAvailable,2,Yes,1279,85.2667,Yes:1279 | No:156 | <MISSING>:65
+RecentReinstallationReported,4,Not Applicable,1311,87.4,Not Applicable:1311 | No:155 | Yes:18 | Unknown:16
+RepairAuthorized,4,Not Applicable,1089,72.6,Not Applicable:1089 | Yes:342 | Unknown:35 | No:34
+RepairReportAvailable,3,Not Applicable,972,64.8,Not Applicable:972 | Yes:275 | <MISSING>:157 | No:96
+ReplacementWithinWarranty,3,Not Applicable,1355,90.3333,Not Applicable:1355 | Yes:125 | No:20
+ScreenFaultImageAvailable,3,Not Applicable,1483,98.8667,Not Applicable:1483 | Yes:16 | No:1
+SerialEvidenceAvailable,2,Yes,1252,83.4667,Yes:1252 | No:160 | <MISSING>:88
+SerialNumberMatch,3,Yes,1375,91.6667,Yes:1375 | Unknown:77 | No:48
+ServiceDiagnosticAvailable,3,Not Applicable,1402,93.4667,Not Applicable:1402 | Yes:82 | No:16
+UiTheme,3,Dark,504,33.6,Dark:504 | System:501 | Light:495
+UsageMeterEvidenceAvailable,3,Not Applicable,1333,88.8667,Not Applicable:1333 | Yes:141 | No:26
+UsageType,4,Not Applicable,1138,75.8667,Not Applicable:1138 | Household:312 | Business:40 | Other:10
+WarrantyCardAvailable,2,Yes,1210,80.6667,Yes:1210 | No:183 | <MISSING>:107

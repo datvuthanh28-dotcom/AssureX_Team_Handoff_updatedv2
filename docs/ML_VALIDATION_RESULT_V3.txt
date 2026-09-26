@@ -1,0 +1,44 @@
+========================================================================
+ASSUREX V3 ML VALIDATION
+========================================================================
+PASS: Python frozen model exists
+PASS: Frozen Python feature file exists
+PASS: Frozen 14-feature order is exact
+PASS: GTM artifact exists: model.json
+PASS: GTM artifact exists: weights.bin
+PASS: GTM artifact exists: metadata.json
+PASS: GTM artifact exists: g2_card_features_v3.json
+PASS: GTM artifact exists: SHA256SUMS.txt
+PASS: GTM SHA256 matches: model.json
+PASS: GTM SHA256 matches: weights.bin
+PASS: GTM SHA256 matches: metadata.json
+PASS: GTM SHA256 matches: g2_card_features_v3.json
+PASS: GTM checksum manifest verified
+PASS: Python Test predictions = 225
+PASS: GTM Test predictions = 225
+PASS: Python Test ClaimIDs unique
+PASS: GTM Test ClaimIDs unique
+PASS: Python/GTM locked Test IDs identical
+PASS: Final comparison = 225 claims
+PASS: Final comparison ClaimIDs unique
+PASS: Prediction matches = 196
+PASS: Prediction disagreements = 29
+PASS: Strong Match = 126
+PASS: Acceptable Match = 52
+PASS: Weak Match = 14
+PASS: Model Disagreement = 29
+PASS: Uncertain Result = 4
+PASS: Likely Valid = 69
+PASS: Likely Invalid = 22
+PASS: Manual Review Required = 134
+PASS: Both regression claims exist
+PASS: Regression claims route to Manual Review Required
+PASS: Comparison/Decision agree on Strong Match
+PASS: Comparison/Decision agree on Acceptable Match
+PASS: Comparison/Decision agree on Weak Match
+PASS: Comparison/Decision agree on Model Disagreement
+PASS: Comparison/Decision agree on Uncertain Result
+PASS: At least 3 warranty policy files exist
+========================================================================
+PASS: ASSUREX V3 ML PACKAGE VALIDATED
+========================================================================

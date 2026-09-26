@@ -1,0 +1,1232 @@
+﻿SourceCSVRow,RecordID,ClaimID,Column,Before,After,Action,Reason
+588,REC00475,CLM01032,ProductCategory,air conditioner,Air Conditioner,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+688,REC00805,CLM00177,ProductCategory,CAMERA,Camera,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+738,REC01140,CLM01448,ProductCategory,SMARTPHONE,Smartphone,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+747,REC01253,CLM00140,ProductCategory, Smartphone ,Smartphone,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+798,REC00451,CLM00463,ProductCategory,TELEVISION,Television,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+890,REC00276,CLM00650,ProductCategory,television,Television,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+897,REC00863,CLM01357,ProductCategory,laptop,Laptop,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+998,REC00193,CLM01194,ProductCategory,printer,Printer,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1054,REC01322,CLM01164,ProductCategory, Refrigerator ,Refrigerator,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1079,REC00505,CLM01431,ProductCategory,camera,Camera,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1136,REC00246,CLM00457,ProductCategory, Printer ,Printer,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1188,REC00792,CLM00822,ProductCategory,CAMERA,Camera,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+6,REC00945,CLM01462,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+46,REC00540,CLM00370,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+101,REC00313,CLM00277,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+126,REC00245,CLM01232,Brand, PrimeView ,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+229,REC00560,CLM00293,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+330,REC00925,CLM01148,Brand,primeview,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+376,REC01151,CLM00601,Brand,ASTER,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+380,REC00164,CLM01102,Brand,PRIMEVIEW,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+429,REC00092,CLM01212,Brand,novatech,NovaTech,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+433,REC01213,CLM00338,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+487,REC00816,CLM01198,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+604,REC01291,CLM00131,Brand, PrimeView ,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+605,REC00444,CLM00368,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+615,REC00189,CLM00364,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+641,REC00357,CLM01161,Brand,aster,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+654,REC00931,CLM01478,Brand, HomePro ,HomePro,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+666,REC00167,CLM00092,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+668,REC00696,CLM01111,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+704,REC00118,CLM00582,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+717,REC00824,CLM00968,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+794,REC00666,CLM00632,Brand,aster,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+818,REC01046,CLM00323,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1011,REC00907,CLM00433,Brand,primeview,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1048,REC00520,CLM00484,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1061,REC00606,CLM00810,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1112,REC00013,CLM00629,Brand,zencore,ZenCore,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1166,REC00593,CLM00790,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1218,REC00202,CLM00244,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1220,REC01189,CLM00154,Brand,primeview,PrimeView,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1270,REC00351,CLM00408,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1293,REC00132,CLM00199,Brand,aster,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1319,REC00852,CLM00334,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1369,REC00565,CLM01184,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1398,REC01007,CLM01342,Brand,aster,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1401,REC00129,CLM00163,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1403,REC01183,CLM00532,Brand, Aster ,Aster,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1444,REC00260,CLM01072,Brand,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1494,REC01236,CLM00620,Brand, NovaTech ,NovaTech,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+4,REC01304,CLM01257,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+30,REC00058,CLM00489,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+182,REC00893,CLM00321,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+199,REC00583,CLM00852,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+273,REC00913,CLM01314,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+428,REC-DUP-0043,CLM01292,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+436,REC00968,CLM01110,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+453,REC01267,CLM00458,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+479,REC00196,CLM01420,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+482,REC01243,CLM00824,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+639,REC00736,CLM00266,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+647,REC00235,CLM00697,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+762,REC01467,CLM01129,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+841,REC00615,CLM00680,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+883,REC00911,CLM00472,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+906,REC01481,CLM00057,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+993,REC00788,CLM01260,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1116,REC00306,CLM01292,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1169,REC01184,CLM00230,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1415,REC00060,CLM00060,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1433,REC01112,CLM00974,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1441,REC01085,CLM00981,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1451,REC00131,CLM00165,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1454,REC00399,CLM00215,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1485,REC00042,CLM00573,ModelNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+458,REC00626,CLM00295,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+483,REC01210,CLM00206,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+529,REC00290,CLM00369,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+920,REC01097,CLM00511,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1249,REC00989,CLM00922,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1257,REC00675,CLM01422,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1494,REC01236,CLM00620,SerialNumber,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+212,REC00435,CLM01075,PurchaseDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+354,REC00050,CLM00589,PurchaseDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+537,REC01048,CLM00849,PurchaseDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+631,REC01223,CLM01258,PurchaseDate,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+680,REC01473,CLM00260,PurchaseDate,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+851,REC00154,CLM01221,PurchaseDate,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1410,REC01262,CLM00337,PurchaseDate,31/31/2026,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+286,REC00836,CLM01055,ClaimDate,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+436,REC00968,CLM01110,ClaimDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+826,REC01469,CLM00915,ClaimDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+986,REC01463,CLM00851,ClaimDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+1312,REC00814,CLM01440,ClaimDate,31/31/2026,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+187,REC00431,CLM01384,FaultDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+249,REC00827,CLM00077,FaultDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+386,REC00089,CLM00940,FaultDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+411,REC01271,CLM01337,FaultDate,31/31/2026,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+735,REC00390,CLM00850,FaultDate,2026-99-41,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+1191,REC00350,CLM00355,FaultDate,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1198,REC00983,CLM00235,FaultDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+1453,REC01268,CLM00827,FaultDate,not-a-date,<MISSING>,INVALID_TO_NA,Date is invalid or is not in the declared YYYY-MM-DD format
+690,REC01414,CLM00798,WarrantyDurationMonths,240,<MISSING>,INVALID_TO_NA,Warranty duration must be between 0 and 120 months
+824,REC00525,CLM00004,WarrantyDurationMonths,-12,<MISSING>,INVALID_TO_NA,Warranty duration must be between 0 and 120 months
+223,REC00774,CLM01106,ExtendedWarranty,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+304,REC00121,CLM01404,ExtendedWarranty,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+538,REC00272,CLM00977,ExtendedWarranty,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+563,REC01485,CLM00938,ExtendedWarranty,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+696,REC00923,CLM01113,ExtendedWarranty,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+867,REC00573,CLM00256,ExtendedWarranty,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1079,REC00505,CLM01431,ExtendedWarranty,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1137,REC00324,CLM00078,ExtendedWarranty,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1199,REC01455,CLM00512,ExtendedWarranty,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1222,REC01252,CLM00587,ExtendedWarranty,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1230,REC00500,CLM00412,ExtendedWarranty, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1393,REC00372,CLM01429,ExtendedWarranty, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+19,REC00458,CLM01009,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+33,REC00423,CLM00548,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+39,REC00921,CLM00466,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+51,REC00810,CLM00893,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+76,REC00891,CLM00022,ReceiptAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+80,REC00529,CLM00284,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+94,REC00905,CLM00705,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+163,REC00231,CLM01104,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+173,REC00612,CLM01070,ReceiptAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+216,REC00935,CLM01187,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+245,REC00287,CLM00161,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+258,REC00998,CLM00659,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+283,REC00959,CLM01229,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+285,REC00463,CLM01085,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+330,REC00925,CLM01148,ReceiptAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+349,REC01051,CLM00561,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+382,REC00880,CLM01096,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+388,REC00547,CLM01298,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+437,REC00869,CLM00941,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+439,REC00944,CLM00770,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+461,REC-DUP-0025,CLM00765,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+468,REC00424,CLM00980,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+487,REC00816,CLM01198,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+489,REC00126,CLM00503,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+528,REC00618,CLM00844,ReceiptAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+540,REC00980,CLM00920,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+570,REC00862,CLM00186,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+601,REC00335,CLM00675,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+603,REC00171,CLM00867,ReceiptAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+604,REC01291,CLM00131,ReceiptAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+610,REC00940,CLM00760,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+616,REC00400,CLM01166,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+636,REC00678,CLM01426,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+656,REC00705,CLM00696,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+674,REC00430,CLM00086,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+695,REC00476,CLM00734,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+730,REC01283,CLM00303,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+755,REC00007,CLM01290,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+782,REC01483,CLM00341,ReceiptAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+790,REC00461,CLM01142,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+795,REC00054,CLM01471,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+826,REC01469,CLM00915,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+848,REC01282,CLM00478,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+908,REC01244,CLM01202,ReceiptAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+911,REC00887,CLM00678,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+914,REC00709,CLM00307,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+915,REC01077,CLM00488,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+935,REC00331,CLM00961,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+946,REC01325,CLM01119,ReceiptAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+955,REC00806,CLM00655,ReceiptAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1011,REC00907,CLM00433,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1023,REC01491,CLM00976,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1050,REC01296,CLM00229,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1071,REC01273,CLM00491,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1113,REC01427,CLM00969,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1131,REC00831,CLM00970,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1140,REC01023,CLM00874,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1143,REC00875,CLM00633,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1151,REC00369,CLM00868,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1155,REC00224,CLM00864,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1158,REC01000,CLM00722,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1166,REC00593,CLM00790,ReceiptAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1173,REC00298,CLM00993,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1223,REC00689,CLM01263,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1253,REC01420,CLM00815,ReceiptAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1278,REC01380,CLM01181,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1282,REC00613,CLM01182,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1290,REC00972,CLM00630,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1297,REC00123,CLM00306,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1327,REC01053,CLM01369,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1332,REC00485,CLM00765,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1337,REC00028,CLM00290,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1340,REC01217,CLM00126,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1342,REC00642,CLM00540,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1412,REC00314,CLM00036,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1417,REC01379,CLM01101,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1421,REC01122,CLM00108,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1426,REC01430,CLM00799,ReceiptAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1442,REC00225,CLM01366,ReceiptAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+2,REC01254,CLM01259,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+4,REC01304,CLM01257,WarrantyCardAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+10,REC00218,CLM01020,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+47,REC00591,CLM00169,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+49,REC00166,CLM01424,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+53,REC01435,CLM00743,WarrantyCardAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+58,REC00660,CLM00772,WarrantyCardAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+69,REC00569,CLM01051,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+79,REC01284,CLM00771,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+82,REC00437,CLM00779,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+96,REC00106,CLM01419,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+120,REC00780,CLM01091,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+129,REC00954,CLM00767,WarrantyCardAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+169,REC00406,CLM00395,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+175,REC00533,CLM00818,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+193,REC00999,CLM00960,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+195,REC01082,CLM00297,WarrantyCardAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+208,REC00791,CLM00325,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+254,REC00382,CLM00052,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+263,REC00690,CLM00329,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+281,REC00511,CLM01483,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+282,REC01227,CLM00567,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+301,REC00977,CLM00725,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+305,REC00906,CLM00691,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+322,REC00879,CLM00820,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+326,REC00009,CLM00876,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+361,REC01450,CLM00907,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+403,REC00291,CLM01046,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+412,REC01045,CLM01472,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+428,REC-DUP-0043,CLM01292,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+435,REC01457,CLM01409,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+436,REC00968,CLM01110,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+440,REC00386,CLM01390,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+449,REC00757,CLM00431,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+458,REC00626,CLM00295,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+475,REC01149,CLM01172,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+500,REC00916,CLM01362,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+510,REC00671,CLM00378,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+519,REC00995,CLM01414,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+530,REC01312,CLM01149,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+566,REC00504,CLM00742,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+568,REC00892,CLM01412,WarrantyCardAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+631,REC01223,CLM01258,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+638,REC00255,CLM01287,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+650,REC-DUP-0035,CLM00709,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+668,REC00696,CLM01111,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+683,REC01334,CLM00663,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+686,REC00785,CLM00250,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+688,REC00805,CLM00177,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+697,REC01444,CLM01273,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+706,REC01235,CLM00098,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+714,REC00712,CLM01175,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+718,REC00756,CLM01002,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+730,REC01283,CLM00303,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+739,REC00850,CLM00061,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+742,REC00412,CLM00030,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+744,REC00609,CLM01003,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+746,REC00984,CLM00665,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+747,REC01253,CLM00140,WarrantyCardAvailable,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+754,REC00263,CLM00043,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+755,REC00007,CLM01290,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+762,REC01467,CLM01129,WarrantyCardAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+775,REC00949,CLM00153,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+778,REC01419,CLM01265,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+792,REC00020,CLM01296,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+793,REC01032,CLM00460,WarrantyCardAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+808,REC00603,CLM01353,WarrantyCardAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+830,REC00786,CLM01066,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+832,REC01470,CLM00132,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+835,REC00903,CLM00249,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+839,REC00599,CLM00311,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+880,REC01256,CLM01368,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+899,REC00867,CLM01286,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+901,REC01161,CLM00465,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+906,REC01481,CLM00057,WarrantyCardAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+918,REC00281,CLM00901,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+934,REC01067,CLM00910,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+955,REC00806,CLM00655,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+960,REC01167,CLM00669,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1003,REC01139,CLM00702,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1015,REC00391,CLM00700,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1016,REC00001,CLM00344,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1024,REC00770,CLM00276,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1084,REC00768,CLM00227,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1086,REC01486,CLM00783,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1088,REC01376,CLM00436,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1091,REC00877,CLM00953,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1092,REC00730,CLM00404,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1100,REC00765,CLM01163,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1102,REC00323,CLM00034,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1116,REC00306,CLM01292,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1129,REC00645,CLM00709,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1146,REC01454,CLM01383,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1147,REC00759,CLM00268,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1152,REC00886,CLM00710,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1155,REC00224,CLM00864,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1164,REC01019,CLM01132,WarrantyCardAvailable, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1169,REC01184,CLM00230,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1199,REC01455,CLM00512,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1202,REC00746,CLM00481,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1235,REC00801,CLM01336,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1244,REC00190,CLM01017,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1259,REC00294,CLM00490,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1269,REC-DUP-0036,CLM00901,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1270,REC00351,CLM00408,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1290,REC00972,CLM00630,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1302,REC00268,CLM01476,WarrantyCardAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1303,REC00222,CLM00340,WarrantyCardAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1315,REC00467,CLM00588,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1355,REC00210,CLM01030,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1364,REC00561,CLM00731,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1379,REC00629,CLM01063,WarrantyCardAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1380,REC00140,CLM00405,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1409,REC00797,CLM00839,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1413,REC00029,CLM00695,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1416,REC00614,CLM01266,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1430,REC00897,CLM00225,WarrantyCardAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1453,REC01268,CLM00827,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1477,REC01109,CLM00774,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1479,REC01360,CLM00168,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1489,REC00099,CLM00070,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1499,REC01363,CLM01451,WarrantyCardAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1510,REC01128,CLM01349,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1511,REC00133,CLM01480,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1513,REC01205,CLM00560,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1520,REC00343,CLM00800,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1537,REC01299,CLM00563,WarrantyCardAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+34,REC01147,CLM00425,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+47,REC00591,CLM00169,ProductImageAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+60,REC00604,CLM00788,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+82,REC00437,CLM00779,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+93,REC00667,CLM00690,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+120,REC00780,CLM01091,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+123,REC00341,CLM00611,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+130,REC00361,CLM00625,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+136,REC00428,CLM00854,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+145,REC01330,CLM01395,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+164,REC00071,CLM00648,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+167,REC00447,CLM01410,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+191,REC00601,CLM01327,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+210,REC01138,CLM00583,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+251,REC00638,CLM01108,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+285,REC00463,CLM01085,ProductImageAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+288,REC01090,CLM00072,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+293,REC01103,CLM00952,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+294,REC01357,CLM00896,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+332,REC01438,CLM00862,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+412,REC01045,CLM01472,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+425,REC00714,CLM00275,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+435,REC01457,CLM01409,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+438,REC-DUP-0027,CLM00688,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+454,REC00464,CLM01095,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+458,REC00626,CLM00295,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+480,REC00433,CLM00921,ProductImageAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+489,REC00126,CLM00503,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+495,REC00098,CLM01364,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+517,REC01488,CLM00794,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+531,REC-DUP-0008,CLM00583,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+533,REC00330,CLM00246,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+537,REC01048,CLM00849,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+541,REC01449,CLM00936,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+547,REC00936,CLM01007,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+565,REC00484,CLM00423,ProductImageAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+573,REC00619,CLM00376,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+585,REC00951,CLM01143,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+586,REC00169,CLM01050,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+605,REC00444,CLM00368,ProductImageAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+607,REC00136,CLM00470,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+614,REC01211,CLM01354,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+631,REC01223,CLM01258,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+635,REC00359,CLM00688,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+723,REC01321,CLM00394,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+746,REC00984,CLM00665,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+831,REC00616,CLM00410,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+833,REC01057,CLM00118,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+834,REC01344,CLM00008,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+845,REC00698,CLM00068,ProductImageAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+862,REC00339,CLM00143,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+884,REC00064,CLM00732,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+887,REC01133,CLM00889,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+904,REC01191,CLM00537,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+927,REC00986,CLM01234,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+934,REC01067,CLM00910,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+943,REC00676,CLM00282,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+983,REC01207,CLM00411,ProductImageAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+998,REC00193,CLM01194,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1081,REC01107,CLM01269,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1086,REC01486,CLM00783,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1088,REC01376,CLM00436,ProductImageAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1103,REC01076,CLM00483,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1139,REC01404,CLM00121,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1145,REC01443,CLM00518,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1189,REC00249,CLM00730,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1201,REC00649,CLM00374,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1221,REC00242,CLM00363,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1253,REC01420,CLM00815,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1256,REC01026,CLM01024,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1270,REC00351,CLM00408,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1293,REC00132,CLM00199,ProductImageAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1299,REC00217,CLM01039,ProductImageAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1340,REC01217,CLM00126,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1363,REC01136,CLM00721,ProductImageAvailable,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1386,REC00739,CLM00103,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1412,REC00314,CLM00036,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1424,REC01317,CLM00029,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1499,REC01363,CLM01451,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1521,REC00192,CLM00028,ProductImageAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+65,REC01143,CLM00462,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+75,REC01416,CLM00289,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+120,REC00780,CLM01091,SerialEvidenceAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+125,REC01231,CLM00624,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+157,REC00366,CLM00693,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+162,REC00395,CLM00935,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+166,REC00755,CLM01283,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+182,REC00893,CLM00321,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+207,REC00454,CLM00699,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+210,REC01138,CLM00583,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+215,REC00899,CLM01399,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+270,REC00227,CLM00660,SerialEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+298,REC01200,CLM01079,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+305,REC00906,CLM00691,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+327,REC00466,CLM00073,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+342,REC00280,CLM00627,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+348,REC01121,CLM00606,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+369,REC00349,CLM00201,SerialEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+420,REC00183,CLM01152,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+442,REC01316,CLM01321,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+449,REC00757,CLM00431,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+475,REC01149,CLM01172,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+515,REC00957,CLM00978,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+531,REC-DUP-0008,CLM00583,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+533,REC00330,CLM00246,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+568,REC00892,CLM01412,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+569,REC01479,CLM00046,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+575,REC00127,CLM00933,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+601,REC00335,CLM00675,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+602,REC01493,CLM00643,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+634,REC00059,CLM00634,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+658,REC00471,CLM00842,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+664,REC00238,CLM00996,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+667,REC00631,CLM00273,SerialEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+668,REC00696,CLM01111,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+670,REC01079,CLM00508,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+680,REC01473,CLM00260,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+714,REC00712,CLM01175,SerialEvidenceAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+715,REC00051,CLM00479,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+769,REC00711,CLM00577,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+776,REC00030,CLM00362,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+780,REC00286,CLM01452,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+789,REC01448,CLM01211,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+792,REC00020,CLM01296,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+798,REC00451,CLM00463,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+811,REC01163,CLM00555,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+861,REC00413,CLM00427,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+890,REC00276,CLM00650,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+892,REC00578,CLM00291,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+919,REC00597,CLM00445,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+952,REC00582,CLM00415,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+953,REC00031,CLM01154,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+954,REC01351,CLM00066,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+959,REC00779,CLM00024,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1000,REC01168,CLM00375,SerialEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1033,REC01248,CLM00387,SerialEvidenceAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1056,REC00074,CLM00365,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1058,REC00571,CLM00326,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1063,REC00777,CLM00538,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1065,REC00480,CLM01352,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1071,REC01273,CLM00491,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1092,REC00730,CLM00404,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1098,REC00402,CLM00332,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1106,REC00326,CLM01413,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1109,REC01093,CLM00372,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1137,REC00324,CLM00078,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1156,REC00062,CLM00558,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1162,REC01492,CLM01243,SerialEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1180,REC01206,CLM01332,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1181,REC00342,CLM00223,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1199,REC01455,CLM00512,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1200,REC00143,CLM01442,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1205,REC00146,CLM01446,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1216,REC01385,CLM00959,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1219,REC00713,CLM00280,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1259,REC00294,CLM00490,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1285,REC00656,CLM01120,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1290,REC00972,CLM00630,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1294,REC00023,CLM00686,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1296,REC01159,CLM01047,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1301,REC01311,CLM00670,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1350,REC01072,CLM01018,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1354,REC00448,CLM00198,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1358,REC01144,CLM01033,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1367,REC01020,CLM00803,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1385,REC00055,CLM01264,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1414,REC01115,CLM00298,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1423,REC01381,CLM00346,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1446,REC00446,CLM01499,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1455,REC00901,CLM00543,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1459,REC00799,CLM00802,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1465,REC00176,CLM00744,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1486,REC00766,CLM00454,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1487,REC01300,CLM01116,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1501,REC00317,CLM00016,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1506,REC01190,CLM01331,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1525,REC00611,CLM00797,SerialEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+45,REC-DUP-0030,CLM01277,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+60,REC00604,CLM00788,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+76,REC00891,CLM00022,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+94,REC00905,CLM00705,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+98,REC00563,CLM00310,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+102,REC00876,CLM00210,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+113,REC00839,CLM00308,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+128,REC00270,CLM00554,FaultEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+138,REC00264,CLM01178,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+142,REC00502,CLM00499,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+147,REC00283,CLM00513,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+148,REC-DUP-0028,CLM00204,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+154,REC00720,CLM00212,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+173,REC00612,CLM01070,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+176,REC00826,CLM00324,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+189,REC01313,CLM01285,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+197,REC00014,CLM01138,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+198,REC01142,CLM01099,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+209,REC00607,CLM00549,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+217,REC00807,CLM01437,FaultEvidenceAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+237,REC01226,CLM00679,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+244,REC01044,CLM01271,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+262,REC01063,CLM00110,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+269,REC-DUP-0013,CLM01400,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+270,REC00227,CLM00660,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+272,REC00946,CLM00559,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+273,REC00913,CLM01314,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+275,REC00663,CLM00204,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+289,REC01204,CLM00150,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+302,REC01440,CLM01403,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+357,REC01113,CLM00407,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+375,REC00478,CLM00931,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+377,REC01294,CLM00572,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+387,REC-DUP-0038,CLM00600,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+389,REC01181,CLM01423,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+390,REC00093,CLM01168,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+392,REC00236,CLM00674,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+423,REC00517,CLM00500,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+439,REC00944,CLM00770,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+490,REC01498,CLM00929,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+514,REC00864,CLM01293,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+528,REC00618,CLM00844,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+564,REC00381,CLM01387,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+565,REC00484,CLM00423,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+580,REC00902,CLM01361,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+585,REC00951,CLM01143,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+605,REC00444,CLM00368,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+617,REC00243,CLM00164,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+624,REC00157,CLM00780,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+642,REC00518,CLM00776,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+646,REC00379,CLM00296,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+649,REC00119,CLM00267,FaultEvidenceAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+654,REC00931,CLM01478,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+662,REC00735,CLM01277,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+692,REC01328,CLM00496,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+698,REC00496,CLM00316,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+713,REC01447,CLM00232,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+714,REC00712,CLM01175,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+719,REC00744,CLM00005,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+731,REC00021,CLM00011,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+748,REC00793,CLM01191,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+759,REC00837,CLM00733,FaultEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+763,REC-DUP-0022,CLM00498,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+767,REC00165,CLM00100,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+773,REC01342,CLM00720,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+781,REC00769,CLM00473,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+783,REC00188,CLM00498,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+785,REC01461,CLM00109,FaultEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+789,REC01448,CLM01211,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+793,REC01032,CLM00460,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+795,REC00054,CLM01471,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+801,REC00469,CLM00067,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+817,REC00842,CLM00012,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+819,REC00658,CLM00909,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+835,REC00903,CLM00249,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+849,REC00562,CLM01400,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+864,REC00465,CLM01386,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+895,REC00543,CLM01247,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+903,REC00394,CLM01453,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+916,REC00580,CLM00586,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+922,REC00120,CLM00381,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+932,REC01110,CLM01312,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+947,REC00754,CLM01372,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+957,REC00026,CLM00493,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+962,REC00510,CLM01382,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+974,REC01114,CLM00737,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+991,REC00830,CLM00401,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1009,REC01359,CLM00438,FaultEvidenceAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1018,REC00487,CLM00467,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1022,REC01372,CLM00320,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1023,REC01491,CLM00976,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1044,REC00861,CLM00963,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1073,REC00737,CLM00492,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1085,REC01265,CLM00692,FaultEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1104,REC01415,CLM00598,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1119,REC00958,CLM01438,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1134,REC01355,CLM01056,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1138,REC00096,CLM00208,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1163,REC00213,CLM00432,FaultEvidenceAvailable,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1178,REC01170,CLM00992,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1188,REC00792,CLM00822,FaultEvidenceAvailable,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1212,REC01308,CLM00240,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1214,REC00289,CLM01291,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1219,REC00713,CLM00280,FaultEvidenceAvailable,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1224,REC00795,CLM01377,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1226,REC01371,CLM01340,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1234,REC01259,CLM00134,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1258,REC00100,CLM00667,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1277,REC00404,CLM00636,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1285,REC00656,CLM01120,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1304,REC01408,CLM01224,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1329,REC01001,CLM01114,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1341,REC01186,CLM00877,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1352,REC01433,CLM00623,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1354,REC00448,CLM00198,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1364,REC00561,CLM00731,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1367,REC01020,CLM00803,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1376,REC01281,CLM01279,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1382,REC00687,CLM01444,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1387,REC00515,CLM00600,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1430,REC00897,CLM00225,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1469,REC00608,CLM00796,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1470,REC00753,CLM00007,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1472,REC01462,CLM00063,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1481,REC00682,CLM00021,FaultEvidenceAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1493,REC00114,CLM01062,FaultEvidenceAvailable, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1496,REC01041,CLM00147,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1505,REC00455,CLM00738,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1522,REC00216,CLM00516,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1531,REC00633,CLM00345,FaultEvidenceAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+19,REC00458,CLM01009,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+30,REC00058,CLM00489,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+35,REC00376,CLM00414,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+36,REC01212,CLM01355,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+38,REC00727,CLM00487,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+58,REC00660,CLM00772,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+64,REC00239,CLM00726,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+66,REC01172,CLM01109,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+67,REC00929,CLM01210,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+82,REC00437,CLM00779,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+86,REC01343,CLM00831,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+92,REC01130,CLM01223,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+104,REC00419,CLM01000,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+109,REC00993,CLM00752,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+124,REC00860,CLM00083,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+127,REC00265,CLM00828,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+143,REC00049,CLM01326,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+146,REC00532,CLM00626,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+159,REC00383,CLM00855,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+189,REC01313,CLM01285,RepairReportAvailable,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+207,REC00454,CLM00699,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+213,REC01436,CLM00044,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+222,REC00168,CLM00684,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+228,REC00371,CLM00419,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+237,REC01226,CLM00679,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+245,REC00287,CLM00161,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+253,REC00441,CLM00812,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+262,REC01063,CLM00110,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+266,REC01123,CLM00205,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+274,REC00969,CLM01371,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+277,REC00247,CLM00904,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+299,REC00849,CLM01054,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+327,REC00466,CLM00073,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+328,REC01288,CLM00178,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+330,REC00925,CLM01148,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+332,REC01438,CLM00862,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+334,REC00022,CLM01170,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+338,REC01301,CLM00379,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+344,REC00811,CLM00209,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+352,REC00178,CLM00382,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+353,REC00185,CLM01014,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+355,REC01137,CLM00886,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+360,REC00835,CLM00593,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+364,REC01088,CLM00166,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+381,REC00024,CLM01270,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+394,REC00537,CLM00517,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+396,REC00896,CLM00575,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+405,REC00380,CLM00252,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+411,REC01271,CLM01337,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+416,REC-DUP-0009,CLM00726,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+419,REC01171,CLM01189,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+429,REC00092,CLM01212,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+432,REC00978,CLM00333,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+449,REC00757,CLM00431,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+452,REC00047,CLM00964,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+457,REC01368,CLM01275,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+467,REC01428,CLM01316,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+473,REC00524,CLM00485,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+506,REC00909,CLM01064,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+510,REC00671,CLM00378,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+519,REC00995,CLM01414,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+537,REC01048,CLM00849,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+545,REC-DUP-0015,CLM00565,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+551,REC00396,CLM00682,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+554,REC00358,CLM01307,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+557,REC01064,CLM00450,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+561,REC00740,CLM00888,RepairReportAvailable,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+578,REC00198,CLM00937,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+586,REC00169,CLM01050,RepairReportAvailable,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+587,REC01446,CLM01188,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+589,REC01178,CLM01012,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+604,REC01291,CLM00131,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+607,REC00136,CLM00470,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+615,REC00189,CLM00364,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+627,REC00938,CLM00766,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+631,REC01223,CLM01258,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+636,REC00678,CLM01426,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+652,REC00974,CLM00047,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+661,REC00640,CLM01155,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+665,REC01030,CLM00786,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+670,REC01079,CLM00508,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+675,REC00489,CLM00148,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+687,REC00285,CLM00612,RepairReportAvailable,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+693,REC01042,CLM00074,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+695,REC00476,CLM00734,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+696,REC00923,CLM01113,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+702,REC00483,CLM00529,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+717,REC00824,CLM00968,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+718,REC00756,CLM01002,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+729,REC00646,CLM00509,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+744,REC00609,CLM01003,RepairReportAvailable,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+745,REC00452,CLM01396,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+752,REC01247,CLM01098,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+757,REC00677,CLM00059,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+775,REC00949,CLM00153,RepairReportAvailable,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+776,REC00030,CLM00362,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+793,REC01032,CLM00460,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+817,REC00842,CLM00012,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+838,REC00142,CLM00224,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+848,REC01282,CLM00478,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+862,REC00339,CLM00143,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+874,REC00585,CLM00175,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+916,REC00580,CLM00586,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+938,REC00895,CLM00804,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+940,REC00982,CLM01196,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+942,REC00493,CLM01073,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+948,REC00401,CLM00631,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+962,REC00510,CLM01382,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+989,REC01451,CLM00954,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1001,REC00015,CLM01343,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1013,REC01187,CLM00823,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1020,REC00078,CLM00091,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1021,REC01234,CLM01373,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1027,REC01392,CLM00989,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1031,REC00688,CLM00138,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1048,REC00520,CLM00484,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1063,REC00777,CLM00538,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1067,REC00368,CLM01449,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1068,REC00184,CLM00309,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1080,REC00392,CLM00724,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1097,REC00354,CLM00157,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1102,REC00323,CLM00034,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1107,REC00365,CLM00480,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1115,REC00277,CLM00033,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1127,REC00197,CLM01058,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1152,REC00886,CLM00710,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1162,REC01492,CLM01243,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1164,REC01019,CLM01132,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1187,REC00172,CLM01346,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1190,REC00590,CLM01468,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1198,REC00983,CLM00235,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1214,REC00289,CLM01291,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1224,REC00795,CLM01377,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1226,REC01371,CLM01340,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1228,REC00783,CLM00174,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1246,REC00643,CLM00826,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1248,REC00718,CLM00173,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1262,REC00644,CLM01010,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1278,REC01380,CLM01181,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1291,REC01011,CLM00162,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1296,REC01159,CLM01047,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1297,REC00123,CLM00306,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1310,REC00764,CLM01305,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1314,REC01468,CLM00258,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1333,REC00481,CLM00646,RepairReportAvailable,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1337,REC00028,CLM00290,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1340,REC01217,CLM00126,RepairReportAvailable,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1352,REC01433,CLM00623,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1353,REC00771,CLM00565,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1392,REC01410,CLM00495,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1393,REC00372,CLM01429,RepairReportAvailable,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1395,REC01146,CLM00924,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1402,REC00704,CLM00189,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1434,REC00758,CLM00149,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1456,REC01403,CLM00429,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1459,REC00799,CLM00802,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1460,REC01203,CLM00975,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1475,REC00066,CLM01416,RepairReportAvailable,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1481,REC00682,CLM00021,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1486,REC00766,CLM00454,RepairReportAvailable,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1491,REC-DUP-0031,CLM00414,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1502,REC01006,CLM00640,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1510,REC01128,CLM01349,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1511,REC00133,CLM01480,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1512,REC00965,CLM00469,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1515,REC01010,CLM00972,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1522,REC00216,CLM00516,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1534,REC00209,CLM00245,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1537,REC01299,CLM00563,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1540,REC01132,CLM00261,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1541,REC01119,CLM00522,RepairReportAvailable,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+55,REC01310,CLM01043,PreviousRepair, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+168,REC00073,CLM00971,PreviousRepair,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+264,REC00162,CLM00475,PreviousRepair,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+344,REC00811,CLM00209,PreviousRepair, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+373,REC-DUP-0040,CLM01131,PreviousRepair, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+385,REC00134,CLM00053,PreviousRepair,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+460,REC01174,CLM00228,PreviousRepair, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+471,REC01230,CLM01309,PreviousRepair,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+473,REC00524,CLM00485,PreviousRepair,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+588,REC00475,CLM01032,PreviousRepair,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+593,REC01065,CLM01157,PreviousRepair,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+629,REC01326,CLM00203,PreviousRepair,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+764,REC00551,CLM00274,PreviousRepair,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1048,REC00520,CLM00484,PreviousRepair,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1193,REC00930,CLM01294,PreviousRepair,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1349,REC01263,CLM00403,PreviousRepair, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1423,REC01381,CLM00346,PreviousRepair, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1456,REC01403,CLM00429,PreviousRepair,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1468,REC00566,CLM01131,PreviousRepair, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1472,REC01462,CLM00063,PreviousRepair,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+210,REC01138,CLM00583,RepairCount,-1,<MISSING>,INVALID_TO_NA,This field cannot be negative
+493,REC00364,CLM00870,RepairCount,-3,<MISSING>,INVALID_TO_NA,This field cannot be negative
+531,REC-DUP-0008,CLM00583,RepairCount,-1,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1313,REC00261,CLM00281,RepairCount,-3,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1328,REC00307,CLM00234,RepairCount,-1,<MISSING>,INVALID_TO_NA,This field cannot be negative
+138,REC00264,CLM01178,RepairAuthorized,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+205,REC00521,CLM00871,RepairAuthorized,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+351,REC01027,CLM00610,RepairAuthorized, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+404,REC00138,CLM01023,RepairAuthorized,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+452,REC00047,CLM00964,RepairAuthorized,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+469,REC00522,CLM01112,RepairAuthorized, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+498,REC00006,CLM01487,RepairAuthorized,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+623,REC01339,CLM01274,RepairAuthorized,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1087,REC00348,CLM00384,RepairAuthorized,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1374,REC00728,CLM00950,RepairAuthorized,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1449,REC00415,CLM00894,RepairAuthorized,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1497,REC00937,CLM01388,RepairAuthorized,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1515,REC01010,CLM00972,RepairAuthorized,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+63,REC00414,CLM00302,PreviousReplacement,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+75,REC01416,CLM00289,PreviousReplacement,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+204,REC00116,CLM01443,PreviousReplacement, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+257,REC00941,CLM00130,PreviousReplacement, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+335,REC00674,CLM01485,PreviousReplacement,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+383,REC01306,CLM00859,PreviousReplacement,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+978,REC00254,CLM00069,PreviousReplacement,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1046,REC01002,CLM01136,PreviousReplacement,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1338,REC00742,CLM01140,PreviousReplacement,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+75,REC01416,CLM00289,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+122,REC00988,CLM00832,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+302,REC01440,CLM01403,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+306,REC00111,CLM00353,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+340,REC01033,CLM00966,ReplacementWithinWarranty,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+519,REC00995,CLM01414,ReplacementWithinWarranty,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+657,REC01131,CLM00927,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+690,REC01414,CLM00798,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+731,REC00021,CLM00011,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+893,REC00610,CLM00152,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+931,REC00761,CLM00259,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1183,REC00594,CLM00385,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1189,REC00249,CLM00730,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1193,REC00930,CLM01294,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1303,REC00222,CLM00340,ReplacementWithinWarranty,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1350,REC01072,CLM01018,ReplacementWithinWarranty,N/A,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1424,REC01317,CLM00029,ReplacementWithinWarranty,NA,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1515,REC01010,CLM00972,ReplacementWithinWarranty,not applicable,Not Applicable,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+19,REC00458,CLM01009,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+85,REC01080,CLM01405,SerialNumberMatch,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+246,REC-DUP-0012,CLM01241,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+263,REC00690,CLM00329,SerialNumberMatch, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+345,REC01407,CLM01241,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+551,REC00396,CLM00682,SerialNumberMatch, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+557,REC01064,CLM00450,SerialNumberMatch,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+605,REC00444,CLM00368,SerialNumberMatch, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+665,REC01030,CLM00786,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+745,REC00452,CLM01396,SerialNumberMatch,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+754,REC00263,CLM00043,SerialNumberMatch, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+860,REC01425,CLM01302,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1007,REC01162,CLM01094,SerialNumberMatch,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1389,REC01150,CLM00449,SerialNumberMatch,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+83,REC01275,CLM01179,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+128,REC00270,CLM00554,ProductModelConsistent,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+147,REC00283,CLM00513,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+203,REC00039,CLM00848,ProductModelConsistent, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+258,REC00998,CLM00659,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+291,REC00508,CLM00605,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+403,REC00291,CLM01046,ProductModelConsistent,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+413,REC00008,CLM00704,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+745,REC00452,CLM01396,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+791,REC00346,CLM01162,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+801,REC00469,CLM00067,ProductModelConsistent,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+835,REC00903,CLM00249,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+856,REC00915,CLM01262,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+921,REC01384,CLM01498,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1053,REC01319,CLM00158,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1157,REC01242,CLM01365,ProductModelConsistent, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1242,REC00244,CLM01195,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1273,REC00531,CLM01067,ProductModelConsistent,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1281,REC00411,CLM00956,ProductModelConsistent,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1288,REC01052,CLM00471,ProductModelConsistent, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1300,REC-DUP-0005,CLM01162,ProductModelConsistent,Y,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+110,REC00061,CLM00014,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+203,REC00039,CLM00848,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+218,REC00318,CLM01447,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+230,REC01050,CLM00192,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+233,REC00266,CLM00437,DuplicateClaimIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+271,REC00542,CLM01484,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+496,REC00773,CLM00096,DuplicateClaimIndicator,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+528,REC00618,CLM00844,DuplicateClaimIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+612,REC00102,CLM00443,DuplicateClaimIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+634,REC00059,CLM00634,DuplicateClaimIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+735,REC00390,CLM00850,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+825,REC01251,CLM00242,DuplicateClaimIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+895,REC00543,CLM01247,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+907,REC01466,CLM01147,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1017,REC01157,CLM01049,DuplicateClaimIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1092,REC00730,CLM00404,DuplicateClaimIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1107,REC00365,CLM00480,DuplicateClaimIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1172,REC01125,CLM00239,DuplicateClaimIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1285,REC00656,CLM01120,DuplicateClaimIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1294,REC00023,CLM00686,DuplicateClaimIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1415,REC00060,CLM00060,DuplicateClaimIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+87,REC-DUP-0033,CLM00531,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+88,REC00725,CLM00791,DocumentDuplicateIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+96,REC00106,CLM01419,DocumentDuplicateIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+129,REC00954,CLM00767,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+150,REC00979,CLM00994,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+153,REC01222,CLM01214,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+369,REC00349,CLM00201,DocumentDuplicateIndicator, Yes ,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+435,REC01457,CLM01409,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+498,REC00006,CLM01487,DocumentDuplicateIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+580,REC00902,CLM01361,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+614,REC01211,CLM01354,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+707,REC00927,CLM01350,DocumentDuplicateIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+731,REC00021,CLM00011,DocumentDuplicateIndicator,YES,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+763,REC-DUP-0022,CLM00498,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+783,REC00188,CLM00498,DocumentDuplicateIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+870,REC00079,CLM01068,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+972,REC01336,CLM00698,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1015,REC00391,CLM00700,DocumentDuplicateIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1164,REC01019,CLM01132,DocumentDuplicateIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1182,REC00257,CLM00531,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1294,REC00023,CLM00686,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1384,REC00817,CLM00393,DocumentDuplicateIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1484,REC00763,CLM00707,DocumentDuplicateIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1498,REC00659,CLM00455,DocumentDuplicateIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+33,REC00423,CLM00548,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+92,REC01130,CLM01223,ContradictionIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+187,REC00431,CLM01384,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+296,REC00838,CLM00642,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+390,REC00093,CLM01168,ContradictionIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+507,REC01257,CLM01227,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+682,REC00182,CLM00813,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+753,REC00362,CLM01053,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+768,REC01373,CLM00010,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+879,REC00630,CLM01450,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1041,REC01160,CLM01459,ContradictionIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1059,REC00229,CLM00903,ContradictionIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1232,REC00139,CLM01415,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1239,REC00495,CLM00753,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1283,REC01324,CLM00925,ContradictionIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1321,REC00506,CLM01145,ContradictionIndicator, No ,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1338,REC00742,CLM01140,ContradictionIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1404,REC00552,CLM01122,ContradictionIndicator,yes,Yes,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1447,REC01220,CLM01475,ContradictionIndicator,NO,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1511,REC00133,CLM01480,ContradictionIndicator,N,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1537,REC01299,CLM00563,ContradictionIndicator,no,No,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+650,REC-DUP-0035,CLM00709,PriorClaimCount,-2,<MISSING>,INVALID_TO_NA,This field cannot be negative
+695,REC00476,CLM00734,PriorClaimCount,-2,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1129,REC00645,CLM00709,PriorClaimCount,-2,<MISSING>,INVALID_TO_NA,This field cannot be negative
+7,REC01194,CLM01255,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+12,REC00555,CLM00188,ClaimAmount,-1.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+21,REC00065,CLM00857,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+37,REC01386,CLM00107,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+40,REC00156,CLM01233,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+43,REC00668,CLM00902,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+87,REC-DUP-0033,CLM00531,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+142,REC00502,CLM00499,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+182,REC00893,CLM00321,ClaimAmount,-1.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+206,REC00800,CLM01125,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+237,REC01226,CLM00679,ClaimAmount,-500.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+259,REC01173,CLM01021,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+286,REC00836,CLM01055,ClaimAmount,-500.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+324,REC01364,CLM01185,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+325,REC00436,CLM00564,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+348,REC01121,CLM00606,ClaimAmount,-500.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+409,REC00700,CLM00464,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+466,REC00420,CLM01250,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+491,REC00538,CLM00885,ClaimAmount,-1.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+527,REC00750,CLM00135,ClaimAmount,-500.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+581,REC00721,CLM00872,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+650,REC-DUP-0035,CLM00709,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+696,REC00923,CLM01113,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+701,REC00043,CLM00913,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+710,REC01365,CLM01268,ClaimAmount,-1.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+756,REC00985,CLM01249,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+834,REC01344,CLM00008,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+851,REC00154,CLM01221,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+883,REC00911,CLM00472,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+923,REC01348,CLM01059,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1051,REC00269,CLM00124,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1060,REC00251,CLM00456,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1078,REC01129,CLM01304,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1105,REC00661,CLM00955,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1129,REC00645,CLM00709,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1182,REC00257,CLM00531,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1266,REC00295,CLM00354,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1293,REC00132,CLM00199,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1325,REC-DUP-0026,CLM00117,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1329,REC01001,CLM01114,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1350,REC01072,CLM01018,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1399,REC00417,CLM00644,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1414,REC01115,CLM00298,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1419,REC01188,CLM00117,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1451,REC00131,CLM00165,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1482,REC00973,CLM00207,ClaimAmount,-1.0,<MISSING>,INVALID_TO_NA,ClaimAmount must be positive
+1497,REC00937,CLM01388,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1515,REC01010,CLM00972,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1540,REC01132,CLM00261,ClaimAmount,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+16,REC-DUP-0016,CLM00428,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+20,REC01459,CLM00444,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+29,REC00732,CLM00609,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+39,REC00921,CLM00466,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+50,REC01307,CLM01086,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+54,REC00516,CLM00477,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+56,REC01413,CLM00133,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+69,REC00569,CLM01051,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+74,REC01496,CLM01011,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+85,REC01080,CLM01405,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+88,REC00725,CLM00791,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+90,REC01169,CLM00145,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+99,REC00038,CLM00319,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+150,REC00979,CLM00994,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+154,REC00720,CLM00212,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+187,REC00431,CLM01384,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+204,REC00116,CLM01443,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+234,REC00328,CLM00672,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+241,REC00090,CLM01115,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+245,REC00287,CLM00161,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+260,REC00815,CLM00762,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+291,REC00508,CLM00605,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+313,REC00997,CLM00025,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+322,REC00879,CLM00820,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+338,REC01301,CLM00379,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+353,REC00185,CLM01014,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+357,REC01113,CLM00407,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+360,REC00835,CLM00593,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+364,REC01088,CLM00166,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+371,REC00036,CLM01199,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+378,REC00459,CLM01074,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+390,REC00093,CLM01168,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+401,REC00844,CLM00389,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+406,REC00296,CLM01407,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+411,REC01271,CLM01337,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+412,REC01045,CLM01472,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+415,REC00934,CLM00056,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+423,REC00517,CLM00500,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+435,REC01457,CLM01409,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+466,REC00420,CLM01250,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+476,REC00870,CLM00934,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+478,REC00367,CLM00271,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+491,REC00538,CLM00885,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+509,REC00492,CLM00105,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+510,REC00671,CLM00378,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+514,REC00864,CLM01293,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+526,REC00230,CLM00676,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+538,REC00272,CLM00977,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+575,REC00127,CLM00933,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+584,REC01078,CLM00552,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+603,REC00171,CLM00867,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+605,REC00444,CLM00368,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+632,REC00498,CLM01490,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+743,REC00570,CLM00342,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+745,REC00452,CLM01396,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+752,REC01247,CLM01098,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+773,REC01342,CLM00720,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+782,REC01483,CLM00341,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+789,REC01448,CLM01211,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+797,REC01293,CLM00635,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+808,REC00603,CLM01353,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+815,REC00738,CLM00544,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+818,REC01046,CLM00323,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+820,REC00470,CLM00288,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+835,REC00903,CLM00249,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+848,REC01282,CLM00478,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+896,REC00882,CLM00637,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+909,REC00828,CLM01015,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+930,REC01111,CLM01159,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+933,REC00548,CLM01394,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+985,REC00297,CLM00136,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+997,REC01287,CLM00793,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1005,REC00080,CLM00371,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1048,REC00520,CLM00484,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1051,REC00269,CLM00124,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1060,REC00251,CLM00456,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1085,REC01265,CLM00692,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1094,REC00778,CLM00292,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1095,REC01249,CLM00958,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1109,REC01093,CLM00372,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1113,REC01427,CLM00969,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1146,REC01454,CLM01383,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1153,REC00787,CLM00718,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1160,REC00733,CLM00448,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1193,REC00930,CLM01294,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1197,REC00802,CLM01081,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1250,REC01272,CLM00861,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1255,REC01401,CLM00128,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1257,REC00675,CLM01422,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1267,REC00523,CLM00278,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1271,REC01335,CLM00863,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1290,REC00972,CLM00630,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1317,REC00545,CLM01445,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1318,REC00928,CLM00428,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1337,REC00028,CLM00290,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1352,REC01433,CLM00623,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1363,REC01136,CLM00721,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1374,REC00728,CLM00950,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1398,REC01007,CLM01342,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1409,REC00797,CLM00839,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1411,REC01250,CLM01248,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1450,REC00963,CLM00099,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1459,REC00799,CLM00802,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1465,REC00176,CLM00744,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1473,REC01297,CLM01367,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1475,REC00066,CLM01416,PreviousRepairCost,-100.0,<MISSING>,INVALID_TO_NA,This field cannot be negative
+1488,REC00706,CLM00120,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1489,REC00099,CLM00070,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1492,REC01346,CLM01489,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1495,REC00798,CLM01310,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1507,REC00037,CLM00257,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1513,REC01205,CLM00560,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1515,REC01010,CLM00972,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1516,REC01116,CLM01146,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1533,REC00141,CLM00965,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1535,REC00673,CLM00533,PreviousRepairCost,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+46,REC00540,CLM00370,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+70,REC00926,CLM00545,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+92,REC01130,CLM01223,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+104,REC00419,CLM01000,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+112,REC01423,CLM00313,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+116,REC00067,CLM00528,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+154,REC00720,CLM00212,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+196,REC00519,CLM00918,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+201,REC01016,CLM00270,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+209,REC00607,CLM00549,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+227,REC00752,CLM00944,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+231,REC01209,CLM01226,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+293,REC01103,CLM00952,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+300,REC00482,CLM00701,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+306,REC00111,CLM00353,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+325,REC00436,CLM00564,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+356,REC00933,CLM01126,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+364,REC01088,CLM00166,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+374,REC01290,CLM00304,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+376,REC01151,CLM00601,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+386,REC00089,CLM00940,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+418,REC01156,CLM00759,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+458,REC00626,CLM00295,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+504,REC01382,CLM01028,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+567,REC00970,CLM01341,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+594,REC00211,CLM00591,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+595,REC00010,CLM00652,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+596,REC00237,CLM01494,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+607,REC00136,CLM00470,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+617,REC00243,CLM00164,OCRConfidence,9.99,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+618,REC00299,CLM00685,OCRConfidence,1.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+620,REC01105,CLM01245,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+640,REC00617,CLM00451,OCRConfidence,9.99,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+668,REC00696,CLM01111,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+671,REC01394,CLM01297,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+672,REC00820,CLM00706,OCRConfidence,9.99,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+714,REC00712,CLM01175,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+719,REC00744,CLM00005,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+734,REC00273,CLM01080,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+738,REC01140,CLM01448,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+825,REC01251,CLM00242,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+827,REC00751,CLM00594,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+835,REC00903,CLM00249,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+839,REC00599,CLM00311,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+842,REC00267,CLM01092,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+847,REC00741,CLM01500,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+861,REC00413,CLM00427,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+874,REC00585,CLM00175,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+978,REC00254,CLM00069,OCRConfidence,1.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+989,REC01451,CLM00954,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+1015,REC00391,CLM00700,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1033,REC01248,CLM00387,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1037,REC00443,CLM00621,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1051,REC00269,CLM00124,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1100,REC00765,CLM01163,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1109,REC01093,CLM00372,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1139,REC01404,CLM00121,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+1142,REC00652,CLM01141,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1161,REC01036,CLM01038,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1217,REC00686,CLM01251,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1220,REC01189,CLM00154,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1224,REC00795,CLM01377,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1233,REC00208,CLM00426,OCRConfidence,1.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+1258,REC00100,CLM00667,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1283,REC01324,CLM00925,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1355,REC00210,CLM01030,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1375,REC01472,CLM00263,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1391,REC00697,CLM00973,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1405,REC00868,CLM00048,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1433,REC01112,CLM00974,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1437,REC00967,CLM01282,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1439,REC00702,CLM00614,OCRConfidence,-0.25,<MISSING>,INVALID_TO_NA,OCRConfidence must be between 0 and 1 inclusive
+1485,REC00042,CLM00573,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+1537,REC01299,CLM00563,OCRConfidence,,<MISSING>,MISSING_TOKEN_TO_NA,Explicit missing token
+123,REC00341,CLM00611,ClaimSubmissionChannel,service center,Service Center,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+139,REC00722,CLM00711,ClaimSubmissionChannel, Service Center ,Service Center,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+245,REC00287,CLM00161,ClaimSubmissionChannel,SERVICE CENTER,Service Center,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+259,REC01173,CLM01021,ClaimSubmissionChannel, Mobile App ,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+497,REC00964,CLM01256,ClaimSubmissionChannel,mobile app,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+600,REC01352,CLM01246,ClaimSubmissionChannel,MOBILE APP,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+714,REC00712,CLM01175,ClaimSubmissionChannel, Mobile App ,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+718,REC00756,CLM01002,ClaimSubmissionChannel,email,Email,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+727,REC01201,CLM01351,ClaimSubmissionChannel, Mobile App ,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+746,REC00984,CLM00665,ClaimSubmissionChannel,web,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+768,REC01373,CLM00010,ClaimSubmissionChannel,SERVICE CENTER,Service Center,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+793,REC01032,CLM00460,ClaimSubmissionChannel,mobile app,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+797,REC01293,CLM00635,ClaimSubmissionChannel,web,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1091,REC00877,CLM00953,ClaimSubmissionChannel, Mobile App ,Mobile App,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1136,REC00246,CLM00457,ClaimSubmissionChannel,WEB,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1249,REC00989,CLM00922,ClaimSubmissionChannel, Web ,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1291,REC01011,CLM00162,ClaimSubmissionChannel,service center,Service Center,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1375,REC01472,CLM00263,ClaimSubmissionChannel,EMAIL,Email,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1393,REC00372,CLM01429,ClaimSubmissionChannel, Email ,Email,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1479,REC01360,CLM00168,ClaimSubmissionChannel,web,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+1481,REC00682,CLM00021,ClaimSubmissionChannel, Web ,Web,NORMALIZE_CATEGORY,Fixed schema normalization; no learned statistics
+8,REC00971,CLM00080,WarrantyDurationMonths,0,<MISSING>,INVALID_TO_NA,Duration does not match configured category/component warranty policy
+372,REC00012,CLM00421,WarrantyDurationMonths,0,<MISSING>,INVALID_TO_NA,Duration does not match configured category/component warranty policy

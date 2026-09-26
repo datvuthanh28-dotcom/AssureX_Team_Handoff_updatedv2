@@ -1,0 +1,441 @@
+{
+  "policy_version": "2.0.0",
+  "policy_name": "AssureX Electronics Warranty Policy V2",
+  "common": {
+    "ocr_low_confidence_threshold": 0.7,
+    "warranty_proof_any_of": [
+      "electronic_warranty",
+      "warranty_card",
+      "purchase_receipt"
+    ],
+    "common_excluded_causes": [
+      "Accidental Damage",
+      "Physical Damage",
+      "Misuse",
+      "Unauthorized Modification",
+      "Normal Wear",
+      "Water Damage"
+    ],
+    "repair_report_required_if_previous_repair": true,
+    "identity_match_required": true,
+    "duplicate_claim_hard_invalid": true
+  },
+  "categories": {
+    "Laptop": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialOrServiceTag",
+      "service_mode": "CarryIn",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Battery": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        },
+        "Power Adapter": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Display Failure",
+        "Battery Problem",
+        "Overheating",
+        "Connectivity Issue"
+      ],
+      "additional_excluded_causes": [
+        "Liquid Damage"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "battery_claim": [
+          "battery_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "ServiceTagVerified",
+        "BatteryHealthPercent",
+        "BatteryCycleCount",
+        "DiagnosticCodeAvailable",
+        "PhysicalDamageIndicator",
+        "LiquidDamageIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Smartphone": {
+      "standard_warranty_months": 12,
+      "reporting_deadline_days": 30,
+      "identity_type": "IMEIOrSerial",
+      "service_mode": "CarryIn",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        },
+        "Battery": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        },
+        "Charger": {
+          "warranty_months": 6,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Display Failure",
+        "Battery Problem",
+        "Overheating",
+        "Connectivity Issue"
+      ],
+      "additional_excluded_causes": [
+        "Liquid Damage",
+        "Rooted Or Unauthorized Software Modification"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "battery_claim": [
+          "battery_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "IMEIVerified",
+        "ActivationDateVerified",
+        "BatteryHealthPercent",
+        "PhysicalDamageIndicator",
+        "LiquidDamageIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Television": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHomeOrCarryIn",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Display Panel": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Remote Control": {
+          "warranty_months": 6,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Display Failure",
+        "Audio Failure",
+        "Connectivity Issue"
+      ],
+      "additional_excluded_causes": [
+        "Panel Impact Damage",
+        "Improper Wall Mounting"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "display_panel_claim": [
+          "screen_fault_image"
+        ]
+      },
+      "category_specific_fields": [
+        "ScreenSizeInches",
+        "PanelFaultIndicator",
+        "PixelDefectCount",
+        "BurnInIndicator",
+        "PhysicalScreenDamageIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Refrigerator": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Compressor": {
+          "warranty_months": 120,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Cooling Failure",
+        "Water Leakage",
+        "Noise",
+        "Mechanical Failure"
+      ],
+      "additional_excluded_causes": [
+        "Improper Voltage Supply",
+        "Improper Ventilation",
+        "Commercial Misuse"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "compressor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "CompressorClaimIndicator",
+        "CoolingFailureIndicator",
+        "TemperatureIssueIndicator",
+        "CommercialUseIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Washing Machine": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Motor": {
+          "warranty_months": 120,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Water Leakage",
+        "Noise",
+        "Mechanical Failure"
+      ],
+      "additional_excluded_causes": [
+        "Foreign Object Damage",
+        "Overloading",
+        "Commercial Misuse"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "motor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "MotorClaimIndicator",
+        "WaterLeakageIndicator",
+        "MechanicalFaultIndicator",
+        "CommercialUseIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Air Conditioner": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Compressor": {
+          "warranty_months": 60,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Cooling Failure",
+        "Water Leakage",
+        "Noise"
+      ],
+      "additional_excluded_causes": [
+        "Improper Installation",
+        "Improper Refrigerant Handling",
+        "Improper Voltage Supply"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence",
+        "installation_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "compressor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "CompressorClaimIndicator",
+        "IndoorOutdoorUnit",
+        "InstallationVerified",
+        "InstallationDate",
+        "RefrigerantLeakIndicator"
+      ],
+      "installation_required": true,
+      "usage_limit": null
+    },
+    "Camera": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "CarryIn",
+      "components": {
+        "Camera Body": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Lens": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Battery": {
+          "warranty_months": 6,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Display Failure",
+        "Battery Problem",
+        "Lens Failure",
+        "Connectivity Issue"
+      ],
+      "additional_excluded_causes": [
+        "Liquid Damage",
+        "Lens Impact Damage",
+        "Sensor Contamination Due To Misuse"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "lens_claim": [
+          "component_identity_evidence"
+        ]
+      },
+      "category_specific_fields": [
+        "ClaimedPart",
+        "ComponentSerialMatch",
+        "WarrantyRegistrationVerified",
+        "PhysicalDamageIndicator",
+        "LiquidDamageIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Printer": {
+      "standard_warranty_months": 12,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "CarryIn",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        },
+        "Print Head": {
+          "warranty_months": 12,
+          "warranty_eligible": true
+        },
+        "Ink Or Toner": {
+          "warranty_months": 0,
+          "warranty_eligible": false
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Paper Feed Failure",
+        "Connectivity Issue",
+        "Mechanical Failure"
+      ],
+      "additional_excluded_causes": [
+        "Unsupported Consumable",
+        "Foreign Object Damage",
+        "Consumable Depletion"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "usage_limited_model": [
+          "usage_meter_evidence"
+        ]
+      },
+      "category_specific_fields": [
+        "PrinterType",
+        "PageCount",
+        "PageCountLimit",
+        "ConsumableClaimIndicator",
+        "PrintheadClaimIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": {
+        "type": "PageCount",
+        "value": 50000,
+        "rule": "Warranty ends when either time limit or usage limit is exceeded"
+      }
+    }
+  }
+}

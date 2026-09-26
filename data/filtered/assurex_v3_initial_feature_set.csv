@@ -1,0 +1,95 @@
+﻿Feature,Role,KeepInFilteredDataset,UseAsPredictor,Reason
+RecordID,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+ClaimID,AlignmentID,True,False,Retained for split alignment and Python-vs-GTM claim matching; excluded from ML predictors.
+CustomerID,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+ProductID,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+ProductCategory,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ProductSubtype,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+CustomerIssueArea,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimedComponent,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+Brand,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ModelNumber,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+SerialNumber,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+PurchaseDate,RawDate,False,False,Raw date removed after deterministic date-based engineered features were created.
+ClaimDate,RawDate,False,False,Raw date removed after deterministic date-based engineered features were created.
+FaultDate,RawDate,False,False,Raw date removed after deterministic date-based engineered features were created.
+WarrantyDurationMonths,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ExtendedWarranty,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+FaultType,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+DamageType,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+FaultDescription,FreeText,False,False,Free-text claim description is excluded from the current tabular ML model.
+PhysicalDamageReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+LiquidExposureReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+BatterySymptomReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+UsageType,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ErrorCodeAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+IntermittentIssueReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ForeignObjectIncidentReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+RecentReinstallationReported,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+AffectedUnit,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ConsumableTypeUsed,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ReceiptAvailable,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+WarrantyCardAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ElectronicWarrantyAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ProductImageAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+SerialEvidenceAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+FaultEvidenceAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+InstallationEvidenceAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+BatteryDiagnosticAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ScreenFaultImageAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ServiceDiagnosticAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ComponentIdentityEvidenceAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+UsageMeterEvidenceAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+RepairReportAvailable,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+PreviousRepair,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+RepairCount,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+RepairAuthorized,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+PreviousReplacement,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+ReplacementWithinWarranty,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+SerialNumberMatch,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ProductModelConsistent,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+DuplicateClaimIndicator,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+DocumentDuplicateIndicator,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ContradictionIndicator,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+PriorClaimCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ProductPurchasePrice,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimAmount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+PreviousRepairCost,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+OCRConfidence,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimSubmissionChannel,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimClass,Target,True,False,Target label; preserved but never used as predictor.
+BrowserFamily,KnownNoise,True,True,Intentionally retained so the later feature-selection loop can demonstrate that noise contributes little.
+SubmissionMinute,KnownNoise,True,True,Intentionally retained so the later feature-selection loop can demonstrate that noise contributes little.
+UiTheme,KnownNoise,True,True,Intentionally retained so the later feature-selection loop can demonstrate that noise contributes little.
+RandomScore,KnownNoise,True,True,Intentionally retained so the later feature-selection loop can demonstrate that noise contributes little.
+InternalBatchCode,Identifier,False,False,Identifier / ingestion metadata; not a valid predictor.
+ProductAgeDays,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimReportingDelayDays,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ApplicableWarrantyMonths,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ComponentWarrantyEligible,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+WarrantyExpiryDate,RawDate,False,False,Raw date removed after deterministic date-based engineered features were created.
+WarrantyRemainingDays,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+WarrantyStatus,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+SpecialComponentWarrantyStatus,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ReportingDeadlineDays,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimReportingWithinPeriod,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+FaultCovered,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+RequiredDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+AvailableRequiredDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+MissingRequiredDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+UnknownRequiredDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+RequiredDocumentCoverageRatio,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+RequiredDocumentsComplete,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+CriticalDocumentMissing,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+MissingDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+AvailableDocumentCount,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+PurchaseProofAvailable,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+WarrantyProofAvailable,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ProductIdentityMatch,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+HasRepairHistory,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+HasPreviousReplacement,RedundancyCandidate,True,True,Intentionally retained; later removal must be justified by importance + validation performance.
+CustomerReportedDamageIndicator,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimAmountRatio,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+OCRQualityBand,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimMonth,CandidatePredictor,True,True,Retained as initial ML candidate feature.
+ClaimDayOfWeek,CandidatePredictor,True,True,Retained as initial ML candidate feature.

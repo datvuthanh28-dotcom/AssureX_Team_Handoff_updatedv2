@@ -1,0 +1,263 @@
+{
+  "policy_version": "2.0.0",
+  "source_policy": "warranty_policies.json",
+  "common": {
+    "ocr_low_confidence_threshold": 0.7,
+    "warranty_proof_any_of": [
+      "electronic_warranty",
+      "warranty_card",
+      "purchase_receipt"
+    ],
+    "common_excluded_causes": [
+      "Accidental Damage",
+      "Physical Damage",
+      "Misuse",
+      "Unauthorized Modification",
+      "Normal Wear",
+      "Water Damage"
+    ],
+    "repair_report_required_if_previous_repair": true,
+    "identity_match_required": true,
+    "duplicate_claim_hard_invalid": true
+  },
+  "decision_rules": {
+    "warranty_start_conditions": [
+      "Warranty begins from verified purchase date.",
+      "Purchase evidence must be available or verifiable."
+    ],
+    "repair_conditions": {
+      "previous_repair_requires_report": true,
+      "unauthorized_repair_is_hard_fail": true
+    },
+    "authorized_service_centre_required": true,
+    "replacement_conditions": {
+      "replacement_history_must_be_verified": true
+    },
+    "grace_period_days": 0,
+    "hard_fail_rules": [
+      "warranty_expired",
+      "fault_not_covered",
+      "component_not_eligible",
+      "reporting_period_exceeded",
+      "unauthorized_previous_repair"
+    ],
+    "warning_rules": [
+      "low_ocr_confidence",
+      "document_duplicate_indicator"
+    ],
+    "manual_review_rules": [
+      "model_disagreement",
+      "low_model_confidence",
+      "large_confidence_difference",
+      "required_documents_incomplete",
+      "critical_document_missing",
+      "repair_report_missing_or_unknown",
+      "serial_verification_issue",
+      "product_identity_issue",
+      "product_model_inconsistency",
+      "duplicate_claim_indicator",
+      "contradiction_indicator"
+    ]
+  },
+  "categories": {
+    "Television": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHomeOrCarryIn",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Display Panel": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Remote Control": {
+          "warranty_months": 6,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Display Failure",
+        "Audio Failure",
+        "Connectivity Issue"
+      ],
+      "additional_excluded_causes": [
+        "Panel Impact Damage",
+        "Improper Wall Mounting"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "display_panel_claim": [
+          "screen_fault_image"
+        ]
+      },
+      "category_specific_fields": [
+        "ScreenSizeInches",
+        "PanelFaultIndicator",
+        "PixelDefectCount",
+        "BurnInIndicator",
+        "PhysicalScreenDamageIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Refrigerator": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Compressor": {
+          "warranty_months": 120,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Cooling Failure",
+        "Water Leakage",
+        "Noise",
+        "Mechanical Failure"
+      ],
+      "additional_excluded_causes": [
+        "Improper Voltage Supply",
+        "Improper Ventilation",
+        "Commercial Misuse"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "compressor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "CompressorClaimIndicator",
+        "CoolingFailureIndicator",
+        "TemperatureIssueIndicator",
+        "CommercialUseIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Washing Machine": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Motor": {
+          "warranty_months": 120,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Water Leakage",
+        "Noise",
+        "Mechanical Failure"
+      ],
+      "additional_excluded_causes": [
+        "Foreign Object Damage",
+        "Overloading",
+        "Commercial Misuse"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "motor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "MotorClaimIndicator",
+        "WaterLeakageIndicator",
+        "MechanicalFaultIndicator",
+        "CommercialUseIndicator"
+      ],
+      "installation_required": false,
+      "usage_limit": null
+    },
+    "Air Conditioner": {
+      "standard_warranty_months": 24,
+      "reporting_deadline_days": 30,
+      "identity_type": "SerialNumber",
+      "service_mode": "InHome",
+      "components": {
+        "Main Unit": {
+          "warranty_months": 24,
+          "warranty_eligible": true
+        },
+        "Compressor": {
+          "warranty_months": 60,
+          "warranty_eligible": true
+        }
+      },
+      "potentially_covered_faults": [
+        "Power Failure",
+        "Cooling Failure",
+        "Water Leakage",
+        "Noise"
+      ],
+      "additional_excluded_causes": [
+        "Improper Installation",
+        "Improper Refrigerant Handling",
+        "Improper Voltage Supply"
+      ],
+      "required_evidence": [
+        "warranty_proof",
+        "identity_evidence",
+        "fault_evidence",
+        "installation_evidence"
+      ],
+      "conditional_evidence": {
+        "previous_repair": [
+          "repair_report"
+        ],
+        "compressor_claim": [
+          "service_diagnostic"
+        ]
+      },
+      "category_specific_fields": [
+        "CompressorClaimIndicator",
+        "IndoorOutdoorUnit",
+        "InstallationVerified",
+        "InstallationDate",
+        "RefrigerantLeakIndicator"
+      ],
+      "installation_required": true,
+      "usage_limit": null
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "status": "FROZEN_BEFORE_TEST",
+  "winner": "Gradient Boosting",
+  "selection_metric": "Validation Macro F1",
+  "validation_macro_f1": 0.9822179068132484,
+  "train_rows": 1050,
+  "validation_rows": 225,
+  "refit_rows": 1275,
+  "refit_class_counts": {
+    "Invalid Claim": 425,
+    "Manual Review": 425,
+    "Valid Claim": 425
+  },
+  "selected_feature_count": 14,
+  "selected_features": [
+    "RepairAuthorized",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "OCRConfidence",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "RequiredDocumentsComplete",
+    "MissingDocumentCount",
+    "ProductIdentityMatch",
+    "OCRQualityBand"
+  ],
+  "model": "GradientBoostingClassifier",
+  "hyperparameters": {
+    "n_estimators": 150,
+    "learning_rate": 0.05,
+    "max_depth": 3,
+    "random_state": 20260926
+  },
+  "model_path": "/Users/htmt1810/Desktop/TECHWIZ ML/model/assurex_v3_final_model.joblib",
+  "model_sha256": "f86a22a7f78c824ab373dac0f2449ddd26dd842f6fe1213ea59d3c462371a2da",
+  "test_loaded": false,
+  "test_used": false,
+  "post_test_model_changes_allowed": false
+}

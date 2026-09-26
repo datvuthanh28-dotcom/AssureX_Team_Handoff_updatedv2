@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "model_sha256": "f86a22a7f78c824ab373dac0f2449ddd26dd842f6fe1213ea59d3c462371a2da",
+  "model_matches_freeze_hash": true,
+  "model_changed_after_test": false,
+  "frozen_feature_count": 14,
+  "forbidden_features": [],
+  "test_predictions": 225,
+  "test_errors": 2,
+  "test_macro_f1": 0.9911095305832148,
+  "probabilities_sum_to_one": true,
+  "decision_engine_regression_cases": [
+    "CLM01188",
+    "CLM01148"
+  ],
+  "python_model_modified": false
+}

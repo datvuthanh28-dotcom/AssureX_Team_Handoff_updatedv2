@@ -1,0 +1,15 @@
+﻿Feature,Selected
+RepairAuthorized,True
+SerialNumberMatch,True
+ProductModelConsistent,True
+DuplicateClaimIndicator,True
+ContradictionIndicator,True
+OCRConfidence,True
+ClaimReportingDelayDays,True
+WarrantyRemainingDays,True
+ClaimReportingWithinPeriod,True
+FaultCovered,True
+RequiredDocumentsComplete,True
+MissingDocumentCount,True
+ProductIdentityMatch,True
+OCRQualityBand,True

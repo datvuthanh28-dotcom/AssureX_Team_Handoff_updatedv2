@@ -1,0 +1,10 @@
+ActualClass,PredictedClass,Count
+Invalid Claim,Invalid Claim,62
+Invalid Claim,Manual Review,7
+Invalid Claim,Valid Claim,6
+Manual Review,Invalid Claim,3
+Manual Review,Manual Review,57
+Manual Review,Valid Claim,15
+Valid Claim,Invalid Claim,0
+Valid Claim,Manual Review,0
+Valid Claim,Valid Claim,75

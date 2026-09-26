@@ -1,0 +1,43 @@
+{
+  "version": "assurex-ml-v3-final",
+  "scope": "ML, GTM, model comparison, decision logic, warranty policy configuration",
+  "application_layer_owned_by_teammate": true,
+  "python": {
+    "algorithm": "Gradient Boosting",
+    "artifact": "model/assurex_v3_final_model.joblib",
+    "features": "model/assurex_v3_final_features.csv",
+    "test_records": 225,
+    "test_accuracy": 0.991111,
+    "test_macro_f1": 0.99111
+  },
+  "gtm": {
+    "iteration": "G2_V3",
+    "artifact_directory": "gtm/frozen_G2_V3",
+    "test_records": 225,
+    "test_accuracy": 0.862222,
+    "test_macro_f1": 0.861017
+  },
+  "comparison": {
+    "file": "comparison/assurex_v3_model_comparison_final.csv",
+    "claims": 225,
+    "matches": 196,
+    "disagreements": 29,
+    "mean_top_confidence_difference": 0.08849965376578806
+  },
+  "decision_engine": {
+    "script": "comparison/decision_engine_v3.py",
+    "likely_valid": 69,
+    "likely_invalid": 22,
+    "manual_review_required": 134,
+    "regression_cases": [
+      "CLM01148",
+      "CLM01188"
+    ]
+  },
+  "policies": {
+    "directory": "config/warranty_policies",
+    "minimum_files_required": 3
+  },
+  "integration_contract": "docs/ML_INTEGRATION_CONTRACT_V3.md",
+  "validation_script": "tests_ml/validate_ml_v3.py"
+}

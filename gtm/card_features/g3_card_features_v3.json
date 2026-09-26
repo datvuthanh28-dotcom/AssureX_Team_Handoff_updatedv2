@@ -1,0 +1,95 @@
+{
+  "feature_set": "G3",
+  "description": "AssureX V3 visual ablation G3. Compact card retaining direct decision-relevant warranty, reporting, document, repair, identity and anomaly signals.",
+  "image_width": 1200,
+  "image_height": 1200,
+  "train_variants": 2,
+  "validation_variants": 1,
+  "test_variants": 1,
+  "groups": [
+    {
+      "name": "Warranty & Coverage",
+      "fields": [
+        {
+          "column": "WarrantyRemainingDays",
+          "label": "Remaining days"
+        },
+        {
+          "column": "FaultCovered",
+          "label": "Fault covered"
+        },
+        {
+          "column": "ClaimReportingWithinPeriod",
+          "label": "Within deadline"
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "fields": [
+        {
+          "column": "WarrantyProofAvailable",
+          "label": "Warranty proof"
+        },
+        {
+          "column": "MissingDocumentCount",
+          "label": "Missing docs"
+        },
+        {
+          "column": "RequiredDocumentsComplete",
+          "label": "Required docs"
+        },
+        {
+          "column": "CriticalDocumentMissing",
+          "label": "Critical doc missing"
+        }
+      ]
+    },
+    {
+      "name": "Repair History",
+      "fields": [
+        {
+          "column": "PreviousRepair",
+          "label": "Previous repair"
+        },
+        {
+          "column": "RepairAuthorized",
+          "label": "Repair authorized"
+        },
+        {
+          "column": "RepairReportAvailable",
+          "label": "Repair report"
+        }
+      ]
+    },
+    {
+      "name": "Verification & Evidence",
+      "fields": [
+        {
+          "column": "SerialNumberMatch",
+          "label": "Serial match"
+        },
+        {
+          "column": "ProductModelConsistent",
+          "label": "Model consistent"
+        },
+        {
+          "column": "DuplicateClaimIndicator",
+          "label": "Duplicate claim"
+        },
+        {
+          "column": "DocumentDuplicateIndicator",
+          "label": "Duplicate document"
+        },
+        {
+          "column": "ContradictionIndicator",
+          "label": "Contradiction"
+        },
+        {
+          "column": "OCRConfidence",
+          "label": "OCR confidence"
+        }
+      ]
+    }
+  ]
+}

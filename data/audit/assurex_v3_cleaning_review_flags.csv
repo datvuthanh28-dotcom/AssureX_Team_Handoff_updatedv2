@@ -1,0 +1,29 @@
+﻿SourceCSVRow,RecordID,ClaimID,Columns,ObservedValues,Reason,Action
+1524,REC00734,CLM00111,RepairCount,"{""RepairCount"": ""99""}","Above review threshold 10; not proven invalid, so retained",RETAIN_AND_REVIEW
+1543,REC00651,CLM00413,RepairCount,"{""RepairCount"": ""99""}","Above review threshold 10; not proven invalid, so retained",RETAIN_AND_REVIEW
+360,REC00835,CLM00593,RepairCount,"{""RepairCount"": ""99""}","Above review threshold 10; not proven invalid, so retained",RETAIN_AND_REVIEW
+521,REC00917,CLM00943,RepairCount,"{""RepairCount"": ""99""}","Above review threshold 10; not proven invalid, so retained",RETAIN_AND_REVIEW
+696,REC00923,CLM01113,RepairCount,"{""RepairCount"": ""99""}","Above review threshold 10; not proven invalid, so retained",RETAIN_AND_REVIEW
+369,REC00349,CLM00201,PriorClaimCount,"{""PriorClaimCount"": ""999""}","Above review threshold 20; not proven invalid, so retained",RETAIN_AND_REVIEW
+649,REC00119,CLM00267,PriorClaimCount,"{""PriorClaimCount"": ""999""}","Above review threshold 20; not proven invalid, so retained",RETAIN_AND_REVIEW
+104,REC00419,CLM01000,PriorClaimCount,"{""PriorClaimCount"": ""50""}","Above review threshold 20; not proven invalid, so retained",RETAIN_AND_REVIEW
+842,REC00267,CLM01092,PriorClaimCount,"{""PriorClaimCount"": ""999""}","Above review threshold 20; not proven invalid, so retained",RETAIN_AND_REVIEW
+1200,REC00143,CLM01442,PriorClaimCount,"{""PriorClaimCount"": ""50""}","Above review threshold 20; not proven invalid, so retained",RETAIN_AND_REVIEW
+1334,REC01353,CLM00216,ClaimAmount,"{""ClaimAmount"": ""999999.0""}","Above review threshold 100000; not proven invalid, so retained",RETAIN_AND_REVIEW
+758,REC00457,CLM00294,ClaimAmount,"{""ClaimAmount"": ""999999.0""}","Above review threshold 100000; not proven invalid, so retained",RETAIN_AND_REVIEW
+1352,REC01433,CLM00623,ClaimAmount,"{""ClaimAmount"": ""999999.0""}","Above review threshold 100000; not proven invalid, so retained",RETAIN_AND_REVIEW
+707,REC00927,CLM01350,ClaimAmount,"{""ClaimAmount"": ""999999.0""}","Above review threshold 100000; not proven invalid, so retained",RETAIN_AND_REVIEW
+167,REC00447,CLM01410,ClaimAmount,"{""ClaimAmount"": ""999999.0""}","Above review threshold 100000; not proven invalid, so retained",RETAIN_AND_REVIEW
+793,REC01032,CLM00460,PreviousRepairCost,"{""PreviousRepairCost"": ""99999.0""}","Above review threshold 20000; not proven invalid, so retained",RETAIN_AND_REVIEW
+1474,REC00908,CLM00887,PreviousRepairCost,"{""PreviousRepairCost"": ""99999.0""}","Above review threshold 20000; not proven invalid, so retained",RETAIN_AND_REVIEW
+587,REC01446,CLM01188,PreviousRepairCost,"{""PreviousRepairCost"": ""99999.0""}","Above review threshold 20000; not proven invalid, so retained",RETAIN_AND_REVIEW
+781,REC00769,CLM00473,PurchaseDate | FaultDate,"{""PurchaseDate"": ""2024-11-15"", ""FaultDate"": ""2024-10-09""}",Fault date is before purchase date; correct source value is unknown,RETAIN_AND_REVIEW
+1277,REC00404,CLM00636,PurchaseDate | FaultDate,"{""PurchaseDate"": ""2022-12-30"", ""FaultDate"": ""2022-10-15""}",Fault date is before purchase date; correct source value is unknown,RETAIN_AND_REVIEW
+553,REC00095,CLM01001,PurchaseDate | FaultDate,"{""PurchaseDate"": ""2022-09-25"", ""FaultDate"": ""2022-08-11""}",Fault date is before purchase date; correct source value is unknown,RETAIN_AND_REVIEW
+184,REC00572,CLM01174,PurchaseDate | FaultDate,"{""PurchaseDate"": ""2024-02-14"", ""FaultDate"": ""2024-01-19""}",Fault date is before purchase date; correct source value is unknown,RETAIN_AND_REVIEW
+596,REC00237,CLM01494,PurchaseDate | FaultDate,"{""PurchaseDate"": ""2015-01-23"", ""FaultDate"": ""2014-12-05""}",Fault date is before purchase date; correct source value is unknown,RETAIN_AND_REVIEW
+1524,REC00734,CLM00111,PreviousRepair | RepairCount,"{""PreviousRepair"": ""No"", ""RepairCount"": ""99""}",No repair history but nonzero repair count,RETAIN_AND_REVIEW
+1543,REC00651,CLM00413,PreviousRepair | RepairCount,"{""PreviousRepair"": ""No"", ""RepairCount"": ""99""}",No repair history but nonzero repair count,RETAIN_AND_REVIEW
+360,REC00835,CLM00593,PreviousRepair | RepairCount,"{""PreviousRepair"": ""No"", ""RepairCount"": ""99""}",No repair history but nonzero repair count,RETAIN_AND_REVIEW
+1474,REC00908,CLM00887,PreviousRepair | PreviousRepairCost,"{""PreviousRepair"": ""No"", ""PreviousRepairCost"": ""99999.0""}",No repair history but nonzero repair cost,RETAIN_AND_REVIEW
+696,REC00923,CLM01113,PreviousRepair | RepairCount,"{""PreviousRepair"": ""No"", ""RepairCount"": ""99""}",No repair history but nonzero repair count,RETAIN_AND_REVIEW

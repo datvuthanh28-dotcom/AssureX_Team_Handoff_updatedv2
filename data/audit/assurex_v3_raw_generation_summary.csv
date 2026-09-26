@@ -1,0 +1,13 @@
+﻿Metric,Value
+RandomSeed,20260925
+RawRows,1545
+UniqueClaims,1500
+UniqueValidClaims,500
+UniqueInvalidClaims,500
+UniqueManualReviewClaims,500
+RowsBelongingToDuplicateClaimIDs,90
+RowsWithInjectedIssues,895
+MissingCells,861
+NoiseFeatureCount,5
+RawColumnCount,64
+EngineeredColumnsDeferred,WarrantyExpiryDate | WarrantyStatus | FaultCovered | ClaimReportingWithinPeriod | RequiredDocumentsComplete | PurchaseProofAvailable | ComponentWarrantyEligible | ReportingDeadlineDays | RequiredDocumentCoverageRatio | CriticalDocumentMissing

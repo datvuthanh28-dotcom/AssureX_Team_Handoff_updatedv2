@@ -1,0 +1,4 @@
+9e440c997a6eeec0c223e78544d7dc9ae36cb944df5f6102e6ea6ef1fd9a1e9c  ./gtm/frozen_G2_V3/g2_card_features_v3.json
+8f5c4f5454609df5e1b7232ac20e1f5262723890d409c14ed5f713514aec5065  ./gtm/frozen_G2_V3/metadata.json
+6041d72fc8f2042979d20f51b53f25502be9ad7ee88e0f02f288b38f77c6f700  ./gtm/frozen_G2_V3/model.json
+fdf6c91999ef58d21638ecd2f7b42a901a9db12f538c6adbab611799d2386aba  ./gtm/frozen_G2_V3/weights.bin

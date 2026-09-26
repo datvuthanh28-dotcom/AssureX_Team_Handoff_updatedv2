@@ -1,0 +1,11 @@
+{
+  "version": "3.0.0",
+  "comparison_thresholds": {
+    "minimum_confidence": 0.60,
+    "strong_match_min_confidence": 0.85,
+    "strong_match_max_confidence_difference": 0.10,
+    "acceptable_match_min_confidence": 0.70,
+    "acceptable_match_max_confidence_difference": 0.20,
+    "large_confidence_difference": 0.25
+  }
+}

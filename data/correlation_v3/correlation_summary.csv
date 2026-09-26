@@ -1,0 +1,11 @@
+﻿Metric,Value
+Rows,1500
+NumericFeaturesAnalyzed,9
+CategoricalFeaturesAnalyzed,44
+NumericPairsAnalyzed,36
+CategoricalPairsAnalyzed,946
+StrongNumericRedundancyCandidates,1
+StrongCategoricalRedundancyCandidates,22
+TotalRedundancyCandidates,23
+TargetUsed,NO
+FeaturesRemoved,NO

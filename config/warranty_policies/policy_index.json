@@ -1,0 +1,18 @@
+{
+  "version": "3.0.0",
+  "files": [
+    "computing_mobile.json",
+    "home_appliances.json",
+    "imaging_printing.json"
+  ],
+  "category_to_policy": {
+    "Laptop": "computing_mobile.json",
+    "Smartphone": "computing_mobile.json",
+    "Television": "home_appliances.json",
+    "Refrigerator": "home_appliances.json",
+    "Washing Machine": "home_appliances.json",
+    "Air Conditioner": "home_appliances.json",
+    "Camera": "imaging_printing.json",
+    "Printer": "imaging_printing.json"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "selector_model": "GradientBoostingClassifier",
+  "random_seed": 20260925,
+  "train_rows": 1050,
+  "validation_rows": 225,
+  "test_loaded": false,
+  "initial_feature_count": 81,
+  "selected_feature_count": 14,
+  "accepted_removals": 67,
+  "rejected_removals": 0,
+  "baseline_validation_accuracy": 0.9822222222222222,
+  "baseline_validation_macro_f1": 0.9822179068132484,
+  "final_validation_accuracy": 0.9822222222222222,
+  "final_validation_macro_f1": 0.9822179068132484,
+  "importance_method": "permutation importance on validation, scoring=f1_macro",
+  "thresholds": {
+    "importance_candidate_threshold": 0.002,
+    "local_f1_tolerance": 0.003,
+    "baseline_f1_tolerance": 0.005
+  },
+  "selected_features": [
+    "RepairAuthorized",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "OCRConfidence",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "RequiredDocumentsComplete",
+    "MissingDocumentCount",
+    "ProductIdentityMatch",
+    "OCRQualityBand"
+  ],
+  "protected_after_failed_removal": [],
+  "rules": {
+    "test_used": false,
+    "one_feature_removed_per_attempt": true,
+    "importance_recomputed_after_accepted_removal": true,
+    "rollback_on_excessive_validation_drop": true
+  }
+}

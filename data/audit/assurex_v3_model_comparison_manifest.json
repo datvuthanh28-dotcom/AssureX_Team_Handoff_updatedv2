@@ -1,0 +1,30 @@
+{
+  "train_rows": 1050,
+  "validation_rows": 225,
+  "test_loaded": false,
+  "selected_feature_count": 14,
+  "selected_features": [
+    "RepairAuthorized",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "OCRConfidence",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "RequiredDocumentsComplete",
+    "MissingDocumentCount",
+    "ProductIdentityMatch",
+    "OCRQualityBand"
+  ],
+  "winner": "Gradient Boosting",
+  "selection_metric": "Validation Macro F1",
+  "models_compared": [
+    "Logistic Regression",
+    "Random Forest",
+    "Gradient Boosting"
+  ],
+  "test_used": false
+}
