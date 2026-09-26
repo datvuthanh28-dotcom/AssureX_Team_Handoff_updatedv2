@@ -1,0 +1,12 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic
+python-multipart
+joblib
+pandas
+numpy
+scikit-learn
+pytesseract
+Pillow
+python-multipart

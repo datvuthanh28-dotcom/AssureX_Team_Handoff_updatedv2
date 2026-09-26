@@ -1,0 +1,8 @@
+ErrorPattern,Python_Count,GTM_G5_Count
+Invalid Claim -> Manual Review,1,7
+Invalid Claim -> Valid Claim,3,6
+Manual Review -> Invalid Claim,0,2
+Manual Review -> Valid Claim,5,23
+Valid Claim -> Invalid Claim,0,0
+Valid Claim -> Manual Review,1,4
+Total Errors,10,42

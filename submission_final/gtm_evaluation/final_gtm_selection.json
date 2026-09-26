@@ -1,0 +1,24 @@
+{
+  "selected_feature_set": "G5",
+  "rendered_fields": 23,
+  "validation_accuracy": 0.840000,
+  "validation_macro_precision": 0.861279,
+  "validation_macro_recall": 0.840000,
+  "validation_macro_f1": 0.840878,
+  "validation_mean_confidence": 0.889269,
+  "selection_metric": "Validation Macro F1",
+  "removed_features": [
+    "DamageType",
+    "ExtendedWarranty",
+    "WarrantyDurationMonths"
+  ],
+  "rollback_features_kept": [
+    "Brand",
+    "ClaimSubmissionChannel",
+    "ReceiptAvailable",
+    "PriorClaimCount"
+  ],
+  "stop_reason": "Two consecutive candidate removals after G5 reduced Validation Macro F1.",
+  "test_used_for_selection": false,
+  "status": "FROZEN"
+}

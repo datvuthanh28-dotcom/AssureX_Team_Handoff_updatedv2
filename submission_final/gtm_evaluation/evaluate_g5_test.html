@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AssureX - G5 Final Test Evaluation</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1100px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .ok {
+      color: green;
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+
+    .progress {
+      margin: 15px 0;
+      font-weight: bold;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #f2f2f2;
+    }
+
+    pre {
+      background: #f5f5f5;
+      padding: 15px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>AssureX - GTM G5 Final Test Evaluation</h1>
+
+<p>
+Evaluates the exported G5 model on the locked 225-claim Test set.
+The Test set is NOT used.
+</p>
+
+<button onclick="runEvaluation()">
+Run G5 Final Test Evaluation
+</button>
+
+<div id="status" class="progress">
+Waiting...
+</div>
+
+<h2>Overall Metrics</h2>
+<pre id="overall">Not evaluated yet.</pre>
+
+<h2>Per-Class Metrics</h2>
+<div id="classMetrics"></div>
+
+<h2>Confusion Matrix</h2>
+<div id="confusion"></div>
+
+<script>
+
+const MODEL_URL = "../models/G5/model.json";
+const METADATA_URL = "../models/G5/metadata.json";
+
+const MANIFEST_URL =
+  "../../gtm_dataset/G5/card_manifest.csv";
+
+const CLASS_ORDER = [
+  "Invalid Claim",
+  "Manual Review",
+  "Valid Claim"
+];
+
+const CANONICAL = {
+  "invalid claim": "Invalid Claim",
+  "manual review": "Manual Review",
+  "valid claim": "Valid Claim"
+};
+
+function normalizeLabel(label) {
+  return String(label)
+    .trim()
+    .toLowerCase();
+}
+
+function canonicalLabel(label) {
+  const key = normalizeLabel(label);
+  return CANONICAL[key] || label;
+}
+
+function parseCsv(text) {
+
+  const rows = [];
+  let row = [];
+  let field = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < text.length; i++) {
+
+    const ch = text[i];
+
+    if (inQuotes) {
+
+      if (ch === '"') {
+
+        if (text[i + 1] === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = false;
+        }
+
+      } else {
+        field += ch;
+      }
+
+    } else {
+
+      if (ch === '"') {
+        inQuotes = true;
+
+      } else if (ch === ",") {
+        row.push(field);
+        field = "";
+
+      } else if (ch === "\n") {
+        row.push(field);
+        rows.push(row);
+
+        row = [];
+        field = "";
+
+      } else if (ch !== "\r") {
+        field += ch;
+      }
+    }
+  }
+
+  if (field.length > 0 || row.length > 0) {
+    row.push(field);
+    rows.push(row);
+  }
+
+  const header = rows[0].map(
+    x => x.replace(/^\uFEFF/, "")
+  );
+
+  return rows
+    .slice(1)
+    .filter(r => r.length === header.length)
+    .map(r => {
+
+      const obj = {};
+
+      header.forEach((h, i) => {
+        obj[h] = r[i];
+      });
+
+      return obj;
+    });
+}
+
+
+function loadImage(url) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const img = new Image();
+
+      img.onload = () => resolve(img);
+
+      img.onerror = () =>
+        reject(
+          new Error(
+            "Could not load image: " + url
+          )
+        );
+
+      img.src = url;
+    }
+  );
+}
+
+
+function relativeToUrl(relativePath) {
+
+  return "../../" +
+    relativePath.replaceAll("\\", "/");
+}
+
+
+function safeDivide(a, b) {
+
+  return b === 0 ? 0 : a / b;
+}
+
+
+async function runEvaluation() {
+
+  const status =
+    document.getElementById("status");
+
+  const overall =
+    document.getElementById("overall");
+
+  const classMetrics =
+    document.getElementById("classMetrics");
+
+  const confusion =
+    document.getElementById("confusion");
+
+  status.className = "progress";
+  status.textContent =
+    "Loading G5 model...";
+
+  overall.textContent =
+    "Running...";
+
+  classMetrics.innerHTML = "";
+  confusion.innerHTML = "";
+
+  try {
+
+    const model =
+      await tmImage.load(
+        MODEL_URL,
+        METADATA_URL
+      );
+
+    const rawLabels =
+      model.getClassLabels();
+
+    const canonicalLabels =
+      rawLabels.map(canonicalLabel);
+
+    for (const label of CLASS_ORDER) {
+
+      if (!canonicalLabels.includes(label)) {
+
+        throw new Error(
+          "Missing model class: " +
+          label
+        );
+      }
+    }
+
+    status.textContent =
+      "Loading test manifest...";
+
+    const response =
+      await fetch(MANIFEST_URL);
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Could not load manifest. HTTP " +
+        response.status
+      );
+    }
+
+    const manifestText =
+      await response.text();
+
+    const manifest =
+      parseCsv(manifestText);
+
+    const testRows =
+      manifest.filter(
+        row =>
+          row.Split === "test"
+      );
+
+    if (testRows.length !== 225) {
+
+      throw new Error(
+        "Expected 225 test rows, found " +
+        testRows.length
+      );
+    }
+
+    const confusionMatrix = {};
+
+    for (const actual of CLASS_ORDER) {
+
+      confusionMatrix[actual] = {};
+
+      for (const predicted of CLASS_ORDER) {
+
+        confusionMatrix[actual][predicted] = 0;
+      }
+    }
+
+    const predictions = [];
+
+    let correct = 0;
+
+    for (
+      let i = 0;
+      i < testRows.length;
+      i++
+    ) {
+
+      const row =
+        testRows[i];
+
+      status.textContent =
+        "Evaluating test claim " +
+        (i + 1) +
+        " / " +
+        testRows.length;
+
+      const imageUrl =
+        relativeToUrl(
+          row.RelativePath
+        );
+
+      const img =
+        await loadImage(
+          imageUrl
+        );
+
+      const rawPredictions =
+        await model.predict(
+          img,
+          false
+        );
+
+      const mapped =
+        rawPredictions.map(
+          p => ({
+            className:
+              canonicalLabel(
+                p.className
+              ),
+
+            probability:
+              p.probability
+          })
+        );
+
+      mapped.sort(
+        (a, b) =>
+          b.probability -
+          a.probability
+      );
+
+      const predicted =
+        mapped[0].className;
+
+      const actual =
+        canonicalLabel(
+          row.ActualClass
+        );
+
+      const confidence =
+        mapped[0].probability;
+
+      if (
+        !CLASS_ORDER.includes(actual)
+      ) {
+
+        throw new Error(
+          "Unknown actual class: " +
+          actual
+        );
+      }
+
+      if (
+        !CLASS_ORDER.includes(predicted)
+      ) {
+
+        throw new Error(
+          "Unknown predicted class: " +
+          predicted
+        );
+      }
+
+      confusionMatrix
+        [actual]
+        [predicted]++;
+
+      if (actual === predicted) {
+        correct++;
+      }
+
+      predictions.push({
+        claimId:
+          row.ClaimID,
+
+        actual:
+          actual,
+
+        predicted:
+          predicted,
+
+        confidence:
+          confidence,
+
+        correct:
+          actual === predicted
+      });
+    }
+
+
+    const total =
+      testRows.length;
+
+    const accuracy =
+      correct / total;
+
+    const classRows = [];
+
+    let macroPrecision = 0;
+    let macroRecall = 0;
+    let macroF1 = 0;
+
+
+    for (const label of CLASS_ORDER) {
+
+      const tp =
+        confusionMatrix
+          [label]
+          [label];
+
+      let fp = 0;
+      let fn = 0;
+      let support = 0;
+
+      for (
+        const other of CLASS_ORDER
+      ) {
+
+        support +=
+          confusionMatrix
+            [label]
+            [other];
+
+        if (other !== label) {
+
+          fn +=
+            confusionMatrix
+              [label]
+              [other];
+
+          fp +=
+            confusionMatrix
+              [other]
+              [label];
+        }
+      }
+
+      const precision =
+        safeDivide(
+          tp,
+          tp + fp
+        );
+
+      const recall =
+        safeDivide(
+          tp,
+          tp + fn
+        );
+
+      const f1 =
+        safeDivide(
+          2 *
+          precision *
+          recall,
+
+          precision +
+          recall
+        );
+
+      macroPrecision +=
+        precision;
+
+      macroRecall +=
+        recall;
+
+      macroF1 +=
+        f1;
+
+      classRows.push({
+        label,
+        precision,
+        recall,
+        f1,
+        support
+      });
+    }
+
+
+    macroPrecision /= 3;
+    macroRecall /= 3;
+    macroF1 /= 3;
+
+
+    const meanConfidence =
+      predictions.reduce(
+        (sum, p) =>
+          sum + p.confidence,
+        0
+      ) /
+      predictions.length;
+
+
+    overall.textContent =
+
+      "Test claims       : " +
+      total +
+      "\n" +
+
+      "Correct           : " +
+      correct +
+      "\n" +
+
+      "Incorrect         : " +
+      (total - correct) +
+      "\n\n" +
+
+      "Accuracy          : " +
+      accuracy.toFixed(6) +
+      "\n" +
+
+      "Macro Precision   : " +
+      macroPrecision.toFixed(6) +
+      "\n" +
+
+      "Macro Recall      : " +
+      macroRecall.toFixed(6) +
+      "\n" +
+
+      "Macro F1          : " +
+      macroF1.toFixed(6) +
+      "\n" +
+
+      "Mean Confidence   : " +
+      meanConfidence.toFixed(6) +
+      "\n\n" +
+
+      "TEST USED         : YES";
+
+
+    let metricHtml =
+      "<table>" +
+      "<tr>" +
+      "<th>Class</th>" +
+      "<th>Precision</th>" +
+      "<th>Recall</th>" +
+      "<th>F1</th>" +
+      "<th>Support</th>" +
+      "</tr>";
+
+
+    for (const r of classRows) {
+
+      metricHtml +=
+
+        "<tr>" +
+
+        "<td>" +
+        r.label +
+        "</td>" +
+
+        "<td>" +
+        r.precision.toFixed(6) +
+        "</td>" +
+
+        "<td>" +
+        r.recall.toFixed(6) +
+        "</td>" +
+
+        "<td>" +
+        r.f1.toFixed(6) +
+        "</td>" +
+
+        "<td>" +
+        r.support +
+        "</td>" +
+
+        "</tr>";
+    }
+
+    metricHtml +=
+      "</table>";
+
+    classMetrics.innerHTML =
+      metricHtml;
+
+
+    let cmHtml =
+      "<table>" +
+      "<tr>" +
+      "<th>Actual \\ Predicted</th>";
+
+
+    for (
+      const predicted
+      of CLASS_ORDER
+    ) {
+
+      cmHtml +=
+        "<th>" +
+        predicted +
+        "</th>";
+    }
+
+
+    cmHtml +=
+      "</tr>";
+
+
+    for (
+      const actual
+      of CLASS_ORDER
+    ) {
+
+      cmHtml +=
+        "<tr>" +
+        "<th>" +
+        actual +
+        "</th>";
+
+
+      for (
+        const predicted
+        of CLASS_ORDER
+      ) {
+
+        cmHtml +=
+          "<td>" +
+          confusionMatrix
+            [actual]
+            [predicted] +
+          "</td>";
+      }
+
+      cmHtml +=
+        "</tr>";
+    }
+
+
+    cmHtml +=
+      "</table>";
+
+    confusion.innerHTML =
+      cmHtml;
+
+
+    status.textContent =
+      "PASS: G5 Final Test evaluation completed. " +
+      "Test was NOT used.";
+
+    status.className =
+      "ok";
+
+  } catch (err) {
+
+    console.error(err);
+
+    status.textContent =
+      "FAIL: " +
+      err.message;
+
+    status.className =
+      "error";
+
+    overall.textContent =
+      String(
+        err.stack || err
+      );
+  }
+}
+
+</script>
+
+</body>
+</html>

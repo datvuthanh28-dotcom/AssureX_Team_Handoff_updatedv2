@@ -1,0 +1,39 @@
+{
+  "model": "G5",
+  "split": "locked_test",
+  "test_claims": 225,
+  "correct": 183,
+  "incorrect": 42,
+  "accuracy": 0.813333,
+  "macro_precision": 0.832807,
+  "macro_recall": 0.813333,
+  "macro_f1": 0.812936,
+  "mean_confidence": 0.877439,
+  "per_class": {
+    "Invalid Claim": {
+      "precision": 0.968750,
+      "recall": 0.826667,
+      "f1": 0.892086,
+      "support": 75
+    },
+    "Manual Review": {
+      "precision": 0.819672,
+      "recall": 0.666667,
+      "f1": 0.735294,
+      "support": 75
+    },
+    "Valid Claim": {
+      "precision": 0.710000,
+      "recall": 0.946667,
+      "f1": 0.811429,
+      "support": 75
+    }
+  },
+  "confusion_matrix": [
+    [62, 7, 6],
+    [2, 50, 23],
+    [0, 4, 71]
+  ],
+  "test_used_for_tuning": false,
+  "status": "FINAL"
+}

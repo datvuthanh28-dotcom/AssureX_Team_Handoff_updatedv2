@@ -1,0 +1,32 @@
+{
+  "hash": "80977ad7",
+  "configHash": "b06faf39",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "0db1eb19",
+  "optimized": {
+    "react-dom/client": {
+      "src": "../../assurex_web/frontend/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "adaa0523",
+      "needsInterop": true
+    },
+    "react": {
+      "src": "../../assurex_web/frontend/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "fb9751e9",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../assurex_web/frontend/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "1293db0d",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "rolldown-runtime-BvCyGRYZ": {
+      "file": "rolldown-runtime-BvCyGRYZ.js",
+      "isDynamicEntry": false
+    }
+  }
+}
