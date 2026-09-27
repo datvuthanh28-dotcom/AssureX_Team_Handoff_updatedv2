@@ -1,154 +1,269 @@
 const fs = require("fs");
 const path = require("path");
-const tf = require("@tensorflow/tfjs");
-const { PNG } = require("pngjs");
+const http = require("http");
 
-async function loadModel(modelJsonPath) {
-  const dir = path.dirname(modelJsonPath);
-  const modelJson = JSON.parse(fs.readFileSync(modelJsonPath, "utf8"));
+const {
+  createCanvas,
+  loadImage,
+  Image,
+} = require("canvas");
 
-  const specs = [];
-  const buffers = [];
+global.Image = Image;
+global.HTMLImageElement = Image;
 
-  for (const group of modelJson.weightsManifest || []) {
-    for (const spec of group.weights || []) {
-      specs.push(spec);
+const testCanvas = createCanvas(1, 1);
+
+global.HTMLCanvasElement =
+  testCanvas.constructor;
+
+global.HTMLVideoElement =
+  class HTMLVideoElement {};
+
+global.document = {
+  createElement(tag) {
+    if (tag === "canvas") {
+      return createCanvas(1, 1);
     }
-    for (const rel of group.paths || []) {
-      buffers.push(fs.readFileSync(path.join(dir, rel)));
-    }
+
+    throw new Error(
+      `Unsupported document.createElement("${tag}")`
+    );
+  },
+};
+
+const tmImage =
+  require("@teachablemachine/image");
+
+
+function contentType(filePath) {
+  if (filePath.endsWith(".json")) {
+    return "application/json";
   }
 
-  const merged = Buffer.concat(buffers);
-  const weightData = merged.buffer.slice(
-    merged.byteOffset,
-    merged.byteOffset + merged.byteLength
-  );
+  if (filePath.endsWith(".bin")) {
+    return "application/octet-stream";
+  }
 
-  const handler = tf.io.fromMemory({
-    modelTopology: modelJson.modelTopology,
-    weightSpecs: specs,
-    weightData: weightData,
+  return "application/octet-stream";
+}
+
+
+function startModelServer(modelDir) {
+  return new Promise((resolve, reject) => {
+
+    const server = http.createServer(
+      (req, res) => {
+
+        try {
+          const requestPath =
+            decodeURIComponent(
+              req.url.split("?")[0]
+            );
+
+          const relative =
+            requestPath.replace(/^\/+/, "");
+
+          const filePath =
+            path.join(
+              modelDir,
+              relative
+            );
+
+          if (
+            !filePath.startsWith(
+              path.resolve(modelDir)
+            )
+          ) {
+            res.statusCode = 403;
+            res.end("Forbidden");
+            return;
+          }
+
+          if (!fs.existsSync(filePath)) {
+            res.statusCode = 404;
+            res.end("Not Found");
+            return;
+          }
+
+          res.setHeader(
+            "Content-Type",
+            contentType(filePath)
+          );
+
+          res.setHeader(
+            "Access-Control-Allow-Origin",
+            "*"
+          );
+
+          fs.createReadStream(
+            filePath
+          ).pipe(res);
+
+        } catch (err) {
+          res.statusCode = 500;
+          res.end(String(err));
+        }
+      }
+    );
+
+    server.on("error", reject);
+
+    server.listen(
+      0,
+      "127.0.0.1",
+      () => {
+        const address =
+          server.address();
+
+        resolve({
+          server,
+          baseURL:
+            `http://127.0.0.1:${address.port}`
+        });
+      }
+    );
   });
-
-  return await tf.loadLayersModel(handler);
 }
 
-function pngToTensor(pngPath, imageSize) {
-  const decoded = PNG.sync.read(fs.readFileSync(pngPath));
-  const { width, height, data } = decoded;
-
-  const rgb = new Float32Array(width * height * 3);
-
-  let j = 0;
-
-  for (let i = 0; i < data.length; i += 4) {
-    rgb[j++] = data[i];
-    rgb[j++] = data[i + 1];
-    rgb[j++] = data[i + 2];
-  }
-
-  const input = tf.tensor3d(
-    rgb,
-    [height, width, 3],
-    "float32"
-  );
-
-  /*
-   * Match @teachablemachine/image cropTo():
-   *
-   * 1. Scale so the SHORTER side becomes imageSize.
-   * 2. Centre-crop the resulting image to imageSize x imageSize.
-   */
-  const minSide = Math.min(width, height);
-  const scale = imageSize / minSide;
-
-  const scaledW = Math.ceil(width * scale);
-  const scaledH = Math.ceil(height * scale);
-
-  const resized = tf.image.resizeBilinear(
-    input,
-    [scaledH, scaledW],
-    false
-  );
-
-  const dx = scaledW - imageSize;
-  const dy = scaledH - imageSize;
-
-  const left = Math.trunc(dx / 2);
-  const top = Math.trunc(dy / 2);
-
-  const cropped = resized.slice(
-    [top, left, 0],
-    [imageSize, imageSize, 3]
-  );
-
-  /*
-   * Match Teachable Machine capture():
-   * normalize [0,255] using /127 - 1.
-   */
-  const normalized = cropped
-    .toFloat()
-    .div(tf.scalar(127))
-    .sub(tf.scalar(1));
-
-  const batched = normalized.expandDims(0);
-
-  input.dispose();
-  resized.dispose();
-  cropped.dispose();
-  normalized.dispose();
-
-  return batched;
-}
 
 async function main() {
-  const [modelJsonPath, metadataPath, pngPath] = process.argv.slice(2);
 
-  if (!modelJsonPath || !metadataPath || !pngPath) {
+  const [
+    modelJsonPath,
+    metadataPath,
+    pngPath,
+  ] = process.argv.slice(2);
+
+  if (
+    !modelJsonPath ||
+    !metadataPath ||
+    !pngPath
+  ) {
     throw new Error(
       "usage: node infer_g2.js model.json metadata.json card.png"
     );
   }
 
-  const metadata = JSON.parse(fs.readFileSync(metadataPath, "utf8"));
-  const labels = metadata.labels;
-  const imageSize = Number(metadata.imageSize || 224);
+  const absoluteModel =
+    path.resolve(modelJsonPath);
 
-  const model = await loadModel(modelJsonPath);
-  const input = pngToTensor(pngPath, imageSize);
+  const absoluteMetadata =
+    path.resolve(metadataPath);
 
-  let output = model.predict(input);
-  if (Array.isArray(output)) {
-    output = output[0];
+  const modelDir =
+    path.dirname(
+      absoluteModel
+    );
+
+  if (
+    path.dirname(
+      absoluteMetadata
+    ) !== modelDir
+  ) {
+    throw new Error(
+      "model.json and metadata.json must be in same directory"
+    );
   }
 
-  const values = Array.from(await output.data());
+  const {
+    server,
+    baseURL,
+  } =
+    await startModelServer(
+      modelDir
+    );
 
-  const probabilities = {};
-  labels.forEach((label, i) => {
-    probabilities[label] = Number(values[i]);
-  });
+  try {
 
-  let bestIndex = 0;
-  for (let i = 1; i < values.length; i++) {
-    if (values[i] > values[bestIndex]) {
-      bestIndex = i;
+    const modelURL =
+      baseURL +
+      "/" +
+      path.basename(
+        absoluteModel
+      );
+
+    const metadataURL =
+      baseURL +
+      "/" +
+      path.basename(
+        absoluteMetadata
+      );
+
+    const image =
+      await loadImage(
+        path.resolve(
+          pngPath
+        )
+      );
+
+    const model =
+      await tmImage.load(
+        modelURL,
+        metadataURL
+      );
+
+    const predictions =
+      await model.predict(
+        image,
+        false
+      );
+
+    const probabilities = {};
+
+    let predictedClass = null;
+    let confidence = -1;
+
+    for (
+      const item
+      of predictions
+    ) {
+      probabilities[
+        item.className
+      ] =
+        Number(
+          item.probability
+        );
+
+      if (
+        item.probability >
+        confidence
+      ) {
+        predictedClass =
+          item.className;
+
+        confidence =
+          Number(
+            item.probability
+          );
+      }
     }
+
+    process.stdout.write(
+      JSON.stringify({
+        predicted_class:
+          predictedClass,
+
+        confidence:
+          confidence,
+
+        probabilities:
+          probabilities,
+      })
+    );
+
+  } finally {
+    server.close();
   }
-
-  process.stdout.write(JSON.stringify({
-    predicted_class: labels[bestIndex],
-    confidence: Number(values[bestIndex]),
-    probabilities,
-  }));
-
-  input.dispose();
-  output.dispose();
-  model.dispose();
 }
 
+
 main().catch((err) => {
-  process.stderr.write(String(err.stack || err));
+
+  process.stderr.write(
+    String(
+      err.stack || err
+    )
+  );
+
   process.exit(1);
 });
