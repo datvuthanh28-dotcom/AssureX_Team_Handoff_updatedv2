@@ -1,268 +1,344 @@
-LOW_CONFIDENCE_THRESHOLD = 0.60
+from __future__ import annotations
 
+import json
+from pathlib import Path
 
-WARRANTY_MISMATCH_LABELS = {
-    "serial_number": "serial number",
-    "model_number": "model number",
-    "purchase_date": "purchase date",
-    "warranty_duration_months": "warranty duration",
+WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
+THRESHOLD_PATH = WORKSPACE_ROOT / "config" / "decision_thresholds.json"
+
+DEFAULT_THRESHOLDS = {
+    "model_comparison": {
+        "minimum_confidence": 0.60,
+        "strong_match_min_confidence": 0.85,
+        "strong_match_max_difference": 0.10,
+        "acceptable_match_min_confidence": 0.70,
+        "acceptable_match_max_difference": 0.20,
+        "large_confidence_difference": 0.25,
+    },
+    "evidence": {"minimum_ocr_confidence": 0.70},
 }
+
+
+def _load_thresholds():
+    if THRESHOLD_PATH.is_file():
+        return json.loads(
+            THRESHOLD_PATH.read_text(encoding="utf-8")
+        )
+    return DEFAULT_THRESHOLDS
+
+
+def _norm(value):
+    if value is None:
+        return ""
+    return str(value).strip().lower()
+
+
+def _is_yes(value):
+    return _norm(value) in {"yes", "true", "1"}
+
+
+def _is_no(value):
+    return _norm(value) in {"no", "false", "0"}
+
+
+def _number(value, default=0.0):
+    try:
+        if value is None or value == "":
+            return default
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _legacy_label(final_application_decision):
+    return {
+        "Likely Valid": "Valid Claim",
+        "Likely Invalid": "Invalid Claim",
+        "Manual Review Required": "Manual Review",
+    }.get(final_application_decision, "Manual Review")
 
 
 def apply_business_rules(
     claim_data,
     ml_prediction,
     ml_confidence,
+    gtm_prediction=None,
+    gtm_confidence=None,
+    python_probabilities=None,
+    gtm_probabilities=None,
 ):
-    hard_invalid_reasons = []
-    manual_review_reasons = []
-    warning_reasons = []
+    cfg = _load_thresholds()
+    cmp_cfg = cfg["model_comparison"]
+    evidence_cfg = cfg["evidence"]
 
-    def value(name):
-        return str(
-            claim_data.get(name, "")
-        ).strip().lower()
+    min_conf = float(cmp_cfg["minimum_confidence"])
+    strong_min = float(cmp_cfg["strong_match_min_confidence"])
+    strong_diff = float(cmp_cfg["strong_match_max_difference"])
+    acceptable_min = float(cmp_cfg["acceptable_match_min_confidence"])
+    acceptable_diff = float(cmp_cfg["acceptable_match_max_difference"])
+    large_diff = float(cmp_cfg["large_confidence_difference"])
+    min_ocr = float(evidence_cfg["minimum_ocr_confidence"])
 
-    warranty_mismatch = (
-        value(
-            "WarrantyDocumentMismatchIndicator"
-        )
-        == "yes"
+    py_pred = str(ml_prediction or "").strip()
+    py_conf = _number(ml_confidence)
+
+    gtm_available = (
+        gtm_prediction is not None
+        and gtm_confidence is not None
     )
 
-    mismatch_fields = (
-        claim_data.get(
-            "WarrantyDocumentMismatchFields"
-        )
-        or []
-    )
+    if gtm_available:
+        gt_pred = str(gtm_prediction).strip()
+        gt_conf = _number(gtm_confidence)
+        prediction_match = py_pred == gt_pred
+        confidence_difference = abs(py_conf - gt_conf)
 
-    # -----------------------------------------
-    # WARRANTY DOCUMENT MISMATCH
-    #
-    # Important:
-    # A customer-edited value that conflicts
-    # with OCR evidence is uncertainty, not an
-    # automatic rejection.
-    # -----------------------------------------
-
-    if warranty_mismatch:
-        for field in mismatch_fields:
-            label = WARRANTY_MISMATCH_LABELS.get(
-                field,
-                field,
-            )
-
-            reason = (
-                f"Warranty document mismatch: "
-                f"{label}"
-            )
-
-            if reason not in manual_review_reasons:
-                manual_review_reasons.append(
-                    reason
-                )
-
-    # -----------------------------------------
-    # LOW CONFIDENCE
-    # -----------------------------------------
-
-    if ml_confidence < LOW_CONFIDENCE_THRESHOLD:
-        manual_review_reasons.append(
-            "Low ML confidence"
-        )
-
-    # -----------------------------------------
-    # MISSING DOCUMENTS
-    # -----------------------------------------
-
-    if value(
-        "RequiredDocumentsComplete"
-    ) in {
-        "no",
-        "false",
-        "0",
-    }:
-        manual_review_reasons.append(
-            "Missing required documents"
-        )
-
-    # -----------------------------------------
-    # CONTRADICTIONS
-    # -----------------------------------------
-
-    if (
-        value("ContradictionIndicator")
-        == "yes"
-        and not warranty_mismatch
-    ):
-        manual_review_reasons.append(
-            "Claim contradiction"
-        )
-
-    if (
-        value(
-            "DocumentContradictionIndicator"
-        )
-        == "yes"
-        and not warranty_mismatch
-    ):
-        manual_review_reasons.append(
-            "Document contradiction"
-        )
-
-    # -----------------------------------------
-    # PRODUCT / MODEL
-    # -----------------------------------------
-
-    if (
-        value("ProductModelConsistent")
-        == "no"
-        and not warranty_mismatch
-    ):
-        manual_review_reasons.append(
-            "Product/model inconsistency"
-        )
-
-    # -----------------------------------------
-    # HARD INVALID
-    # -----------------------------------------
-
-    if value(
-        "DuplicateClaimIndicator"
-    ) in {
-        "yes",
-        "true",
-        "1",
-    }:
-        hard_invalid_reasons.append(
-            "Duplicate claim"
-        )
-
-    if value("WarrantyStatus") == "expired":
-        hard_invalid_reasons.append(
-            "Warranty expired"
-        )
-
-    if value("FaultCovered") == "no":
-        hard_invalid_reasons.append(
-            "Fault not covered"
-        )
-
-    # -----------------------------------------
-    # SERIAL VERIFICATION
-    #
-    # If serial mismatch came from customer
-    # editing OCR-extracted warranty data,
-    # route to Manual Review instead of
-    # automatically rejecting it.
-    # -----------------------------------------
-
-    serial_status = value(
-        "SerialNumberMatch"
-    )
-
-    if serial_status == "no":
-        if warranty_mismatch:
-            reason = (
-                "Warranty document mismatch: "
-                "serial number"
-            )
-
-            if reason not in manual_review_reasons:
-                manual_review_reasons.append(
-                    reason
-                )
+        if not prediction_match:
+            consistency = "Model Disagreement"
+        elif py_conf < min_conf or gt_conf < min_conf:
+            consistency = "Uncertain Result"
         else:
-            hard_invalid_reasons.append(
-                "Serial number mismatch"
+            min_model_conf = min(py_conf, gt_conf)
+            if (
+                min_model_conf >= strong_min
+                and confidence_difference <= strong_diff
+            ):
+                consistency = "Strong Match"
+            elif (
+                min_model_conf >= acceptable_min
+                and confidence_difference <= acceptable_diff
+            ):
+                consistency = "Acceptable Match"
+            else:
+                consistency = "Weak Match"
+    else:
+        gt_pred = None
+        gt_conf = None
+        prediction_match = False
+        confidence_difference = None
+        consistency = "Uncertain Result"
+
+    hard_fail = []
+    manual = []
+    warnings = []
+    missing_docs = []
+
+    if not gtm_available:
+        manual.append("GTM G2 V3 inference unavailable")
+    else:
+        if not prediction_match:
+            manual.append("Python and GTM predictions disagree")
+        if gt_conf < min_conf:
+            manual.append(
+                f"GTM confidence below threshold ({gt_conf:.3f})"
+            )
+        if (
+            confidence_difference is not None
+            and confidence_difference > large_diff
+        ):
+            manual.append(
+                f"Large model-confidence difference ({confidence_difference:.3f})"
             )
 
-    elif serial_status == "unknown":
-        manual_review_reasons.append(
-            "Serial number verification issue"
+    if py_conf < min_conf:
+        manual.append(
+            f"Python confidence below threshold ({py_conf:.3f})"
         )
 
-    # -----------------------------------------
-    # REPAIR AUTHORIZATION
-    # -----------------------------------------
+    if _norm(claim_data.get("WarrantyStatus")) == "expired":
+        hard_fail.append("Warranty expired")
 
-    repair_status = value(
-        "RepairAuthorized"
+    if _is_no(claim_data.get("ComponentWarrantyEligible")):
+        hard_fail.append("Component not warranty eligible")
+
+    if _is_no(claim_data.get("FaultCovered")):
+        hard_fail.append("Fault not covered")
+
+    if _is_no(claim_data.get("ClaimReportingWithinPeriod")):
+        hard_fail.append("Claim reported outside allowed period")
+
+    previous_repair = _is_yes(claim_data.get("PreviousRepair"))
+    repair_authorized = _norm(claim_data.get("RepairAuthorized"))
+
+    if previous_repair and repair_authorized == "no":
+        hard_fail.append("Previous repair was unauthorized")
+
+    required_complete = _norm(
+        claim_data.get("RequiredDocumentsComplete")
     )
-
-    if repair_status == "no":
-        hard_invalid_reasons.append(
-            "Unauthorized repair"
+    if required_complete in {"no", "unknown", ""}:
+        manual.append(
+            "Required document status incomplete or unknown"
+        )
+        missing_docs.append(
+            "Required documents incomplete/unknown"
         )
 
-    elif repair_status == "unknown":
-        manual_review_reasons.append(
-            "Repair authorization issue"
+    missing_count = _number(
+        claim_data.get("MissingDocumentCount")
+    )
+    if missing_count > 0:
+        manual.append(
+            f"Missing required documents ({int(missing_count)})"
+        )
+        missing_docs.append(
+            f"{int(missing_count)} required document(s) missing"
         )
 
-    # -----------------------------------------
-    # DOCUMENT DUPLICATE WARNING
-    # -----------------------------------------
+    if _is_yes(claim_data.get("CriticalDocumentMissing")):
+        manual.append("Critical document missing")
+        missing_docs.append("Critical document missing")
 
-    if value(
-        "DocumentDuplicateIndicator"
-    ) in {
-        "yes",
-        "true",
-        "1",
+    if previous_repair:
+        repair_report = _norm(
+            claim_data.get("RepairReportAvailable")
+        )
+        if repair_report not in {"yes", "not applicable"}:
+            manual.append(
+                "Previous repair exists but repair report is missing/unknown"
+            )
+            missing_docs.append(
+                "Repair report missing/unknown"
+            )
+        if repair_authorized in {"unknown", ""}:
+            manual.append(
+                "Previous repair authorization is unknown"
+            )
+
+    if _norm(claim_data.get("SerialNumberMatch")) in {
+        "no", "unknown", ""
     }:
-        warning_reasons.append(
-            "Duplicate document warning"
+        manual.append(
+            "Serial-number verification requires review"
         )
 
-    # -----------------------------------------
-    # FINAL PRECEDENCE
-    #
-    # True hard invalid rules still win:
-    # expired warranty, uncovered fault,
-    # duplicate claim, unauthorized repair.
-    #
-    # Warranty-document mismatches themselves
-    # are Manual Review.
-    # -----------------------------------------
-
-    if hard_invalid_reasons:
-        final_decision = "Invalid Claim"
-
-        reasons = (
-            hard_invalid_reasons
-            + manual_review_reasons
-            + warning_reasons
+    if _norm(claim_data.get("ProductIdentityMatch")) in {
+        "no", "unknown", ""
+    }:
+        manual.append(
+            "Product identity requires review"
         )
 
-    elif manual_review_reasons:
-        final_decision = "Manual Review"
-
-        reasons = (
-            manual_review_reasons
-            + warning_reasons
+    if _norm(claim_data.get("ProductModelConsistent")) in {
+        "no", "unknown", ""
+    }:
+        manual.append(
+            "Product model consistency requires review"
         )
 
+    if _is_yes(claim_data.get("DuplicateClaimIndicator")):
+        manual.append("Possible duplicate claim")
+
+    if _is_yes(claim_data.get("DocumentDuplicateIndicator")):
+        manual.append("Possible duplicate document")
+        warnings.append("Duplicate document warning")
+
+    if _is_yes(claim_data.get("ContradictionIndicator")):
+        manual.append(
+            "Contradictory claim evidence detected"
+        )
+
+    if _is_yes(
+        claim_data.get("WarrantyDocumentMismatchIndicator")
+    ):
+        manual.append(
+            "Warranty document mismatch requires review"
+        )
+
+    ocr_conf = _number(
+        claim_data.get("OCRConfidence"),
+        default=1.0,
+    )
+    if ocr_conf < min_ocr:
+        manual.append(
+            f"OCR confidence below threshold ({ocr_conf:.3f})"
+        )
+
+    hard_fail = list(dict.fromkeys(hard_fail))
+    manual = list(dict.fromkeys(manual))
+    warnings = list(dict.fromkeys(warnings))
+    missing_docs = list(dict.fromkeys(missing_docs))
+
+    if hard_fail:
+        warranty_rule_result = (
+            "HARD_FAIL: " + "; ".join(hard_fail)
+        )
+    elif manual:
+        warranty_rule_result = (
+            "MANUAL_REVIEW: " + "; ".join(manual)
+        )
     else:
-        final_decision = ml_prediction
-        reasons = warning_reasons
+        warranty_rule_result = "PASS"
+
+    if manual:
+        final_application_decision = "Manual Review Required"
+    elif hard_fail:
+        final_application_decision = "Likely Invalid"
+    elif not gtm_available:
+        final_application_decision = "Manual Review Required"
+    elif py_pred == "Manual Review" or gt_pred == "Manual Review":
+        final_application_decision = "Manual Review Required"
+    elif py_pred == "Valid Claim" and gt_pred == "Valid Claim":
+        final_application_decision = "Likely Valid"
+    elif py_pred == "Invalid Claim" and gt_pred == "Invalid Claim":
+        final_application_decision = "Likely Invalid"
+    else:
+        final_application_decision = "Manual Review Required"
+
+    reasons = []
+    if gtm_available and not prediction_match:
+        reasons.append(f"Python={py_pred}; GTM={gt_pred}")
+    if (
+        confidence_difference is not None
+        and confidence_difference > large_diff
+    ):
+        reasons.append(
+            f"Top-confidence difference={confidence_difference:.3f}"
+        )
+    if hard_fail:
+        reasons.append(
+            "Warranty hard-fail: " + "; ".join(hard_fail)
+        )
+    if manual:
+        reasons.append(
+            "Manual-review trigger: " + "; ".join(manual)
+        )
+    reasons.extend(warnings)
+    if not reasons:
+        reasons.append(
+            "Models and warranty checks are sufficiently consistent"
+        )
+
+    legacy_final_decision = _legacy_label(
+        final_application_decision
+    )
 
     customer_status = {
-        "Valid Claim": "Approved",
-        "Invalid Claim": "Rejected",
-        "Manual Review": "Under Review",
-    }.get(
-        final_decision,
-        "Under Review",
-    )
+        "Likely Valid": "Approved",
+        "Likely Invalid": "Rejected",
+        "Manual Review Required": "Under Review",
+    }[final_application_decision]
 
     return {
-        "ml_prediction": ml_prediction,
-        "ml_confidence": ml_confidence,
-        "final_decision": final_decision,
+        "ml_prediction": py_pred,
+        "ml_confidence": py_conf,
+        "final_decision": legacy_final_decision,
         "customer_status": customer_status,
         "requires_admin_review":
-            final_decision == "Manual Review",
+            final_application_decision == "Manual Review Required",
         "decision_reasons": reasons,
+
+        "python_prediction": py_pred,
+        "python_confidence": py_conf,
+        "python_probabilities": python_probabilities or {},
+        "gtm_prediction": gt_pred,
+        "gtm_confidence": gt_conf,
+        "gtm_probabilities": gtm_probabilities or {},
+        "predicted_class_match":
+            bool(prediction_match) if gtm_available else False,
+        "confidence_difference": confidence_difference,
+        "model_consistency_status": consistency,
+        "warranty_rule_result": warranty_rule_result,
+        "missing_documents": missing_docs,
+        "final_application_decision": final_application_decision,
     }

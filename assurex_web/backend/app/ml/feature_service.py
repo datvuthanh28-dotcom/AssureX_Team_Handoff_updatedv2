@@ -361,75 +361,43 @@ def build_claim_features(
         claim_amount = np.nan
 
     # -------------------------------------------------
-    # EXACT 22 PRODUCTION MODEL FEATURES
+    # ASSUREX V3 - EXACT 14 FROZEN PYTHON FEATURES
     # -------------------------------------------------
 
+    repair_authorized = yes_no(
+        raw.get("repair_authorized")
+    )
+
+    product_identity_match = serial_number_match
+
+    try:
+        ocr_value = float(ocr_confidence)
+        if np.isnan(ocr_value):
+            ocr_quality_band = "Unknown"
+        elif ocr_value < 0.70:
+            ocr_quality_band = "Low"
+        elif ocr_value < 0.85:
+            ocr_quality_band = "Medium"
+        else:
+            ocr_quality_band = "High"
+    except (TypeError, ValueError):
+        ocr_quality_band = "Unknown"
+
     model_features = {
-        "WarrantyCardAvailable":
-            documents["warranty_card_available"],
-
-        "RepairReportAvailable":
-            repair_report_available,
-
-        "PreviousRepair":
-            previous_repair,
-
-        "RepairCount":
-            repair_count,
-
-        "SerialNumberMatch":
-            serial_number_match,
-
-        "ProductModelConsistent":
-            product_model_consistent,
-
-        "DuplicateClaimIndicator":
-            duplicate_indicator,
-
-        "ContradictionIndicator":
-            contradiction_indicator,
-
-        "PriorClaimCount":
-            int(prior_claim_count),
-
-        "ClaimAmount":
-            claim_amount,
-
-        "OCRConfidence":
-            ocr_confidence,
-
-        "ClaimSubmissionChannel":
-            "Web",
-
-        "ClaimReportingDelayDays":
-            reporting_delay,
-
-        "WarrantyRemainingDays":
-            warranty_remaining_days,
-
-        "WarrantyStatus":
-            warranty_status,
-
-        "ClaimReportingWithinPeriod":
-            reporting_within_period,
-
-        "FaultCovered":
-            fault_covered,
-
-        "MissingDocumentCount":
-            missing_document_count,
-
-        "AvailableDocumentCount":
-            available_document_count,
-
-        "RequiredDocumentsComplete":
-            required_documents_complete,
-
-        "PurchaseProofAvailable":
-            purchase_proof_available,
-
-        "HasRepairHistory":
-            has_repair_history,
+        "RepairAuthorized": repair_authorized,
+        "SerialNumberMatch": serial_number_match,
+        "ProductModelConsistent": product_model_consistent,
+        "DuplicateClaimIndicator": duplicate_indicator,
+        "ContradictionIndicator": contradiction_indicator,
+        "OCRConfidence": ocr_confidence,
+        "ClaimReportingDelayDays": reporting_delay,
+        "WarrantyRemainingDays": warranty_remaining_days,
+        "ClaimReportingWithinPeriod": reporting_within_period,
+        "FaultCovered": fault_covered,
+        "RequiredDocumentsComplete": required_documents_complete,
+        "MissingDocumentCount": missing_document_count,
+        "ProductIdentityMatch": product_identity_match,
+        "OCRQualityBand": ocr_quality_band,
     }
 
     # Additional raw values used by Decision Engine.
@@ -437,9 +405,7 @@ def build_claim_features(
         **model_features,
 
         "RepairAuthorized":
-            yes_no(
-                raw.get("repair_authorized")
-            ),
+            repair_authorized,
 
         "DocumentDuplicateIndicator":
             yes_no(

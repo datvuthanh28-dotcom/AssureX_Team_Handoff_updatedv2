@@ -1,0 +1,9 @@
+{
+  "name": "assurex-gtm-g2-runtime",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.22.0",
+    "pngjs": "^7.0.0"
+  }
+}
