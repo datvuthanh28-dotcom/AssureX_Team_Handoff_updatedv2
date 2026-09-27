@@ -14,9 +14,9 @@ export async function api(
     ...(options.headers || {}),
   }
   const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
-  const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/') || pathname.endsWith('/admin')
+  const isStaffRoute = ['/admin', '/reviewer'].some((route) => pathname === route || pathname.startsWith(`${route}/`) || pathname.endsWith(route))
   const token = localStorage.getItem(
-    isAdminRoute ? ADMIN_TOKEN_KEY : CUSTOMER_TOKEN_KEY
+    isStaffRoute ? ADMIN_TOKEN_KEY : CUSTOMER_TOKEN_KEY
   )
   if (token && !headers.Authorization) {
     headers.Authorization = `Bearer ${token}`

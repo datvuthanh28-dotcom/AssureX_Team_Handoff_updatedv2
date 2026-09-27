@@ -124,6 +124,7 @@ function StatCard({
 function AdminDashboard({
   onNavigate,
   refreshKey,
+  role,
 }) {
   const [mlClaims, setMlClaims] = useState([])
   const [customerClaims, setCustomerClaims] = useState([])
@@ -210,12 +211,12 @@ function AdminDashboard({
         description="Monitor warranty claim queues, dual-model ML classification performance, warranty health, and product catalog."
         action={
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button
+            {role !== 'ADMIN' && <button
               className="button secondary"
               onClick={() => onNavigate('customer-claims')}
             >
               Review Queue ({review})
-            </button>
+            </button>}
             <button
               className="button primary"
               onClick={() => onNavigate('classify')}
@@ -334,7 +335,7 @@ function AdminDashboard({
           )}
 
           <section className="dashboard-grid">
-            <article className="panel">
+            <article className="panel" style={role === 'ADMIN' ? { display: 'none' } : undefined}>
               <div className="panel-heading">
                 <div>
                   <p className="eyebrow">Customer Queue</p>
@@ -1984,6 +1985,56 @@ function ModelInfo() {
       </section>
     </>
   )
+}
+
+function MLPipelinePage({ page, onNavigate }) {
+  const steps = [
+    ['ml-audit', '01', 'Audit', 'Raw data quality'],
+    ['ml-preprocessing', '02', 'Preprocessing', 'Clean & split'],
+    ['ml-text', '03', 'Text models', 'CV + tuning'],
+    ['ml-image', '04', 'Image model', 'Google Net'],
+    ['ml-compare', '05', 'Compare', 'Deploy winner'],
+  ]
+  const active = steps.find((s) => s[0] === page) || steps[0]
+  const go = (key) => onNavigate(key)
+  const metric = (label, value, hint, tone) => <StatCard label={label} value={value} hint={hint} tone={tone} />
+
+  return <>
+    <PageHeader eyebrow="Admin · ML Operations" title="ML Pipeline" description="Theo dõi toàn bộ vòng đời dữ liệu, huấn luyện, đánh giá và tái huấn luyện model cho hệ thống AssureX." />
+    <div className="ml-stepper">
+      {steps.map(([key, number, title, subtitle], index) => <button key={key} className={`ml-step ${page === key ? 'active' : ''}`} onClick={() => go(key)}><span>{number}</span><strong>{title}</strong><small>{subtitle}</small>{index < steps.length - 1 && <i>→</i>}</button>)}
+    </div>
+    <section className="panel ml-page-panel">
+      <div className="panel-heading"><div><p className="eyebrow">{active[1]} · {active[3]}</p><h2>{active[2]}</h2></div><span className="pipeline-status">● Production pipeline synced</span></div>
+      {page === 'ml-audit' && <>
+        <p className="section-lead">Kiểm tra dataset ban đầu trước khi đưa vào xử lý: cấu trúc, chất lượng và mức độ cân bằng nhãn.</p>
+        <div className="stats-grid">{metric('Rows', '1,125', 'Raw claim records')}{metric('Columns', '42', 'Original fields')}{metric('Missing values', '0.8%', '9 cells cần xử lý', 'warning')}{metric('Duplicates', '12', '1.1% records', 'warning')}{metric('Data types', '28 / 14', 'Numeric / categorical')}</div>
+        <div className="two-column"><div><h3>Data quality checklist</h3><div className="check-list"><div>✓ Schema & kiểu dữ liệu <b>Passed</b></div><div>✓ Missing value scan <b>Passed</b></div><div>⚠ Duplicate records <b className="warn">12 found</b></div><div>✓ Class distribution <b>Passed</b></div></div></div><div><h3>Class distribution</h3><div className="bar-chart"><div><span>Valid Claim</span><b style={{width:'70%'}}>70%</b></div><div><span>Manual Review</span><b style={{width:'20%'}}>20%</b></div><div><span>Invalid Claim</span><b style={{width:'10%'}}>10%</b></div></div></div></div>
+      </>}
+      {page === 'ml-preprocessing' && <>
+        <p className="section-lead">Làm sạch, loại bỏ nhiễu/đa cộng tuyến, mã hóa và chuẩn hóa dữ liệu trước khi chia tập.</p>
+        <div className="stats-grid">{metric('Input columns', '42', 'Before filtering')}{metric('Removed noise', '7', 'IDs, timestamps, leakage')}{metric('Removed collinear', '5', 'Correlation > 0.85')}{metric('Final features', '30', 'Ready for training', 'success')}</div>
+        <div className="two-column"><div><h3>Preprocessing flow</h3><div className="flow-list"><span>01 · Deduplicate & impute</span><span>02 · Drop noisy / leakage fields</span><span>03 · Correlation filter & VIF</span><span>04 · One-hot encode categories</span><span>05 · StandardScaler numeric values</span><span>06 · Train 70% · Val 15% · Test 15%</span></div></div><div><h3>Correlation matrix</h3><div className="correlation-grid">{[.92,.18,.34,.11,.76,.21,.09,.64,.27,.13,.18,.88,.16,.32,.12,.22].map((v,i)=><span key={i} style={{opacity:.25+v*.75,background:v>.8?'#ef6a5b':'#2f8f83'}} title={`r = ${v}`}>{v.toFixed(2)}</span>)}</div><small className="muted">Highlighted pairs vượt ngưỡng tương quan 0.85 được loại bỏ.</small></div></div>
+      </>}
+      {page === 'ml-text' && <>
+        <p className="section-lead">Đánh giá 3 model trên dữ liệu text/structured với Stratified 5-fold CV, sau đó tuning hyperparameter và chốt model tốt nhất.</p>
+        <div className="stats-grid">{metric('CV strategy', '5-fold', 'Stratified cross-validation')}{metric('Best model', 'Gradient Boosting', 'Selected by Macro F1', 'success')}{metric('Validation F1', '95.59%', 'After tuning')}{metric('Features retained', '24', 'Final text dataset')}</div>
+        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Model</th><th>CV Accuracy</th><th>CV Macro F1</th><th>Validation F1</th><th>Status</th></tr></thead><tbody><tr><td>Logistic Regression</td><td>91.8%</td><td>90.9%</td><td>91.2%</td><td>Candidate</td></tr><tr><td>Random Forest</td><td>93.6%</td><td>93.1%</td><td>93.4%</td><td>Candidate</td></tr><tr className="selected-row"><td><strong>Gradient Boosting</strong></td><td><strong>95.7%</strong></td><td><strong>95.4%</strong></td><td><strong>95.59%</strong></td><td><span className="status-badge status-approved">Selected</span></td></tr></tbody></table></div>
+        <div className="feature-importance"><h3>Feature importance · final dataset</h3>{['purchase_age','fault_category','claim_amount','warranty_days_left','product_category'].map((x,i)=><div key={x}><span>{x}</span><b style={{width:`${92-i*14}%`}}></b><em>{(0.28-i*.04).toFixed(2)}</em></div>)}</div>
+      </>}
+      {page === 'ml-image' && <>
+        <p className="section-lead">Đánh giá hình ảnh bằng Google model (GTM / Google Net) với cùng quy trình split, 5-fold validation, tuning và feature review.</p>
+        <div className="stats-grid">{metric('Image samples', '2,480', 'Labeled claim images')}{metric('Model', 'Google Net G5', 'Transfer learning')}{metric('CV Macro F1', '81.29%', '5-fold validation')}{metric('Test accuracy', '81.33%', 'Locked test set')}</div>
+        <div className="two-column"><div><h3>Image pipeline</h3><div className="flow-list"><span>01 · Resize 224 × 224</span><span>02 · Normalize & augment</span><span>03 · Train / validation / test split</span><span>04 · Fine-tune Google Net G5</span><span>05 · Evaluate per-class metrics</span></div></div><div><h3>Confusion overview</h3><div className="image-class-grid"><div><strong>Valid</strong><span>88%</span></div><div><strong>Review</strong><span>79%</span></div><div><strong>Invalid</strong><span>77%</span></div></div></div></div>
+      </>}
+      {page === 'ml-compare' && <>
+        <p className="section-lead">So sánh model text và image trên cùng tiêu chí, chọn model production và đóng vòng phản hồi để retrain version mới.</p>
+        <div className="compare-hero"><div><span>Production winner</span><h3>Python Gradient Boosting</h3><p>Được chọn làm model chính cho claim decision engine.</p></div><strong>95.59%<small>Macro F1</small></strong></div>
+        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Metric</th><th>Text · Gradient Boosting</th><th>Image · Google Net G5</th><th>Winner</th></tr></thead><tbody><tr><td>Accuracy</td><td>95.56%</td><td>81.33%</td><td>Text</td></tr><tr><td>Macro F1</td><td>95.59%</td><td>81.29%</td><td>Text</td></tr><tr><td>Inference</td><td>Fast · 24 features</td><td>Medium · image upload</td><td>Text</td></tr></tbody></table></div>
+        <div className="retrain-card"><div><h3>Feedback loop</h3><p>Customer claim → model prediction → reviewer decision → verified label → retrain model vNext.</p></div><button className="button primary">Start retraining review →</button></div>
+      </>}
+    </section>
+  </>
 }
 
 
@@ -5214,13 +5265,49 @@ function CustomerClaims({
 }
 
 
+function ReviewerWorkspace({ onLogout, email }) {
+  const [page, setPage] = useState('overview')
+  const [refreshKey, setRefreshKey] = useState(0)
+  const nav = [['overview', 'Review overview'], ['queue', 'Claim queue'], ['appeals', 'Appeals'], ['profile', 'My profile']]
+  return <div className="app-shell reviewer-shell">
+    <aside className="sidebar reviewer-sidebar"><div className="brand"><div className="brand-mark">AX</div><div><h2>AssureX</h2><p>Reviewer Desk</p></div></div><div className="sidebar-section-label">My workspace</div><nav className="nav-menu">{nav.map(([key,label]) => <button key={key} className={`nav-item ${page===key?'active':''}`} onClick={()=>setPage(key)}>{label}</button>)}</nav><div className="reviewer-rail-note"><strong>Reviewer mode</strong><span>Decision queue & customer appeals</span></div><button className="admin-logout-button" onClick={onLogout}>Log out</button></aside>
+    <main className="main-content">{page==='overview' && <><PageHeader eyebrow="Reviewer workspace" title="Good afternoon" description="Resolve claims with model evidence, policy checks and a clear audit trail." action={<button className="button primary" onClick={()=>setPage('queue')}>Open review queue →</button>} /><div className="stats-grid"><StatCard label="Pending review" value="12" hint="Claims waiting for decision" tone="warning"/><StatCard label="High confidence" value="8" hint="Model confidence above 85%" tone="success"/><StatCard label="Appeals" value="3" hint="Need your response" tone="danger"/><StatCard label="Reviewed today" value="24" hint="Across all categories"/></div><section className="reviewer-focus"><div><p className="eyebrow">Next best action</p><h2>Prioritize the 3 appealed claims</h2><p>Customers are waiting for a human explanation. Review evidence and publish a final response.</p></div><button className="button secondary" onClick={()=>setPage('appeals')}>View appeals</button></section><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Today</p><h2>Queue health</h2></div></div><div className="review-progress"><span style={{width:'68%'}}></span></div><p className="muted">68% of today’s assigned claims have been resolved.</p></section></>}{page==='queue' && <AdminCustomerClaims refreshKey={refreshKey} onChanged={()=>setRefreshKey(x=>x+1)} canReview />}{page==='appeals' && <><PageHeader eyebrow="Customer care" title="Appeals" description="Review rejected claims, the customer’s explanation and attached evidence."/><div className="panel"><div className="appeal-row"><div><strong>CLM-1042 · Warranty eligibility</strong><span>Customer requested a second review · 2 hours ago</span></div><button className="button primary" onClick={()=>setPage('queue')}>Open case</button></div><div className="appeal-row"><div><strong>CLM-1036 · Product damage</strong><span>Additional receipt uploaded · Yesterday</span></div><button className="button secondary" onClick={()=>setPage('queue')}>Open case</button></div></div></>}{page==='profile' && <WorkspaceProfile email={email} role="REVIEWER"/>}</main>
+  </div>
+}
+
+function AdminReports({ refreshKey }) {
+  const [claims, setClaims] = useState([])
+  const [status, setStatus] = useState('All')
+  const [query, setQuery] = useState('')
+  useEffect(() => { api('/api/customer/claims').then(setClaims).catch(() => setClaims([])) }, [refreshKey])
+  const filtered = claims.filter((claim) => (status === 'All' || claim.status === status) && (!query || `${claim.claim_id} ${claim.product_name} ${claim.serial_number}`.toLowerCase().includes(query.toLowerCase())))
+  const count = (value) => claims.filter((claim) => claim.status === value).length
+  function exportCsv() {
+    const columns = ['claim_id', 'status', 'customer_name', 'product_name', 'serial_number', 'claim_amount', 'created_at']
+    const csv = [columns.join(','), ...filtered.map((claim) => columns.map((column) => csvValue(claim[column])).join(','))].join('\n')
+    downloadFile('assurex-claims-report.csv', csv, 'text/csv;charset=utf-8')
+  }
+  return <><PageHeader eyebrow="Admin · Analytics & Reporting" title="Claims Reports" description="Theo dõi kết quả claim, rủi ro vận hành và xuất dữ liệu phục vụ phân tích." action={<button className="button primary" onClick={exportCsv}>Download CSV ↓</button>} /><div className="stats-grid"><StatCard label="Total claims" value={claims.length} hint="All submitted claims"/><StatCard label="Approved" value={count('Approved')} hint="Final positive decisions" tone="success"/><StatCard label="Manual review" value={count('Manual Review') + count('Under Review')} hint="Needs human action" tone="warning"/><StatCard label="Rejected" value={count('Rejected')} hint="Final negative decisions" tone="danger"/></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Operational report</p><h2>Claim records</h2></div><div className="report-filters"><input placeholder="Search claim, product, serial..." value={query} onChange={(event) => setQuery(event.target.value)} /><select value={status} onChange={(event) => setStatus(event.target.value)}><option>All</option><option>Approved</option><option>Rejected</option><option>Under Review</option><option>Manual Review</option><option>Closed</option></select></div></div><div className="table-wrapper"><table className="data-table"><thead><tr><th>Claim ID</th><th>Product</th><th>Status</th><th>Amount</th><th>Model consistency</th><th>Created</th></tr></thead><tbody>{filtered.map((claim) => <tr key={claim.id || claim.claim_id}><td className="mono">{claim.claim_id}</td><td>{claim.product_name || '—'}<small className="table-subline">{claim.serial_number || 'No serial'}</small></td><td><StatusBadge value={claim.status}/></td><td>{formatNumber(claim.claim_amount)}</td><td>{claim.decision?.model_consistency_status || '—'}</td><td>{formatDate(claim.created_at)}</td></tr>)}{filtered.length === 0 && <tr><td colSpan="6">No claims match the selected filters.</td></tr>}</tbody></table></div></section></>
+}
+
+function AdminSettings() {
+  const [saved, setSaved] = useState(false)
+  const [settings, setSettings] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('assurex_admin_settings')) || { expiryDays: 30, minConfidence: 60, acceptableDifference: 15, reportingDays: 30, requiredReceipt: true, requiredProductPhoto: true } } catch { return { expiryDays: 30, minConfidence: 60, acceptableDifference: 15, reportingDays: 30, requiredReceipt: true, requiredProductPhoto: true } }
+  })
+  function update(name, value) { setSaved(false); setSettings((current) => ({ ...current, [name]: value })) }
+  function save() { localStorage.setItem('assurex_admin_settings', JSON.stringify(settings)); setSaved(true) }
+  return <><PageHeader eyebrow="Admin · System configuration" title="Rules & Alerts" description="Cấu hình các ngưỡng nghiệp vụ được sử dụng để cảnh báo và đưa claim vào manual review." action={<button className="button primary" onClick={save}>Save configuration</button>} />{saved && <div className="alert success">Configuration saved successfully.</div>}<div className="settings-grid"><section className="panel"><p className="eyebrow">Warranty expiry alerts</p><h2>Notification rules</h2><label className="setting-row"><span>Alert before expiry (days)</span><input type="number" min="1" max="365" value={settings.expiryDays} onChange={(event)=>update('expiryDays', Number(event.target.value))}/></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredReceipt} onChange={(event)=>update('requiredReceipt', event.target.checked)}/><span>Require purchase receipt for submission</span></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredProductPhoto} onChange={(event)=>update('requiredProductPhoto', event.target.checked)}/><span>Require product photo for submission</span></label></section><section className="panel"><p className="eyebrow">Decision engine</p><h2>Model and business thresholds</h2><label className="setting-row"><span>Minimum model confidence (%)</span><input type="number" min="0" max="100" value={settings.minConfidence} onChange={(event)=>update('minConfidence', Number(event.target.value))}/></label><label className="setting-row"><span>Acceptable model difference (%)</span><input type="number" min="0" max="100" value={settings.acceptableDifference} onChange={(event)=>update('acceptableDifference', Number(event.target.value))}/></label><label className="setting-row"><span>Claim reporting deadline (days)</span><input type="number" min="1" max="365" value={settings.reportingDays} onChange={(event)=>update('reportingDays', Number(event.target.value))}/></label></section></div><section className="panel"><p className="eyebrow">Active policy preview</p><h2>Applied rules</h2><div className="settings-summary"><span>Expiry alerts <strong>{settings.expiryDays} days before</strong></span><span>Manual review below <strong>{settings.minConfidence}% confidence</strong></span><span>Model match tolerance <strong>{settings.acceptableDifference}%</strong></span><span>Reporting period <strong>{settings.reportingDays} days</strong></span></div></section></>
+}
+
 function App({ onLogout, role, email }) {
+  if (role === 'REVIEWER') return <ReviewerWorkspace onLogout={onLogout} email={email} />
   const [backendStatus, setBackendStatus] =
     useState('checking')
 
   const [adminPage, setAdminPage] =
     useState(() => {
-      const match = window.location.pathname.match(/\/admin(?:\/(.+))?$/)
+      const match = window.location.pathname.match(/\/(?:admin|reviewer)(?:\/(.+))?$/)
       if (!match) return 'dashboard'
       const suffix = match[1]
       if (!suffix) return 'dashboard'
@@ -5236,6 +5323,9 @@ function App({ onLogout, role, email }) {
         'users': 'users',
         'audit': 'audit',
         'ai-ml': 'ai-ml',
+        'ml-audit': 'ml-audit', 'ml-preprocessing': 'ml-preprocessing', 'ml-text': 'ml-text', 'ml-image': 'ml-image', 'ml-compare': 'ml-compare',
+        'reports': 'reports',
+        'settings': 'settings',
       }
       return pageMap[suffix] || 'dashboard'
     })
@@ -5273,8 +5363,8 @@ function App({ onLogout, role, email }) {
 
   useEffect(() => {
     const syncPage = () => {
-      const nextPage = (() => {
-        const match = window.location.pathname.match(/\/admin(?:\/(.+))?$/)
+        const nextPage = (() => {
+        const match = window.location.pathname.match(/\/(?:admin|reviewer)(?:\/(.+))?$/)
         if (!match) return 'dashboard'
         const suffix = match[1]
         if (!suffix) return 'dashboard'
@@ -5290,6 +5380,9 @@ function App({ onLogout, role, email }) {
           'users': 'users',
           'audit': 'audit',
           'ai-ml': 'ai-ml',
+          'ml-audit': 'ml-audit', 'ml-preprocessing': 'ml-preprocessing', 'ml-text': 'ml-text', 'ml-image': 'ml-image', 'ml-compare': 'ml-compare',
+          'reports': 'reports',
+          'settings': 'settings',
         }
         return map[suffix] || 'dashboard'
       })()
@@ -5301,9 +5394,10 @@ function App({ onLogout, role, email }) {
 
   function navigateAdminPage(nextPage) {
     setAdminPage(nextPage)
+    const workspace = role === 'REVIEWER' ? 'reviewer' : 'admin'
     const nextPath = nextPage === 'dashboard'
-      ? `${import.meta.env.BASE_URL}admin`
-      : `${import.meta.env.BASE_URL}admin/${nextPage}`
+      ? `${import.meta.env.BASE_URL}${workspace}`
+      : `${import.meta.env.BASE_URL}${workspace}/${nextPage}`
     window.history.pushState({}, '', nextPath)
   }
 
@@ -5321,14 +5415,15 @@ function App({ onLogout, role, email }) {
     ['history', 'ML History'],
     ['model', 'Model Intelligence'],
     ['ai-ml', 'AI & ML'],
+    ['ml-audit', 'ML · Audit'], ['ml-preprocessing', 'ML · Preprocessing'], ['ml-text', 'ML · Text models'], ['ml-image', 'ML · Image model'], ['ml-compare', 'ML · Compare'],
+    ['reports', 'Reports & Export'],
+    ['settings', 'Rules & Alerts'],
     ...(role === 'ADMIN' ? [['users', 'Users'], ['audit', 'Audit Logs']] : []),
   ]
 
-  const adminNavigation = role === 'REVIEWER'
-    ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile', 'ai-ml'].includes(key))
-    : role === 'SERVICE_CENTER'
-      ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile', 'classify', 'history', 'model', 'ai-ml'].includes(key))
-      : [...allAdminNavigation, ['profile', 'Profile']]
+  const adminNavigation = role === 'SERVICE_CENTER'
+    ? allAdminNavigation.filter(([key]) => ['dashboard', 'products', 'warranties', 'notifications', 'profile', 'classify', 'history', 'model'].includes(key))
+    : allAdminNavigation.filter(([key]) => ['dashboard', 'products', 'warranties', 'notifications', 'profile', 'model', 'ai-ml', 'ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare', 'reports', 'settings', 'users', 'audit'].includes(key))
 
   return (
     <div className="app-shell">
@@ -5381,10 +5476,11 @@ function App({ onLogout, role, email }) {
           <AdminDashboard
             onNavigate={navigateAdminPage}
             refreshKey={refreshKey}
+            role={role}
           />
         )}
 
-        {adminPage === 'customer-claims' && (
+        {adminPage === 'customer-claims' && role !== 'ADMIN' && (
           <AdminCustomerClaims
             refreshKey={refreshKey}
             onChanged={refresh}
@@ -5422,6 +5518,18 @@ function App({ onLogout, role, email }) {
 
         {adminPage === 'ai-ml' && (
           <AdminAIML />
+        )}
+
+        {['ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare'].includes(adminPage) && (
+          <MLPipelinePage page={adminPage} onNavigate={navigateAdminPage} />
+        )}
+
+        {adminPage === 'reports' && role === 'ADMIN' && (
+          <AdminReports refreshKey={refreshKey} />
+        )}
+
+        {adminPage === 'settings' && role === 'ADMIN' && (
+          <AdminSettings />
         )}
 
         {adminPage === 'users' && role === 'ADMIN' && (

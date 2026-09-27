@@ -215,6 +215,37 @@ def seed_default_admin(db: Session) -> None:
     db.commit()
 
 
+def seed_default_reviewer(db: Session) -> None:
+    reviewer = db.scalar(
+        select(CustomerAccount).where(
+            CustomerAccount.username == "reviewer"
+        )
+    )
+    if reviewer is not None:
+        return
+
+    salt = secrets.token_hex(16)
+    reviewer = CustomerAccount(
+        username="reviewer",
+        email="reviewer@assurex.local",
+        role="REVIEWER",
+        is_active=True,
+        password_salt=salt,
+        password_hash=hash_password("reviewer123", salt),
+    )
+    db.add(reviewer)
+    db.flush()
+    record_audit(
+        db,
+        account=reviewer,
+        action="ACCOUNT_CREATED",
+        resource_type="ACCOUNT",
+        resource_id=str(reviewer.id),
+        details={"source": "bootstrap"},
+    )
+    db.commit()
+
+
 @router.post("/register", status_code=201)
 def register(payload: Credentials, db: Session = Depends(get_db)):
     existing = db.scalar(

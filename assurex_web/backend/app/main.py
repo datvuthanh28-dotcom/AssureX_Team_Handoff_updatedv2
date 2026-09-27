@@ -24,6 +24,7 @@ from app.auth_routes import (
     require_roles,
     router as auth_router,
     seed_default_admin,
+    seed_default_reviewer,
 )
 from app.notification_routes import router as notification_router
 from app.catalog_routes import router as catalog_router
@@ -191,6 +192,7 @@ def create_database_tables():
 
     with SessionLocal() as db:
         seed_default_admin(db)
+        seed_default_reviewer(db)
 
 
 app.add_middleware(

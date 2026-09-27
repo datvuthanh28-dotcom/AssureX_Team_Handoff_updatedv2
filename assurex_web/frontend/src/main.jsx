@@ -93,16 +93,17 @@ function RootComponent() {
   const path = currentPath.startsWith(APP_BASE_PATH)
     ? currentPath.slice(APP_BASE_PATH.length) || '/'
     : currentPath
-  const isAdminRoute = path === '/admin' || path.startsWith('/admin/') || path.endsWith('/admin')
+  const isStaffRoute = ['/admin', '/reviewer'].some((route) => path === route || path.startsWith(`${route}/`) || path.endsWith(route))
+  const requestedWorkspace = path === '/reviewer' || path.startsWith('/reviewer/') || path.endsWith('/reviewer') ? 'REVIEWER' : 'ADMIN'
   const [adminAuthenticated, setAdminAuthenticated] = useState(
     () => Boolean(localStorage.getItem(ADMIN_SESSION_KEY))
   )
   const [adminRole, setAdminRole] = useState('')
   const [adminEmail, setAdminEmail] = useState('')
-  const [checkingAdmin, setCheckingAdmin] = useState(isAdminRoute && adminAuthenticated)
+  const [checkingAdmin, setCheckingAdmin] = useState(isStaffRoute && adminAuthenticated)
 
   useEffect(() => {
-    if (!isAdminRoute || !adminAuthenticated) {
+    if (!isStaffRoute || !adminAuthenticated) {
       return undefined
     }
 
@@ -111,6 +112,12 @@ function RootComponent() {
       .then((account) => {
         if (!['ADMIN', 'REVIEWER', 'SERVICE_CENTER'].includes(account.role)) {
           throw new Error('Workspace access required.')
+        }
+        if (requestedWorkspace === 'ADMIN' && account.role !== 'ADMIN') {
+          throw new Error('Admin Console requires an ADMIN account.')
+        }
+        if (requestedWorkspace === 'REVIEWER' && account.role !== 'REVIEWER') {
+          throw new Error('Reviewer Workspace requires a REVIEWER account.')
         }
         if (active) setAdminRole(account.role)
         if (active) setAdminEmail(account.email)
@@ -126,9 +133,9 @@ function RootComponent() {
     return () => {
       active = false
     }
-  }, [isAdminRoute, adminAuthenticated])
+  }, [isStaffRoute, adminAuthenticated])
 
-  if (!isAdminRoute) return <CustomerApp />
+  if (!isStaffRoute) return <CustomerApp />
   if (checkingAdmin) {
     return <main className="admin-auth-screen"><p>Checking access...</p></main>
   }
@@ -136,6 +143,11 @@ function RootComponent() {
     return (
       <AdminLogin
         onLogin={(session) => {
+          if ((requestedWorkspace === 'ADMIN' && session.role !== 'ADMIN') || (requestedWorkspace === 'REVIEWER' && session.role !== 'REVIEWER')) {
+            localStorage.removeItem(ADMIN_SESSION_KEY)
+            window.alert(requestedWorkspace === 'ADMIN' ? 'Please use an ADMIN account for Admin Console.' : 'Please use a REVIEWER account for Reviewer Workspace.')
+            return
+          }
           localStorage.setItem(ADMIN_SESSION_KEY, session.access_token)
           setAdminRole(session.role)
           setAdminEmail(session.email)
