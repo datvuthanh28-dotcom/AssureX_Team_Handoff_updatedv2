@@ -435,3 +435,8 @@ def get_audit_logs(
         }
         for entry in entries
     ]
+
+from app.pipeline_routes import router as pipeline_router
+from app.appeal_routes import router as appeal_router
+app.include_router(pipeline_router)
+app.include_router(appeal_router)

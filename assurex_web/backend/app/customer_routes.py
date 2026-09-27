@@ -21,6 +21,7 @@ from app.notification_routes import add_notification
 from app.ml.model_service import predict_claim
 from app.ml.feature_service import build_claim_features
 from app.ml.decision_service import apply_business_rules
+from app.ml.gtm_service import predict_gtm_claim
 from app.ml.document_compare_service import compare_warranty_data
 from app.ocr.ocr_service import extract_warranty_image
 
@@ -578,21 +579,22 @@ def submit_customer_claim(
     # DECISION ENGINE
     # ---------------------------------------------
 
-    decision_result = apply_business_rules(
-        rule_data,
-        prediction["predicted_class"],
-        prediction["confidence"],
+    gtm_result = predict_gtm_claim(
+        raw_input=raw_input,
+        model_features=model_features,
+        rule_data=feature_result["rule_data"],
+        derived=feature_result["derived"],
     )
 
-    google_model = prediction["google_model"]
-    if google_model["inference_status"] != "connected":
-        reason = "Google model inference is not connected"
-        if reason not in decision_result["decision_reasons"]:
-            decision_result["decision_reasons"].append(reason)
-        if decision_result["final_decision"] != "Invalid Claim":
-            decision_result["final_decision"] = "Manual Review"
-            decision_result["customer_status"] = "Under Review"
-            decision_result["requires_admin_review"] = True
+    decision_result = apply_business_rules(
+        feature_result["rule_data"],
+        prediction["predicted_class"],
+        prediction["confidence"],
+        gtm_prediction=gtm_result.get("predicted_class"),
+        gtm_confidence=gtm_result.get("confidence"),
+        python_probabilities=prediction.get("probabilities"),
+        gtm_probabilities=gtm_result.get("probabilities"),
+    )
 
     # ---------------------------------------------
     # CUSTOMER STATUS
@@ -602,13 +604,7 @@ def submit_customer_claim(
     # Manual -> Under Review
     # ---------------------------------------------
 
-    customer_status = (
-        "Rejected"
-        if decision_result["final_decision"] == "Invalid Claim"
-        else "Manual Review"
-        if decision_result["requires_admin_review"]
-        else decision_result["customer_status"]
-    )
+    customer_status = decision_result["customer_status"]
 
     claim = CustomerClaim(
         claim_id=claim_id,
@@ -723,7 +719,7 @@ def submit_customer_claim(
         python_model_version=
             prediction["model_version"],
 
-        gtm_model_version=None,
+        gtm_model_version=gtm_result.get("model_version"),
 
         google_model_name=
             google_model["model_name"],
@@ -731,20 +727,15 @@ def submit_customer_claim(
         google_model_version=
             google_model["model_version"],
 
-        google_inference_status=
-            google_model["inference_status"],
+        google_inference_status=gtm_result.get("inference_status"),
 
-        google_prediction=None,
+        google_prediction=gtm_result.get("predicted_class"),
 
-        google_confidence=None,
+        google_confidence=gtm_result.get("confidence"),
 
-        confidence_difference=None,
+        confidence_difference=decision_result.get("confidence_difference"),
 
-        model_consistency_status=(
-            "Uncertain Result"
-            if google_model["inference_status"] != "connected"
-            else None
-        ),
+        model_consistency_status=decision_result.get("model_consistency_status"),
     )
 
     db.add(decision_record)

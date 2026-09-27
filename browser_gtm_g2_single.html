@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>AssureX G2 single-image browser check</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+</head>
+<body>
+  <h2>AssureX G2 V3 - Browser inference check</h2>
+  <p>Select tests_ml/CLM00008_runtime_g2.png</p>
+  <input id="file" type="file" accept="image/*">
+  <pre id="out">Loading model...</pre>
+<script>
+let model;
+async function init() {
+  const base = "/gtm/frozen_G2_V3/";
+  model = await tmImage.load(base + "model.json", base + "metadata.json");
+  document.getElementById("out").textContent =
+    "Model loaded. Select the runtime PNG.";
+}
+document.getElementById("file").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const img = new Image();
+  const url = URL.createObjectURL(file);
+  img.onload = async () => {
+    try {
+      const preds = await model.predict(img, false);
+      const sorted = [...preds].sort((a,b) => b.probability - a.probability);
+      document.getElementById("out").textContent =
+        JSON.stringify(sorted, null, 2);
+    } catch (err) {
+      document.getElementById("out").textContent = String(err.stack || err);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  };
+  img.src = url;
+});
+init().catch(err => {
+  document.getElementById("out").textContent = String(err.stack || err);
+});
+</script>
+</body>
+</html>
