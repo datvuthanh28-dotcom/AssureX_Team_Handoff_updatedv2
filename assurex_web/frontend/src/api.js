@@ -31,13 +31,32 @@ export async function api(
       'application/json'
   }
 
-  const response = await fetch(
-    `${API_BASE}${path}`,
-    {
-      ...options,
-      headers,
+  let response
+  try {
+    response = await fetch(
+      `${API_BASE}${path}`,
+      {
+        ...options,
+        headers,
+      }
+    )
+  } catch (networkError) {
+    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      try {
+        response = await fetch(
+          `http://localhost:8000${path}`,
+          {
+            ...options,
+            headers,
+          }
+        )
+      } catch {
+        throw networkError
+      }
+    } else {
+      throw networkError
     }
-  )
+  }
 
   let data = null
 

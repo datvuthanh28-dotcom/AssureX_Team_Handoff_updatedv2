@@ -4302,10 +4302,6 @@ function CustomerSubmit({
         <section className="panel">
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">
-        <section className="panel">
-          <div className="panel-heading">
-            <div>
               <p className="eyebrow">Step 3</p>
               <h2>Supporting Evidence & Documents</h2>
               <p className="section-helper">
