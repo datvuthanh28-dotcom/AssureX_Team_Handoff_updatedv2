@@ -1,198 +1,362 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { api } from './api'
-import { MODEL_14_FEATURES, claim14FieldGroups, CLAIM_PRESETS } from './claimFields'
+import {
+  MODEL_14_FEATURES,
+  claim14FieldGroups,
+  DEMO_USERS,
+  DEMO_CATALOG,
+  DEMO_SOLD_PRODUCTS,
+  lookupSoldProduct,
+  derive14Features,
+  predictModelV3,
+  CLAIM_PRESETS,
+} from './claimFields'
 
-// Allowed constants matching SRS and Backend validation
-export const ALLOWED_PRODUCT_TYPES = [
-  'Laptop',
-  'Smartphone',
-  'Tablet',
-  'Monitor',
-  'Printer',
-  'Other',
-]
+// Shared mock storage to persist tickets across views within the session
+const LOCAL_STORAGE_TICKETS_KEY = 'assurex_v3_tickets'
 
-export const ALLOWED_PROBLEM_CATEGORIES = [
-  'Power / Cannot Turn On',
-  'Battery',
-  'Screen / Display',
-  'Keyboard',
-  'Performance',
-  'Software',
-  'Network / Connectivity',
-  'Overheating',
-  'Physical Damage',
-  'Other',
-]
+function loadStoredTickets() {
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_TICKETS_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch {
+    // fallback
+  }
 
-// Default feature values matching V3 ML model
-const DEFAULT_14_FEATURES = {
-  ProductIdentityMatch: 'Yes',
-  SerialNumberMatch: 'Yes',
-  ProductModelConsistent: 'Yes',
-  WarrantyRemainingDays: 180,
-  FaultCovered: 'Yes',
-  ClaimReportingDelayDays: 3,
-  ClaimReportingWithinPeriod: 'Yes',
-  RepairAuthorized: 'Not Applicable',
-  DuplicateClaimIndicator: 'No',
-  ContradictionIndicator: 'No',
-  RequiredDocumentsComplete: 'Yes',
-  MissingDocumentCount: 0,
-  OCRConfidence: 0.95,
-  OCRQualityBand: 'High',
+  // Initial seed tickets
+  return [
+    {
+      ticket_id: 'TCK-8819201',
+      customer_name: 'Bui Ngoc Mai',
+      customer_email: 'ngoc.mai07@example.com',
+      customer_phone: '0912345678',
+      product_code: 'AX26-00001',
+      product_name: 'NovaBook 14 Ultra',
+      product_model: 'NB14-2026',
+      serial_number: 'NB142026-00001',
+      purchase_date: '2026-07-17',
+      warranty_expiry: '2028-07-16',
+      incident_date: '2026-09-24',
+      fault_description: 'Screen displays horizontal flickering lines continuously upon boot. No physical impact.',
+      previous_repair: 'No',
+      repair_centre: '',
+      repair_date: '',
+      evidence: {
+        purchase_invoice: { filename: 'Invoice_NovaStore_9021.pdf', size: '245 KB' },
+        serial_image: { filename: 'Serial_Tag_NB142026.jpg', size: '1.2 MB' },
+        fault_evidence: { filename: 'Screen_Flicker_Video.mp4', size: '4.8 MB' },
+        repair_report: null,
+      },
+      model_features: {
+        RepairAuthorized: 'Not Applicable',
+        SerialNumberMatch: 'Yes',
+        ProductModelConsistent: 'Yes',
+        DuplicateClaimIndicator: 'No',
+        ContradictionIndicator: 'No',
+        OCRConfidence: 0.95,
+        ClaimReportingDelayDays: 3,
+        WarrantyRemainingDays: 658,
+        ClaimReportingWithinPeriod: 'Yes',
+        FaultCovered: 'Yes',
+        RequiredDocumentsComplete: 'Yes',
+        MissingDocumentCount: 0,
+        ProductIdentityMatch: 'Yes',
+        OCRQualityBand: 'High',
+      },
+      ai_prediction: 'WARRANTY',
+      ai_confidence: 0.95,
+      ai_reason: 'Standard OEM manufacturing defect verified under active warranty coverage',
+      status: 'WAITING_REVIEW',
+      ground_truth: null,
+      reviewer_note: null,
+      created_at: new Date(Date.now() - 3600000).toISOString(),
+    },
+    {
+      ticket_id: 'TCK-8819202',
+      customer_name: 'Nguyen Van An',
+      customer_email: 'an.nguyen@example.com',
+      customer_phone: '0987654321',
+      product_code: 'AX26-00002',
+      product_name: 'ThinkPad T14 Gen 4',
+      product_model: '21HD0001US',
+      serial_number: 'PF4X9812',
+      purchase_date: '2025-11-10',
+      warranty_expiry: '2027-11-09',
+      incident_date: '2026-09-17',
+      fault_description: 'Keyboard keys intermittently stop responding during normal typing. Device previously serviced at local shop.',
+      previous_repair: 'Yes',
+      repair_centre: 'FastFix Independent Tech Shop',
+      repair_date: '2026-07-20',
+      evidence: {
+        purchase_invoice: { filename: 'TechWorld_Receipt_4491.pdf', size: '310 KB' },
+        serial_image: { filename: 'ThinkPad_Serial_Photo.jpg', size: '980 KB' },
+        fault_evidence: { filename: 'Keyboard_Tester_Log.png', size: '640 KB' },
+        repair_report: null, // missing
+      },
+      model_features: {
+        RepairAuthorized: 'No',
+        SerialNumberMatch: 'Yes',
+        ProductModelConsistent: 'Yes',
+        DuplicateClaimIndicator: 'No',
+        ContradictionIndicator: 'No',
+        OCRConfidence: 0.95,
+        ClaimReportingDelayDays: 10,
+        WarrantyRemainingDays: 408,
+        ClaimReportingWithinPeriod: 'Yes',
+        FaultCovered: 'Yes',
+        RequiredDocumentsComplete: 'No',
+        MissingDocumentCount: 1,
+        ProductIdentityMatch: 'Yes',
+        OCRQualityBand: 'High',
+      },
+      ai_prediction: 'REVIEW_REQUIRED',
+      ai_confidence: 0.78,
+      ai_reason: 'Prior unauthorized third-party repair detected without certified repair report',
+      status: 'WAITING_REVIEW',
+      ground_truth: null,
+      reviewer_note: null,
+      created_at: new Date(Date.now() - 7200000).toISOString(),
+    },
+    {
+      ticket_id: 'TCK-8819203',
+      customer_name: 'Tran Thi Lan',
+      customer_email: 'lan.tran@example.com',
+      customer_phone: '0901234567',
+      product_code: 'AX26-00003',
+      product_name: 'Galaxy S24 Ultra',
+      product_model: 'SM-S928B',
+      serial_number: 'R5CW109K',
+      purchase_date: '2024-03-01',
+      warranty_expiry: '2025-02-28',
+      incident_date: '2026-08-15',
+      fault_description: 'Phone fell into water pool, screen shattered with liquid ingress behind display glass.',
+      previous_repair: 'No',
+      repair_centre: '',
+      repair_date: '',
+      evidence: {
+        purchase_invoice: { filename: 'PhoneMart_Receipt_1182.pdf', size: '180 KB' },
+        serial_image: { filename: 'Serial_Backplate.jpg', size: '890 KB' },
+        fault_evidence: { filename: 'Liquid_Damage_Photo.jpg', size: '1.5 MB' },
+        repair_report: null,
+      },
+      model_features: {
+        RepairAuthorized: 'Not Applicable',
+        SerialNumberMatch: 'Yes',
+        ProductModelConsistent: 'Yes',
+        DuplicateClaimIndicator: 'No',
+        ContradictionIndicator: 'No',
+        OCRConfidence: 0.95,
+        ClaimReportingDelayDays: 43,
+        WarrantyRemainingDays: -576,
+        ClaimReportingWithinPeriod: 'No',
+        FaultCovered: 'No',
+        RequiredDocumentsComplete: 'Yes',
+        MissingDocumentCount: 0,
+        ProductIdentityMatch: 'Yes',
+        OCRQualityBand: 'High',
+      },
+      ai_prediction: 'NOT_WARRANTY',
+      ai_confidence: 0.98,
+      ai_reason: 'Defect excluded: physical impact, liquid ingress, or user abuse; warranty expired',
+      status: 'REVIEWED',
+      ground_truth: 'Invalid Claim',
+      reviewer_note: 'Liquid damage verified, device is beyond warranty coverage window. Claim rejected.',
+      reviewed_at: new Date(Date.now() - 1800000).toISOString(),
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+    },
+  ]
+}
+
+function saveStoredTickets(tickets) {
+  try {
+    localStorage.setItem(LOCAL_STORAGE_TICKETS_KEY, JSON.stringify(tickets))
+  } catch {
+    // ignore
+  }
 }
 
 // ==============================================================================
-// 1. CUSTOMER - WARRANTY CLAIM FORM (STRICTLY 14 MODEL FEATURES - NO IMAGE UPLOAD)
+// 1. CUSTOMER - WARRANTY CLAIM FORM (CLEAN CUSTOMER INPUTS → FEATURE ENGINE)
 // ==============================================================================
 
 export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
-  // Metadata context
-  const [meta, setMeta] = useState({
-    product_type: 'Laptop',
-    product_model: 'Lenovo ThinkPad T14 Gen 4',
-    order_code: 'ORD-2026-88192',
-    purchase_date: new Date().toISOString().split('T')[0],
-    usage_duration: 6,
-    problem_category: 'Screen / Display',
-    problem_description: 'Screen displays flickering horizontal lines continuously after startup, device has no physical impact or liquid damage.',
-  })
+  // Preset 1 is default
+  const defaultPreset = CLAIM_PRESETS[0]
 
-  // The 14 Features finalized during ML Model training
-  const [features, setFeatures] = useState({ ...DEFAULT_14_FEATURES })
+  // Section 1: Customer Information
+  const [customer, setCustomer] = useState({ ...defaultPreset.customer })
 
+  // Section 2: Product Identification
+  const [productCodeInput, setProductCodeInput] = useState(defaultPreset.product_code)
+  const [productRecord, setProductRecord] = useState(() => lookupSoldProduct(defaultPreset.product_code))
+
+  // Section 3: Claim Incident
+  const [incidentDate, setIncidentDate] = useState(defaultPreset.claim.incident_date)
+  const [faultDescription, setFaultDescription] = useState(defaultPreset.claim.fault_description)
+
+  // Section 4: Repair History
+  const [previousRepair, setPreviousRepair] = useState(defaultPreset.claim.previous_repair)
+  const [repairCentre, setRepairCentre] = useState(defaultPreset.claim.repair_centre)
+  const [repairDate, setRepairDate] = useState(defaultPreset.claim.repair_date)
+
+  // Active Preset & State
   const [activePreset, setActivePreset] = useState('valid')
-  const [errors, setErrors] = useState({})
   const [submitting, setSubmitting] = useState(false)
+  const [errors, setErrors] = useState({})
   const [createdTicket, setCreatedTicket] = useState(null)
   const [submitError, setSubmitError] = useState('')
 
-  function handleFeatureChange(name, value) {
-    setFeatures((prev) => ({ ...prev, [name]: value }))
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: '' }))
+  // Handle Product Code Lookup
+  function handleProductLookup(code) {
+    const targetCode = code !== undefined ? code : productCodeInput
+    const found = lookupSoldProduct(targetCode)
+    if (found) {
+      setProductRecord(found)
+      // Auto-fill customer if empty or preset
+      setCustomer((prev) => ({
+        customer_name: prev.customer_name || found.customer_name,
+        email: prev.email || found.customer_email,
+        phone_number: prev.phone_number || found.customer_phone,
+      }))
+      setErrors((prev) => ({ ...prev, product_code: '' }))
+    } else {
+      setProductRecord(null)
+      setErrors((prev) => ({
+        ...prev,
+        product_code: 'Product Code not found in database. Please check code (e.g. AX26-00001) or enter manually.',
+      }))
     }
   }
 
-  function handleMetaChange(field, value) {
-    setMeta((prev) => ({ ...prev, [field]: value }))
-    if (errors[field]) {
-      setErrors((prev) => ({ ...prev, [field]: '' }))
-    }
-  }
-
+  // Apply Presets
   function applyPreset(preset) {
     setActivePreset(preset.id)
-    setFeatures({ ...preset.features })
-    if (preset.meta) {
-      setMeta((prev) => ({ ...prev, ...preset.meta }))
-    }
+    setCustomer({ ...preset.customer })
+    setProductCodeInput(preset.product_code)
+    const product = lookupSoldProduct(preset.product_code)
+    setProductRecord(product)
+
+    setIncidentDate(preset.claim.incident_date)
+    setFaultDescription(preset.claim.fault_description)
+    setPreviousRepair(preset.claim.previous_repair)
+    setRepairCentre(preset.claim.repair_centre)
+    setRepairDate(preset.claim.repair_date)
+
     setErrors({})
     setSubmitError('')
   }
 
-  // Frontend Validation for the 14 features and essential fields
+  // Compute derived 14 features in real-time
+  const derivedFeatures = useMemo(() => {
+    return derive14Features(
+      {
+        incident_date: incidentDate,
+        fault_description: faultDescription,
+        previous_repair: previousRepair,
+        repair_centre: repairCentre,
+        repair_date: repairDate,
+      },
+      productRecord || {}
+    )
+  }, [incidentDate, faultDescription, previousRepair, repairCentre, repairDate, productRecord])
+
+  // Compute preview AI prediction in real-time
+  const previewPrediction = useMemo(() => {
+    return predictModelV3(derivedFeatures)
+  }, [derivedFeatures])
+
+  // Validation
   function validate() {
     const errs = {}
+    if (!customer.customer_name?.trim()) errs.customer_name = 'Please enter your Full Name.'
+    if (!customer.email?.trim() || !customer.email.includes('@')) errs.email = 'Please enter a valid email address.'
+    if (!productRecord && !productCodeInput.trim()) errs.product_code = 'Product Code or equipment record is required.'
+    if (!incidentDate) errs.incident_date = 'Please select the date the incident/defect occurred.'
+    if (!faultDescription?.trim() || faultDescription.trim().length < 10)
+      errs.fault_description = 'Please describe the fault or symptom (minimum 10 characters).'
 
-    // Product Model
-    if (!meta.product_model || meta.product_model.trim().length < 2) {
-      errs.product_model = 'Please enter product model name (minimum 2 characters).'
-    }
-
-    // OCR Confidence (0.0 to 1.0)
-    const ocrConf = Number(features.OCRConfidence)
-    if (isNaN(ocrConf) || ocrConf < 0 || ocrConf > 1) {
-      errs.OCRConfidence = 'OCR Confidence must be a valid number between 0.00 and 1.00.'
-    }
-
-    // Delay Days (>= 0)
-    const delay = Number(features.ClaimReportingDelayDays)
-    if (isNaN(delay) || delay < 0) {
-      errs.ClaimReportingDelayDays = 'Reporting delay days cannot be negative.'
-    }
-
-    // Missing Document Count (>= 0)
-    const missingDocs = Number(features.MissingDocumentCount)
-    if (isNaN(missingDocs) || missingDocs < 0) {
-      errs.MissingDocumentCount = 'Missing document count cannot be negative.'
-    }
-
-    // Warranty Remaining Days (number)
-    const remainingDays = Number(features.WarrantyRemainingDays)
-    if (isNaN(remainingDays)) {
-      errs.WarrantyRemainingDays = 'Warranty remaining days must be a valid integer.'
+    if (previousRepair === 'Yes') {
+      if (!repairCentre?.trim()) errs.repair_centre = 'Please state the repair centre name.'
     }
 
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
 
+  // Submit Claim
   async function handleSubmit(e) {
     e.preventDefault()
     setSubmitError('')
 
     if (!validate()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
 
     setSubmitting(true)
     try {
+      const ticketId = `TCK-${Math.floor(1000000 + Math.random() * 9000000)}`
       const payload = {
-        // Context metadata
-        product_type: meta.product_type,
-        product_model: meta.product_model.trim(),
-        order_code: meta.order_code ? meta.order_code.trim() : null,
-        purchase_date: meta.purchase_date,
-        usage_duration: parseInt(meta.usage_duration, 10) || 1,
-        problem_category: meta.problem_category,
-        problem_description: meta.problem_description ? meta.problem_description.trim() : '',
-
-        // THE 14 FINAL ML FEATURES
-        ProductIdentityMatch: features.ProductIdentityMatch,
-        SerialNumberMatch: features.SerialNumberMatch,
-        ProductModelConsistent: features.ProductModelConsistent,
-        WarrantyRemainingDays: Number(features.WarrantyRemainingDays),
-        FaultCovered: features.FaultCovered,
-        ClaimReportingDelayDays: Number(features.ClaimReportingDelayDays),
-        ClaimReportingWithinPeriod: features.ClaimReportingWithinPeriod,
-        RepairAuthorized: features.RepairAuthorized,
-        DuplicateClaimIndicator: features.DuplicateClaimIndicator,
-        ContradictionIndicator: features.ContradictionIndicator,
-        RequiredDocumentsComplete: features.RequiredDocumentsComplete,
-        MissingDocumentCount: Number(features.MissingDocumentCount),
-        OCRConfidence: Number(features.OCRConfidence),
-        OCRQualityBand: features.OCRQualityBand,
+        ticket_id: ticketId,
+        customer_name: customer.customer_name.trim(),
+        customer_email: customer.email.trim(),
+        customer_phone: customer.phone_number?.trim() || '',
+        product_code: productRecord?.product_code || productCodeInput,
+        product_name: productRecord?.product_name || 'Product',
+        product_model: productRecord?.model_number || 'Model',
+        serial_number: productRecord?.serial_number || 'Serial',
+        purchase_date: productRecord?.purchase_date || '',
+        warranty_expiry: productRecord?.warranty_expiry_date || '',
+        incident_date: incidentDate,
+        fault_description: faultDescription.trim(),
+        previous_repair: previousRepair,
+        repair_centre: repairCentre?.trim() || '',
+        repair_date: repairDate || '',
+        evidence: null,
+        model_features: derivedFeatures,
+        ai_prediction: previewPrediction.prediction,
+        ai_confidence: previewPrediction.confidence,
+        ai_reason: previewPrediction.reason,
+        status: 'WAITING_REVIEW',
+        ground_truth: null,
+        reviewer_note: null,
+        created_at: new Date().toISOString(),
       }
 
-      const response = await api('/api/warranty/claims', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      })
-
-      if (response && response.ticket) {
-        setCreatedTicket(response.ticket)
-        if (onCreated) onCreated(response.ticket)
-      } else {
-        throw new Error('Invalid response format from server.')
+      // Try API first
+      let created = null
+      try {
+        const response = await api('/api/claims/v3/ticket', {
+          method: 'POST',
+          body: JSON.stringify(payload),
+        })
+        if (response && response.ticket) {
+          created = response.ticket
+        }
+      } catch {
+        // Fallback to client-side persistence
+        created = payload
       }
+
+      if (!created) created = payload
+
+      // Save to local storage list
+      const existing = loadStoredTickets()
+      const updated = [created, ...existing]
+      saveStoredTickets(updated)
+
+      setCreatedTicket(created)
+      if (onCreated) onCreated(created)
     } catch (err) {
-      if (err.errors && typeof err.errors === 'object') {
-        setErrors((prev) => ({ ...prev, ...err.errors }))
-      }
-      setSubmitError(err.message || 'Unable to submit warranty claim.')
+      setSubmitError(err.message || 'Unable to submit claim.')
     } finally {
       setSubmitting(false)
     }
   }
 
   function resetForm() {
-    setFeatures({ ...DEFAULT_14_FEATURES })
-    setErrors({})
     setCreatedTicket(null)
-    setSubmitError('')
-    setActivePreset('valid')
+    applyPreset(CLAIM_PRESETS[0])
   }
 
   // ============================================================================
@@ -201,7 +365,6 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
   if (createdTicket) {
     const isWarranty = createdTicket.ai_prediction === 'WARRANTY'
     const isNotWarranty = createdTicket.ai_prediction === 'NOT_WARRANTY'
-    const isReview = createdTicket.ai_prediction === 'REVIEW_REQUIRED'
 
     return (
       <div
@@ -209,11 +372,11 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
         style={{
           background: 'var(--ax-surface, #ffffff)',
           border: '1px solid var(--ax-border, #e2e8f0)',
-          borderRadius: '12px',
+          borderRadius: '16px',
           padding: '36px',
-          maxWidth: '720px',
-          margin: '20px auto',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.06)',
+          maxWidth: '780px',
+          margin: '24px auto',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
         }}
       >
         <div style={{ textAlign: 'center', marginBottom: '24px' }}>
@@ -222,7 +385,11 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: isWarranty ? 'rgba(34, 197, 94, 0.15)' : isNotWarranty ? 'rgba(239, 68, 68, 0.15)' : 'rgba(234, 179, 8, 0.15)',
+              background: isWarranty
+                ? 'rgba(34, 197, 94, 0.15)'
+                : isNotWarranty
+                  ? 'rgba(239, 68, 68, 0.15)'
+                  : 'rgba(234, 179, 8, 0.15)',
               color: isWarranty ? '#16a34a' : isNotWarranty ? '#dc2626' : '#ca8a04',
               fontSize: '32px',
               display: 'flex',
@@ -235,96 +402,99 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
           </div>
           <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>
             {isWarranty
-              ? 'Claim Submitted · Warranty Eligible'
+              ? 'Warranty Ticket Created · AI Eligible'
               : isNotWarranty
-                ? 'Claim Submitted · Ineligible Under Policy'
-                : 'Claim Submitted · Awaiting Reviewer Decision'}
+                ? 'Warranty Ticket Created · AI Ineligible'
+                : 'Warranty Ticket Created · Queued for Reviewer'}
           </h2>
+          <p style={{ margin: '8px 0 0', color: 'var(--ax-text-soft, #64748b)', fontSize: '13.5px' }}>
+            Ticket ID: <strong className="mono" style={{ color: '#2563eb' }}>{createdTicket.ticket_id}</strong> ·
+            The claim is queued for official Reviewer Ground Truth sign-off.
+          </p>
         </div>
 
-        {/* Ticket Summary Details */}
+        {/* AI Prediction Box */}
         <div
           style={{
             background: 'var(--ax-surface-alt, #f8fafc)',
-            borderRadius: '10px',
+            borderRadius: '12px',
             padding: '20px',
+            border: '1px solid var(--ax-border, #e2e8f0)',
             marginBottom: '24px',
-            border: '1px solid var(--ax-border, #cbd5e1)',
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '13px', color: 'var(--ax-text-soft, #475569)' }}>Claim Ticket ID:</span>
-            <strong className="mono" style={{ fontSize: '16px', color: '#2563eb' }}>
-              {createdTicket.ticket_id}
-            </strong>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '13px', color: 'var(--ax-text-soft, #475569)' }}>Device:</span>
-            <strong>{createdTicket.product_type} · {createdTicket.product_model}</strong>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontSize: '13px', color: 'var(--ax-text-soft, #475569)' }}>AI Model Prediction:</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              AI Model V3 Assessment
+            </span>
             <span
               style={{
-                fontWeight: 800,
-                fontSize: '13px',
-                padding: '4px 12px',
-                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '2px 8px',
+                borderRadius: '4px',
                 background: isWarranty ? '#dcfce7' : isNotWarranty ? '#fee2e2' : '#fef9c3',
                 color: isWarranty ? '#15803d' : isNotWarranty ? '#b91c1c' : '#a16207',
-                border: `1px solid ${isWarranty ? '#86efac' : isNotWarranty ? '#fca5a5' : '#fde047'}`,
               }}
             >
-              {createdTicket.ai_prediction}
-              {createdTicket.ai_confidence != null && ` (${(createdTicket.ai_confidence * 100).toFixed(0)}%)`}
+              Confidence: {Math.round((createdTicket.ai_confidence || 0.95) * 100)}%
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '13px', color: 'var(--ax-text-soft, #475569)' }}>Workflow Status:</span>
-            <span style={{ fontWeight: 700, fontSize: '13px', color: '#ea580c' }}>
-              ⏳ {createdTicket.status === 'WAITING_REVIEW' ? 'Awaiting Reviewer Decision' : createdTicket.status}
-            </span>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', fontSize: '13px' }}>
+            <div>
+              <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Device & Model:</span>
+              <strong>{createdTicket.product_name} ({createdTicket.product_model})</strong>
+            </div>
+            <div>
+              <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Customer:</span>
+              <strong>{createdTicket.customer_name} ({createdTicket.customer_email})</strong>
+            </div>
+            <div>
+              <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>AI Prediction:</span>
+              <strong style={{ color: isWarranty ? '#15803d' : isNotWarranty ? '#b91c1c' : '#ca8a04' }}>
+                {createdTicket.ai_prediction}
+              </strong>
+            </div>
+            <div>
+              <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Queue Status:</span>
+              <span className="days-left-badge active">WAITING_REVIEW</span>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', fontSize: '12.5px', color: 'var(--ax-text-soft, #475569)' }}>
+            <strong>Analysis: </strong>{createdTicket.ai_reason}
           </div>
         </div>
 
-        {/* 14 Features Applied Snapshot */}
-        <details style={{ marginBottom: '24px', fontSize: '13px' }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600, color: '#2563eb' }}>
-            Review 14 features evaluated by AI Model ▾
-          </summary>
-          <div
-            style={{
-              marginTop: '10px',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '8px',
-              background: '#ffffff',
-              padding: '12px',
-              borderRadius: '8px',
-              border: '1px solid var(--ax-border, #e2e8f0)',
-            }}
-          >
+        {/* 14 Derived Features Summary */}
+        <div style={{ marginBottom: '24px' }}>
+          <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
+            14 Automated Features Derived by Backend:
+          </h4>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', fontSize: '12px' }}>
             {MODEL_14_FEATURES.map((feat) => {
-              const val = createdTicket.model_features?.[feat] ?? features[feat]
+              const val = createdTicket.model_features?.[feat]
               return (
-                <div key={feat} style={{ padding: '6px 8px', background: '#f8fafc', borderRadius: '4px', fontSize: '12px' }}>
-                  <div style={{ color: 'var(--ax-text-faint, #64748b)', fontSize: '11px' }}>{feat}</div>
-                  <strong style={{ color: '#0f172a' }}>{String(val)}</strong>
+                <div key={feat} style={{ background: '#f8fafc', padding: '6px 10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ fontSize: '11px', color: '#64748b', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {feat}
+                  </span>
+                  <strong style={{ color: '#0f172a' }}>{String(val ?? '—')}</strong>
                 </div>
               )
             })}
           </div>
-        </details>
+        </div>
 
+        {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          <button className="button primary" onClick={resetForm} style={{ minWidth: '180px' }}>
+          <button className="button primary" onClick={resetForm}>
             Submit Another Claim
           </button>
           {onCancel && (
             <button className="button secondary" onClick={onCancel}>
-              Back to Home
+              Return to Home
             </button>
           )}
         </div>
@@ -333,371 +503,514 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
   }
 
   // ============================================================================
-  // MAIN FORM (14 FEATURES - PURE FORM INPUT, ZERO IMAGE/CAMERA UPLOAD)
+  // MAIN CLAIM FORM VIEW
   // ============================================================================
   return (
-    <div className="warranty-claim-container" style={{ maxWidth: '880px', margin: '0 auto', padding: '16px' }}>
-      <div className="panel" style={{ padding: '32px', borderRadius: '14px', background: '#ffffff', border: '1px solid var(--ax-border, #e2e8f0)', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
-        {/* Header */}
-        <div className="panel-heading" style={{ marginBottom: '20px' }}>
-          <div>
-            <h1 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>
-              Warranty Claim Request
-            </h1>
-          </div>
+    <div className="claim-system-container" style={{ maxWidth: '880px', margin: '0 auto', padding: '16px' }}>
+      <header className="page-header" style={{ marginBottom: '20px' }}>
+        <div>
+          <p className="eyebrow">Customer Portal</p>
+          <h1>Warranty Claim Request</h1>
+        </div>
+      </header>
+
+      {/* 1-Click Test Presets */}
+      <div
+        className="panel"
+        style={{
+          marginBottom: '20px',
+          padding: '16px 20px',
+          borderRadius: '12px',
+          border: '1px solid var(--ax-border, #e2e8f0)',
+          background: 'var(--ax-surface, #ffffff)',
+        }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#334155' }}>
+            ⚡ 1-Click Test Presets:
+          </span>
         </div>
 
-        {/* 1-Click Test Presets */}
-        <div
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px' }}>
+          {CLAIM_PRESETS.map((preset) => {
+            const isSelected = activePreset === preset.id
+            const color = preset.tone === 'success' ? '#16a34a' : preset.tone === 'warning' ? '#d97706' : '#dc2626'
+            const bg = preset.tone === 'success' ? '#f0fdf4' : preset.tone === 'warning' ? '#fffbeb' : '#fef2f2'
+            const border = isSelected ? color : '#e2e8f0'
+
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                onClick={() => applyPreset(preset)}
+                style={{
+                  textAlign: 'left',
+                  padding: '10px 14px',
+                  borderRadius: '8px',
+                  border: `2px solid ${border}`,
+                  background: isSelected ? bg : '#ffffff',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <strong style={{ fontSize: '13px', color: '#1e293b' }}>{preset.name}</strong>
+                  <span
+                    style={{
+                      fontSize: '10.5px',
+                      fontWeight: 700,
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      background: bg,
+                      color,
+                    }}
+                  >
+                    {preset.badge}
+                  </span>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {submitError && (
+        <div className="alert error" style={{ marginBottom: '20px' }}>
+          {submitError}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        {/* GROUP 1: CUSTOMER INFORMATION */}
+        <section
+          className="panel"
           style={{
-            background: 'var(--ax-surface-alt, #f8fafc)',
-            borderRadius: '10px',
-            padding: '16px',
-            marginBottom: '26px',
+            marginBottom: '20px',
+            padding: '22px',
+            borderRadius: '12px',
+            background: 'var(--ax-surface, #ffffff)',
             border: '1px solid var(--ax-border, #e2e8f0)',
           }}
         >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              ⚡ 1-Click Test Presets:
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>
+              1
             </span>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>
+              Customer Information
+            </h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px' }}>
-            {CLAIM_PRESETS.map((preset) => {
-              const isSelected = activePreset === preset.id
-              const toneBg = preset.tone === 'success' ? '#dcfce7' : preset.tone === 'warning' ? '#fef9c3' : '#fee2e2'
-              const toneBorder = preset.tone === 'success' ? '#86efac' : preset.tone === 'warning' ? '#fde047' : '#fca5a5'
-              const toneText = preset.tone === 'success' ? '#15803d' : preset.tone === 'warning' ? '#a16207' : '#b91c1c'
-
-              return (
-                <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() => applyPreset(preset)}
-                  style={{
-                    textAlign: 'left',
-                    padding: '10px 14px',
-                    borderRadius: '8px',
-                    border: `2px solid ${isSelected ? '#2563eb' : 'var(--ax-border, #e2e8f0)'}`,
-                    background: isSelected ? 'rgba(37, 99, 235, 0.05)' : '#ffffff',
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong style={{ fontSize: '13px', color: '#0f172a' }}>{preset.name}</strong>
-                    <span
-                      style={{
-                        fontSize: '10.5px',
-                        fontWeight: 700,
-                        padding: '1px 6px',
-                        borderRadius: '4px',
-                        background: toneBg,
-                        border: `1px solid ${toneBorder}`,
-                        color: toneText,
-                      }}
-                    >
-                      {preset.badge}
-                    </span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {submitError && (
-          <div
-            className="alert error"
-            style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid #ef4444',
-              color: '#dc2626',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              marginBottom: '20px',
-              fontSize: '13px',
-            }}
-          >
-            <strong>Error submitting claim:</strong> {submitError}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} noValidate>
-          {/* SECTION 0: PRODUCT CONTEXT INFORMATION */}
-          <div
-            style={{
-              marginBottom: '24px',
-              padding: '18px',
-              background: '#f8fafc',
-              borderRadius: '10px',
-              border: '1px solid var(--ax-border, #e2e8f0)',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-              <span style={{ fontSize: '16px' }}>📦</span>
-              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>
-                Device Identification
-              </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Full Name <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Bui Ngoc Mai"
+                value={customer.customer_name}
+                onChange={(e) => {
+                  setCustomer({ ...customer, customer_name: e.target.value })
+                  setErrors({ ...errors, customer_name: '' })
+                }}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${errors.customer_name ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                }}
+              />
+              {errors.customer_name && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.customer_name}</p>}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
-              {/* Product Type */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '12.5px', fontWeight: 600 }}>
-                  Product Category <span style={{ color: '#ef4444' }}>*</span>
-                </label>
-                <select
-                  value={meta.product_type}
-                  onChange={(e) => handleMetaChange('product_type', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid var(--ax-border, #cbd5e1)',
-                    fontSize: '13px',
-                  }}
-                >
-                  {ALLOWED_PRODUCT_TYPES.map((t) => (
-                    <option key={t} value={t}>{t}</option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Email Address <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <input
+                type="email"
+                placeholder="name@example.com"
+                value={customer.email}
+                onChange={(e) => {
+                  setCustomer({ ...customer, email: e.target.value })
+                  setErrors({ ...errors, email: '' })
+                }}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${errors.email ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                }}
+              />
+              {errors.email && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.email}</p>}
+            </div>
 
-              {/* Product Model */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '12.5px', fontWeight: 600 }}>
-                  Product Model <span style={{ color: '#ef4444' }}>*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. ThinkPad T14 Gen 4"
-                  value={meta.product_model}
-                  onChange={(e) => handleMetaChange('product_model', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: `1px solid ${errors.product_model ? '#ef4444' : 'var(--ax-border, #cbd5e1)'}`,
-                    fontSize: '13px',
-                  }}
-                />
-                {errors.product_model && (
-                  <span style={{ display: 'block', color: '#ef4444', fontSize: '11px', marginTop: '3px' }}>
-                    {errors.product_model}
-                  </span>
-                )}
-              </div>
-
-              {/* Order / Serial Code */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '12.5px', fontWeight: 600 }}>
-                  Order ID / Serial Number (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. ORD-2026-88192"
-                  value={meta.order_code}
-                  onChange={(e) => handleMetaChange('order_code', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid var(--ax-border, #cbd5e1)',
-                    fontSize: '13px',
-                  }}
-                />
-              </div>
-
-              {/* Problem Category */}
-              <div>
-                <label style={{ display: 'block', marginBottom: '4px', fontSize: '12.5px', fontWeight: 600 }}>
-                  Technical Issue Category
-                </label>
-                <select
-                  value={meta.problem_category}
-                  onChange={(e) => handleMetaChange('problem_category', e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid var(--ax-border, #cbd5e1)',
-                    fontSize: '13px',
-                  }}
-                >
-                  {ALLOWED_PROBLEM_CATEGORIES.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                placeholder="e.g. 0912345678"
+                value={customer.phone_number}
+                onChange={(e) => setCustomer({ ...customer, phone_number: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: '1px solid #cbd5e1',
+                  fontSize: '13px',
+                }}
+              />
             </div>
           </div>
+        </section>
 
-          {/* THE 14 FEATURES ORGANIZED IN 4 CARDS */}
-          {claim14FieldGroups.map((group, groupIdx) => (
+        {/* GROUP 2: PRODUCT IDENTIFICATION & DATABASE LOOKUP */}
+        <section
+          className="panel"
+          style={{
+            marginBottom: '20px',
+            padding: '22px',
+            borderRadius: '12px',
+            background: 'var(--ax-surface, #ffffff)',
+            border: '1px solid var(--ax-border, #e2e8f0)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>
+              2
+            </span>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>
+              Product Identification & Verification
+            </h3>
+          </div>
+
+          {/* Product Code Lookup Bar */}
+          <div style={{ marginBottom: '16px', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '12.5px', fontWeight: 700, color: '#334155' }}>
+              Product Code / Equipment Tag:
+            </label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                placeholder="Enter Product Code (e.g. AX26-00001, AX26-00002)"
+                value={productCodeInput}
+                onChange={(e) => setProductCodeInput(e.target.value)}
+                style={{
+                  flex: 1,
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${errors.product_code ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                  fontWeight: 600,
+                }}
+              />
+              <button
+                type="button"
+                className="button primary"
+                onClick={() => handleProductLookup(productCodeInput)}
+                style={{ padding: '8px 16px', fontSize: '13px' }}
+              >
+                ⌕ Verify Code
+              </button>
+            </div>
+            {errors.product_code && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '6px 0 0' }}>{errors.product_code}</p>}
+          </div>
+
+          {/* Autofilled Product Record (Read-Only) */}
+          {productRecord ? (
             <div
-              key={group.title}
               style={{
-                marginBottom: '22px',
-                padding: '20px',
-                borderRadius: '10px',
-                border: '1px solid var(--ax-border, #e2e8f0)',
                 background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                borderRadius: '8px',
+                padding: '16px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '14px',
+                fontSize: '12.5px',
               }}
             >
-              <div style={{ marginBottom: '14px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span
-                    style={{
-                      background: '#eff6ff',
-                      color: '#2563eb',
-                      width: '24px',
-                      height: '24px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '12px',
-                      fontWeight: 800,
-                    }}
-                  >
-                    {groupIdx + 1}
-                  </span>
-                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 700, color: '#1e293b' }}>
-                    {group.title}
-                  </h3>
-                </div>
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Product Name:</span>
+                <strong>{productRecord.product_name}</strong>
               </div>
-
-              {/* Fields Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
-                {group.fields.map((field) => {
-                  const val = features[field.name]
-                  const hasErr = Boolean(errors[field.name])
-
-                  return (
-                    <div key={field.name} style={{ display: 'flex', flexDirection: 'column' }}>
-                      <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600, color: '#1e293b' }}>
-                        {field.label}
-                      </label>
-
-                      {field.type === 'select' ? (
-                        <select
-                          value={val}
-                          onChange={(e) => handleFeatureChange(field.name, e.target.value)}
-                          style={{
-                            width: '100%',
-                            padding: '8px 10px',
-                            borderRadius: '6px',
-                            border: `1px solid ${hasErr ? '#ef4444' : 'var(--ax-border, #cbd5e1)'}`,
-                            fontSize: '13px',
-                            background: '#ffffff',
-                          }}
-                        >
-                          {field.options.map((opt) => (
-                            <option key={opt} value={opt}>{opt}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="number"
-                          step={field.step || 1}
-                          min={field.min != null ? field.min : undefined}
-                          max={field.max != null ? field.max : undefined}
-                          value={val}
-                          onChange={(e) => handleFeatureChange(field.name, e.target.value)}
-                          style={{
-                            width: '100%',
-                            padding: '8px 10px',
-                            borderRadius: '6px',
-                            border: `1px solid ${hasErr ? '#ef4444' : 'var(--ax-border, #cbd5e1)'}`,
-                            fontSize: '13px',
-                            background: '#ffffff',
-                          }}
-                        />
-                      )}
-
-                      {hasErr && (
-                        <span style={{ color: '#ef4444', fontSize: '11px', marginTop: '3px' }}>
-                          {errors[field.name]}
-                        </span>
-                      )}
-                    </div>
-                  )
-                })}
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Model Number:</span>
+                <strong className="mono">{productRecord.model_number}</strong>
+              </div>
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Serial Number:</span>
+                <strong className="mono" style={{ color: '#2563eb' }}>{productRecord.serial_number}</strong>
+              </div>
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Purchase Date:</span>
+                <strong>{productRecord.purchase_date}</strong>
+              </div>
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Warranty Expiry:</span>
+                <strong style={{ color: productRecord.status === 'expired' ? '#dc2626' : '#16a34a' }}>
+                  {productRecord.warranty_expiry_date}
+                </strong>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    marginLeft: '6px',
+                    fontSize: '10.5px',
+                    padding: '1px 6px',
+                    borderRadius: '4px',
+                    background: productRecord.status === 'expired' ? '#fee2e2' : '#dcfce7',
+                    color: productRecord.status === 'expired' ? '#b91c1c' : '#15803d',
+                  }}
+                >
+                  {productRecord.status === 'expired' ? 'Expired' : 'Active'}
+                </span>
+              </div>
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Provider:</span>
+                <span>{productRecord.warranty_provider}</span>
               </div>
             </div>
-          ))}
+          ) : (
+            <div style={{ padding: '16px', background: '#fffbeb', borderRadius: '8px', border: '1px solid #fef3c7', fontSize: '12.5px', color: '#92400e' }}>
+              Please enter a valid Product Code (e.g. <button type="button" onClick={() => { setProductCodeInput('AX26-00001'); handleProductLookup('AX26-00001') }} style={{ textDecoration: 'underline', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontWeight: 700 }}>AX26-00001</button> or <button type="button" onClick={() => { setProductCodeInput('AX26-00002'); handleProductLookup('AX26-00002') }} style={{ textDecoration: 'underline', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontWeight: 700 }}>AX26-00002</button>) to lookup registered equipment.
+            </div>
+          )}
+        </section>
 
-          {/* Problem Description */}
-          <div style={{ marginBottom: '24px' }}>
+        {/* GROUP 3: CLAIM INCIDENT INFORMATION */}
+        <section
+          className="panel"
+          style={{
+            marginBottom: '20px',
+            padding: '22px',
+            borderRadius: '12px',
+            background: 'var(--ax-surface, #ffffff)',
+            border: '1px solid var(--ax-border, #e2e8f0)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>
+              3
+            </span>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>
+              Claim Incident Details
+            </h3>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 280px) 1fr', gap: '16px', marginBottom: '16px' }}>
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Incident Date <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <input
+                type="date"
+                value={incidentDate}
+                onChange={(e) => {
+                  setIncidentDate(e.target.value)
+                  setErrors({ ...errors, incident_date: '' })
+                }}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${errors.incident_date ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                }}
+              />
+              {errors.incident_date && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.incident_date}</p>}
+            </div>
+
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Reporting Delay Analysis
+              </label>
+              <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '12.5px' }}>
+                Reported {derivedFeatures.ClaimReportingDelayDays} days after fault occurrence ·
+                <strong style={{ color: derivedFeatures.ClaimReportingWithinPeriod === 'Yes' ? '#16a34a' : '#dc2626', marginLeft: '6px' }}>
+                  {derivedFeatures.ClaimReportingWithinPeriod === 'Yes' ? 'Within 30-Day Window' : 'Exceeds 30-Day Limit'}
+                </strong>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-              Detailed Symptom / Defect Description:
+              Fault Description <span style={{ color: '#ef4444' }}>*</span>
             </label>
             <textarea
               rows="3"
-              placeholder="Describe the hardware issue, symptoms observed, and any initial troubleshooting steps..."
-              value={meta.problem_description}
-              onChange={(e) => handleMetaChange('problem_description', e.target.value)}
+              placeholder="Describe the hardware defect, error symptoms, and when the issue occurs..."
+              value={faultDescription}
+              onChange={(e) => {
+                setFaultDescription(e.target.value)
+                setErrors({ ...errors, fault_description: '' })
+              }}
               style={{
                 width: '100%',
                 padding: '10px 12px',
                 borderRadius: '8px',
-                border: '1px solid var(--ax-border, #cbd5e1)',
+                border: `1px solid ${errors.fault_description ? '#ef4444' : '#cbd5e1'}`,
                 fontSize: '13px',
                 fontFamily: 'inherit',
                 lineHeight: 1.5,
               }}
             />
+            {errors.fault_description && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.fault_description}</p>}
+          </div>
+        </section>
+
+        {/* GROUP 4: REPAIR HISTORY */}
+        <section
+          className="panel"
+          style={{
+            marginBottom: '20px',
+            padding: '22px',
+            borderRadius: '12px',
+            background: 'var(--ax-surface, #ffffff)',
+            border: '1px solid var(--ax-border, #e2e8f0)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>
+              4
+            </span>
+            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>
+              Previous Repair History
+            </h3>
           </div>
 
-          {/* Form Actions */}
-          <div
-            style={{
-              display: 'flex',
-              gap: '12px',
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              borderTop: '1px solid var(--ax-border, #e2e8f0)',
-              paddingTop: '20px',
-            }}
-          >
-            {onCancel && (
-              <button type="button" className="button secondary" onClick={onCancel} disabled={submitting}>
-                Cancel
-              </button>
-            )}
-            <button
-              type="submit"
-              className="button primary"
-              disabled={submitting}
-              style={{ minWidth: '220px', padding: '12px 20px', fontSize: '14px', fontWeight: 700 }}
-            >
-              {submitting ? 'Submitting & Evaluating AI Model...' : 'Submit Warranty Claim →'}
-            </button>
+          <div style={{ marginBottom: '14px' }}>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+              Has this product been repaired previously? <span style={{ color: '#ef4444' }}>*</span>
+            </label>
+            <div style={{ display: 'flex', gap: '16px' }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>
+                <input
+                  type="radio"
+                  name="previous_repair"
+                  value="No"
+                  checked={previousRepair === 'No'}
+                  onChange={() => setPreviousRepair('No')}
+                />
+                No — Original Factory Condition
+              </label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>
+                <input
+                  type="radio"
+                  name="previous_repair"
+                  value="Yes"
+                  checked={previousRepair === 'Yes'}
+                  onChange={() => setPreviousRepair('Yes')}
+                />
+                Yes — Previously Repaired
+              </label>
+            </div>
           </div>
-        </form>
-      </div>
+
+          {previousRepair === 'Yes' && (
+            <div
+              style={{
+                background: '#f8fafc',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                padding: '16px',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: '14px',
+              }}
+            >
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '12.5px', fontWeight: 600 }}>
+                  Repair Centre / Facility Name <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. AssureX Official Service or Third-party shop"
+                  value={repairCentre}
+                  onChange={(e) => {
+                    setRepairCentre(e.target.value)
+                    setErrors({ ...errors, repair_centre: '' })
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: `1px solid ${errors.repair_centre ? '#ef4444' : '#cbd5e1'}`,
+                    fontSize: '13px',
+                  }}
+                />
+                {errors.repair_centre && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.repair_centre}</p>}
+              </div>
+
+              <div>
+                <label style={{ display: 'block', marginBottom: '6px', fontSize: '12.5px', fontWeight: 600 }}>
+                  Previous Repair Date
+                </label>
+                <input
+                  type="date"
+                  value={repairDate}
+                  onChange={(e) => setRepairDate(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    borderRadius: '6px',
+                    border: '1px solid #cbd5e1',
+                    fontSize: '13px',
+                  }}
+                />
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* FORM ACTIONS */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            gap: '12px',
+            alignItems: 'center',
+            borderTop: '1px solid var(--ax-border, #e2e8f0)',
+            paddingTop: '20px',
+          }}
+        >
+          {onCancel && (
+            <button type="button" className="button secondary" onClick={onCancel} disabled={submitting}>
+              Cancel
+            </button>
+          )}
+          <button
+            type="submit"
+            className="button primary"
+            disabled={submitting}
+            style={{ minWidth: '240px', padding: '12px 24px', fontSize: '14px', fontWeight: 700 }}
+          >
+            {submitting ? 'Evaluating AI Model...' : 'Submit Warranty Claim →'}
+          </button>
+        </div>
+      </form>
     </div>
   )
 }
 
 // ==============================================================================
-// 2. REVIEWER - DASHBOARD QUEUE & SPLIT DETAIL VIEW (14 FEATURES DISPLAY)
+// 2. REVIEWER - DASHBOARD QUEUE & SPLIT DETAIL VIEW
 // ==============================================================================
 
 export function ReviewerWarrantyDesk() {
-  const [tickets, setTickets] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [tickets, setTickets] = useState(() => loadStoredTickets())
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [selectedTicket, setSelectedTicket] = useState(null)
 
   // Filters
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL_QUEUE')
-  const [predFilter, setPredFilter] = useState('ALL')
-  const [typeFilter, setTypeFilter] = useState('ALL')
 
   // Review Decision State
   const [decisionModal, setDecisionModal] = useState(null) // 'APPROVE' | 'REJECT' | null
@@ -706,125 +1019,63 @@ export function ReviewerWarrantyDesk() {
   const [decisionFeedback, setDecisionFeedback] = useState('')
 
   useEffect(() => {
-    loadTickets()
+    // Sync with local storage
+    const current = loadStoredTickets()
+    setTickets(current)
   }, [])
 
-  async function loadTickets() {
-    setLoading(true)
-    setError('')
-    try {
-      const data = await api('/api/warranty/claims')
-      const list = Array.isArray(data) ? data : data?.tickets || []
-      setTickets(list)
-    } catch (err) {
-      setError(err.message || 'Unable to load warranty tickets.')
-    } finally {
-      setLoading(false)
+  function handleRecordDecision(decision) {
+    if (!selectedTicket) return
+    setSubmittingDecision(true)
+
+    const isApprove = decision === 'APPROVE'
+    const groundTruth = isApprove ? 'Valid Claim' : 'Invalid Claim'
+    const updatedTicket = {
+      ...selectedTicket,
+      status: 'REVIEWED',
+      ground_truth: groundTruth,
+      reviewer_note: reviewerNote.trim() || (isApprove ? 'Claim approved under standard warranty.' : 'Claim rejected after audit.'),
+      reviewed_at: new Date().toISOString(),
     }
+
+    const updatedList = tickets.map((t) => (t.ticket_id === selectedTicket.ticket_id ? updatedTicket : t))
+    setTickets(updatedList)
+    saveStoredTickets(updatedList)
+    setSelectedTicket(updatedTicket)
+    setDecisionModal(null)
+    setReviewerNote('')
+    setSubmittingDecision(false)
+    setDecisionFeedback(`Decision recorded: ${groundTruth} established as official Ground Truth.`)
   }
 
-  // Filtered tickets
   const filteredTickets = useMemo(() => {
     return tickets.filter((t) => {
-      // Status filter
-      if (statusFilter === 'ALL_QUEUE') {
-        if (!['WAITING_REVIEW', 'REVIEW_REQUIRED', 'AI_ERROR'].includes(t.status)) return false
-      } else if (statusFilter !== 'ALL') {
-        if (t.status !== statusFilter) return false
-      }
-
-      // Prediction filter
-      if (predFilter !== 'ALL' && t.ai_prediction !== predFilter) {
-        return false
-      }
-
-      // Product Type filter
-      if (typeFilter !== 'ALL' && t.product_type !== typeFilter) {
-        return false
-      }
-
-      // Search text
+      if (statusFilter === 'WAITING' && t.status !== 'WAITING_REVIEW') return false
+      if (statusFilter === 'REVIEWED' && t.status !== 'REVIEWED') return false
       if (search.trim()) {
-        const query = search.trim().toLowerCase()
-        const matchId = (t.ticket_id || '').toLowerCase().includes(query)
-        const matchModel = (t.product_model || '').toLowerCase().includes(query)
-        const matchOrder = (t.order_code || '').toLowerCase().includes(query)
-        const matchDesc = (t.problem_description || '').toLowerCase().includes(query)
-        if (!matchId && !matchModel && !matchOrder && !matchDesc) return false
+        const q = search.trim().toLowerCase()
+        const matchId = (t.ticket_id || '').toLowerCase().includes(q)
+        const matchName = (t.customer_name || '').toLowerCase().includes(q)
+        const matchModel = (t.product_model || '').toLowerCase().includes(q)
+        const matchCode = (t.product_code || '').toLowerCase().includes(q)
+        return matchId || matchName || matchModel || matchCode
       }
-
       return true
     })
-  }, [tickets, statusFilter, predFilter, typeFilter, search])
-
-  // KPIs
-  const kpis = useMemo(() => {
-    const queue = tickets.filter((t) => ['WAITING_REVIEW', 'REVIEW_REQUIRED', 'AI_ERROR'].includes(t.status))
-    const lowConf = queue.filter((t) => (t.ai_confidence != null && t.ai_confidence < 0.70) || t.ai_prediction === 'REVIEW_REQUIRED')
-    const aiError = queue.filter((t) => t.status === 'AI_ERROR')
-    const reviewed = tickets.filter((t) => t.status === 'REVIEWED' && t.ground_truth != null)
-    return {
-      queueCount: queue.length,
-      lowConfCount: lowConf.length,
-      errorCount: aiError.length,
-      reviewedCount: reviewed.length,
-    }
-  }, [tickets])
-
-  async function handleConfirmDecision() {
-    if (!selectedTicket || !decisionModal) return
-    setSubmittingDecision(true)
-    setDecisionFeedback('')
-
-    try {
-      const payload = {
-        decision: decisionModal,
-        reviewer_note: reviewerNote.trim() || undefined,
-      }
-
-      const res = await api(`/api/warranty/reviewer/tickets/${encodeURIComponent(selectedTicket.ticket_id)}/decision`, {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      })
-
-      if (res && res.ticket) {
-        // Update local ticket list
-        setTickets((curr) =>
-          curr.map((item) => (item.ticket_id === res.ticket.ticket_id ? { ...item, ...res.ticket } : item))
-        )
-        setSelectedTicket((prev) => ({ ...prev, ...res.ticket }))
-        setDecisionModal(null)
-        setReviewerNote('')
-        setDecisionFeedback(`Decision successfully recorded! Ground Truth established as '${res.ticket.ground_truth}'.`)
-        setTimeout(() => setDecisionFeedback(''), 5000)
-      }
-    } catch (err) {
-      alert(`Failed to confirm decision: ${err.message}`)
-    } finally {
-      setSubmittingDecision(false)
-    }
-  }
-
-  function getPredColor(pred) {
-    if (pred === 'WARRANTY') return { bg: '#dcfce7', text: '#15803d', border: '#bbf7d0' }
-    if (pred === 'NOT_WARRANTY') return { bg: '#fee2e2', text: '#b91c1c', border: '#fecaca' }
-    if (pred === 'REVIEW_REQUIRED') return { bg: '#fef9c3', text: '#a16207', border: '#fef08a' }
-    return { bg: '#f1f5f9', text: '#475569', border: '#e2e8f0' }
-  }
+  }, [tickets, statusFilter, search])
 
   // ----------------------------------------------------------------------------
-  // VIEW B: REVIEWER DETAIL PAGE (2-COLUMN SPLIT VIEW)
+  // SPLIT DETAIL VIEW
   // ----------------------------------------------------------------------------
   if (selectedTicket) {
-    const isReviewed = selectedTicket.status === 'REVIEWED' && selectedTicket.ground_truth != null
-    const confidence = selectedTicket.ai_confidence
-    const isLowConfidence = confidence != null && confidence < 0.70
-    const predStyle = getPredColor(selectedTicket.ai_prediction)
+    const isReviewed = selectedTicket.status === 'REVIEWED'
+    const isWarranty = selectedTicket.ai_prediction === 'WARRANTY'
+    const isNotWarranty = selectedTicket.ai_prediction === 'NOT_WARRANTY'
     const feats = selectedTicket.model_features || {}
 
     return (
-      <div className="reviewer-detail-view" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
-        {/* Breadcrumb Header */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
+        {/* Navigation & Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <button
             className="button secondary"
@@ -834,11 +1085,11 @@ export function ReviewerWarrantyDesk() {
             }}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
           >
-            ← Back to Ticket Queue
+            ← Back to Claim Queue
           </button>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            <span style={{ fontSize: '13px', color: 'var(--ax-text-faint, #64748b)' }}>Processing status:</span>
+            <span style={{ fontSize: '13px', color: '#64748b' }}>Processing status:</span>
             <span
               style={{
                 fontWeight: 700,
@@ -856,934 +1107,424 @@ export function ReviewerWarrantyDesk() {
         </div>
 
         {decisionFeedback && (
-          <div
-            className="alert success"
-            style={{
-              background: '#dcfce7',
-              border: '1px solid #86efac',
-              color: '#15803d',
-              padding: '12px 18px',
-              borderRadius: '8px',
-              marginBottom: '18px',
-              fontSize: '13.5px',
-            }}
-          >
+          <div className="alert success" style={{ marginBottom: '18px' }}>
             ✓ {decisionFeedback}
           </div>
         )}
 
-        {/* 2-COLUMN SPLIT GRID */}
+        {/* 2-Column Split View */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 0.8fr)',
-            gap: '24px',
+            gridTemplateColumns: 'minmax(0, 1.3fr) minmax(0, 0.7fr)',
+            gap: '20px',
             alignItems: 'start',
           }}
         >
-          {/* ================================================================= */}
-          {/* LEFT COLUMN – CUSTOMER DATA & 14 MODEL FEATURES */}
-          {/* ================================================================= */}
-          <div
-            className="panel"
-            style={{
-              padding: '24px',
-              borderRadius: '12px',
-              background: 'var(--ax-surface, #ffffff)',
-              border: '1px solid var(--ax-border, #e2e8f0)',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '16px' }}>
-              <div>
-                <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px', letterSpacing: '0.06em', margin: 0 }}>
-                  CUSTOMER INPUT DATA (14 FEATURES)
-                </p>
-                <h2 style={{ margin: '4px 0 0', fontSize: '20px' }}>
-                  Claim Record · <span className="mono" style={{ color: '#2563eb' }}>{selectedTicket.ticket_id}</span>
-                </h2>
+          {/* LEFT COLUMN: CUSTOMER INPUTS & 14 DERIVED FEATURES */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {/* Customer & Product Card */}
+            <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
+                CUSTOMER & EQUIPMENT RECORD
+              </p>
+              <h3 style={{ margin: '4px 0 14px', fontSize: '18px' }}>
+                {selectedTicket.product_name} ({selectedTicket.product_model})
+              </h3>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', fontSize: '12.5px' }}>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Customer Name:</span>
+                  <strong>{selectedTicket.customer_name}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Contact Email:</span>
+                  <strong>{selectedTicket.customer_email}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Product Code:</span>
+                  <strong className="mono" style={{ color: '#2563eb' }}>{selectedTicket.product_code}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Serial Number:</span>
+                  <strong className="mono">{selectedTicket.serial_number}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Purchase Date:</span>
+                  <span>{selectedTicket.purchase_date}</span>
+                </div>
+                <div>
+                  <span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Warranty Expiry:</span>
+                  <span>{selectedTicket.warranty_expiry}</span>
+                </div>
               </div>
-              <span style={{ fontSize: '12px', color: 'var(--ax-text-faint, #64748b)' }}>
-                {selectedTicket.created_at ? new Date(selectedTicket.created_at).toLocaleString() : ''}
-              </span>
             </div>
 
-            {/* General Equipment Info */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '12px',
-                background: 'var(--ax-surface-alt, #f8fafc)',
-                padding: '14px 16px',
-                borderRadius: '8px',
-                border: '1px solid var(--ax-border, #e2e8f0)',
-                marginBottom: '18px',
-                fontSize: '13px',
-              }}
-            >
-              <div>
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Device</span>
-                <div style={{ fontWeight: 700, marginTop: '2px' }}>{selectedTicket.product_type} · {selectedTicket.product_model}</div>
+            {/* Claim Incident & Evidence */}
+            <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+              <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
+                FAULT DESCRIPTION
+              </p>
+
+              <div style={{ margin: '10px 0 0', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '13px' }}>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px', marginBottom: '4px' }}>
+                  Incident Date: <strong>{selectedTicket.incident_date}</strong> · Previous Repair: <strong>{selectedTicket.previous_repair}</strong>
+                </span>
+                <p style={{ margin: 0, color: '#1e293b', fontStyle: 'italic' }}>
+                  "{selectedTicket.fault_description}"
+                </p>
               </div>
-              <div>
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Issue Category</span>
-                <div style={{ fontWeight: 700, marginTop: '2px' }}>{selectedTicket.problem_category}</div>
-              </div>
-              {selectedTicket.order_code && (
-                <div>
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Order ID / Serial</span>
-                  <div style={{ fontWeight: 700, marginTop: '2px' }} className="mono">{selectedTicket.order_code}</div>
+
+              {/* Legacy Evidence Files List if present */}
+              {selectedTicket.evidence && Object.values(selectedTicket.evidence).some(Boolean) && (
+                <div style={{ marginTop: '14px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '8px' }}>
+                    Attached Evidence Files:
+                  </span>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', fontSize: '12px' }}>
+                    {Object.entries(selectedTicket.evidence).map(([key, file]) => (
+                      <div key={key} style={{ background: '#f8fafc', padding: '8px 10px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                        <span style={{ fontSize: '11px', color: '#64748b', display: 'block', textTransform: 'capitalize' }}>
+                          {key.replace('_', ' ')}:
+                        </span>
+                        {file ? (
+                          <span style={{ color: '#16a34a', fontWeight: 600 }}>✓ {file.filename}</span>
+                        ) : (
+                          <span style={{ color: '#94a3b8' }}>— Not attached</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
-              <div>
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Usage Duration</span>
-                <div style={{ fontWeight: 700, marginTop: '2px' }}>{selectedTicket.usage_duration} months</div>
-              </div>
             </div>
 
-            {/* Problem Description */}
-            {selectedTicket.problem_description && (
-              <div style={{ marginBottom: '20px' }}>
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>
-                  Customer Problem Description:
-                </span>
-                <div
-                  style={{
-                    marginTop: '4px',
-                    padding: '10px 14px',
-                    background: 'var(--ax-surface-alt, #f8fafc)',
-                    borderRadius: '6px',
-                    border: '1px solid var(--ax-border, #e2e8f0)',
-                    fontSize: '13px',
-                    lineHeight: 1.5,
-                  }}
-                >
-                  {selectedTicket.problem_description}
+            {/* 14 Derived Features Grid */}
+            <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                <div>
+                  <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
+                    FEATURE ENGINEERING ENGINE
+                  </p>
+                  <h4 style={{ margin: 0, fontSize: '15px' }}>14 Features Used by Model V3</h4>
                 </div>
               </div>
-            )}
 
-            {/* 14 Features Grouped Display */}
-            <h4 style={{ margin: '0 0 12px', fontSize: '14px', fontWeight: 700, color: '#334155' }}>
-              14 Features Evaluated by ML Model:
-            </h4>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {claim14FieldGroups.map((grp) => (
-                <div
-                  key={grp.title}
-                  style={{
-                    border: '1px solid var(--ax-border, #e2e8f0)',
-                    borderRadius: '8px',
-                    padding: '12px 14px',
-                  }}
-                >
-                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#2563eb', marginBottom: '8px' }}>
-                    {grp.title}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px' }}>
-                    {grp.fields.map((f) => {
-                      const val = feats[f.name] !== undefined ? feats[f.name] : selectedTicket[f.name]
-                      const valStr = String(val ?? '—')
-
-                      // Tone highlight
-                      let valBg = '#f1f5f9'
-                      let valColor = '#334155'
-                      if (valStr === 'Yes' || valStr === 'High') {
-                        valBg = '#dcfce7'
-                        valColor = '#166534'
-                      } else if (valStr === 'No' || valStr === 'Low') {
-                        valBg = '#fee2e2'
-                        valColor = '#991b1b'
-                      }
-
-                      return (
-                        <div
-                          key={f.name}
-                          style={{
-                            background: '#f8fafc',
-                            padding: '8px 12px',
-                            borderRadius: '6px',
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            gap: '8px',
-                          }}
-                        >
-                          <span style={{ fontSize: '12px', color: '#334155', fontWeight: 600 }}>{f.label}</span>
-                          <span
-                            style={{
-                              fontSize: '11.5px',
-                              fontWeight: 700,
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              background: valBg,
-                              color: valColor,
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {valStr}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              ))}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '10px', fontSize: '12px' }}>
+                {MODEL_14_FEATURES.map((feat) => {
+                  const val = feats[feat]
+                  return (
+                    <div key={feat} style={{ background: '#f8fafc', padding: '8px 12px', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                      <span style={{ fontSize: '11px', color: '#64748b', display: 'block' }}>{feat}</span>
+                      <strong style={{ fontSize: '13px', color: '#0f172a' }}>{String(val ?? '—')}</strong>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
 
-          {/* ================================================================= */}
-          {/* RIGHT COLUMN – AI PREDICTION & REVIEWER DECISION */}
-          {/* ================================================================= */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {/* RIGHT COLUMN: AI PREDICTION & REVIEWER DECISION */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* AI Prediction Box */}
             <div
               className="panel"
               style={{
-                padding: '24px',
+                padding: '22px',
                 borderRadius: '12px',
-                background: 'var(--ax-surface, #ffffff)',
-                border: '1px solid var(--ax-border, #e2e8f0)',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                textAlign: 'center',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <p className="eyebrow" style={{ color: '#7c3aed', fontWeight: 700, fontSize: '11px', letterSpacing: '0.06em', margin: 0 }}>
-                  AI MODEL PREDICTION RESULTS (V3)
-                </p>
-                <span style={{ fontSize: '11px', color: 'var(--ax-text-faint, #64748b)' }}>Automated Inference</span>
-              </div>
+              <span style={{ fontSize: '11.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6' }}>
+                AI Model V3 Prediction
+              </span>
 
-              {/* Prediction badge */}
-              <div
-                style={{
-                  padding: '18px',
-                  borderRadius: '10px',
-                  background: predStyle.bg,
-                  border: `1px solid ${predStyle.border}`,
-                  textAlign: 'center',
-                  marginBottom: '14px',
-                }}
-              >
-                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: predStyle.text, opacity: 0.8, fontWeight: 700 }}>
-                  14-Feature Model Inference
-                </span>
-                <div style={{ fontSize: '26px', fontWeight: 800, color: predStyle.text, margin: '6px 0 2px' }}>
-                  {selectedTicket.ai_prediction || 'NO_PREDICTION'}
-                </div>
-                {confidence != null && (
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: predStyle.text }}>
-                    Confidence: {(confidence * 100).toFixed(1)}%
-                  </div>
-                )}
-              </div>
-
-              {/* Confidence Alert */}
-              {confidence != null && (
+              <div style={{ margin: '14px 0 6px' }}>
                 <div
                   style={{
-                    padding: '10px 14px',
-                    borderRadius: '6px',
-                    fontSize: '12px',
-                    fontWeight: 600,
-                    marginBottom: '12px',
-                    background: isLowConfidence ? '#fef9c3' : '#dcfce7',
-                    border: `1px solid ${isLowConfidence ? '#fde047' : '#86efac'}`,
-                    color: isLowConfidence ? '#a16207' : '#15803d',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
+                    fontSize: '26px',
+                    fontWeight: 900,
+                    color: isWarranty ? '#16a34a' : isNotWarranty ? '#dc2626' : '#d97706',
                   }}
                 >
-                  <span>{isLowConfidence ? '⚠️' : '✓'}</span>
-                  <span>
-                    {isLowConfidence
-                      ? 'Low Confidence (<70%) or Review Required · Manual inspection recommended'
-                      : 'High Model Confidence (≥70%)'}
-                  </span>
+                  {selectedTicket.ai_prediction}
                 </div>
-              )}
-
-              {selectedTicket.ai_error_message && (
-                <div style={{ padding: '8px 12px', borderRadius: '6px', background: '#fee2e2', color: '#b91c1c', fontSize: '11.5px', marginBottom: '12px' }}>
-                  <strong>AI Engine Notice:</strong> {selectedTicket.ai_error_message}
+                <div style={{ fontSize: '12.5px', fontWeight: 700, color: '#64748b', marginTop: '2px' }}>
+                  Model Confidence: {Math.round((selectedTicket.ai_confidence || 0.95) * 100)}%
                 </div>
-              )}
+              </div>
 
-              <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--ax-text-faint, #64748b)', fontStyle: 'italic', lineHeight: 1.4 }}>
-                * Advisory note: AI prediction supports the reviewer and does not replace human authorization.
-              </p>
+              <div
+                style={{
+                  padding: '10px 12px',
+                  borderRadius: '6px',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  fontSize: '12px',
+                  color: '#475569',
+                  textAlign: 'left',
+                  marginTop: '12px',
+                }}
+              >
+                <strong>Evaluation: </strong>{selectedTicket.ai_reason}
+              </div>
             </div>
 
-            {/* Reviewer Action / Ground Truth Card */}
+            {/* Reviewer Decision Form */}
             <div
               className="panel"
               style={{
-                padding: '24px',
+                padding: '22px',
                 borderRadius: '12px',
-                background: 'var(--ax-surface, #ffffff)',
-                border: '1px solid var(--ax-border, #e2e8f0)',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
               }}
             >
-              <p className="eyebrow" style={{ color: '#0284c7', fontWeight: 700, fontSize: '11px', letterSpacing: '0.06em', margin: '0 0 10px' }}>
-                REVIEWER DECISION (GROUND TRUTH)
+              <p className="eyebrow" style={{ color: '#0f172a', fontWeight: 800, fontSize: '11px' }}>
+                OFFICIAL GROUND TRUTH SIGN-OFF
               </p>
+              <h4 style={{ margin: '4px 0 12px', fontSize: '14.5px' }}>
+                Record Reviewer Ground Truth:
+              </h4>
 
               {isReviewed ? (
-                // Already reviewed state: Display Ground Truth
-                <div>
-                  <div
-                    style={{
-                      padding: '14px 16px',
-                      borderRadius: '8px',
-                      background: selectedTicket.ground_truth === 'Valid Claim' || selectedTicket.ground_truth === 'WARRANTY' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                      border: `1px solid ${selectedTicket.ground_truth === 'Valid Claim' || selectedTicket.ground_truth === 'WARRANTY' ? '#22c55e' : '#ef4444'}`,
-                      marginBottom: '14px',
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '12px', color: 'var(--ax-text-soft, #475569)' }}>Decision:</span>
-                      <strong
-                        style={{
-                          fontSize: '15px',
-                          color: selectedTicket.reviewer_decision === 'APPROVE' ? '#16a34a' : '#dc2626',
-                        }}
-                      >
-                        {selectedTicket.reviewer_decision}
-                      </strong>
-                    </div>
-
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '6px', borderTop: '1px dashed var(--ax-border, #cbd5e1)', paddingTop: '6px' }}>
-                      <span style={{ fontSize: '12px', fontWeight: 600 }}>Final Ground Truth:</span>
-                      <strong style={{ fontSize: '15px', color: selectedTicket.reviewer_decision === 'APPROVE' ? '#16a34a' : '#dc2626' }}>
-                        {selectedTicket.ground_truth}
-                      </strong>
-                    </div>
+                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '12.5px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ color: '#64748b' }}>Official Ground Truth:</span>
+                    <strong style={{ color: selectedTicket.ground_truth === 'Valid Claim' ? '#16a34a' : '#dc2626' }}>
+                      {selectedTicket.ground_truth}
+                    </strong>
                   </div>
-
-                  {selectedTicket.reviewer_note && (
-                    <div style={{ marginBottom: '12px' }}>
-                      <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>
-                        Reviewer Audit Notes:
-                      </span>
-                      <div style={{ fontSize: '12.5px', marginTop: '4px', fontStyle: 'italic', color: 'var(--ax-text-soft, #334155)' }}>
-                        "{selectedTicket.reviewer_note}"
-                      </div>
-                    </div>
-                  )}
-
-                  <div style={{ fontSize: '11px', color: 'var(--ax-text-faint, #64748b)' }}>
-                    Reviewed at: {selectedTicket.reviewed_at ? new Date(selectedTicket.reviewed_at).toLocaleString() : '—'}
+                  <div>
+                    <span style={{ color: '#64748b', display: 'block', marginBottom: '2px' }}>Reviewer Audit Note:</span>
+                    <p style={{ margin: 0, color: '#1e293b', fontStyle: 'italic' }}>
+                      "{selectedTicket.reviewer_note}"
+                    </p>
+                  </div>
+                  <div style={{ marginTop: '10px', fontSize: '11px', color: '#94a3b8' }}>
+                    Reviewed on {new Date(selectedTicket.reviewed_at).toLocaleString()}
                   </div>
                 </div>
               ) : (
-                // Pending decision state: APPROVE / REJECT controls
-                <div>
-                  <p style={{ margin: '0 0 14px', fontSize: '13px', color: 'var(--ax-text-soft, #475569)', lineHeight: 1.5 }}>
-                    Review technical features and AI recommendations to finalize claim approval or rejection:
-                  </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <textarea
+                    rows="3"
+                    placeholder="Enter audit notes or justification for this decision..."
+                    value={reviewerNote}
+                    onChange={(e) => setReviewerNote(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 10px',
+                      borderRadius: '6px',
+                      border: '1px solid #cbd5e1',
+                      fontSize: '12.5px',
+                    }}
+                  />
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                     <button
                       type="button"
-                      className="button"
-                      style={{
-                        background: '#16a34a',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '12px',
-                        fontSize: '14px',
-                        fontWeight: 700,
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => setDecisionModal('APPROVE')}
+                      className="button primary"
+                      disabled={submittingDecision}
+                      onClick={() => handleRecordDecision('APPROVE')}
+                      style={{ background: '#16a34a', borderColor: '#16a34a', padding: '10px' }}
                     >
-                      ✓ APPROVE (VALID CLAIM)
+                      ✓ Approve (Valid)
                     </button>
-
                     <button
                       type="button"
-                      className="button"
-                      style={{
-                        background: '#dc2626',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '12px',
-                        fontSize: '14px',
-                        fontWeight: 700,
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => setDecisionModal('REJECT')}
+                      className="button secondary"
+                      disabled={submittingDecision}
+                      onClick={() => handleRecordDecision('REJECT')}
+                      style={{ color: '#dc2626', borderColor: '#fca5a5', padding: '10px' }}
                     >
-                      ✕ REJECT (INVALID CLAIM)
+                      ✕ Reject (Invalid)
                     </button>
                   </div>
-
-                  <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--ax-text-faint, #64748b)', textAlign: 'center' }}>
-                    This decision establishes the official <strong>Ground Truth</strong> stored in the Retraining Dataset.
+                  <p style={{ margin: 0, fontSize: '11px', color: '#94a3b8', textAlign: 'center' }}>
+                    Your decision establishes official Ground Truth for the ML retraining dataset.
                   </p>
                 </div>
               )}
             </div>
           </div>
         </div>
-
-        {/* DECISION CONFIRMATION MODAL */}
-        {decisionModal && (
-          <div
-            style={{
-              position: 'fixed',
-              inset: 0,
-              background: 'rgba(0,0,0,0.5)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              zIndex: 9999,
-              padding: '20px',
-            }}
-          >
-            <div
-              style={{
-                background: 'var(--ax-surface, #ffffff)',
-                borderRadius: '12px',
-                padding: '28px',
-                maxWidth: '520px',
-                width: '100%',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-              }}
-            >
-              <h3 style={{ margin: '0 0 10px', fontSize: '18px', fontWeight: 800 }}>
-                Confirm Claim {decisionModal === 'APPROVE' ? 'APPROVAL' : 'REJECTION'}
-              </h3>
-              <p style={{ margin: '0 0 16px', fontSize: '13.5px', color: 'var(--ax-text-soft, #475569)', lineHeight: 1.5 }}>
-                You are about to record a <strong>{decisionModal}</strong> decision for ticket <span className="mono">{selectedTicket.ticket_id}</span>.
-                This decision will establish the <strong>Ground Truth</strong> as{' '}
-                <span style={{ color: decisionModal === 'APPROVE' ? '#16a34a' : '#dc2626', fontWeight: 700 }}>
-                  {decisionModal === 'APPROVE' ? 'Valid Claim' : 'Invalid Claim'}
-                </span>.
-              </p>
-
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '12.5px', fontWeight: 600, marginBottom: '6px' }}>
-                  Reviewer Justification / Audit Notes (Optional)
-                </label>
-                <textarea
-                  rows="3"
-                  placeholder="e.g., Verified hardware diagnostics, confirmed serial matches original invoice, covered under warranty policy..."
-                  value={reviewerNote}
-                  onChange={(e) => setReviewerNote(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '8px 10px',
-                    borderRadius: '6px',
-                    border: '1px solid var(--ax-border, #cbd5e1)',
-                    fontSize: '13px',
-                    fontFamily: 'inherit',
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                <button
-                  type="button"
-                  className="button secondary"
-                  onClick={() => setDecisionModal(null)}
-                  disabled={submittingDecision}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="button"
-                  style={{
-                    background: decisionModal === 'APPROVE' ? '#16a34a' : '#dc2626',
-                    color: '#ffffff',
-                    border: 'none',
-                    padding: '8px 18px',
-                    fontWeight: 700,
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                  }}
-                  onClick={handleConfirmDecision}
-                  disabled={submittingDecision}
-                >
-                  {submittingDecision ? 'Saving...' : `Confirm ${decisionModal}`}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     )
   }
 
   // ----------------------------------------------------------------------------
-  // VIEW A: REVIEWER QUEUE TABLE
+  // QUEUE TABLE VIEW
   // ----------------------------------------------------------------------------
   return (
-    <div className="reviewer-queue-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
-      {/* Page Title */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
+      <header className="page-header" style={{ marginBottom: '16px' }}>
         <div>
-          <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '12px', letterSpacing: '0.05em' }}>
-            ASSUREX CLAIM OPERATIONS · HUMAN-IN-THE-LOOP
-          </p>
-          <h1 style={{ margin: '4px 0 0', fontSize: '26px', fontWeight: 800 }}>Warranty Reviewer Desk</h1>
+          <p className="eyebrow">Reviewer Workspace</p>
+          <h1>Warranty Reviewer Desk</h1>
         </div>
+      </header>
 
-        <button className="button secondary" onClick={loadTickets} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-          ↻ Refresh Queue
-        </button>
+      {/* Toolbar */}
+      <div className="toolbar" style={{ marginBottom: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          placeholder="Search ticket ID, customer, model, product code..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ flex: 1, minWidth: '240px', padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+        />
+
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '13px' }}
+        >
+          <option value="ALL_QUEUE">All Claims ({tickets.length})</option>
+          <option value="WAITING">Awaiting Review ({tickets.filter((t) => t.status === 'WAITING_REVIEW').length})</option>
+          <option value="REVIEWED">Reviewed ({tickets.filter((t) => t.status === 'REVIEWED').length})</option>
+        </select>
       </div>
 
-      {/* KPI Stats Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginBottom: '20px' }}>
-        <div style={{ background: 'var(--ax-surface, #ffffff)', padding: '16px 18px', borderRadius: '10px', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Awaiting Review</span>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: '#ea580c', margin: '4px 0 0' }}>{kpis.queueCount}</div>
-        </div>
-
-        <div style={{ background: 'var(--ax-surface, #ffffff)', padding: '16px 18px', borderRadius: '10px', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Low Confidence ({"<"}70%)</span>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: '#ca8a04', margin: '4px 0 0' }}>{kpis.lowConfCount}</div>
-        </div>
-
-        <div style={{ background: 'var(--ax-surface, #ffffff)', padding: '16px 18px', borderRadius: '10px', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>AI Exceptions / Errors</span>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: '#dc2626', margin: '4px 0 0' }}>{kpis.errorCount}</div>
-        </div>
-
-        <div style={{ background: 'var(--ax-surface, #ffffff)', padding: '16px 18px', borderRadius: '10px', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-          <span style={{ fontSize: '11px', textTransform: 'uppercase', color: 'var(--ax-text-faint, #64748b)', fontWeight: 600 }}>Reviewed (Ground Truth)</span>
-          <div style={{ fontSize: '26px', fontWeight: 800, color: '#16a34a', margin: '4px 0 0' }}>{kpis.reviewedCount}</div>
-        </div>
-      </div>
-
-      {/* Filter and Search Toolbar */}
-      <div className="panel" style={{ padding: '16px 20px', borderRadius: '10px', marginBottom: '18px', background: 'var(--ax-surface, #ffffff)', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
-          {/* Search box */}
-          <div style={{ flex: '1 1 240px' }}>
-            <input
-              type="text"
-              placeholder="Search Ticket ID, Model, Serial, description..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--ax-border, #cbd5e1)',
-                background: 'var(--ax-input-bg, #fff)',
-                fontSize: '13px'
-              }}
-            />
-          </div>
-
-          {/* Status filter */}
-          <div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--ax-border, #cbd5e1)',
-                background: 'var(--ax-input-bg, #fff)',
-                fontSize: '13px'
-              }}
-            >
-              <option value="ALL_QUEUE">Active Queue (Waiting Review)</option>
-              <option value="WAITING_REVIEW">WAITING_REVIEW</option>
-              <option value="REVIEW_REQUIRED">REVIEW_REQUIRED</option>
-              <option value="AI_ERROR">AI_ERROR</option>
-              <option value="REVIEWED">REVIEWED (Completed)</option>
-              <option value="ALL">All Records</option>
-            </select>
-          </div>
-
-          {/* AI Prediction filter */}
-          <div>
-            <select
-              value={predFilter}
-              onChange={(e) => setPredFilter(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--ax-border, #cbd5e1)',
-                background: 'var(--ax-input-bg, #fff)',
-                fontSize: '13px'
-              }}
-            >
-              <option value="ALL">All AI Predictions</option>
-              <option value="WARRANTY">AI: WARRANTY</option>
-              <option value="NOT_WARRANTY">AI: NOT_WARRANTY</option>
-              <option value="REVIEW_REQUIRED">AI: REVIEW_REQUIRED</option>
-            </select>
-          </div>
-
-          {/* Product Type filter */}
-          <div>
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              style={{
-                padding: '8px 12px',
-                borderRadius: '6px',
-                border: '1px solid var(--ax-border, #cbd5e1)',
-                background: 'var(--ax-input-bg, #fff)',
-                fontSize: '13px'
-              }}
-            >
-              <option value="ALL">All Product Categories</option>
-              {ALLOWED_PRODUCT_TYPES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="panel" style={{ borderRadius: '10px', overflow: 'hidden', background: 'var(--ax-surface, #ffffff)', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-        {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--ax-text-faint, #64748b)' }}>
-            Loading reviewer queue...
-          </div>
-        ) : error ? (
-          <div style={{ padding: '24px', color: '#dc2626', textAlign: 'center' }}>
-            {error}
-          </div>
-        ) : filteredTickets.length === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--ax-text-faint, #64748b)' }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>📋</div>
-            <h3 style={{ margin: '0 0 4px', fontSize: '16px' }}>No claims match current filters</h3>
-            <p style={{ margin: 0, fontSize: '13px' }}>Try adjusting search keyword or status filter.</p>
-          </div>
-        ) : (
-          <div className="table-wrapper" style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
-              <thead>
-                <tr style={{ background: 'var(--ax-surface-alt, #f8fafc)', borderBottom: '1px solid var(--ax-border, #e2e8f0)' }}>
-                  <th style={{ padding: '12px 16px' }}>Ticket ID</th>
-                  <th style={{ padding: '12px 16px' }}>Device</th>
-                  <th style={{ padding: '12px 16px' }}>Issue</th>
-                  <th style={{ padding: '12px 16px' }}>AI Prediction</th>
-                  <th style={{ padding: '12px 16px' }}>Confidence</th>
-                  <th style={{ padding: '12px 16px' }}>Created Date</th>
-                  <th style={{ padding: '12px 16px' }}>Status</th>
-                  <th style={{ padding: '12px 16px', textAlign: 'right' }}>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredTickets.map((t) => {
-                  const predColor = getPredColor(t.ai_prediction)
-                  const isLow = t.ai_confidence != null && t.ai_confidence < 0.70
-                  return (
-                    <tr
-                      key={t.ticket_id}
-                      style={{ borderBottom: '1px solid var(--ax-border, #e2e8f0)', cursor: 'pointer' }}
-                      onClick={() => setSelectedTicket(t)}
+      {/* Claims Table */}
+      <div className="panel" style={{ padding: 0, borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+        <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+          <thead>
+            <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left' }}>
+              <th style={{ padding: '12px 16px' }}>Ticket ID</th>
+              <th style={{ padding: '12px 16px' }}>Customer & Equipment</th>
+              <th style={{ padding: '12px 16px' }}>Fault Summary</th>
+              <th style={{ padding: '12px 16px' }}>AI Prediction</th>
+              <th style={{ padding: '12px 16px' }}>Status</th>
+              <th style={{ padding: '12px 16px' }}>Ground Truth</th>
+              <th style={{ padding: '12px 16px', textAlign: 'right' }}>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredTickets.map((t) => {
+              const isReviewed = t.status === 'REVIEWED'
+              return (
+                <tr key={t.ticket_id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                  <td style={{ padding: '12px 16px' }}>
+                    <strong className="mono" style={{ color: '#2563eb' }}>{t.ticket_id}</strong>
+                    <div style={{ fontSize: '11px', color: '#64748b' }}>{new Date(t.created_at).toLocaleDateString()}</div>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <strong>{t.customer_name}</strong>
+                    <div style={{ fontSize: '12px', color: '#64748b' }}>{t.product_name} · <span className="mono">{t.product_code}</span></div>
+                  </td>
+                  <td style={{ padding: '12px 16px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.fault_description}>
+                    {t.fault_description}
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span
+                      style={{
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        padding: '2px 8px',
+                        borderRadius: '4px',
+                        background: t.ai_prediction === 'WARRANTY' ? '#dcfce7' : t.ai_prediction === 'NOT_WARRANTY' ? '#fee2e2' : '#fef9c3',
+                        color: t.ai_prediction === 'WARRANTY' ? '#15803d' : t.ai_prediction === 'NOT_WARRANTY' ? '#b91c1c' : '#a16207',
+                      }}
                     >
-                      <td style={{ padding: '12px 16px' }}>
-                        <strong className="mono" style={{ color: '#2563eb' }}>{t.ticket_id}</strong>
-                      </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <div style={{ fontWeight: 600 }}>{t.product_type}</div>
-                        <small style={{ color: 'var(--ax-text-faint, #64748b)' }}>{t.product_model}</small>
-                      </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <span style={{
-                          fontSize: '11.5px',
-                          background: 'rgba(0,0,0,0.04)',
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          border: '1px solid var(--ax-border, #e2e8f0)'
-                        }}>
-                          {t.problem_category}
-                        </span>
-                      </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <span style={{
-                          fontWeight: 700,
-                          fontSize: '11px',
-                          padding: '3px 8px',
-                          borderRadius: '4px',
-                          background: predColor.bg,
-                          color: predColor.text,
-                          border: `1px solid ${predColor.border}`
-                        }}>
-                          {t.ai_prediction || 'PENDING'}
-                        </span>
-                      </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        {t.ai_confidence != null ? (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span style={{ fontWeight: 600, color: isLow ? '#ca8a04' : 'inherit' }}>
-                              {(t.ai_confidence * 100).toFixed(0)}%
-                            </span>
-                            {isLow && <span title="Low confidence, manual review recommended" style={{ fontSize: '11px' }}>⚠️</span>}
-                          </div>
-                        ) : (
-                          <span style={{ color: 'var(--ax-text-faint, #64748b)' }}>—</span>
-                        )}
-                      </td>
-                      <td style={{ padding: '12px 16px', color: 'var(--ax-text-faint, #64748b)', whiteSpace: 'nowrap' }}>
-                        {t.created_at ? new Date(t.created_at).toLocaleDateString() : '—'}
-                      </td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <span style={{
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          background: t.status === 'REVIEWED' ? '#dcfce7' : t.status === 'AI_ERROR' ? '#fee2e2' : '#fff7ed',
-                          color: t.status === 'REVIEWED' ? '#15803d' : t.status === 'AI_ERROR' ? '#b91c1c' : '#ea580c'
-                        }}>
-                          {t.status}
-                        </span>
-                      </td>
-                      <td style={{ padding: '12px 16px', textAlign: 'right' }}>
-                        <button
-                          className="button secondary"
-                          style={{ padding: '4px 10px', fontSize: '12px' }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            setSelectedTicket(t)
-                          }}
-                        >
-                          Review →
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+                      {t.ai_prediction}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    <span className="days-left-badge active" style={{ fontSize: '11px' }}>
+                      {t.status}
+                    </span>
+                  </td>
+                  <td style={{ padding: '12px 16px' }}>
+                    {isReviewed ? (
+                      <strong style={{ color: t.ground_truth === 'Valid Claim' ? '#16a34a' : '#dc2626' }}>
+                        {t.ground_truth}
+                      </strong>
+                    ) : (
+                      <span style={{ color: '#94a3b8' }}>— Pending</span>
+                    )}
+                  </td>
+                  <td style={{ padding: '12px 16px', textAlign: 'right' }}>
+                    <button
+                      className="button secondary"
+                      onClick={() => setSelectedTicket(t)}
+                      style={{ padding: '4px 10px', fontSize: '12px' }}
+                    >
+                      {isReviewed ? 'View Details →' : 'Review →'}
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
 
-
 // ==============================================================================
-// 3. RETRAINING DATASET VIEWER & EXPORTER (14 FEATURES + GROUND TRUTH)
+// 3. RETRAINING DATASET VIEWER
 // ==============================================================================
 
 export function WarrantyRetrainingDataset() {
-  const [dataset, setDataset] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    loadDataset()
-  }, [])
-
-  async function loadDataset() {
-    setLoading(true)
-    setError('')
-    try {
-      const data = await api('/api/retraining/dataset')
-      const list = Array.isArray(data) ? data : data?.records || data?.data || []
-      setDataset(list)
-    } catch (err) {
-      setError(err.message || 'Unable to load retraining dataset.')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  function downloadJson() {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(dataset, null, 2))
-    const link = document.createElement('a')
-    link.setAttribute('href', dataStr)
-    link.setAttribute('download', `assurex_retraining_dataset_14features_${new Date().toISOString().split('T')[0]}.json`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  }
-
-  function downloadCsv() {
-    if (!dataset.length) return
-    const headers = [
-      'ticket_id',
-      ...MODEL_14_FEATURES,
-      'ai_prediction',
-      'ai_confidence',
-      'ground_truth',
-      'reviewer_decision',
-      'reviewer_note',
-      'reviewed_at',
-    ]
-
-    const csvRows = [headers.join(',')]
-    for (const row of dataset) {
-      const feats = row.model_features || {}
-      const values = headers.map((header) => {
-        const val = row[header] !== undefined ? row[header] : feats[header] ?? ''
-        return `"${String(val).replace(/"/g, '""')}"`
-      })
-      csvRows.push(values.join(','))
-    }
-
-    const csvStr = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvRows.join('\n'))
-    const link = document.createElement('a')
-    link.setAttribute('href', csvStr)
-    link.setAttribute('download', `assurex_retraining_dataset_14features_${new Date().toISOString().split('T')[0]}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-  }
+  const tickets = loadStoredTickets().filter((t) => t.ground_truth != null)
 
   return (
-    <div className="retraining-dataset-container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
+      <header className="page-header" style={{ marginBottom: '16px' }}>
         <div>
-          <p className="eyebrow" style={{ color: '#0284c7', fontWeight: 700, fontSize: '12px', letterSpacing: '0.05em' }}>
-            ML PIPELINE · CONTINUOUS LEARNING & RETRAINING
-          </p>
-          <h1 style={{ margin: '4px 0 0', fontSize: '24px', fontWeight: 800 }}>
-            Retraining Dataset (14 Features + Ground Truth)
-          </h1>
+          <p className="eyebrow">ML Retraining Pipeline</p>
+          <h1>Retraining Dataset (14 Features + Ground Truth)</h1>
         </div>
+      </header>
 
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button className="button secondary" onClick={downloadCsv} disabled={dataset.length === 0}>
-            Download CSV (14 Features) ↓
-          </button>
-          <button className="button primary" onClick={downloadJson} disabled={dataset.length === 0}>
-            Download JSON ↓
-          </button>
-        </div>
+      <div className="panel" style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
+        <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
+          This table feeds the continuous learning cycle for Python Model V3. Each ticket contains the 14 engineered features alongside the reviewer's official Ground Truth label.
+        </p>
       </div>
 
-      {/* Dataset Summary card */}
-      <div
-        className="panel"
-        style={{
-          padding: '18px 24px',
-          borderRadius: '10px',
-          marginBottom: '20px',
-          background: 'var(--ax-surface, #ffffff)',
-          border: '1px solid var(--ax-border, #e2e8f0)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '14px',
-        }}
-      >
-        <div>
-          <span style={{ fontSize: '12px', color: 'var(--ax-text-faint, #64748b)' }}>Verified Ground Truth Records:</span>
-          <div style={{ fontSize: '28px', fontWeight: 800, color: '#2563eb' }}>{dataset.length} records</div>
-        </div>
-      </div>
-
-      {/* Dataset Table */}
-      <div className="panel" style={{ borderRadius: '10px', overflow: 'hidden', background: 'var(--ax-surface, #ffffff)', border: '1px solid var(--ax-border, #e2e8f0)' }}>
-        {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--ax-text-faint, #64748b)' }}>
-            Loading retraining dataset...
-          </div>
-        ) : error ? (
-          <div style={{ padding: '24px', color: '#dc2626', textAlign: 'center' }}>{error}</div>
-        ) : dataset.length === 0 ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--ax-text-faint, #64748b)' }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>📁</div>
-            <h3 style={{ margin: '0 0 4px', fontSize: '16px' }}>No verified records yet</h3>
-            <p style={{ margin: 0, fontSize: '13px' }}>
-              When a Reviewer approves or rejects a claim in the Reviewer Desk, records will automatically appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="table-wrapper" style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '12.5px' }}>
-              <thead>
-                <tr style={{ background: 'var(--ax-surface-alt, #f8fafc)', borderBottom: '1px solid var(--ax-border, #e2e8f0)' }}>
-                  <th style={{ padding: '10px 14px' }}>Ticket ID</th>
-                  <th style={{ padding: '10px 14px' }}>Device</th>
-                  <th style={{ padding: '10px 14px' }}>Fault Covered</th>
-                  <th style={{ padding: '10px 14px' }}>Warranty Days</th>
-                  <th style={{ padding: '10px 14px' }}>AI Prediction</th>
-                  <th style={{ padding: '10px 14px' }}>Ground Truth</th>
-                  <th style={{ padding: '10px 14px' }}>Reviewer Notes</th>
-                  <th style={{ padding: '10px 14px' }}>Reviewed Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dataset.map((row) => {
-                  const feats = row.model_features || {}
-                  const isMatch = (feats.FaultCovered ?? row.FaultCovered) === 'Yes'
-                  const gt = row.ground_truth
-                  const isApproved = gt === 'Valid Claim' || gt === 'WARRANTY'
-
-                  return (
-                    <tr key={row.ticket_id} style={{ borderBottom: '1px solid var(--ax-border, #e2e8f0)' }}>
-                      <td style={{ padding: '10px 14px' }}>
-                        <strong className="mono" style={{ color: '#2563eb' }}>{row.ticket_id}</strong>
-                      </td>
-                      <td style={{ padding: '10px 14px' }}>
-                        <div>{row.product_type}</div>
-                        <small style={{ color: 'var(--ax-text-faint, #64748b)' }}>{row.product_model}</small>
-                      </td>
-                      <td style={{ padding: '10px 14px' }}>
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            background: isMatch ? '#dcfce7' : '#fee2e2',
-                            color: isMatch ? '#15803d' : '#b91c1c',
-                          }}
-                        >
-                          {feats.FaultCovered ?? row.FaultCovered ?? '—'}
-                        </span>
-                      </td>
-                      <td style={{ padding: '10px 14px' }}>
-                        {feats.WarrantyRemainingDays ?? row.WarrantyRemainingDays ?? '—'}d
-                      </td>
-                      <td style={{ padding: '10px 14px' }}>
-                        <span
-                          style={{
-                            fontSize: '11px',
-                            padding: '2px 6px',
-                            borderRadius: '4px',
-                            background: '#f1f5f9',
-                            fontWeight: 600,
-                          }}
-                        >
-                          {row.ai_prediction || '—'}
-                        </span>
-                      </td>
-                      <td style={{ padding: '10px 14px' }}>
-                        <strong
-                          style={{
-                            fontSize: '12px',
-                            color: isApproved ? '#15803d' : '#b91c1c',
-                          }}
-                        >
-                          {gt}
-                        </strong>
-                      </td>
-                      <td style={{ padding: '10px 14px', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={row.reviewer_note || ''}>
-                        {row.reviewer_note || '—'}
-                      </td>
-                      <td style={{ padding: '10px 14px', color: 'var(--ax-text-faint, #64748b)' }}>
-                        {row.reviewed_at ? new Date(row.reviewed_at).toLocaleDateString() : '—'}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+      <div className="panel" style={{ padding: 0, borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
+        <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
+          <thead>
+            <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', textAlign: 'left' }}>
+              <th style={{ padding: '10px 14px' }}>Ticket ID</th>
+              <th style={{ padding: '10px 14px' }}>Product</th>
+              <th style={{ padding: '10px 14px' }}>Fault Covered</th>
+              <th style={{ padding: '10px 14px' }}>Remaining Days</th>
+              <th style={{ padding: '10px 14px' }}>AI Prediction</th>
+              <th style={{ padding: '10px 14px' }}>Ground Truth</th>
+              <th style={{ padding: '10px 14px' }}>Audit Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tickets.map((t) => (
+              <tr key={t.ticket_id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                <td style={{ padding: '10px 14px' }}>
+                  <strong className="mono" style={{ color: '#2563eb' }}>{t.ticket_id}</strong>
+                </td>
+                <td style={{ padding: '10px 14px' }}>{t.product_name}</td>
+                <td style={{ padding: '10px 14px' }}>{t.model_features?.FaultCovered || '—'}</td>
+                <td style={{ padding: '10px 14px' }}>{t.model_features?.WarrantyRemainingDays ?? '—'}d</td>
+                <td style={{ padding: '10px 14px' }}>{t.ai_prediction}</td>
+                <td style={{ padding: '10px 14px' }}>
+                  <strong style={{ color: t.ground_truth === 'Valid Claim' ? '#16a34a' : '#dc2626' }}>
+                    {t.ground_truth}
+                  </strong>
+                </td>
+                <td style={{ padding: '10px 14px', maxWidth: '240px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {t.reviewer_note || '—'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   )
 }
+
+export const RetrainingDatasetViewer = WarrantyRetrainingDataset
