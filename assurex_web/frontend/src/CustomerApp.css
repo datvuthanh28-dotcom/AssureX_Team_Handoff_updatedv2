@@ -1300,3 +1300,154 @@ body.customer-light .login-aside {
     grid-template-columns: 1fr;
   }
 }
+
+/* ---------- Profile Page Styles ---------- */
+body.customer-light .profile-overview-panel,
+body.customer-light .profile-form-panel,
+body.customer-light .profile-password-panel {
+  margin-bottom: 24px;
+}
+
+body.customer-light .alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+body.customer-light .alert.success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+}
+
+body.customer-light .alert.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+body.customer-light .user-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef2ff;
+  color: var(--ax-primary, #3b82f6);
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+/* Evidence Upload Cards & Badges */
+body.customer-light .evidence-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+body.customer-light .evidence-upload-card {
+  background: #f8fafc;
+  border: 1px dashed var(--ax-border);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s;
+}
+
+body.customer-light .evidence-upload-card.has-file {
+  border-style: solid;
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+body.customer-light .evidence-upload-card h4 {
+  margin: 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+body.customer-light .evidence-upload-card p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ax-text-soft);
+}
+
+body.customer-light .sha256-badge {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 11px;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 3px 6px;
+  border-radius: 4px;
+  word-break: break-all;
+  border: 1px solid #e2e8f0;
+}
+
+body.customer-light .draft-banner {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1e40af;
+  padding: 12px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Dual-Model Comparison Styles */
+body.customer-light .dual-model-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+body.customer-light .model-card {
+  background: #ffffff;
+  border: 1px solid var(--ax-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+body.customer-light .model-card.python-model {
+  border-left: 4px solid var(--ax-primary);
+}
+
+body.customer-light .model-card.google-model {
+  border-left: 4px solid #ea4335;
+}
+
+body.customer-light .consistency-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  body.customer-light .dual-model-grid {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -2048,3 +2048,402 @@ body.admin-light .review-note textarea {
   font-size: 10px;
   line-height: 1.45;
 }
+
+/* ===================================================
+   Admin Workspace Upgrades: Dashboard, Claims, Warranties, Products
+   =================================================== */
+
+.operational-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 20px;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+
+.operational-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.operational-banner-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.operational-banner-text strong {
+  display: block;
+  font-size: 14px;
+  color: #fef08a;
+  margin-bottom: 2px;
+}
+
+body.admin-light .operational-banner {
+  background: #fefce8;
+  border-color: #fde047;
+}
+
+body.admin-light .operational-banner-text strong {
+  color: #854d0e;
+}
+
+body.admin-light .operational-banner-text p {
+  color: #a16207;
+}
+
+.operational-banner-text p {
+  margin: 0;
+  font-size: 12.5px;
+  color: #fef9c3;
+}
+
+/* Progress stack */
+.progress-stacked-container {
+  margin: 16px 0;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+
+body.admin-light .progress-stacked-container {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.progress-stacked-bar {
+  display: flex;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  margin-bottom: 12px;
+}
+
+.progress-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #94a3b8;
+}
+
+body.admin-light .legend-item {
+  color: #475569;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+/* Filter tabs */
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-tab {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 500;
+  border: 1px solid #23354d;
+  background: #0d1a2d;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-tab:hover {
+  background: #13243d;
+  color: #cbd5e1;
+}
+
+.filter-tab.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.filter-tab-count {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+body.admin-light .filter-tab {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+body.admin-light .filter-tab:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+body.admin-light .filter-tab.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Dual-model card styles in Admin */
+.dual-model-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 14px;
+}
+
+@media (max-width: 768px) {
+  .dual-model-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.model-card {
+  background: #0b1728;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.model-card.python-model {
+  border-left: 4px solid #3b82f6;
+}
+
+.model-card.google-model {
+  border-left: 4px solid #ea4335;
+}
+
+body.admin-light .model-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+body.admin-light .model-card.python-model {
+  border-left: 4px solid #2563eb;
+}
+
+body.admin-light .model-card.google-model {
+  border-left: 4px solid #dc2626;
+}
+
+.consistency-box {
+  background: #0b1728;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+body.admin-light .consistency-box {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+/* Evidence upload cards in Admin */
+.evidence-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.evidence-upload-card {
+  background: #091526;
+  border: 1px solid #1e3a5f;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.evidence-upload-card.has-file {
+  border-color: #2563eb;
+  background: #0d1b32;
+}
+
+body.admin-light .evidence-upload-card {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+body.admin-light .evidence-upload-card.has-file {
+  background: #ffffff;
+  border-color: #93c5fd;
+}
+
+.evidence-upload-card h4 {
+  margin: 0;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #e2e8f0;
+}
+
+body.admin-light .evidence-upload-card h4 {
+  color: #1e293b;
+}
+
+.evidence-upload-card p {
+  margin: 0;
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+body.admin-light .evidence-upload-card p {
+  color: #64748b;
+}
+
+.sha256-badge {
+  display: inline-block;
+  font-family: monospace;
+  font-size: 11px;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 3px 7px;
+  border-radius: 4px;
+  word-break: break-all;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+body.admin-light .sha256-badge {
+  color: #0369a1;
+  background: #e0f2fe;
+  border-color: #bae6fd;
+}
+
+/* Quick rationale buttons */
+.rationale-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+}
+
+.rationale-preset-btn {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px dashed #334155;
+  background: transparent;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rationale-preset-btn:hover {
+  background: rgba(37, 99, 235, 0.1);
+  border-color: #3b82f6;
+  color: #38bdf8;
+}
+
+body.admin-light .rationale-preset-btn {
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+body.admin-light .rationale-preset-btn:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+/* Category Badge */
+.category-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(148, 163, 184, 0.15);
+  color: #cbd5e1;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+body.admin-light .category-badge {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #e2e8f0;
+}
+
+/* Remaining days badges */
+.days-left-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.days-left-badge.active {
+  background: rgba(34, 197, 94, 0.12);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.25);
+}
+
+.days-left-badge.expiring {
+  background: rgba(234, 179, 8, 0.15);
+  color: #facc15;
+  border: 1px solid rgba(234, 179, 8, 0.3);
+}
+
+.days-left-badge.expired {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+body.admin-light .days-left-badge.active {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+body.admin-light .days-left-badge.expiring {
+  background: #fef9c3;
+  color: #a16207;
+  border-color: #fef08a;
+}
+
+body.admin-light .days-left-badge.expired {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}

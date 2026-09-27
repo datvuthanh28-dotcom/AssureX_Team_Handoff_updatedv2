@@ -37,6 +37,7 @@ app = FastAPI(
 
 
 app.include_router(customer_router)
+app.include_router(warranty_router)
 app.include_router(auth_router)
 app.include_router(notification_router)
 app.include_router(catalog_router)
@@ -53,6 +54,10 @@ def create_database_tables():
         "username": "ALTER TABLE customer_accounts ADD COLUMN username VARCHAR(100)",
         "role": "ALTER TABLE customer_accounts ADD COLUMN role VARCHAR(30) NOT NULL DEFAULT 'CUSTOMER'",
         "is_active": "ALTER TABLE customer_accounts ADD COLUMN is_active BOOLEAN NOT NULL DEFAULT 1",
+        "full_name": "ALTER TABLE customer_accounts ADD COLUMN full_name VARCHAR(150)",
+        "phone_number": "ALTER TABLE customer_accounts ADD COLUMN phone_number VARCHAR(30)",
+        "address": "ALTER TABLE customer_accounts ADD COLUMN address VARCHAR(255)",
+        "city": "ALTER TABLE customer_accounts ADD COLUMN city VARCHAR(100)",
     }
     with engine.begin() as connection:
         claim_columns = {
@@ -141,6 +146,48 @@ def create_database_tables():
         for column_name, statement in decision_migrations.items():
             if column_name not in decision_columns:
                 connection.execute(text(statement))
+
+        table_names = set(inspect(engine).get_table_names())
+        if "customer_claims" in table_names:
+            cc_columns = {col["name"] for col in inspect(engine).get_columns("customer_claims")}
+            cc_migrations = {
+                "receipt_url": "ALTER TABLE customer_claims ADD COLUMN receipt_url VARCHAR(255)",
+                "evidence_photo_url": "ALTER TABLE customer_claims ADD COLUMN evidence_photo_url VARCHAR(255)",
+                "product_image_url": "ALTER TABLE customer_claims ADD COLUMN product_image_url VARCHAR(255)",
+                "repair_report_url": "ALTER TABLE customer_claims ADD COLUMN repair_report_url VARCHAR(255)",
+                "document_hashes": "ALTER TABLE customer_claims ADD COLUMN document_hashes JSON",
+                "previous_repair_date": "ALTER TABLE customer_claims ADD COLUMN previous_repair_date VARCHAR(20)",
+                "repair_center_name": "ALTER TABLE customer_claims ADD COLUMN repair_center_name VARCHAR(150)",
+                "replaced_parts": "ALTER TABLE customer_claims ADD COLUMN replaced_parts VARCHAR(255)",
+                "repair_outcome": "ALTER TABLE customer_claims ADD COLUMN repair_outcome VARCHAR(100)",
+                "repair_cost": "ALTER TABLE customer_claims ADD COLUMN repair_cost FLOAT",
+            }
+            for col_name, stmt in cc_migrations.items():
+                if col_name not in cc_columns:
+                    connection.execute(text(stmt))
+
+        if "registered_products" in table_names:
+            rp_columns = {col["name"] for col in inspect(engine).get_columns("registered_products")}
+            rp_migrations = {
+                "purchase_price": "ALTER TABLE registered_products ADD COLUMN purchase_price FLOAT",
+                "retailer": "ALTER TABLE registered_products ADD COLUMN retailer VARCHAR(150)",
+            }
+            for col_name, stmt in rp_migrations.items():
+                if col_name not in rp_columns:
+                    connection.execute(text(stmt))
+
+        if "warranties" in table_names:
+            w_columns = {col["name"] for col in inspect(engine).get_columns("warranties")}
+            w_migrations = {
+                "warranty_provider": "ALTER TABLE warranties ADD COLUMN warranty_provider VARCHAR(100) DEFAULT 'AssureX Official Care'",
+                "warranty_type": "ALTER TABLE warranties ADD COLUMN warranty_type VARCHAR(50) DEFAULT 'Standard'",
+                "coverage_conditions": "ALTER TABLE warranties ADD COLUMN coverage_conditions TEXT",
+                "exclusions": "ALTER TABLE warranties ADD COLUMN exclusions TEXT",
+                "service_center_details": "ALTER TABLE warranties ADD COLUMN service_center_details VARCHAR(255)",
+            }
+            for col_name, stmt in w_migrations.items():
+                if col_name not in w_columns:
+                    connection.execute(text(stmt))
 
     with SessionLocal() as db:
         seed_default_admin(db)

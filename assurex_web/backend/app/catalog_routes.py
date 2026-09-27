@@ -33,6 +33,8 @@ class ProductRegister(BaseModel):
     product_id: int
     serial_number: str = Field(min_length=1, max_length=100)
     purchase_date: date
+    purchase_price: float | None = Field(default=None, ge=0)
+    retailer: str | None = Field(default=None, max_length=150)
 
 
 class ActiveChange(BaseModel):
@@ -68,6 +70,7 @@ def serialize_product(product: Product, db: Session) -> dict:
     ) or 0
     return {
         "id": product.id,
+        "product_code": f"PRD-{product.id:04d}",
         "name": product.name,
         "category": product.category,
         "brand": product.brand,
@@ -131,10 +134,38 @@ def list_registered_products(
         statement = statement.where(RegisteredProduct.account_id == account.id)
 
     rows = db.execute(statement.order_by(RegisteredProduct.created_at.desc())).all()
-    return [
-        {
+    today = date.today()
+    results = []
+    for registered, product, warranty in rows:
+        warranty_data = None
+        if warranty:
+            end = date.fromisoformat(warranty.end_date)
+            rem = (end - today).days
+            if rem < 0:
+                stat = "Expired"
+            elif rem <= 30:
+                stat = "Approaching Expiry"
+            else:
+                stat = "Active"
+            warranty_data = {
+                "id": warranty.id,
+                "warranty_code": f"WAR-{warranty.id:05d}",
+                "start_date": warranty.start_date,
+                "end_date": warranty.end_date,
+                "remaining_days": rem,
+                "status": stat,
+                "warranty_provider": warranty.warranty_provider or "AssureX Official Care",
+                "warranty_type": warranty.warranty_type or "Standard",
+                "coverage_conditions": warranty.coverage_conditions or "Covers manufacturing defects, internal component failures, and electrical faults under normal operating conditions.",
+                "exclusions": warranty.exclusions or "Damage caused by accidents, liquid intrusion, unauthorized disassembly, or physical abuse.",
+                "service_center_details": warranty.service_center_details or "AssureX Central Authorized Center, 123 Tech Park Blvd (Hotline: 1800-ASSUREX)",
+                "is_active": warranty.is_active,
+            }
+        results.append({
             "id": registered.id,
+            "registration_code": f"REG-{registered.id:05d}",
             "product_id": product.id,
+            "product_code": f"PRD-{product.id:04d}",
             "name": product.name,
             "category": product.category,
             "brand": product.brand,
@@ -142,25 +173,12 @@ def list_registered_products(
             "warranty_months": product.warranty_months,
             "serial_number": registered.serial_number,
             "purchase_date": registered.purchase_date,
+            "purchase_price": registered.purchase_price,
+            "retailer": registered.retailer or "Authorized Dealer",
             "is_active": registered.is_active,
-            "warranty": (
-                {
-                    "id": warranty.id,
-                    "start_date": warranty.start_date,
-                    "end_date": warranty.end_date,
-                    "status": (
-                        "Active"
-                        if date.fromisoformat(warranty.end_date) >= date.today()
-                        else "Expired"
-                    ),
-                    "is_active": warranty.is_active,
-                }
-                if warranty
-                else None
-            ),
-        }
-        for registered, product, warranty in rows
-    ]
+            "warranty": warranty_data,
+        })
+    return results
 
 
 @router.post("/api/products/register", status_code=201)
@@ -178,16 +196,31 @@ def register_product(
         product_id=product.id,
         serial_number=payload.serial_number.strip(),
         purchase_date=payload.purchase_date.isoformat(),
+        purchase_price=payload.purchase_price,
+        retailer=payload.retailer.strip() if payload.retailer else None,
     )
     db.add(registered)
     try:
         db.flush()
         expiry = add_months(payload.purchase_date, product.warranty_months)
+        rem = (expiry - date.today()).days
+        if rem < 0:
+            stat = "Expired"
+        elif rem <= 30:
+            stat = "Approaching Expiry"
+        else:
+            stat = "Active"
+
         warranty = Warranty(
             registered_product_id=registered.id,
             start_date=payload.purchase_date.isoformat(),
             end_date=expiry.isoformat(),
-            status="Active" if expiry >= date.today() else "Expired",
+            status=stat,
+            warranty_provider="AssureX Official Care",
+            warranty_type="Standard",
+            coverage_conditions="Covers manufacturing defects, internal component failures, and electrical faults under normal operating conditions.",
+            exclusions="Damage caused by accidents, liquid intrusion, unauthorized disassembly, or physical abuse.",
+            service_center_details="AssureX Central Authorized Center, 123 Tech Park Blvd (Hotline: 1800-ASSUREX)",
             is_active=True,
         )
         db.add(warranty)
@@ -197,7 +230,11 @@ def register_product(
             action="PRODUCT_REGISTERED",
             resource_type="PRODUCT",
             resource_id=str(registered.id),
-            details={"serial_number": registered.serial_number},
+            details={
+                "serial_number": registered.serial_number,
+                "purchase_price": registered.purchase_price,
+                "retailer": registered.retailer,
+            },
         )
         db.commit()
     except IntegrityError as exc:
@@ -206,20 +243,28 @@ def register_product(
 
     return {
         "id": registered.id,
+        "registration_code": f"REG-{registered.id:05d}",
         "product_id": product.id,
+        "product_code": f"PRD-{product.id:04d}",
         "name": product.name,
         "brand": product.brand,
         "model": product.model,
         "serial_number": registered.serial_number,
         "purchase_date": registered.purchase_date,
+        "purchase_price": registered.purchase_price,
+        "retailer": registered.retailer or "Authorized Dealer",
         "warranty": {
+            "id": warranty.id,
+            "warranty_code": f"WAR-{warranty.id:05d}",
             "start_date": payload.purchase_date.isoformat(),
             "end_date": expiry.isoformat(),
-            "status": (
-                "Active"
-                if date.fromisoformat(warranty.end_date) >= date.today()
-                else "Expired"
-            ),
+            "remaining_days": rem,
+            "status": stat,
+            "warranty_provider": warranty.warranty_provider,
+            "warranty_type": warranty.warranty_type,
+            "coverage_conditions": warranty.coverage_conditions,
+            "exclusions": warranty.exclusions,
+            "service_center_details": warranty.service_center_details,
             "is_active": warranty.is_active,
         },
     }
@@ -242,22 +287,44 @@ def list_warranties(
         statement = statement.where(RegisteredProduct.account_id == account.id)
 
     rows = db.execute(statement.order_by(Warranty.end_date.asc())).all()
-    return [
-        {
+    today = date.today()
+    results = []
+    for warranty, registered, product, owner in rows:
+        end = date.fromisoformat(warranty.end_date)
+        rem = (end - today).days
+        if rem < 0:
+            stat = "Expired"
+        elif rem <= 30:
+            stat = "Approaching Expiry"
+        else:
+            stat = "Active"
+
+        results.append({
             "id": warranty.id,
+            "warranty_code": f"WAR-{warranty.id:05d}",
             "customer_email": owner.email,
+            "customer_name": getattr(owner, "full_name", None) or owner.username or owner.email.split("@")[0],
             "product": product.name,
+            "product_code": f"PRD-{product.id:04d}",
             "category": product.category,
             "brand": product.brand,
             "model": product.model,
             "serial_number": registered.serial_number,
+            "purchase_date": registered.purchase_date,
+            "purchase_price": registered.purchase_price,
+            "retailer": registered.retailer or "Authorized Dealer",
             "start_date": warranty.start_date,
             "end_date": warranty.end_date,
-            "status": warranty.status,
+            "remaining_days": rem,
+            "status": stat,
+            "warranty_provider": warranty.warranty_provider or "AssureX Official Care",
+            "warranty_type": warranty.warranty_type or "Standard",
+            "coverage_conditions": warranty.coverage_conditions or "Covers manufacturing defects, internal component failures, and electrical faults under normal operating conditions.",
+            "exclusions": warranty.exclusions or "Damage caused by accidents, liquid intrusion, unauthorized disassembly, or physical abuse.",
+            "service_center_details": warranty.service_center_details or "AssureX Central Authorized Center, 123 Tech Park Blvd (Hotline: 1800-ASSUREX)",
             "is_active": warranty.is_active,
-        }
-        for warranty, registered, product, owner in rows
-    ]
+        })
+    return results
 
 
 @router.patch("/api/warranties/{warranty_id}/active")

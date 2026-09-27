@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './CustomerApp.css'
 import { api } from './api'
 import {
@@ -133,20 +133,25 @@ function formatNotificationDate(value) {
 }
 
 
-function CustomerProducts() {
+function CustomerProducts({ onNavigate }) {
   const [catalog, setCatalog] = useState([])
   const [products, setProducts] = useState([])
   const [productId, setProductId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
   const [purchaseDate, setPurchaseDate] = useState('')
+  const [purchasePrice, setPurchasePrice] = useState('')
+  const [retailer, setRetailer] = useState('')
   const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
 
   async function fetchProducts() {
     return Promise.all([
-        api('/api/products'),
-        api('/api/products/registered'),
-      ])
+      api('/api/products'),
+      api('/api/products/registered'),
+    ])
   }
 
   useEffect(() => {
@@ -182,42 +187,294 @@ function CustomerProducts() {
   async function registerProduct(event) {
     event.preventDefault()
     setError('')
+    setSuccess('')
+    setSubmitting(true)
     try {
-      await api('/api/products/register', {
+      const result = await api('/api/products/register', {
         method: 'POST',
         body: JSON.stringify({
           product_id: Number(productId),
-          serial_number: serialNumber,
+          serial_number: serialNumber.trim(),
           purchase_date: purchaseDate,
+          purchase_price: purchasePrice ? parseFloat(purchasePrice) : null,
+          retailer: retailer.trim() || null,
         }),
       })
+      setSuccess(`Product registered successfully! Assigned Registration ID: ${result.registration_code || 'REG-' + result.id}`)
       setProductId('')
       setSerialNumber('')
       setPurchaseDate('')
+      setPurchasePrice('')
+      setRetailer('')
       await loadProducts()
     } catch (requestError) {
       setError(requestError.message)
+    } finally {
+      setSubmitting(false)
     }
   }
 
+  const filteredProducts = products.filter((p) => {
+    if (!searchQuery) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      (p.name && p.name.toLowerCase().includes(q)) ||
+      (p.brand && p.brand.toLowerCase().includes(q)) ||
+      (p.model && p.model.toLowerCase().includes(q)) ||
+      (p.serial_number && p.serial_number.toLowerCase().includes(q)) ||
+      (p.retailer && p.retailer.toLowerCase().includes(q)) ||
+      (p.registration_code && p.registration_code.toLowerCase().includes(q))
+    )
+  })
+
+  const totalRegistered = products.length
+  const activeWarranties = products.filter(
+    (p) => p.warranty && p.warranty.status === 'Active'
+  ).length
+  const totalValue = products.reduce(
+    (acc, p) => acc + (Number(p.purchase_price) || 0),
+    0
+  )
+
   return (
     <>
-      <header className="page-header"><div><p className="eyebrow">Customer Portal</p><h1>My Products</h1><p className="page-description">Products registered to your account.</p></div></header>
-      <form className="panel" onSubmit={registerProduct}>
-        <div className="panel-heading"><h2>Register product</h2></div>
-        <div className="form-grid">
-          <label className="form-field"><span>Product</span><select value={productId} onChange={(event) => setProductId(event.target.value)} required><option value="">Select product</option>{catalog.map((product) => <option key={product.id} value={product.id}>{product.name} · {product.model}</option>)}</select></label>
-          <label className="form-field"><span>Serial number</span><input value={serialNumber} onChange={(event) => setSerialNumber(event.target.value)} required /></label>
-          <label className="form-field"><span>Purchase date</span><input type="date" value={purchaseDate} onChange={(event) => setPurchaseDate(event.target.value)} required /></label>
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Customer Portal</p>
+          <h1>My Products</h1>
+          <p className="page-description">
+            Register your purchased equipment with serial number, purchase price, and retailer to unlock warranty coverage.
+          </p>
         </div>
-        {error && <div className="alert error">{error}</div>}
-        <div className="form-actions"><button className="button primary">Register product</button></div>
+      </header>
+
+      {/* Overview Stat Cards */}
+      <section className="stats-grid">
+        <div className="stat-card">
+          <span>Registered Products</span>
+          <strong>{totalRegistered}</strong>
+          <small>Equipment linked to your account</small>
+        </div>
+        <div className="stat-card">
+          <span>Active Warranties</span>
+          <strong>{activeWarranties}</strong>
+          <small>Products currently under coverage</small>
+        </div>
+        <div className="stat-card">
+          <span>Total Protected Value</span>
+          <strong>${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
+          <small>Cumulative purchase valuation</small>
+        </div>
+      </section>
+
+      {/* Product Registration Form */}
+      <form className="panel" onSubmit={registerProduct}>
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Product Onboarding</p>
+            <h2>Register a New Product</h2>
+            <p className="section-helper">
+              Provide product details, purchase date, price, and retailer to activate warranty protection.
+            </p>
+          </div>
+        </div>
+
+        <div className="form-grid">
+          <label className="form-field full-width">
+            <span>Product Model <span style={{ color: 'var(--ax-danger)' }}>*</span></span>
+            <select
+              value={productId}
+              onChange={(event) => setProductId(event.target.value)}
+              required
+            >
+              <option value="">Select a product from catalog...</option>
+              {catalog.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.name} · {product.brand} ({product.model}) — {product.warranty_months} Months Standard Warranty
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="form-field">
+            <span>Serial Number <span style={{ color: 'var(--ax-danger)' }}>*</span></span>
+            <input
+              value={serialNumber}
+              onChange={(event) => setSerialNumber(event.target.value)}
+              placeholder="e.g. SN-98234-A78"
+              required
+            />
+          </label>
+
+          <label className="form-field">
+            <span>Purchase Date <span style={{ color: 'var(--ax-danger)' }}>*</span></span>
+            <input
+              type="date"
+              value={purchaseDate}
+              onChange={(event) => setPurchaseDate(event.target.value)}
+              required
+            />
+          </label>
+
+          <label className="form-field">
+            <span>Purchase Price ($ USD)</span>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={purchasePrice}
+              onChange={(event) => setPurchasePrice(event.target.value)}
+              placeholder="e.g. 899.00"
+            />
+          </label>
+
+          <label className="form-field">
+            <span>Retailer / Store Name</span>
+            <input
+              type="text"
+              value={retailer}
+              onChange={(event) => setRetailer(event.target.value)}
+              placeholder="e.g. Best Buy, Amazon, Apple Store"
+            />
+          </label>
+        </div>
+
+        {error && <div className="alert error" style={{ marginTop: '16px' }}>{error}</div>}
+        {success && <div className="alert success" style={{ marginTop: '16px' }}>{success}</div>}
+
+        <div className="form-actions">
+          <button className="button primary" disabled={submitting}>
+            {submitting ? 'Registering Product...' : 'Register Product & Activate Warranty'}
+          </button>
+        </div>
       </form>
+
+      {/* Registered Products Table */}
       <section className="panel">
-        {loading ? <div className="state-card">Loading products...</div> : products.length === 0 ? <div className="empty-state"><h3>No registered products</h3><p>Register a product to see its warranty information here.</p></div> : (
-          <div className="table-wrapper"><table className="data-table"><thead><tr><th>Product</th><th>Brand / Model</th><th>Serial</th><th>Purchase date</th><th>Warranty</th></tr></thead><tbody>
-            {products.map((product) => <tr key={product.id}><td>{product.name}</td><td>{product.brand} · {product.model}</td><td>{product.serial_number}</td><td>{product.purchase_date}</td><td>{product.warranty?.status || '—'}{product.warranty ? ` · until ${product.warranty.end_date}` : ''}</td></tr>)}
-          </tbody></table></div>
+        <div className="panel-heading between">
+          <div>
+            <p className="eyebrow">Catalog</p>
+            <h2>Registered Equipment ({filteredProducts.length})</h2>
+          </div>
+          <div className="table-search-box">
+            <input
+              type="text"
+              placeholder="Search by name, serial, retailer..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={{
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid var(--ax-border)',
+                fontSize: '13px',
+                minWidth: '240px',
+              }}
+            />
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="state-card">Loading products...</div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="empty-state">
+            <h3>No products found</h3>
+            <p>
+              {products.length === 0
+                ? 'Register your first product above to activate warranty coverage.'
+                : 'No registered products match your search filter.'}
+            </p>
+          </div>
+        ) : (
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Reg ID / Product ID</th>
+                  <th>Product & Model</th>
+                  <th>Serial Number</th>
+                  <th>Retailer & Date</th>
+                  <th>Price</th>
+                  <th>Warranty Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map((product) => {
+                  const warranty = product.warranty
+                  const isExpiring = warranty?.status === 'Approaching Expiry'
+                  const isExpired = warranty?.status === 'Expired'
+                  return (
+                    <tr key={product.id}>
+                      <td>
+                        <span className="user-id-badge" style={{ fontSize: '12px' }}>
+                          {product.registration_code || `REG-${String(product.id).padStart(5, '0')}`}
+                        </span>
+                        <div style={{ fontSize: '11px', color: 'var(--ax-text-faint)', marginTop: '2px' }}>
+                          {product.product_code || `PRD-${String(product.product_id).padStart(4, '0')}`}
+                        </div>
+                      </td>
+                      <td>
+                        <strong>{product.name}</strong>
+                        <div style={{ fontSize: '12px', color: 'var(--ax-text-soft)' }}>
+                          {product.brand} · {product.model} ({product.category})
+                        </div>
+                      </td>
+                      <td className="mono" style={{ fontWeight: 600 }}>
+                        {product.serial_number}
+                      </td>
+                      <td>
+                        <div>{product.retailer || 'Authorized Dealer'}</div>
+                        <small style={{ color: 'var(--ax-text-faint)' }}>{product.purchase_date}</small>
+                      </td>
+                      <td>
+                        {product.purchase_price != null
+                          ? `$${Number(product.purchase_price).toFixed(2)}`
+                          : '—'}
+                      </td>
+                      <td>
+                        {warranty ? (
+                          <div>
+                            <span
+                              className={`status-badge ${
+                                isExpired
+                                  ? 'status-rejected'
+                                  : isExpiring
+                                    ? 'status-review'
+                                    : 'status-approved'
+                              }`}
+                            >
+                              {warranty.status}
+                            </span>
+                            <div style={{ fontSize: '11px', color: 'var(--ax-text-faint)', marginTop: '3px' }}>
+                              Exp: {warranty.end_date}
+                              {warranty.remaining_days != null && (
+                                <span> ({warranty.remaining_days > 0 ? `${warranty.remaining_days}d left` : 'Expired'})</span>
+                              )}
+                            </div>
+                          </div>
+                        ) : (
+                          <span className="status-badge">No Warranty</span>
+                        )}
+                      </td>
+                      <td>
+                        <button
+                          className="button secondary"
+                          style={{ padding: '6px 10px', fontSize: '12px' }}
+                          onClick={() => {
+                            if (onNavigate) {
+                              onNavigate('submit')
+                            }
+                          }}
+                        >
+                          Claim Warranty
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </>
@@ -225,10 +482,13 @@ function CustomerProducts() {
 }
 
 
-function CustomerWarranties() {
+function CustomerWarranties({ onNavigate }) {
   const [warranties, setWarranties] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [statusFilter, setStatusFilter] = useState('ALL')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [expandedId, setExpandedId] = useState(null)
 
   useEffect(() => {
     api('/api/warranties')
@@ -237,15 +497,272 @@ function CustomerWarranties() {
       .finally(() => setLoading(false))
   }, [])
 
+  const countActive = warranties.filter((w) => w.status === 'Active').length
+  const countExpiring = warranties.filter((w) => w.status === 'Approaching Expiry').length
+  const countExpired = warranties.filter((w) => w.status === 'Expired').length
+
+  const filtered = warranties.filter((w) => {
+    if (statusFilter === 'ACTIVE' && w.status !== 'Active') return false
+    if (statusFilter === 'EXPIRING' && w.status !== 'Approaching Expiry') return false
+    if (statusFilter === 'EXPIRED' && w.status !== 'Expired') return false
+
+    if (!searchQuery) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      (w.product && w.product.toLowerCase().includes(q)) ||
+      (w.serial_number && w.serial_number.toLowerCase().includes(q)) ||
+      (w.brand && w.brand.toLowerCase().includes(q)) ||
+      (w.model && w.model.toLowerCase().includes(q)) ||
+      (w.warranty_code && w.warranty_code.toLowerCase().includes(q))
+    )
+  })
+
   return (
     <>
-      <header className="page-header"><div><p className="eyebrow">Customer Portal</p><h1>Warranties</h1><p className="page-description">Coverage registered to your products.</p></div></header>
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Customer Portal</p>
+          <h1>Warranties & Coverage</h1>
+          <p className="page-description">
+            Track active coverage policies, approaching expiry dates, authorized service centers, and policy terms.
+          </p>
+        </div>
+      </header>
+
+      {/* Stats row */}
+      <section className="stats-grid">
+        <div className="stat-card">
+          <span>Total Warranties</span>
+          <strong>{warranties.length}</strong>
+          <small>All registered policies</small>
+        </div>
+        <div className="stat-card">
+          <span>Active Coverage</span>
+          <strong style={{ color: 'var(--ax-success)' }}>{countActive}</strong>
+          <small>Fully covered under warranty</small>
+        </div>
+        <div className="stat-card">
+          <span>Approaching Expiry</span>
+          <strong style={{ color: 'var(--ax-warning)' }}>{countExpiring}</strong>
+          <small>Expiring within 30 days</small>
+        </div>
+        <div className="stat-card">
+          <span>Expired Policies</span>
+          <strong style={{ color: 'var(--ax-danger)' }}>{countExpired}</strong>
+          <small>Coverage lapsed</small>
+        </div>
+      </section>
+
       <section className="panel">
+        <div className="panel-heading between" style={{ flexWrap: 'wrap', gap: '12px' }}>
+          {/* Status Tabs */}
+          <div style={{ display: 'flex', gap: '6px' }}>
+            {[
+              ['ALL', `All (${warranties.length})`],
+              ['ACTIVE', `Active (${countActive})`],
+              ['EXPIRING', `Approaching Expiry (${countExpiring})`],
+              ['EXPIRED', `Expired (${countExpired})`],
+            ].map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className={`button ${statusFilter === key ? 'primary' : 'secondary'}`}
+                style={{ padding: '6px 12px', fontSize: '13px' }}
+                onClick={() => setStatusFilter(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
+          <input
+            type="text"
+            placeholder="Search warranties..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '6px',
+              border: '1px solid var(--ax-border)',
+              fontSize: '13px',
+              minWidth: '220px',
+            }}
+          />
+        </div>
+
         {error && <div className="alert error">{error}</div>}
-        {loading ? <div className="state-card">Loading warranties...</div> : warranties.length === 0 ? <div className="empty-state"><h3>No warranties found</h3><p>Register a product to create its warranty record.</p></div> : (
-          <div className="table-wrapper"><table className="data-table"><thead><tr><th>Product</th><th>Serial</th><th>Coverage</th><th>End date</th><th>Status</th></tr></thead><tbody>
-            {warranties.map((warranty) => <tr key={warranty.id}><td>{warranty.product}</td><td>{warranty.serial_number}</td><td>{warranty.start_date} – {warranty.end_date}</td><td>{warranty.end_date}</td><td>{warranty.is_active ? warranty.status : 'Inactive'}</td></tr>)}
-          </tbody></table></div>
+
+        {loading ? (
+          <div className="state-card">Loading warranties...</div>
+        ) : filtered.length === 0 ? (
+          <div className="empty-state">
+            <h3>No warranties found</h3>
+            <p>
+              {warranties.length === 0
+                ? 'Register a product to create its warranty policy record.'
+                : 'No warranties match the selected filter.'}
+            </p>
+          </div>
+        ) : (
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Warranty Code</th>
+                  <th>Product / Model</th>
+                  <th>Serial Number</th>
+                  <th>Coverage Duration</th>
+                  <th>Remaining Days</th>
+                  <th>Status</th>
+                  <th>Policy Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((warranty) => {
+                  const isExpanded = expandedId === warranty.id
+                  const isExpiring = warranty.status === 'Approaching Expiry'
+                  const isExpired = warranty.status === 'Expired'
+
+                  return (
+                    <React.Fragment key={warranty.id}>
+                      <tr>
+                        <td>
+                          <span className="user-id-badge" style={{ fontSize: '12px' }}>
+                            {warranty.warranty_code || `WAR-${String(warranty.id).padStart(5, '0')}`}
+                          </span>
+                        </td>
+                        <td>
+                          <strong>{warranty.product}</strong>
+                          <div style={{ fontSize: '12px', color: 'var(--ax-text-soft)' }}>
+                            {warranty.brand} · {warranty.model}
+                          </div>
+                        </td>
+                        <td className="mono" style={{ fontWeight: 600 }}>
+                          {warranty.serial_number}
+                        </td>
+                        <td>
+                          <div>{warranty.start_date} → {warranty.end_date}</div>
+                          <small style={{ color: 'var(--ax-text-faint)' }}>
+                            Provider: {warranty.warranty_provider || 'AssureX Official Care'}
+                          </small>
+                        </td>
+                        <td>
+                          {warranty.remaining_days != null ? (
+                            <span
+                              style={{
+                                fontWeight: 700,
+                                color: isExpired
+                                  ? 'var(--ax-danger)'
+                                  : isExpiring
+                                    ? 'var(--ax-warning)'
+                                    : 'var(--ax-success)',
+                              }}
+                            >
+                              {warranty.remaining_days > 0
+                                ? `${warranty.remaining_days} days left`
+                                : `Expired (${Math.abs(warranty.remaining_days)}d ago)`}
+                            </span>
+                          ) : (
+                            '—'
+                          )}
+                        </td>
+                        <td>
+                          <span
+                            className={`status-badge ${
+                              isExpired
+                                ? 'status-rejected'
+                                : isExpiring
+                                  ? 'status-review'
+                                  : 'status-approved'
+                            }`}
+                          >
+                            {warranty.status}
+                          </span>
+                        </td>
+                        <td>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button
+                              className="button secondary"
+                              style={{ padding: '5px 9px', fontSize: '12px' }}
+                              onClick={() => setExpandedId(isExpanded ? null : warranty.id)}
+                            >
+                              {isExpanded ? 'Hide Policy ▲' : 'View Policy ▼'}
+                            </button>
+                            {!isExpired && (
+                              <button
+                                className="button primary"
+                                style={{ padding: '5px 9px', fontSize: '12px' }}
+                                onClick={() => {
+                                  if (onNavigate) onNavigate('submit')
+                                }}
+                              >
+                                File Claim
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+
+                      {isExpanded && (
+                        <tr style={{ background: '#f8fafc' }}>
+                          <td colSpan="7" style={{ padding: '16px 20px' }}>
+                            <div
+                              style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                                gap: '16px',
+                                background: '#ffffff',
+                                border: '1px solid var(--ax-border)',
+                                borderRadius: '8px',
+                                padding: '16px',
+                              }}
+                            >
+                              <div>
+                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
+                                  Warranty Provider & Type
+                                </span>
+                                <p style={{ margin: '4px 0 0', fontWeight: 600 }}>
+                                  {warranty.warranty_provider || 'AssureX Official Care'} · {warranty.warranty_type || 'Standard Coverage'}
+                                </p>
+                              </div>
+
+                              <div>
+                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
+                                  Authorized Service Center & Contact
+                                </span>
+                                <p style={{ margin: '4px 0 0', fontSize: '13px' }}>
+                                  {warranty.service_center_details || 'AssureX Central Center, 123 Tech Park Blvd (Hotline: 1800-ASSUREX)'}
+                                </p>
+                              </div>
+
+                              <div style={{ gridColumn: '1 / -1' }}>
+                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-success)', fontWeight: 700 }}>
+                                  ✓ Coverage Conditions
+                                </span>
+                                <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--ax-text-soft)' }}>
+                                  {warranty.coverage_conditions || 'Covers manufacturing defects, internal component failures, and electrical faults under normal operating conditions.'}
+                                </p>
+                              </div>
+
+                              <div style={{ gridColumn: '1 / -1' }}>
+                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-danger)', fontWeight: 700 }}>
+                                  ✕ Exclusions & Limitations
+                                </span>
+                                <p style={{ margin: '4px 0 0', fontSize: '13px', color: 'var(--ax-text-soft)' }}>
+                                  {warranty.exclusions || 'Damage caused by accidents, water/liquid intrusion, unauthorized disassembly, software alterations, or physical abuse.'}
+                                </p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </React.Fragment>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </>
@@ -376,6 +893,289 @@ function CustomerLogin({ mode, setMode, onLogin, onBack }) {
   )
 }
 
+function CustomerProfile({ session, onUpdateSession }) {
+  const [formData, setFormData] = useState({
+    full_name: session?.full_name || '',
+    phone_number: session?.phone_number || '',
+    address: session?.address || '',
+    city: session?.city || '',
+  })
+  const [profileSaving, setProfileSaving] = useState(false)
+  const [profileMessage, setProfileMessage] = useState({ type: '', text: '' })
+
+  const [passwordData, setPasswordData] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: '',
+  })
+  const [passwordSaving, setPasswordSaving] = useState(false)
+  const [passwordMessage, setPasswordMessage] = useState({ type: '', text: '' })
+
+  useEffect(() => {
+    if (session) {
+      setFormData({
+        full_name: session.full_name || '',
+        phone_number: session.phone_number || '',
+        address: session.address || '',
+        city: session.city || '',
+      })
+    }
+  }, [session?.full_name, session?.phone_number, session?.address, session?.city])
+
+  async function handleProfileSubmit(event) {
+    event.preventDefault()
+    setProfileSaving(true)
+    setProfileMessage({ type: '', text: '' })
+
+    try {
+      const updated = await api('/api/auth/profile', {
+        method: 'PUT',
+        body: JSON.stringify(formData),
+      })
+      onUpdateSession(updated)
+      setProfileMessage({
+        type: 'success',
+        text: 'Profile contact information updated successfully!',
+      })
+    } catch (err) {
+      setProfileMessage({
+        type: 'error',
+        text: err.message || 'Failed to update profile.',
+      })
+    } finally {
+      setProfileSaving(false)
+    }
+  }
+
+  async function handlePasswordSubmit(event) {
+    event.preventDefault()
+    setPasswordMessage({ type: '', text: '' })
+
+    if (passwordData.new_password.length < 8) {
+      setPasswordMessage({
+        type: 'error',
+        text: 'New password must be at least 8 characters long.',
+      })
+      return
+    }
+
+    if (passwordData.new_password !== passwordData.confirm_password) {
+      setPasswordMessage({
+        type: 'error',
+        text: 'New password and confirmation do not match.',
+      })
+      return
+    }
+
+    setPasswordSaving(true)
+    try {
+      await api('/api/auth/change-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          current_password: passwordData.current_password,
+          new_password: passwordData.new_password,
+        }),
+      })
+      setPasswordData({
+        current_password: '',
+        new_password: '',
+        confirm_password: '',
+      })
+      setPasswordMessage({
+        type: 'success',
+        text: 'Password updated successfully!',
+      })
+    } catch (err) {
+      setPasswordMessage({
+        type: 'error',
+        text: err.message || 'Failed to change password.',
+      })
+    } finally {
+      setPasswordSaving(false)
+    }
+  }
+
+  const userId = session?.user_id || (session?.id ? `USR-${String(session.id).padStart(5, '0')}` : '—')
+
+  return (
+    <>
+      <header className="page-header">
+        <div>
+          <p className="eyebrow">Account Management</p>
+          <h1>My Profile</h1>
+          <p className="page-description">
+            Manage your unique User ID, contact details, and account security.
+          </p>
+        </div>
+      </header>
+
+      {/* Account Overview Card */}
+      <section className="panel profile-overview-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Account Details</p>
+            <h2>User Identification</h2>
+          </div>
+          <span className="status-badge status-approved">
+            Active Account
+          </span>
+        </div>
+        <div className="detail-grid">
+          <div>
+            <span>Unique User ID</span>
+            <strong className="user-id-badge">{userId}</strong>
+          </div>
+          <div>
+            <span>Email Address</span>
+            <strong>{session?.email || '—'}</strong>
+          </div>
+          <div>
+            <span>Assigned Role</span>
+            <strong>{session?.role || 'CUSTOMER'}</strong>
+          </div>
+          <div>
+            <span>Member Since</span>
+            <strong>{formatNotificationDate(session?.created_at) || 'Active'}</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Information Form */}
+      <section className="panel profile-form-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Contact Details</p>
+            <h2>Personal & Contact Information</h2>
+            <p className="section-helper">
+              Provide your details so service centers can reach you regarding warranty repairs and claim updates.
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handleProfileSubmit}>
+          <div className="form-grid">
+            <label className="form-field">
+              <span>Full Name</span>
+              <input
+                type="text"
+                placeholder="e.g. John Doe"
+                value={formData.full_name}
+                onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Phone Number</span>
+              <input
+                type="tel"
+                placeholder="e.g. +84 912 345 678"
+                value={formData.phone_number}
+                onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Street Address</span>
+              <input
+                type="text"
+                placeholder="e.g. 123 Nguyen Trai Street"
+                value={formData.address}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              />
+            </label>
+
+            <label className="form-field">
+              <span>City / Province</span>
+              <input
+                type="text"
+                placeholder="e.g. Ho Chi Minh City"
+                value={formData.city}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+              />
+            </label>
+          </div>
+
+          {profileMessage.text && (
+            <div className={`alert ${profileMessage.type}`} style={{ marginTop: '16px' }}>
+              {profileMessage.text}
+            </div>
+          )}
+
+          <div className="form-actions">
+            <button type="submit" className="button primary" disabled={profileSaving}>
+              {profileSaving ? 'Saving Changes...' : 'Save Profile Changes'}
+            </button>
+          </div>
+        </form>
+      </section>
+
+      {/* Security & Password Change */}
+      <section className="panel profile-password-panel">
+        <div className="panel-heading">
+          <div>
+            <p className="eyebrow">Security</p>
+            <h2>Change Password</h2>
+            <p className="section-helper">
+              Ensure your account uses a secure password of at least 8 characters.
+            </p>
+          </div>
+        </div>
+
+        <form onSubmit={handlePasswordSubmit}>
+          <div className="form-grid">
+            <label className="form-field full-width">
+              <span>Current Password</span>
+              <input
+                type="password"
+                placeholder="Enter current password"
+                value={passwordData.current_password}
+                onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>New Password</span>
+              <input
+                type="password"
+                placeholder="At least 8 characters"
+                minLength={8}
+                value={passwordData.new_password}
+                onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Confirm New Password</span>
+              <input
+                type="password"
+                placeholder="Re-enter new password"
+                minLength={8}
+                value={passwordData.confirm_password}
+                onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
+                required
+              />
+            </label>
+          </div>
+
+          {passwordMessage.text && (
+            <div className={`alert ${passwordMessage.type}`} style={{ marginTop: '16px' }}>
+              {passwordMessage.text}
+            </div>
+          )}
+
+          <div className="form-actions">
+            <button type="submit" className="button secondary" disabled={passwordSaving}>
+              {passwordSaving ? 'Updating Password...' : 'Update Password'}
+            </button>
+          </div>
+        </form>
+      </section>
+    </>
+  )
+}
+
 function CustomerApp() {
   const [session, setSession] = useState(
     () => loadSession()
@@ -435,6 +1235,14 @@ function CustomerApp() {
     setCustomerPage('home')
   }
 
+  function handleUpdateSession(updated) {
+    setSession((current) => {
+      const fresh = { ...current, ...updated }
+      localStorage.setItem(SESSION_KEY, JSON.stringify(fresh))
+      return fresh
+    })
+  }
+
   async function handleLogout() {
     try {
       await api('/api/auth/logout', { method: 'POST' })
@@ -473,9 +1281,8 @@ function CustomerApp() {
     )
   }
 
-  const initial = session?.email
-    .charAt(0)
-    .toUpperCase()
+  const displayName = session?.full_name || session?.email || ''
+  const initial = displayName.charAt(0).toUpperCase() || 'U'
 
   return (
     <div className="app-shell">
@@ -518,7 +1325,12 @@ function CustomerApp() {
               <div className="account-avatar">{initial}</div>
               <div className="account-details">
                 <span>Signed in as</span>
-                <strong>{session.email}</strong>
+                <strong>{session.full_name || session.email}</strong>
+                {session.full_name && (
+                  <span style={{ fontSize: '11px', color: 'var(--ax-text-faint)', wordBreak: 'break-all' }}>
+                    {session.email}
+                  </span>
+                )}
               </div>
             </div>
             <button className="logout-button" onClick={handleLogout}>
@@ -555,6 +1367,7 @@ function CustomerApp() {
         {customerPage === 'submit' && (
           <CustomerSubmit
             email={session?.email || guestEmail}
+            customerName={session?.full_name || ''}
             setEmail={setGuestEmail}
             onSubmitted={() => {
               refresh()
@@ -575,19 +1388,19 @@ function CustomerApp() {
 
         {customerPage === 'notifications' && <CustomerNotifications />}
 
-        {customerPage === 'products' && <CustomerProducts />}
+        {customerPage === 'products' && (
+          <CustomerProducts onNavigate={navigateCustomer} />
+        )}
 
-        {customerPage === 'warranties' && <CustomerWarranties />}
+        {customerPage === 'warranties' && (
+          <CustomerWarranties onNavigate={navigateCustomer} />
+        )}
 
         {customerPage === 'profile' && (
-          <section className="panel profile-page">
-            <p className="eyebrow">Customer account</p>
-            <h1>Profile</h1>
-            <div className="detail-grid">
-              <div><span>Email</span><strong>{session?.email || '—'}</strong></div>
-              <div><span>Role</span><strong>CUSTOMER</strong></div>
-            </div>
-          </section>
+          <CustomerProfile
+            session={session}
+            onUpdateSession={handleUpdateSession}
+          />
         )}
       </main>
     </div>

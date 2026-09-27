@@ -127,20 +127,27 @@ function AdminDashboard({
 }) {
   const [mlClaims, setMlClaims] = useState([])
   const [customerClaims, setCustomerClaims] = useState([])
+  const [warranties, setWarranties] = useState([])
+  const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     Promise.all([
-      api('/api/claims'),
-      api('/api/customer/claims'),
+      api('/api/claims').catch(() => []),
+      api('/api/customer/claims').catch(() => []),
+      api('/api/warranties').catch(() => []),
+      api('/api/products').catch(() => []),
     ])
-      .then(([ml, customer]) => {
-        setMlClaims(ml)
-        setCustomerClaims(customer)
+      .then(([ml, customer, wars, prods]) => {
+        setMlClaims(ml || [])
+        setCustomerClaims(customer || [])
+        setWarranties(wars || [])
+        setProducts(prods || [])
       })
       .finally(() => setLoading(false))
   }, [refreshKey])
 
+  const totalClaims = customerClaims.length
   const review = customerClaims.filter(
     (claim) => ['Under Review', 'Manual Review'].includes(claim.status)
   ).length
@@ -153,53 +160,93 @@ function AdminDashboard({
     (claim) => claim.status === 'Rejected'
   ).length
 
+  const needInfo = customerClaims.filter(
+    (claim) => claim.status === 'Additional Information Required'
+  ).length
+
+  const closed = customerClaims.filter(
+    (claim) => claim.status === 'Closed'
+  ).length
+
+  const approvalRate = totalClaims > 0
+    ? ((approved / totalClaims) * 100).toFixed(1)
+    : '0.0'
+
+  const activeWarranties = warranties.filter(
+    (w) => w.is_active && w.status === 'Active'
+  ).length
+
+  const expiringWarranties = warranties.filter(
+    (w) => w.is_active && (w.status === 'Approaching Expiry' || (w.remaining_days >= 0 && w.remaining_days <= 30))
+  ).length
+
+  const dualModelEvaluated = customerClaims.filter(
+    (c) => c.decision && c.decision.model_consistency_status
+  )
+
+  const modelDisagreements = customerClaims.filter(
+    (c) => c.decision?.model_consistency_status === 'Model Disagreement'
+  ).length
+
+  const modelMatches = customerClaims.filter(
+    (c) => ['Strong Match', 'Acceptable Match'].includes(c.decision?.model_consistency_status)
+  ).length
+
+  const consistencyRate = dualModelEvaluated.length > 0
+    ? ((modelMatches / dualModelEvaluated.length) * 100).toFixed(1)
+    : '100.0'
+
+  const pctApproved = totalClaims > 0 ? (approved / totalClaims) * 100 : 0
+  const pctReview = totalClaims > 0 ? (review / totalClaims) * 100 : 0
+  const pctNeedInfo = totalClaims > 0 ? (needInfo / totalClaims) * 100 : 0
+  const pctRejected = totalClaims > 0 ? (rejected / totalClaims) * 100 : 0
+  const pctClosed = totalClaims > 0 ? (closed / totalClaims) * 100 : 0
+
   return (
     <>
       <PageHeader
-        eyebrow="Operations overview"
+        eyebrow="Operations & Assurance Overview"
         title="Admin Dashboard"
-        description="Monitor incoming warranty claims, ML classifications and model performance."
+        description="Monitor warranty claim queues, dual-model ML classification performance, warranty health, and product catalog."
         action={
-          <button
-            className="button primary"
-            onClick={() => onNavigate('classify')}
-          >
-            + New Classification
-          </button>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              className="button secondary"
+              onClick={() => onNavigate('customer-claims')}
+            >
+              Review Queue ({review})
+            </button>
+            <button
+              className="button primary"
+              onClick={() => onNavigate('classify')}
+            >
+              + New Classification
+            </button>
+          </div>
         }
       />
 
-      <section className="hero-card">
-        <div>
-          <p className="eyebrow">
-            Primary ML Model
-          </p>
-
-          <h2>Python Gradient Boosting</h2>
-
-          <p>
-            Final production classification model selected
-            using Macro F1 on the locked 225-claim test set.
-          </p>
-
-          <div className="hero-actions">
-            <button
-              className="button secondary"
-              onClick={() => onNavigate('model')}
-            >
-              View Model Intelligence
-            </button>
+      {review > 0 && (
+        <div className="operational-banner">
+          <div className="operational-banner-left">
+            <div className="operational-banner-icon">⚠️</div>
+            <div className="operational-banner-text">
+              <strong>{review} Claim(s) Awaiting Reviewer Action</strong>
+              <p>
+                Submitted customer warranty claims require manual review and approval.
+                {modelDisagreements > 0 && ` ${modelDisagreements} claim(s) have model disagreement between Python and GTM.`}
+              </p>
+            </div>
           </div>
+          <button
+            className="button primary"
+            style={{ padding: '8px 16px', fontSize: '13px' }}
+            onClick={() => onNavigate('customer-claims')}
+          >
+            Open Review Queue →
+          </button>
         </div>
-
-        <div className="metric-highlight">
-          <span>Test Accuracy</span>
-          <strong>
-            {MODEL_METRICS.pythonAccuracy}
-          </strong>
-          <small>SRS requirement passed</small>
-        </div>
-      </section>
+      )}
 
       {loading ? (
         <LoadingState />
@@ -208,47 +255,95 @@ function AdminDashboard({
           <section className="stats-grid">
             <StatCard
               label="Customer Claims"
-              value={customerClaims.length}
+              value={totalClaims}
               hint="Total submitted"
             />
 
             <StatCard
               label="Under Review"
               value={review}
-              hint="Requires staff attention"
-              tone="warning"
+              hint="Requires reviewer action"
+              tone={review > 0 ? 'warning' : 'neutral'}
             />
 
             <StatCard
-              label="Approved"
-              value={approved}
-              hint="Approved customer claims"
+              label="Approval Rate"
+              value={`${approvalRate}%`}
+              hint={`${approved} approved claims`}
               tone="success"
             />
 
             <StatCard
-              label="Rejected"
+              label="Rejected Claims"
               value={rejected}
-              hint="Rejected customer claims"
-              tone="danger"
+              hint="Policy or fraud rejections"
+              tone={rejected > 0 ? 'danger' : 'neutral'}
+            />
+
+            <StatCard
+              label="Active Warranties"
+              value={activeWarranties}
+              hint="Currently under coverage"
+              tone="success"
+            />
+
+            <StatCard
+              label="Expiring Soon"
+              value={expiringWarranties}
+              hint="Expiring within 30 days"
+              tone={expiringWarranties > 0 ? 'warning' : 'neutral'}
+            />
+
+            <StatCard
+              label="Dual-Model Agreement"
+              value={`${consistencyRate}%`}
+              hint={`${modelMatches} / ${dualModelEvaluated.length || totalClaims} verified`}
+              tone={modelDisagreements > 0 ? 'warning' : 'success'}
+            />
+
+            <StatCard
+              label="Catalog Models"
+              value={products.length}
+              hint="Active product lines"
             />
           </section>
+
+          {totalClaims > 0 && (
+            <div className="progress-stacked-container">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '12.5px' }}>
+                <strong style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>📊</span> Claim Lifecycle Distribution
+                </strong>
+                <span style={{ opacity: 0.75 }}>{totalClaims} total claims evaluated</span>
+              </div>
+              <div className="progress-stacked-bar">
+                <div className="progress-segment" style={{ width: `${pctApproved}%`, background: '#22c55e' }} title={`Approved: ${approved} (${pctApproved.toFixed(1)}%)`} />
+                <div className="progress-segment" style={{ width: `${pctReview}%`, background: '#f59e0b' }} title={`Under Review: ${review} (${pctReview.toFixed(1)}%)`} />
+                <div className="progress-segment" style={{ width: `${pctNeedInfo}%`, background: '#3b82f6' }} title={`Needs Info: ${needInfo} (${pctNeedInfo.toFixed(1)}%)`} />
+                <div className="progress-segment" style={{ width: `${pctRejected}%`, background: '#ef4444' }} title={`Rejected: ${rejected} (${pctRejected.toFixed(1)}%)`} />
+                <div className="progress-segment" style={{ width: `${pctClosed}%`, background: '#64748b' }} title={`Closed: ${closed} (${pctClosed.toFixed(1)}%)`} />
+              </div>
+              <div className="progress-legend">
+                <div className="legend-item"><span className="legend-dot" style={{ background: '#22c55e' }} /> Approved ({approved})</div>
+                <div className="legend-item"><span className="legend-dot" style={{ background: '#f59e0b' }} /> Under Review ({review})</div>
+                {needInfo > 0 && <div className="legend-item"><span className="legend-dot" style={{ background: '#3b82f6' }} /> Needs Info ({needInfo})</div>}
+                <div className="legend-item"><span className="legend-dot" style={{ background: '#ef4444' }} /> Rejected ({rejected})</div>
+                {closed > 0 && <div className="legend-item"><span className="legend-dot" style={{ background: '#64748b' }} /> Closed ({closed})</div>}
+              </div>
+            </div>
+          )}
 
           <section className="dashboard-grid">
             <article className="panel">
               <div className="panel-heading">
                 <div>
-                  <p className="eyebrow">
-                    Customer Queue
-                  </p>
+                  <p className="eyebrow">Customer Queue</p>
                   <h2>Recent Claims</h2>
                 </div>
 
                 <button
                   className="text-button"
-                  onClick={() =>
-                    onNavigate('customer-claims')
-                  }
+                  onClick={() => onNavigate('customer-claims')}
                 >
                   View all →
                 </button>
@@ -262,26 +357,34 @@ function AdminDashboard({
               ) : (
                 <div className="compact-list">
                   {customerClaims
-                    .slice(0, 5)
+                    .slice(0, 6)
                     .map((claim) => (
                       <div
                         className="compact-row"
                         key={claim.id}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => onNavigate('customer-claims')}
                       >
-                        <div>
-                          <strong>
-                            {claim.claim_id}
-                          </strong>
-                          <span>
-                            {claim.customer_name}
-                            {' · '}
-                            {claim.product_name}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <strong className="mono" style={{ fontSize: '13px' }}>
+                              {claim.claim_id}
+                            </strong>
+                            {claim.decision?.model_consistency_status === 'Model Disagreement' && (
+                              <span className="days-left-badge expired" style={{ fontSize: '10px', padding: '1px 5px' }}>
+                                Disagreement
+                              </span>
+                            )}
+                          </div>
+                          <span style={{ fontSize: '12px', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {claim.customer_name} · {claim.product_name}
                           </span>
                         </div>
 
-                        <StatusBadge
-                          value={claim.status}
-                        />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                          <StatusBadge value={claim.status} />
+                          <span style={{ fontSize: '11px', opacity: 0.6 }}>Review →</span>
+                        </div>
                       </div>
                     ))}
                 </div>
@@ -291,32 +394,84 @@ function AdminDashboard({
             <article className="panel">
               <div className="panel-heading">
                 <div>
-                  <p className="eyebrow">
-                    Classification Engine
-                  </p>
-                  <h2>ML Activity</h2>
+                  <p className="eyebrow">Dual-Model Architecture</p>
+                  <h2>ML Engine Activity</h2>
+                </div>
+
+                <button
+                  className="text-button"
+                  onClick={() => onNavigate('model')}
+                >
+                  Model details →
+                </button>
+              </div>
+
+              <div className="dual-model-grid" style={{ marginTop: '4px', marginBottom: '14px' }}>
+                <div className="model-card python-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#3b82f6' }}>
+                      PRIMARY MODEL
+                    </span>
+                    <span className="days-left-badge active" style={{ fontSize: '10px' }}>
+                      Gradient Boosting
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '6px 0 2px', fontSize: '14px' }}>Python Classifier</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '8px' }}>
+                    <span>Accuracy: <strong>{MODEL_METRICS.pythonAccuracy}</strong></span>
+                    <span>Macro F1: <strong>{MODEL_METRICS.pythonF1}</strong></span>
+                  </div>
+                </div>
+
+                <div className="model-card google-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#ea4335' }}>
+                      BENCHMARK MODEL
+                    </span>
+                    <span className="days-left-badge active" style={{ fontSize: '10px' }}>
+                      Cloud GTM
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '6px 0 2px', fontSize: '14px' }}>Teachable Machine</h4>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '8px' }}>
+                    <span>Accuracy: <strong>{MODEL_METRICS.gtmAccuracy}</strong></span>
+                    <span>Macro F1: <strong>{MODEL_METRICS.gtmF1}</strong></span>
+                  </div>
                 </div>
               </div>
 
               <div className="model-summary">
                 <div>
-                  <span>Stored classifications</span>
+                  <span>Classifications Stored</span>
                   <strong>{mlClaims.length}</strong>
                 </div>
 
                 <div>
-                  <span>Macro F1</span>
-                  <strong>
-                    {MODEL_METRICS.pythonF1}
-                  </strong>
+                  <span>Mean Confidence</span>
+                  <strong>{MODEL_METRICS.pythonConfidence}</strong>
                 </div>
 
                 <div>
-                  <span>Mean confidence</span>
-                  <strong>
-                    {MODEL_METRICS.pythonConfidence}
-                  </strong>
+                  <span>Consistency Rate</span>
+                  <strong>{consistencyRate}%</strong>
                 </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
+                <button
+                  className="button secondary"
+                  style={{ flex: 1, fontSize: '12.5px', padding: '8px' }}
+                  onClick={() => onNavigate('warranties')}
+                >
+                  Manage Warranties
+                </button>
+                <button
+                  className="button secondary"
+                  style={{ flex: 1, fontSize: '12.5px', padding: '8px' }}
+                  onClick={() => onNavigate('products')}
+                >
+                  Product Catalog
+                </button>
               </div>
             </article>
           </section>
@@ -335,12 +490,12 @@ function AdminCustomerClaims({
   const [claims, setClaims] = useState([])
   const [selected, setSelected] = useState(null)
   const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] =
-    useState('All')
+  const [statusFilter, setStatusFilter] = useState('All')
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(false)
   const [reviewerComment, setReviewerComment] = useState('')
   const [reviewError, setReviewError] = useState('')
+  const [actionSuccess, setActionSuccess] = useState('')
 
   function loadClaims() {
     setLoading(true)
@@ -365,6 +520,24 @@ function AdminCustomerClaims({
     loadClaims()
   }, [refreshKey])
 
+  const counts = useMemo(() => {
+    const map = {
+      All: claims.length,
+      'Under Review': 0,
+      'Manual Review': 0,
+      Approved: 0,
+      Rejected: 0,
+      'Additional Information Required': 0,
+      Closed: 0,
+    }
+    claims.forEach((c) => {
+      if (map[c.status] !== undefined) {
+        map[c.status] += 1
+      }
+    })
+    return map
+  }, [claims])
+
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
 
@@ -377,6 +550,7 @@ function AdminCustomerClaims({
           claim.email,
           claim.product_name,
           claim.serial_number,
+          claim.fault_description,
         ].some((value) =>
           String(value || '')
             .toLowerCase()
@@ -414,11 +588,13 @@ function AdminCustomerClaims({
   async function updateStatus(status) {
     if (!selected) return
     if (status === 'Additional Information Required' && !reviewerComment.trim()) {
+      setReviewError('Reviewer note is required when requesting more information.')
       return
     }
 
     setUpdating(true)
     setReviewError('')
+    setActionSuccess('')
 
     try {
       const updated = await api(
@@ -433,6 +609,7 @@ function AdminCustomerClaims({
       )
 
       setSelected(updated)
+      setActionSuccess(`Claim ${updated.claim_id} updated to status "${status}".`)
 
       setClaims((current) =>
         current.map((claim) =>
@@ -450,47 +627,56 @@ function AdminCustomerClaims({
     }
   }
 
+  const rationalePresets = [
+    'Meets standard warranty conditions; defect confirmed under standard operation.',
+    'Excluded from warranty coverage due to physical or accidental impact damage.',
+    'Excluded due to evidence of liquid intrusion, moisture or corrosion.',
+    'Missing proof of purchase; original retailer invoice required.',
+    'Serial number mismatch between product label and registration record.',
+    'Forwarded to authorized service center for in-person hardware diagnostic testing.',
+  ]
+
   return (
     <>
       <PageHeader
-        eyebrow="Customer operations"
+        eyebrow="Review Queue & Operations"
         title="Customer Claims"
-        description="Review, search and update submitted warranty claims."
+        description="Review customer warranty requests, examine attached evidence with SHA-256 hashes, evaluate dual-model ML inference, and log approval decisions."
         action={
           <button className="button secondary" onClick={exportClaims} disabled={filtered.length === 0}>
-            Export CSV
+            Export CSV ({filtered.length})
           </button>
         }
       />
 
       <section className="panel">
-        <div className="toolbar">
-          <div className="search-box">
+        <div className="toolbar" style={{ flexWrap: 'wrap', gap: '12px' }}>
+          <div className="search-box" style={{ flex: '1 1 280px' }}>
             <span>⌕</span>
             <input
               value={search}
               onChange={(event) =>
                 setSearch(event.target.value)
               }
-              placeholder="Search Claim ID, customer, product..."
+              placeholder="Search Claim ID, customer, serial, product..."
             />
           </div>
 
-          <select
-            className="filter-select"
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(event.target.value)
-            }
-          >
-            <option>All</option>
-            <option>Under Review</option>
-            <option>Manual Review</option>
-            <option>Approved</option>
-            <option>Rejected</option>
-            <option>Additional Information Required</option>
-            <option>Closed</option>
-          </select>
+          <div className="filter-tabs">
+            {['All', 'Under Review', 'Manual Review', 'Approved', 'Rejected', 'Additional Information Required', 'Closed'].map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                className={`filter-tab ${statusFilter === tab ? 'active' : ''}`}
+                onClick={() => setStatusFilter(tab)}
+              >
+                <span>{tab}</span>
+                {counts[tab] !== undefined && (
+                  <span className="filter-tab-count">{counts[tab]}</span>
+                )}
+              </button>
+            ))}
+          </div>
 
           <span className="results-count">
             {filtered.length} claim(s)
@@ -502,7 +688,7 @@ function AdminCustomerClaims({
         ) : filtered.length === 0 ? (
           <EmptyState
             title="No matching claims"
-            description="Try changing the search or status filter."
+            description="Try changing the search or status filter tab."
           />
         ) : (
           <div className="table-wrapper">
@@ -527,16 +713,22 @@ function AdminCustomerClaims({
                         ? 'selected-row'
                         : ''
                     }
-                    onClick={() =>
-                      {
-                        setSelected(claim)
-                        setReviewerComment('')
-                        setReviewError('')
-                      }
-                    }
+                    onClick={() => {
+                      setSelected(claim)
+                      setReviewerComment('')
+                      setReviewError('')
+                      setActionSuccess('')
+                    }}
                   >
                     <td className="mono">
-                      {claim.claim_id}
+                      <strong>{claim.claim_id}</strong>
+                      {claim.decision?.model_consistency_status === 'Model Disagreement' && (
+                        <div style={{ marginTop: '2px' }}>
+                          <span className="days-left-badge expired" style={{ fontSize: '10px', padding: '1px 5px' }}>
+                            Model Disagreement
+                          </span>
+                        </div>
+                      )}
                     </td>
                     <td>
                       <strong>
@@ -546,7 +738,10 @@ function AdminCustomerClaims({
                         {claim.email}
                       </small>
                     </td>
-                    <td>{claim.product_name}</td>
+                    <td>
+                      <div>{claim.product_name}</div>
+                      <small className="mono" style={{ opacity: 0.7 }}>{claim.serial_number}</small>
+                    </td>
                     <td>
                       {formatNumber(
                         claim.claim_amount
@@ -575,30 +770,30 @@ function AdminCustomerClaims({
           <div className="panel-heading">
             <div>
               <p className="eyebrow">
-                Claim Detail
+                Claim Review & Assessment
               </p>
               <h2>{selected.claim_id}</h2>
             </div>
 
-            <StatusBadge value={selected.status} />
-            <button
-              className="button secondary"
-              onClick={() => downloadFile(
-                `${selected.claim_id}-report.json`,
-                JSON.stringify(selected, null, 2),
-                'application/json'
-              )}
-            >
-              Download Claim Report
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <StatusBadge value={selected.status} />
+              <button
+                className="button secondary"
+                onClick={() => downloadFile(
+                  `${selected.claim_id}-report.json`,
+                  JSON.stringify(selected, null, 2),
+                  'application/json'
+                )}
+              >
+                Download Claim Report
+              </button>
+            </div>
           </div>
 
           <div className="detail-grid">
             <div>
               <span>Customer</span>
-              <strong>
-                {selected.customer_name}
-              </strong>
+              <strong>{selected.customer_name}</strong>
             </div>
 
             <div>
@@ -608,86 +803,157 @@ function AdminCustomerClaims({
 
             <div>
               <span>Product</span>
-              <strong>
-                {selected.product_name}
-              </strong>
+              <strong>{selected.product_name}</strong>
             </div>
 
             <div>
               <span>Serial Number</span>
-              <strong>
-                {selected.serial_number}
-              </strong>
+              <strong className="mono">{selected.serial_number}</strong>
             </div>
 
             <div>
               <span>Purchase Date</span>
-              <strong>
-                {selected.purchase_date}
-              </strong>
+              <strong>{selected.purchase_date}</strong>
             </div>
 
             <div>
               <span>Claim Amount</span>
-              <strong>
-                {formatNumber(
-                  selected.claim_amount
-                )}
-              </strong>
+              <strong>{formatNumber(selected.claim_amount)}</strong>
             </div>
           </div>
 
           <div className="description-box">
-            <span>Customer Description</span>
+            <span>Customer Reported Fault Description</span>
             <p>{selected.fault_description}</p>
           </div>
 
+          {/* Dual-Model Comparison Card */}
           {selected.decision && (
-            <section className="claim-analysis">
-              <div className="panel-heading">
+            <div className="claim-analysis" style={{ marginTop: '20px' }}>
+              <div className="panel-heading" style={{ marginBottom: '8px' }}>
                 <div>
                   <p className="eyebrow">AI + Rule Analysis</p>
-                  <h3>Assessment</h3>
+                  <h3>Dual-Model Intelligence Evaluation</h3>
                 </div>
               </div>
-              <div className="detail-grid">
-                <div>
-                  <span>Python prediction</span>
-                  <strong>{selected.decision.ml_prediction}</strong>
+
+              <div className="dual-model-grid">
+                <div className="model-card python-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', color: '#3b82f6' }}>
+                      PYTHON CLASSIFIER (PRIMARY)
+                    </span>
+                    <span className="days-left-badge active" style={{ fontSize: '10px' }}>
+                      Primary ML
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '8px 0 4px', fontSize: '15px' }}>
+                    {selected.decision.python_model_name || selected.decision.model_name || 'Gradient Boosting / Random Forest'}
+                  </h4>
+                  <div style={{ fontSize: '11.5px', color: 'var(--ax-text-faint, #64748b)', marginBottom: '10px' }}>
+                    Version: {selected.decision.python_model_version || 'v1.0.0'}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                    <div>
+                      <span style={{ fontSize: '11px', opacity: 0.75 }}>Model Prediction</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px' }}>{selected.decision.ml_prediction}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '11px', opacity: 0.75 }}>Confidence</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#3b82f6' }}>
+                        {(selected.decision.ml_confidence * 100).toFixed(2)}%
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span>Python confidence</span>
-                  <strong>{(selected.decision.ml_confidence * 100).toFixed(2)}%</strong>
-                </div>
-                <div>
-                  <span>Final decision</span>
-                  <strong>{selected.decision.final_decision}</strong>
-                </div>
-                <div>
-                  <span>Model</span>
-                  <strong>{selected.decision.model_name}</strong>
-                </div>
-                <div>
-                  <span>Python model version</span>
-                  <strong>{selected.decision.python_model_version || '—'}</strong>
-                </div>
-                <div>
-                  <span>GTM model version</span>
-                  <strong>{selected.decision.gtm_model_version || 'Not run'}</strong>
-                </div>
-                <div>
-                  <span>Analysis timestamp</span>
-                  <strong>{formatDate(selected.decision.analysis_timestamp)}</strong>
+
+                <div className="model-card google-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', color: '#ea4335' }}>
+                      GOOGLE TEACHABLE MACHINE (GTM)
+                    </span>
+                    <span
+                      className={`days-left-badge ${selected.decision.google_inference_status === 'connected' ? 'active' : 'expiring'}`}
+                      style={{ fontSize: '10px' }}
+                    >
+                      {selected.decision.google_inference_status === 'connected' ? 'Connected' : 'Standby / Benchmark'}
+                    </span>
+                  </div>
+                  <h4 style={{ margin: '8px 0 4px', fontSize: '15px' }}>
+                    {selected.decision.google_model_name || 'Google Cloud GTM Model'}
+                  </h4>
+                  <div style={{ fontSize: '11.5px', color: 'var(--ax-text-faint, #64748b)', marginBottom: '10px' }}>
+                    Endpoint: {selected.decision.google_model_version || 'Public GTM URL'}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '10px' }}>
+                    <div>
+                      <span style={{ fontSize: '11px', opacity: 0.75 }}>GTM Prediction</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px' }}>
+                        {selected.decision.google_prediction || 'Standby'}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '11px', opacity: 0.75 }}>Confidence</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#ea4335' }}>
+                        {selected.decision.google_confidence != null
+                          ? `${(selected.decision.google_confidence * 100).toFixed(2)}%`
+                          : '—'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              <div className="consistency-box">
+                <div>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.7, fontWeight: 700 }}>
+                    Dual-Model Consistency Status
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <span
+                      className={`days-left-badge ${
+                        selected.decision.model_consistency_status === 'Strong Match'
+                          ? 'active'
+                          : selected.decision.model_consistency_status === 'Acceptable Match'
+                            ? 'active'
+                            : selected.decision.model_consistency_status === 'Model Disagreement'
+                              ? 'expired'
+                              : 'expiring'
+                      }`}
+                      style={{ fontSize: '12.5px', padding: '3px 10px' }}
+                    >
+                      {selected.decision.model_consistency_status || 'Dual Evaluation Standby'}
+                    </span>
+                    {selected.decision.confidence_difference != null && (
+                      <span style={{ fontSize: '12px', opacity: 0.7 }}>
+                        (Difference: {(selected.decision.confidence_difference * 100).toFixed(2)}%)
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.7, fontWeight: 700 }}>
+                    Final Rule Engine Outcome
+                  </span>
+                  <div style={{ fontWeight: 700, fontSize: '15px', marginTop: '4px' }}>
+                    {selected.decision.final_decision}
+                  </div>
+                </div>
+              </div>
+
               {selected.decision.decision_reasons?.length > 0 && (
-                <ul className="decision-reason-list">
-                  {selected.decision.decision_reasons.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
+                <div style={{ marginTop: '14px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600 }}>Decision Reasons:</span>
+                  <ul className="decision-reason-list" style={{ marginTop: '6px' }}>
+                    {selected.decision.decision_reasons.map((reason) => (
+                      <li key={reason}>{reason}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
-              <details className="analysis-inputs">
+
+              <details className="analysis-inputs" style={{ marginTop: '14px' }}>
                 <summary>Rule inputs and derived warranty values</summary>
                 <div className="feature-grid">
                   {Object.entries({
@@ -701,62 +967,232 @@ function AdminCustomerClaims({
                   ))}
                 </div>
               </details>
-            </section>
+            </div>
           )}
 
-          <ClaimTimeline claimId={selected.claim_id} status={selected.status} />
+          {/* Attached Evidence & Verified Documents Section */}
+          <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+            <p className="eyebrow">Document Integrity & Evidence</p>
+            <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Attached Files (SHA-256 Verified)</h3>
 
-          {canReview && <div className="decision-actions">
-            <label className="review-note">
-              Reviewer note
-              <textarea
-                rows="3"
-                value={reviewerComment}
-                onChange={(event) => setReviewerComment(event.target.value)}
-                placeholder="Record the reason for this action"
-              />
-            </label>
+            <div className="evidence-upload-grid">
+              {/* Receipt */}
+              <div className={`evidence-upload-card ${selected.receipt_url ? 'has-file' : ''}`}>
+                <h4><span>📄</span> Purchase Receipt</h4>
+                <p>Retailer proof of purchase & date verification</p>
+                {selected.receipt_url ? (
+                  <>
+                    {selected.document_hashes?.receipt && (
+                      <span className="sha256-badge" title={selected.document_hashes.receipt}>
+                        SHA-256: {selected.document_hashes.receipt.substring(0, 16)}...
+                      </span>
+                    )}
+                    <a
+                      href={selected.receipt_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '5px 10px', fontSize: '12px', marginTop: 'auto', textAlign: 'center' }}
+                    >
+                      View / Download Receipt ↗
+                    </a>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '11.5px', color: '#94a3b8', fontStyle: 'italic', marginTop: 'auto' }}>
+                    Not provided by customer
+                  </span>
+                )}
+              </div>
 
-            <div>
-              <button
-                className="button warning"
-                disabled={updating}
-                onClick={() =>
-                  updateStatus('Under Review')
-                }
-              >
-                Under Review
-              </button>
+              {/* Product Photo */}
+              <div className={`evidence-upload-card ${selected.product_image_url ? 'has-file' : ''}`}>
+                <h4><span>📷</span> Product Photo</h4>
+                <p>Physical unit & serial barcode verification</p>
+                {selected.product_image_url ? (
+                  <>
+                    {selected.document_hashes?.product_image && (
+                      <span className="sha256-badge" title={selected.document_hashes.product_image}>
+                        SHA-256: {selected.document_hashes.product_image.substring(0, 16)}...
+                      </span>
+                    )}
+                    <a
+                      href={selected.product_image_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '5px 10px', fontSize: '12px', marginTop: 'auto', textAlign: 'center' }}
+                    >
+                      View Product Image ↗
+                    </a>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '11.5px', color: '#94a3b8', fontStyle: 'italic', marginTop: 'auto' }}>
+                    Not provided by customer
+                  </span>
+                )}
+              </div>
 
-              <button
-                className="button success"
-                disabled={updating}
-                onClick={() =>
-                  updateStatus('Approved')
-                }
-              >
-                Approve
-              </button>
+              {/* Fault / Damage Evidence */}
+              <div className={`evidence-upload-card ${selected.evidence_photo_url ? 'has-file' : ''}`}>
+                <h4><span>⚠️</span> Fault / Defect Evidence</h4>
+                <p>Visual verification of defect or screen damage</p>
+                {selected.evidence_photo_url ? (
+                  <>
+                    {selected.document_hashes?.fault_evidence && (
+                      <span className="sha256-badge" title={selected.document_hashes.fault_evidence}>
+                        SHA-256: {selected.document_hashes.fault_evidence.substring(0, 16)}...
+                      </span>
+                    )}
+                    <a
+                      href={selected.evidence_photo_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '5px 10px', fontSize: '12px', marginTop: 'auto', textAlign: 'center' }}
+                    >
+                      View Fault Evidence ↗
+                    </a>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '11.5px', color: '#94a3b8', fontStyle: 'italic', marginTop: 'auto' }}>
+                    Not provided by customer
+                  </span>
+                )}
+              </div>
 
-              <button
-                className="button danger"
-                disabled={updating}
-                onClick={() =>
-                  updateStatus('Rejected')
-                }
-              >
-                Reject
-              </button>
-              <button
-                className="button warning"
-                disabled={updating || !reviewerComment.trim()}
-                onClick={() => updateStatus('Additional Information Required')}
-              >
-                Request More Information
-              </button>
+              {/* Repair Diagnostic Report */}
+              <div className={`evidence-upload-card ${selected.repair_report_url ? 'has-file' : ''}`}>
+                <h4><span>🔧</span> Service Diagnostic Report</h4>
+                <p>Service center diagnostic inspection sheet</p>
+                {selected.repair_report_url ? (
+                  <>
+                    {selected.document_hashes?.repair_report && (
+                      <span className="sha256-badge" title={selected.document_hashes.repair_report}>
+                        SHA-256: {selected.document_hashes.repair_report.substring(0, 16)}...
+                      </span>
+                    )}
+                    <a
+                      href={selected.repair_report_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '5px 10px', fontSize: '12px', marginTop: 'auto', textAlign: 'center' }}
+                    >
+                      View Diagnostic Report ↗
+                    </a>
+                  </>
+                ) : (
+                  <span style={{ fontSize: '11.5px', color: '#94a3b8', fontStyle: 'italic', marginTop: 'auto' }}>
+                    No prior report attached
+                  </span>
+                )}
+              </div>
             </div>
-          </div>}
-          {reviewError && <div className="alert error">{reviewError}</div>}
+          </div>
+
+          {/* Prior Service & Repair History Panel */}
+          {(selected.repair_center_name || selected.previous_repair_date || selected.replaced_parts || selected.repair_cost) && (
+            <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
+              <p className="eyebrow">Service Center Records</p>
+              <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Prior Product Service History</h3>
+              <div className="detail-grid">
+                <div>
+                  <span>Service Center</span>
+                  <strong>{selected.repair_center_name || 'Authorized Service Provider'}</strong>
+                </div>
+                <div>
+                  <span>Prior Repair Date</span>
+                  <strong>{selected.previous_repair_date || 'Prior to claim'}</strong>
+                </div>
+                <div>
+                  <span>Replaced Parts</span>
+                  <strong>{selected.replaced_parts || 'Maintenance only'}</strong>
+                </div>
+                <div>
+                  <span>Outcome</span>
+                  <strong>{selected.repair_outcome || 'Fully Resolved'}</strong>
+                </div>
+                <div>
+                  <span>Previous Cost</span>
+                  <strong>{selected.repair_cost ? `$${selected.repair_cost}` : 'Covered by warranty'}</strong>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div style={{ marginTop: '20px' }}>
+            <ClaimTimeline claimId={selected.claim_id} status={selected.status} />
+          </div>
+
+          {/* Reviewer Action Controls */}
+          {canReview && (
+            <div className="decision-actions" style={{ marginTop: '24px' }}>
+              <label className="review-note">
+                <span style={{ fontWeight: 600, display: 'block', marginBottom: '4px' }}>
+                  Reviewer Rationale & Audit Note
+                </span>
+                <p style={{ margin: '0 0 6px', fontSize: '12px', opacity: 0.75 }}>
+                  Click a preset rationale to quickly fill, or write a custom audit reason.
+                </p>
+                <div className="rationale-presets">
+                  {rationalePresets.map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      className="rationale-preset-btn"
+                      onClick={() => setReviewerComment(preset)}
+                    >
+                      + {preset.substring(0, 38)}...
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  rows="3"
+                  value={reviewerComment}
+                  onChange={(event) => setReviewerComment(event.target.value)}
+                  placeholder="Record official justification for approval, rejection, or information request..."
+                />
+              </label>
+
+              {actionSuccess && <div className="alert success" style={{ marginBottom: '12px' }}>{actionSuccess}</div>}
+              {reviewError && <div className="alert error" style={{ marginBottom: '12px' }}>{reviewError}</div>}
+
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button
+                  className="button success"
+                  disabled={updating}
+                  onClick={() => updateStatus('Approved')}
+                >
+                  {updating ? 'Updating...' : '✓ Approve Claim'}
+                </button>
+
+                <button
+                  className="button danger"
+                  disabled={updating}
+                  onClick={() => updateStatus('Rejected')}
+                >
+                  {updating ? 'Updating...' : '✕ Reject Claim'}
+                </button>
+
+                <button
+                  className="button warning"
+                  disabled={updating}
+                  onClick={() => updateStatus('Under Review')}
+                >
+                  {updating ? 'Updating...' : 'Mark Under Review'}
+                </button>
+
+                <button
+                  className="button warning"
+                  disabled={updating || !reviewerComment.trim()}
+                  title={!reviewerComment.trim() ? 'Please provide a reviewer note explaining what info is needed' : ''}
+                  onClick={() => updateStatus('Additional Information Required')}
+                >
+                  {updating ? 'Updating...' : 'Request More Information'}
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       )}
     </>
@@ -1480,24 +1916,62 @@ function AdminProducts({ refreshKey }) {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [search, setSearch] = useState('')
+  const [categoryFilter, setCategoryFilter] = useState('All')
+  const [isAdding, setIsAdding] = useState(false)
   const [form, setForm] = useState({
     name: '',
     category: '',
     brand: '',
     model: '',
-    warranty_months: '',
+    warranty_months: '12',
   })
 
   useEffect(() => {
+    setLoading(true)
     api('/api/products')
       .then(setProducts)
       .catch((requestError) => setError(requestError.message))
       .finally(() => setLoading(false))
   }, [refreshKey])
 
+  const categories = useMemo(() => {
+    const set = new Set(products.map((p) => p.category).filter(Boolean))
+    return ['All', ...Array.from(set)]
+  }, [products])
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    return products.filter((p) => {
+      const matchSearch =
+        !term ||
+        [p.product_code, p.name, p.brand, p.model, p.category].some((v) =>
+          String(v || '').toLowerCase().includes(term)
+        )
+      const matchCat = categoryFilter === 'All' || p.category === categoryFilter
+      return matchSearch && matchCat
+    })
+  }, [products, search, categoryFilter])
+
+  const totalRegistered = useMemo(() => {
+    return products.reduce((acc, p) => acc + (p.registered_customers || 0), 0)
+  }, [products])
+
+  const totalClaims = useMemo(() => {
+    return products.reduce((acc, p) => acc + (p.active_claims || 0), 0)
+  }, [products])
+
+  const avgWarranty = useMemo(() => {
+    if (products.length === 0) return 0
+    const sum = products.reduce((acc, p) => acc + (p.warranty_months || 0), 0)
+    return Math.round(sum / products.length)
+  }, [products])
+
   async function createProduct(event) {
     event.preventDefault()
     setError('')
+    setSuccess('')
     try {
       const product = await api('/api/products', {
         method: 'POST',
@@ -1507,32 +1981,260 @@ function AdminProducts({ refreshKey }) {
         }),
       })
       setProducts((current) => [product, ...current])
-      setForm({ name: '', category: '', brand: '', model: '', warranty_months: '' })
+      setSuccess(`Product "${product.name}" (${product.product_code}) added to catalog!`)
+      setForm({ name: '', category: '', brand: '', model: '', warranty_months: '12' })
+      setIsAdding(false)
+      setTimeout(() => setSuccess(''), 4000)
     } catch (requestError) {
       setError(requestError.message)
     }
   }
 
+  function exportCatalog() {
+    const columns = [
+      ['product_code', 'Product Code'],
+      ['name', 'Product Name'],
+      ['category', 'Category'],
+      ['brand', 'Brand'],
+      ['model', 'Model'],
+      ['warranty_months', 'Warranty Months'],
+      ['registered_customers', 'Registered Customers'],
+      ['active_claims', 'Active Claims'],
+    ]
+    const csv = [
+      columns.map(([, label]) => csvValue(label)).join(','),
+      ...filtered.map((prod) =>
+        columns.map(([key]) => csvValue(prod[key])).join(',')
+      ),
+    ].join('\r\n')
+    downloadFile('assurex-product-catalog.csv', `\uFEFF${csv}`, 'text/csv;charset=utf-8')
+  }
+
   return (
     <>
-      <PageHeader eyebrow="Catalog" title="Products" description="Product models, warranties, registered customers and active claims." />
-      <form className="panel" onSubmit={createProduct}>
-        <div className="panel-heading"><h2>Add product</h2></div>
-        <div className="form-grid">
-          <label className="form-field"><span>Product</span><input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required /></label>
-          <label className="form-field"><span>Category</span><input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} required /></label>
-          <label className="form-field"><span>Brand</span><input value={form.brand} onChange={(event) => setForm({ ...form, brand: event.target.value })} required /></label>
-          <label className="form-field"><span>Model</span><input value={form.model} onChange={(event) => setForm({ ...form, model: event.target.value })} required /></label>
-          <label className="form-field"><span>Warranty months</span><input type="number" min="1" max="120" value={form.warranty_months} onChange={(event) => setForm({ ...form, warranty_months: event.target.value })} required /></label>
-        </div>
-        {error && <div className="alert error">{error}</div>}
-        <div className="form-actions"><button className="button primary">Add product</button></div>
-      </form>
+      <PageHeader
+        eyebrow="Catalog & Models"
+        title="Products"
+        description="Manage product lines, standard warranty terms, customer registration counts, and active claim volume."
+        action={
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              className="button secondary"
+              onClick={exportCatalog}
+              disabled={filtered.length === 0}
+            >
+              Export Catalog CSV
+            </button>
+            <button
+              className="button primary"
+              onClick={() => setIsAdding((prev) => !prev)}
+            >
+              {isAdding ? 'Close Form' : '+ Add New Product'}
+            </button>
+          </div>
+        }
+      />
+
+      <section className="stats-grid">
+        <StatCard
+          label="Catalog Models"
+          value={products.length}
+          hint="Active registered product lines"
+        />
+        <StatCard
+          label="Registered Customer Units"
+          value={totalRegistered}
+          hint="Total customer products registered"
+          tone="success"
+        />
+        <StatCard
+          label="Active Claims in Queue"
+          value={totalClaims}
+          hint="Pending reviewer action across models"
+          tone={totalClaims > 0 ? 'warning' : 'neutral'}
+        />
+        <StatCard
+          label="Avg. Standard Warranty"
+          value={`${avgWarranty} mo`}
+          hint="Coverage duration standard"
+        />
+      </section>
+
+      {success && <div className="alert success" style={{ marginBottom: '16px' }}>{success}</div>}
+      {error && <div className="alert error" style={{ marginBottom: '16px' }}>{error}</div>}
+
+      {isAdding && (
+        <form className="panel" onSubmit={createProduct} style={{ marginBottom: '24px' }}>
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Catalog Addition</p>
+              <h2>Add Product Model</h2>
+            </div>
+            <button
+              type="button"
+              className="text-button"
+              onClick={() => setIsAdding(false)}
+            >
+              Cancel
+            </button>
+          </div>
+
+          <div className="form-grid">
+            <label className="form-field">
+              <span>Product Display Name</span>
+              <input
+                value={form.name}
+                onChange={(event) => setForm({ ...form, name: event.target.value })}
+                placeholder="e.g. UltraBook Pro 15"
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Category</span>
+              <input
+                list="category-suggestions"
+                value={form.category}
+                onChange={(event) => setForm({ ...form, category: event.target.value })}
+                placeholder="e.g. Laptop, Smartphone, Audio..."
+                required
+              />
+              <datalist id="category-suggestions">
+                <option value="Laptop" />
+                <option value="Smartphone" />
+                <option value="Tablet" />
+                <option value="Smartwatch" />
+                <option value="Audio" />
+                <option value="Home Appliance" />
+                <option value="Gaming Console" />
+                <option value="Monitor" />
+              </datalist>
+            </label>
+
+            <label className="form-field">
+              <span>Brand</span>
+              <input
+                value={form.brand}
+                onChange={(event) => setForm({ ...form, brand: event.target.value })}
+                placeholder="e.g. AssureTech, Apex, Nova..."
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Model Number</span>
+              <input
+                value={form.model}
+                onChange={(event) => setForm({ ...form, model: event.target.value })}
+                placeholder="e.g. AT-UB15-2026"
+                required
+              />
+            </label>
+
+            <label className="form-field">
+              <span>Standard Warranty (Months)</span>
+              <input
+                type="number"
+                min="1"
+                max="120"
+                value={form.warranty_months}
+                onChange={(event) => setForm({ ...form, warranty_months: event.target.value })}
+                required
+              />
+            </label>
+          </div>
+
+          <div className="form-actions" style={{ marginTop: '16px' }}>
+            <button className="button primary">Save Product Model</button>
+          </div>
+        </form>
+      )}
+
       <section className="panel">
-        {loading ? <LoadingState /> : products.length === 0 ? <EmptyState title="No products" description="Add a product to make it available for registration." /> : (
-          <div className="table-wrapper"><table className="data-table"><thead><tr><th>Product</th><th>Category</th><th>Brand</th><th>Model</th><th>Warranty</th><th>Registered Customers</th><th>Active Claims</th></tr></thead><tbody>
-            {products.map((product) => <tr key={product.id}><td>{product.name}</td><td>{product.category}</td><td>{product.brand}</td><td>{product.model}</td><td>{product.warranty_months} months</td><td>{product.registered_customers}</td><td>{product.active_claims}</td></tr>)}
-          </tbody></table></div>
+        <div className="toolbar" style={{ flexWrap: 'wrap', gap: '12px' }}>
+          <div className="search-box" style={{ flex: '1 1 240px' }}>
+            <span>⌕</span>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search product code, name, brand, model..."
+            />
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12px', opacity: 0.7 }}>Category:</span>
+            <select
+              className="filter-select"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+
+          <span className="results-count">
+            {filtered.length} product(s)
+          </span>
+        </div>
+
+        {loading ? (
+          <LoadingState />
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            title="No matching products"
+            description="Add a product or adjust your search filter."
+          />
+        ) : (
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Product Code</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Brand</th>
+                  <th>Model</th>
+                  <th>Warranty</th>
+                  <th>Registered Units</th>
+                  <th>Active Claims</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((product) => (
+                  <tr key={product.id}>
+                    <td className="mono">
+                      <strong>{product.product_code || `PRD-${product.id}`}</strong>
+                    </td>
+                    <td>
+                      <strong>{product.name}</strong>
+                    </td>
+                    <td>
+                      <span className="category-badge">{product.category}</span>
+                    </td>
+                    <td>{product.brand}</td>
+                    <td className="mono">{product.model}</td>
+                    <td>{product.warranty_months} months</td>
+                    <td>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                        <span>👤</span> {product.registered_customers || 0}
+                      </span>
+                    </td>
+                    <td>
+                      {(product.active_claims || 0) > 0 ? (
+                        <span className="days-left-badge expiring">
+                          {product.active_claims} in review
+                        </span>
+                      ) : (
+                        <span style={{ opacity: 0.6 }}>0</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </>
@@ -1542,42 +2244,417 @@ function AdminProducts({ refreshKey }) {
 
 function AdminWarranties({ refreshKey }) {
   const [warranties, setWarranties] = useState([])
+  const [selectedWarranty, setSelectedWarranty] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [togglingId, setTogglingId] = useState(null)
 
   useEffect(() => {
+    setLoading(true)
     api('/api/warranties')
       .then(setWarranties)
       .catch((requestError) => setError(requestError.message))
       .finally(() => setLoading(false))
   }, [refreshKey])
 
+  const counts = useMemo(() => {
+    const res = {
+      All: warranties.length,
+      Active: 0,
+      'Approaching Expiry': 0,
+      Expired: 0,
+      Inactive: 0,
+    }
+    warranties.forEach((w) => {
+      if (!w.is_active) {
+        res.Inactive += 1
+      } else if (w.status === 'Active') {
+        res.Active += 1
+      } else if (w.status === 'Approaching Expiry' || (w.remaining_days >= 0 && w.remaining_days <= 30)) {
+        res['Approaching Expiry'] += 1
+      } else if (w.status === 'Expired' || w.remaining_days < 0) {
+        res.Expired += 1
+      }
+    })
+    return res
+  }, [warranties])
+
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    return warranties.filter((w) => {
+      const matchSearch =
+        !term ||
+        [
+          w.warranty_code,
+          w.customer_name,
+          w.customer_email,
+          w.product,
+          w.product_code,
+          w.brand,
+          w.model,
+          w.serial_number,
+          w.retailer,
+        ].some((v) => String(v || '').toLowerCase().includes(term))
+
+      let matchStatus = true
+      if (statusFilter === 'Active') {
+        matchStatus = w.is_active && w.status === 'Active'
+      } else if (statusFilter === 'Approaching Expiry') {
+        matchStatus = w.is_active && (w.status === 'Approaching Expiry' || (w.remaining_days >= 0 && w.remaining_days <= 30))
+      } else if (statusFilter === 'Expired') {
+        matchStatus = w.status === 'Expired' || w.remaining_days < 0
+      } else if (statusFilter === 'Inactive') {
+        matchStatus = !w.is_active
+      }
+
+      return matchSearch && matchStatus
+    })
+  }, [warranties, search, statusFilter])
+
   async function toggleActive(warranty) {
     setError('')
+    setTogglingId(warranty.id)
     try {
       const updated = await api(`/api/warranties/${warranty.id}/active`, {
         method: 'PATCH',
         body: JSON.stringify({ is_active: !warranty.is_active }),
       })
-      setWarranties((current) => current.map((entry) =>
-        entry.id === warranty.id ? { ...entry, ...updated } : entry
-      ))
+      setWarranties((current) =>
+        current.map((entry) =>
+          entry.id === warranty.id ? { ...entry, ...updated } : entry
+        )
+      )
+      if (selectedWarranty?.id === warranty.id) {
+        setSelectedWarranty((prev) => ({ ...prev, ...updated }))
+      }
     } catch (requestError) {
       setError(requestError.message)
+    } finally {
+      setTogglingId(null)
     }
+  }
+
+  function exportWarranties() {
+    const columns = [
+      ['warranty_code', 'Warranty Code'],
+      ['customer_name', 'Customer'],
+      ['customer_email', 'Email'],
+      ['product', 'Product'],
+      ['product_code', 'Product Code'],
+      ['brand', 'Brand'],
+      ['model', 'Model'],
+      ['serial_number', 'Serial Number'],
+      ['start_date', 'Start Date'],
+      ['end_date', 'End Date'],
+      ['remaining_days', 'Remaining Days'],
+      ['status', 'Status'],
+      ['warranty_provider', 'Provider'],
+      ['is_active', 'Active'],
+    ]
+    const csv = [
+      columns.map(([, label]) => csvValue(label)).join(','),
+      ...filtered.map((w) =>
+        columns.map(([key]) => csvValue(w[key])).join(',')
+      ),
+    ].join('\r\n')
+    downloadFile('assurex-warranties.csv', `\uFEFF${csv}`, 'text/csv;charset=utf-8')
   }
 
   return (
     <>
-      <PageHeader eyebrow="Coverage records" title="Warranties" description="Registered product coverage and active status." />
+      <PageHeader
+        eyebrow="Policy & Coverage Records"
+        title="Warranties"
+        description="Monitor registered product warranties, remaining validity days, authorized service centers, and policy terms."
+        action={
+          <button
+            className="button secondary"
+            onClick={exportWarranties}
+            disabled={filtered.length === 0}
+          >
+            Export Warranties CSV ({filtered.length})
+          </button>
+        }
+      />
+
+      <section className="stats-grid">
+        <StatCard
+          label="Total Policies"
+          value={warranties.length}
+          hint="All registered warranty policies"
+        />
+        <StatCard
+          label="Active Coverage"
+          value={counts.Active}
+          hint="Under valid protection"
+          tone="success"
+        />
+        <StatCard
+          label="Expiring Soon (≤30d)"
+          value={counts['Approaching Expiry']}
+          hint="Renewal or checkup recommended"
+          tone={counts['Approaching Expiry'] > 0 ? 'warning' : 'neutral'}
+        />
+        <StatCard
+          label="Expired Warranties"
+          value={counts.Expired}
+          hint="Coverage duration elapsed"
+          tone={counts.Expired > 0 ? 'danger' : 'neutral'}
+        />
+      </section>
+
+      {error && <div className="alert error" style={{ marginBottom: '16px' }}>{error}</div>}
+
       <section className="panel">
-        {error && <div className="alert error">{error}</div>}
-        {loading ? <LoadingState /> : warranties.length === 0 ? <EmptyState title="No warranties" description="Warranty records are created when a customer registers a product." /> : (
-          <div className="table-wrapper"><table className="data-table"><thead><tr><th>Customer</th><th>Product</th><th>Brand / Model</th><th>Serial</th><th>Start</th><th>End</th><th>Status</th><th /></tr></thead><tbody>
-            {warranties.map((warranty) => <tr key={warranty.id}><td>{warranty.customer_email}</td><td>{warranty.product}</td><td>{warranty.brand} · {warranty.model}</td><td>{warranty.serial_number}</td><td>{warranty.start_date}</td><td>{warranty.end_date}</td><td>{warranty.is_active ? warranty.status : 'Inactive'}</td><td><button className="text-button" onClick={() => toggleActive(warranty)}>{warranty.is_active ? 'Deactivate' : 'Activate'}</button></td></tr>)}
-          </tbody></table></div>
+        <div className="toolbar" style={{ flexWrap: 'wrap', gap: '12px' }}>
+          <div className="search-box" style={{ flex: '1 1 260px' }}>
+            <span>⌕</span>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search warranty code, customer, product, serial..."
+            />
+          </div>
+
+          <div className="filter-tabs">
+            {['All', 'Active', 'Approaching Expiry', 'Expired', 'Inactive'].map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                className={`filter-tab ${statusFilter === tab ? 'active' : ''}`}
+                onClick={() => setStatusFilter(tab)}
+              >
+                <span>{tab}</span>
+                {counts[tab] !== undefined && (
+                  <span className="filter-tab-count">{counts[tab]}</span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          <span className="results-count">
+            {filtered.length} warranty record(s)
+          </span>
+        </div>
+
+        {loading ? (
+          <LoadingState />
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            title="No matching warranties"
+            description="Try changing your search term or filter tab."
+          />
+        ) : (
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Warranty Code</th>
+                  <th>Customer</th>
+                  <th>Product</th>
+                  <th>Serial Number</th>
+                  <th>Coverage Window</th>
+                  <th>Validity</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((warranty) => {
+                  const rem = warranty.remaining_days ?? 0
+                  return (
+                    <tr
+                      key={warranty.id}
+                      className={selectedWarranty?.id === warranty.id ? 'selected-row' : ''}
+                      onClick={() => setSelectedWarranty(warranty)}
+                    >
+                      <td className="mono">
+                        <strong>{warranty.warranty_code || `WAR-${warranty.id}`}</strong>
+                      </td>
+                      <td>
+                        <strong>{warranty.customer_name}</strong>
+                        <small>{warranty.customer_email}</small>
+                      </td>
+                      <td>
+                        <div>{warranty.product}</div>
+                        <small style={{ opacity: 0.7 }}>{warranty.brand} · {warranty.model}</small>
+                      </td>
+                      <td className="mono">{warranty.serial_number}</td>
+                      <td>
+                        <span style={{ fontSize: '12px' }}>
+                          {warranty.start_date} → {warranty.end_date}
+                        </span>
+                      </td>
+                      <td>
+                        {rem < 0 ? (
+                          <span className="days-left-badge expired">
+                            Expired ({Math.abs(rem)}d ago)
+                          </span>
+                        ) : rem <= 30 ? (
+                          <span className="days-left-badge expiring">
+                            ⚠️ {rem} days left
+                          </span>
+                        ) : (
+                          <span className="days-left-badge active">
+                            ✓ {rem} days left
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        {!warranty.is_active ? (
+                          <span className="days-left-badge expired">Deactivated</span>
+                        ) : (
+                          <StatusBadge value={warranty.status} />
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: '6px' }} onClick={(e) => e.stopPropagation()}>
+                          <button
+                            className="button secondary"
+                            style={{ padding: '3px 8px', fontSize: '11.5px' }}
+                            onClick={() => setSelectedWarranty(warranty)}
+                          >
+                            Details
+                          </button>
+                          <button
+                            className="text-button"
+                            style={{
+                              fontSize: '11.5px',
+                              color: warranty.is_active ? 'var(--ax-danger, #ef4444)' : 'var(--ax-success, #22c55e)',
+                            }}
+                            disabled={togglingId === warranty.id}
+                            onClick={() => toggleActive(warranty)}
+                          >
+                            {togglingId === warranty.id ? '...' : warranty.is_active ? 'Deactivate' : 'Activate'}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
+
+      {/* Selected Warranty Policy Drawer */}
+      {selectedWarranty && (
+        <section className="panel detail-panel" style={{ marginTop: '24px' }}>
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Warranty Policy Specifications</p>
+              <h2>{selectedWarranty.warranty_code || `WAR-${selectedWarranty.id}`}</h2>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <StatusBadge value={selectedWarranty.is_active ? selectedWarranty.status : 'Inactive'} />
+              <button
+                className="button secondary"
+                onClick={() => setSelectedWarranty(null)}
+              >
+                Close ✕
+              </button>
+            </div>
+          </div>
+
+          <div className="detail-grid">
+            <div>
+              <span>Customer</span>
+              <strong>{selectedWarranty.customer_name}</strong>
+            </div>
+
+            <div>
+              <span>Email</span>
+              <strong>{selectedWarranty.customer_email}</strong>
+            </div>
+
+            <div>
+              <span>Product & Code</span>
+              <strong>{selectedWarranty.product} ({selectedWarranty.product_code || 'PRD'})</strong>
+            </div>
+
+            <div>
+              <span>Serial Number</span>
+              <strong className="mono">{selectedWarranty.serial_number}</strong>
+            </div>
+
+            <div>
+              <span>Purchase Date & Retailer</span>
+              <strong>{selectedWarranty.purchase_date} · {selectedWarranty.retailer || 'Authorized Dealer'}</strong>
+            </div>
+
+            <div>
+              <span>Purchase Price</span>
+              <strong>{selectedWarranty.purchase_price ? `$${selectedWarranty.purchase_price}` : '—'}</strong>
+            </div>
+
+            <div>
+              <span>Effective Duration</span>
+              <strong>{selectedWarranty.start_date} to {selectedWarranty.end_date}</strong>
+            </div>
+
+            <div>
+              <span>Remaining Coverage</span>
+              <strong>
+                {selectedWarranty.remaining_days < 0
+                  ? `Expired ${Math.abs(selectedWarranty.remaining_days)} days ago`
+                  : `${selectedWarranty.remaining_days} days remaining`}
+              </strong>
+            </div>
+
+            <div>
+              <span>Warranty Provider</span>
+              <strong>{selectedWarranty.warranty_provider || 'AssureX Official Care'}</strong>
+            </div>
+
+            <div>
+              <span>Warranty Plan Type</span>
+              <strong>{selectedWarranty.warranty_type || 'Standard Factory Warranty'}</strong>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '16px', background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', opacity: 0.7, fontWeight: 700 }}>
+              Authorized Service Center
+            </span>
+            <p style={{ margin: '6px 0 0', fontSize: '13px', lineHeight: 1.5 }}>
+              {selectedWarranty.service_center_details || 'AssureX Central Authorized Center, 123 Tech Park Blvd (Hotline: 1800-ASSUREX)'}
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginTop: '14px' }}>
+            <div className="description-box" style={{ margin: 0 }}>
+              <span>Coverage Conditions</span>
+              <p>{selectedWarranty.coverage_conditions || 'Covers manufacturing defects, internal component failures, and electrical faults under normal operating conditions.'}</p>
+            </div>
+
+            <div className="description-box" style={{ margin: 0 }}>
+              <span>Policy Exclusions</span>
+              <p>{selectedWarranty.exclusions || 'Damage caused by accidents, liquid intrusion, unauthorized disassembly, or physical abuse.'}</p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '12px' }}>
+            <button
+              className={`button ${selectedWarranty.is_active ? 'danger' : 'success'}`}
+              disabled={togglingId === selectedWarranty.id}
+              onClick={() => toggleActive(selectedWarranty)}
+            >
+              {selectedWarranty.is_active ? 'Deactivate Warranty Policy' : 'Activate Warranty Policy'}
+            </button>
+
+            <button
+              className="button secondary"
+              onClick={() => setSelectedWarranty(null)}
+            >
+              Done Viewing
+            </button>
+          </div>
+        </section>
+      )}
     </>
   )
 }
@@ -1786,12 +2863,13 @@ function CustomerHome({
 
 function CustomerSubmit({
   email,
+  customerName = '',
   setEmail,
   onSubmitted,
   onNavigate,
 }) {
   const [form, setForm] = useState({
-    customer_name: '',
+    customer_name: customerName || '',
     email: email || '',
 
     product_name: '',
@@ -1813,35 +2891,152 @@ function CustomerSubmit({
     repair_count: '0',
     repair_report_available: '',
     repair_authorized: '',
+
+    previous_repair_date: '',
+    repair_center_name: '',
+    replaced_parts: '',
+    repair_outcome: 'Fully Resolved',
+    repair_cost: '',
   })
 
-  const [submitting, setSubmitting] =
-    useState(false)
-
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [result, setResult] = useState(null)
 
-  const [
-    warrantyDocument,
-    setWarrantyDocument,
-  ] = useState(null)
-
-  const [
-    ocrOriginal,
-    setOcrOriginal,
-  ] = useState(null)
-
-  const [
-    ocrUploading,
-    setOcrUploading,
-  ] = useState(false)
-
-  const [
-    ocrError,
-    setOcrError,
-  ] = useState('')
+  const [warrantyDocument, setWarrantyDocument] = useState(null)
+  const [ocrOriginal, setOcrOriginal] = useState(null)
+  const [ocrUploading, setOcrUploading] = useState(false)
+  const [ocrError, setOcrError] = useState('')
   const [registeredProducts, setRegisteredProducts] = useState([])
   const [selectedProductId, setSelectedProductId] = useState('')
+
+  // Evidence files state with SHA-256 integrity
+  const [evidenceFiles, setEvidenceFiles] = useState({
+    receipt: null,
+    product_image: null,
+    fault_evidence: null,
+    repair_report: null,
+  })
+  const [uploadingDoc, setUploadingDoc] = useState('')
+  const [uploadError, setUploadError] = useState('')
+  const [draftMessage, setDraftMessage] = useState('')
+  const [hasDraft, setHasDraft] = useState(false)
+
+  const DRAFT_STORAGE_KEY = 'assurex_claim_draft'
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      if (raw) {
+        setHasDraft(true)
+      }
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  function saveDraft() {
+    try {
+      const draft = {
+        form,
+        evidenceFiles,
+        warrantyDocument,
+        ocrOriginal,
+        selectedProductId,
+        savedAt: new Date().toISOString(),
+      }
+      localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft))
+      setHasDraft(true)
+      setDraftMessage(`Draft saved successfully at ${new Date().toLocaleTimeString()}!`)
+      setTimeout(() => setDraftMessage(''), 4000)
+    } catch (e) {
+      setError(`Failed to save draft: ${e.message}`)
+    }
+  }
+
+  function resumeDraft() {
+    try {
+      const raw = localStorage.getItem(DRAFT_STORAGE_KEY)
+      if (!raw) return
+      const draft = JSON.parse(raw)
+      if (draft.form) setForm(draft.form)
+      if (draft.evidenceFiles) setEvidenceFiles(draft.evidenceFiles)
+      if (draft.warrantyDocument) setWarrantyDocument(draft.warrantyDocument)
+      if (draft.ocrOriginal) setOcrOriginal(draft.ocrOriginal)
+      if (draft.selectedProductId) setSelectedProductId(draft.selectedProductId)
+      setDraftMessage('Draft restored successfully!')
+      setHasDraft(false)
+      setTimeout(() => setDraftMessage(''), 4000)
+    } catch (e) {
+      setError(`Failed to resume draft: ${e.message}`)
+    }
+  }
+
+  function discardDraft() {
+    try {
+      localStorage.removeItem(DRAFT_STORAGE_KEY)
+      setHasDraft(false)
+      setDraftMessage('Draft discarded.')
+      setTimeout(() => setDraftMessage(''), 3000)
+    } catch {
+      // ignore
+    }
+  }
+
+  async function handleFileUpload(event, docType) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setUploadingDoc(docType)
+    setUploadError('')
+
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      body.append('document_type', docType)
+
+      const data = await api('/api/customer/evidence/upload', {
+        method: 'POST',
+        body,
+      })
+
+      setEvidenceFiles((curr) => ({
+        ...curr,
+        [docType]: {
+          filename: data.filename,
+          file_url: data.file_url,
+          sha256: data.sha256,
+          file_size: data.file_size,
+        },
+      }))
+
+      if (docType === 'receipt') setForm((f) => ({ ...f, receipt_available: 'Yes' }))
+      if (docType === 'product_image') setForm((f) => ({ ...f, product_image_available: 'Yes' }))
+      if (docType === 'fault_evidence') setForm((f) => ({ ...f, fault_evidence_available: 'Yes' }))
+      if (docType === 'repair_report') setForm((f) => ({ ...f, repair_report_available: 'Yes' }))
+    } catch (err) {
+      setUploadError(`Failed to upload ${docType.replace('_', ' ')}: ${err.message}`)
+    } finally {
+      setUploadingDoc('')
+    }
+  }
+
+  function removeEvidenceFile(docType) {
+    setEvidenceFiles((curr) => ({
+      ...curr,
+      [docType]: null,
+    }))
+    if (docType === 'receipt') setForm((f) => ({ ...f, receipt_available: 'No' }))
+    if (docType === 'product_image') setForm((f) => ({ ...f, product_image_available: 'No' }))
+    if (docType === 'fault_evidence') setForm((f) => ({ ...f, fault_evidence_available: 'No' }))
+    if (docType === 'repair_report') setForm((f) => ({ ...f, repair_report_available: 'No' }))
+  }
+
+  useEffect(() => {
+    if (customerName && !form.customer_name) {
+      setForm((current) => ({ ...current, customer_name: customerName }))
+    }
+  }, [customerName])
 
   useEffect(() => {
     if (!email) return
@@ -1873,12 +3068,12 @@ function CustomerSubmit({
     .map(([label]) => label)
 
   const missingDocuments = [
-    form.receipt_available !== 'Yes' ? 'Receipt' : null,
+    !evidenceFiles.receipt && form.receipt_available !== 'Yes' ? 'Receipt' : null,
     !warrantyDocument ? 'Warranty card' : null,
-    form.product_image_available !== 'Yes' ? 'Product image' : null,
+    !evidenceFiles.product_image && form.product_image_available !== 'Yes' ? 'Product image' : null,
     !ocrOriginal?.serial_number ? 'Serial evidence' : null,
-    form.fault_evidence_available !== 'Yes' ? 'Fault evidence' : null,
-    form.previous_repair === 'Yes' && form.repair_report_available !== 'Yes'
+    !evidenceFiles.fault_evidence && form.fault_evidence_available !== 'Yes' ? 'Fault evidence' : null,
+    form.previous_repair === 'Yes' && !evidenceFiles.repair_report && form.repair_report_available !== 'Yes'
       ? 'Repair report'
       : null,
   ].filter(Boolean)
@@ -1948,6 +3143,9 @@ function CustomerSubmit({
 
         ocr_confidence:
           data.ocr_confidence,
+
+        sha256: data.sha256,
+        file_url: data.file_url,
       })
 
       setForm((current) => ({
@@ -2031,131 +3229,73 @@ function CustomerSubmit({
     setResult(null)
 
     try {
-      const previousRepair =
-        form.previous_repair
+      const previousRepair = form.previous_repair
+
+      const document_hashes = {}
+      if (evidenceFiles.receipt?.sha256) document_hashes.receipt = evidenceFiles.receipt.sha256
+      if (evidenceFiles.product_image?.sha256) document_hashes.product_image = evidenceFiles.product_image.sha256
+      if (evidenceFiles.fault_evidence?.sha256) document_hashes.fault_evidence = evidenceFiles.fault_evidence.sha256
+      if (evidenceFiles.repair_report?.sha256) document_hashes.repair_report = evidenceFiles.repair_report.sha256
+      if (warrantyDocument?.sha256) document_hashes.warranty_card = warrantyDocument.sha256
 
       const payload = {
-        customer_name:
-          form.customer_name,
-
-        email:
-          form.email,
-
-        product_name:
-          form.product_name,
-
-        model_number:
-          form.model_number,
-
-        serial_number:
-          form.serial_number,
-
-        purchase_date:
-          form.purchase_date,
-
-        fault_date:
-          form.fault_date || null,
-
-        damage_type:
-          form.damage_type,
-
-        claim_amount:
-          form.claim_amount
-            ? Number(form.claim_amount)
-            : null,
-
-        fault_description:
-          form.fault_description,
-
-        warranty_duration_months:
-          form.warranty_duration_months
-            ? Number(
-                form.warranty_duration_months
-              )
-            : null,
-
-        extended_warranty:
-          'No',
-
-        receipt_available:
-          form.receipt_available,
-
-        warranty_card_available:
-          warrantyDocument
-            ? 'Yes'
-            : 'No',
-
-        product_image_available:
-          form.product_image_available,
-
-        serial_evidence_available:
-          ocrOriginal?.serial_number
-            ? 'Yes'
-            : 'No',
-
-        fault_evidence_available:
-          form.fault_evidence_available,
-
-        evidence_serial_number:
-          ocrOriginal?.serial_number ||
-          null,
-
-        evidence_model_number:
-          ocrOriginal?.model_number ||
-          null,
-
-        previous_repair:
-          previousRepair,
-
-        repair_count:
-          previousRepair === 'Yes'
-            ? Number(
-                form.repair_count || 0
-              )
-            : 0,
-
-        repair_report_available:
-          previousRepair === 'Yes'
-            ? form
-                .repair_report_available
-            : 'Not Applicable',
-
-        repair_authorized:
-          previousRepair === 'Yes'
-            ? form.repair_authorized
-            : 'Not Applicable',
-
-        ocr_confidence:
-          warrantyDocument
-            ?.ocr_confidence ??
-          null,
-
-        document_duplicate_indicator:
-          'No',
-
-        warranty_document_id:
-          warrantyDocument
-            ?.document_id ||
-          null,
-
-        warranty_ocr_data:
-          ocrOriginal,
-
-        warranty_ocr_confidence:
-          warrantyDocument
-            ?.ocr_confidence ??
-          null,
+        customer_name: form.customer_name,
+        email: form.email,
+        product_name: form.product_name,
+        model_number: form.model_number,
+        serial_number: form.serial_number,
+        purchase_date: form.purchase_date,
+        fault_date: form.fault_date || null,
+        damage_type: form.damage_type,
+        claim_amount: form.claim_amount ? Number(form.claim_amount) : null,
+        fault_description: form.fault_description,
+        warranty_duration_months: form.warranty_duration_months
+          ? Number(form.warranty_duration_months)
+          : null,
+        extended_warranty: 'No',
+        receipt_available: form.receipt_available || (evidenceFiles.receipt ? 'Yes' : 'No'),
+        warranty_card_available: warrantyDocument ? 'Yes' : 'No',
+        product_image_available: form.product_image_available || (evidenceFiles.product_image ? 'Yes' : 'No'),
+        serial_evidence_available: ocrOriginal?.serial_number ? 'Yes' : 'No',
+        fault_evidence_available: form.fault_evidence_available || (evidenceFiles.fault_evidence ? 'Yes' : 'No'),
+        evidence_serial_number: ocrOriginal?.serial_number || null,
+        evidence_model_number: ocrOriginal?.model_number || null,
+        previous_repair: previousRepair,
+        repair_count: previousRepair === 'Yes' ? Number(form.repair_count || 0) : 0,
+        repair_report_available: previousRepair === 'Yes'
+          ? (form.repair_report_available || (evidenceFiles.repair_report ? 'Yes' : 'No'))
+          : 'Not Applicable',
+        repair_authorized: previousRepair === 'Yes' ? form.repair_authorized : 'Not Applicable',
+        ocr_confidence: warrantyDocument?.ocr_confidence ?? null,
+        document_duplicate_indicator: 'No',
+        warranty_document_id: warrantyDocument?.document_id || null,
+        warranty_ocr_data: ocrOriginal,
+        warranty_ocr_confidence: warrantyDocument?.ocr_confidence ?? null,
+        receipt_url: evidenceFiles.receipt?.file_url || null,
+        product_image_url: evidenceFiles.product_image?.file_url || null,
+        evidence_photo_url: evidenceFiles.fault_evidence?.file_url || null,
+        repair_report_url: evidenceFiles.repair_report?.file_url || null,
+        document_hashes: document_hashes,
+        previous_repair_date: previousRepair === 'Yes' ? (form.previous_repair_date || null) : null,
+        repair_center_name: previousRepair === 'Yes' ? (form.repair_center_name || null) : null,
+        replaced_parts: previousRepair === 'Yes' ? (form.replaced_parts || null) : null,
+        repair_outcome: previousRepair === 'Yes' ? (form.repair_outcome || null) : null,
+        repair_cost: previousRepair === 'Yes' && form.repair_cost ? Number(form.repair_cost) : null,
       }
 
       const data = await api(
         '/api/customer/claims',
         {
           method: 'POST',
-          body: JSON.stringify(
-            payload
-          ),
+          body: JSON.stringify(payload),
         }
       )
+
+      try {
+        localStorage.removeItem(DRAFT_STORAGE_KEY)
+      } catch {
+        // ignore
+      }
 
       setResult(data)
       setEmail(form.email)
@@ -2338,6 +3478,41 @@ function CustomerSubmit({
         title="Submit a Warranty Claim"
         description="Upload your warranty card and provide only the information needed to assess your claim."
       />
+
+      {hasDraft && (
+        <div className="draft-banner">
+          <div>
+            <strong>Unfinished Claim Draft Found</strong>
+            <p style={{ margin: '2px 0 0', fontSize: '13px' }}>
+              You have an unsaved claim draft from your previous session. Would you like to resume?
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              type="button"
+              className="button primary"
+              style={{ padding: '6px 12px', fontSize: '13px' }}
+              onClick={resumeDraft}
+            >
+              Resume Draft
+            </button>
+            <button
+              type="button"
+              className="button secondary"
+              style={{ padding: '6px 12px', fontSize: '13px' }}
+              onClick={discardDraft}
+            >
+              Discard
+            </button>
+          </div>
+        </div>
+      )}
+
+      {draftMessage && (
+        <div className="alert success" style={{ marginBottom: '16px' }}>
+          {draftMessage}
+        </div>
+      )}
 
       <form
         className="claim-form"
@@ -2899,220 +4074,335 @@ function CustomerSubmit({
           <div className="panel-heading">
             <div>
               <p className="eyebrow">
-                Step 3
-              </p>
-
-              <h2>
-                A Few Final Questions
-              </h2>
-
+        <section className="panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Step 3</p>
+              <h2>Supporting Evidence & Documents</h2>
               <p className="section-helper">
-                These help AssureX determine
-                whether additional review is
-                needed.
+                Upload receipts, photos, or fault videos. Files are securely validated and cryptographically hashed with SHA-256 for integrity verification.
+              </p>
+            </div>
+          </div>
+
+          {uploadError && <div className="alert error" style={{ marginBottom: '14px' }}>{uploadError}</div>}
+
+          <div className="evidence-upload-grid">
+            {/* Purchase Receipt */}
+            <div className={`evidence-upload-card ${evidenceFiles.receipt ? 'has-file' : ''}`}>
+              <h4>
+                <span>📄</span> Purchase Receipt
+                {evidenceFiles.receipt && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
+              </h4>
+              <p>Proof of purchase from retailer or store (PDF, JPG, PNG · Max 25 MB).</p>
+              {evidenceFiles.receipt ? (
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
+                    {evidenceFiles.receipt.filename}
+                  </div>
+                  <div style={{ marginTop: '6px' }}>
+                    <span className="sha256-badge" title={evidenceFiles.receipt.sha256}>
+                      SHA-256: {evidenceFiles.receipt.sha256.substring(0, 16)}...
+                    </span>
+                  </div>
+                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                    <a
+                      href={evidenceFiles.receipt.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '4px 10px', fontSize: '12px' }}
+                    >
+                      View Receipt ↗
+                    </a>
+                    <button
+                      type="button"
+                      className="text-button"
+                      style={{ color: 'var(--ax-danger)', fontSize: '12px' }}
+                      onClick={() => removeEvidenceFile('receipt')}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="button secondary" style={{ cursor: 'pointer', textAlign: 'center', marginTop: 'auto' }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,application/pdf"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleFileUpload(e, 'receipt')}
+                    disabled={uploadingDoc === 'receipt'}
+                  />
+                  {uploadingDoc === 'receipt' ? 'Uploading & Hashing...' : 'Upload Receipt'}
+                </label>
+              )}
+            </div>
+
+            {/* Product Photo */}
+            <div className={`evidence-upload-card ${evidenceFiles.product_image ? 'has-file' : ''}`}>
+              <h4>
+                <span>📷</span> Product Photo
+                {evidenceFiles.product_image && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
+              </h4>
+              <p>Clear photo of your product showing the model and overall condition.</p>
+              {evidenceFiles.product_image ? (
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
+                    {evidenceFiles.product_image.filename}
+                  </div>
+                  <div style={{ marginTop: '6px' }}>
+                    <span className="sha256-badge" title={evidenceFiles.product_image.sha256}>
+                      SHA-256: {evidenceFiles.product_image.sha256.substring(0, 16)}...
+                    </span>
+                  </div>
+                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                    <a
+                      href={evidenceFiles.product_image.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '4px 10px', fontSize: '12px' }}
+                    >
+                      View Photo ↗
+                    </a>
+                    <button
+                      type="button"
+                      className="text-button"
+                      style={{ color: 'var(--ax-danger)', fontSize: '12px' }}
+                      onClick={() => removeEvidenceFile('product_image')}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="button secondary" style={{ cursor: 'pointer', textAlign: 'center', marginTop: 'auto' }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleFileUpload(e, 'product_image')}
+                    disabled={uploadingDoc === 'product_image'}
+                  />
+                  {uploadingDoc === 'product_image' ? 'Uploading & Hashing...' : 'Upload Product Photo'}
+                </label>
+              )}
+            </div>
+
+            {/* Fault Evidence (Damage Photo / Fault Video) */}
+            <div className={`evidence-upload-card ${evidenceFiles.fault_evidence ? 'has-file' : ''}`}>
+              <h4>
+                <span>⚠️</span> Fault / Damage Evidence
+                {evidenceFiles.fault_evidence && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
+              </h4>
+              <p>Close-up photo of the defect, cracked part, or short video of malfunction (MP4/JPG/PNG).</p>
+              {evidenceFiles.fault_evidence ? (
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
+                    {evidenceFiles.fault_evidence.filename}
+                  </div>
+                  <div style={{ marginTop: '6px' }}>
+                    <span className="sha256-badge" title={evidenceFiles.fault_evidence.sha256}>
+                      SHA-256: {evidenceFiles.fault_evidence.sha256.substring(0, 16)}...
+                    </span>
+                  </div>
+                  <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                    <a
+                      href={evidenceFiles.fault_evidence.file_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="button secondary"
+                      style={{ padding: '4px 10px', fontSize: '12px' }}
+                    >
+                      View Evidence ↗
+                    </a>
+                    <button
+                      type="button"
+                      className="text-button"
+                      style={{ color: 'var(--ax-danger)', fontSize: '12px' }}
+                      onClick={() => removeEvidenceFile('fault_evidence')}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="button secondary" style={{ cursor: 'pointer', textAlign: 'center', marginTop: 'auto' }}>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,video/mp4"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleFileUpload(e, 'fault_evidence')}
+                    disabled={uploadingDoc === 'fault_evidence'}
+                  />
+                  {uploadingDoc === 'fault_evidence' ? 'Uploading & Hashing...' : 'Upload Fault Photo / Video'}
+                </label>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Step 4: Repair History */}
+        <section className="panel">
+          <div className="panel-heading">
+            <div>
+              <p className="eyebrow">Step 4</p>
+              <h2>Repair & Maintenance History</h2>
+              <p className="section-helper">
+                Record any previous servicing to help our engineering team assess recurring faults accurately.
               </p>
             </div>
           </div>
 
           <div className="form-grid">
-            <label className="form-field">
-              <span>
-                Purchase receipt available?
-              </span>
-
-              <select
-                name="receipt_available"
-                value={
-                  form.receipt_available
-                }
-                onChange={change}
-                required
-              >
-                <option value="">
-                  Select...
-                </option>
-
-                {yesNoOptions.map(
-                  (option) => (
-                    <option
-                      key={option}
-                      value={option}
-                    >
-                      {option}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
-
-            <label className="form-field">
-              <span>
-                Product photo available?
-              </span>
-
-              <select
-                name="product_image_available"
-                value={
-                  form
-                    .product_image_available
-                }
-                onChange={change}
-                required
-              >
-                <option value="">
-                  Select...
-                </option>
-
-                {yesNoOptions.map(
-                  (option) => (
-                    <option
-                      key={option}
-                      value={option}
-                    >
-                      {option}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
-
-            <label className="form-field">
-              <span>
-                Fault / damage photo
-                available?
-              </span>
-
-              <select
-                name="fault_evidence_available"
-                value={
-                  form
-                    .fault_evidence_available
-                }
-                onChange={change}
-                required
-              >
-                <option value="">
-                  Select...
-                </option>
-
-                {yesNoOptions.map(
-                  (option) => (
-                    <option
-                      key={option}
-                      value={option}
-                    >
-                      {option}
-                    </option>
-                  )
-                )}
-              </select>
-            </label>
-
-            <label className="form-field">
-              <span>
-                Has this product been
-                repaired before?
-              </span>
-
+            <label className="form-field full-width">
+              <span>Has this product been repaired or serviced before?</span>
               <select
                 name="previous_repair"
-                value={
-                  form.previous_repair
-                }
+                value={form.previous_repair}
                 onChange={change}
                 required
               >
-                <option value="No">
-                  No
-                </option>
-
-                <option value="Yes">
-                  Yes
-                </option>
+                <option value="No">No — this is the first issue</option>
+                <option value="Yes">Yes — product has previous repair history</option>
               </select>
             </label>
 
-            {form.previous_repair ===
-              'Yes' && (
+            {form.previous_repair === 'Yes' && (
               <>
                 <label className="form-field">
-                  <span>
-                    Previous Repair Count
-                  </span>
-
+                  <span>Number of Previous Repairs</span>
                   <input
                     type="number"
                     min="1"
                     name="repair_count"
-                    value={
-                      form.repair_count
-                    }
+                    value={form.repair_count}
                     onChange={change}
                     required
                   />
                 </label>
 
                 <label className="form-field">
-                  <span>
-                    Repair Report
-                    Available?
-                  </span>
-
-                  <select
-                    name="repair_report_available"
-                    value={
-                      form
-                        .repair_report_available
-                    }
+                  <span>Previous Repair Date</span>
+                  <input
+                    type="date"
+                    name="previous_repair_date"
+                    value={form.previous_repair_date}
                     onChange={change}
-                    required
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>Service Center Name</span>
+                  <input
+                    type="text"
+                    name="repair_center_name"
+                    placeholder="e.g. AssureX Authorized Service Center"
+                    value={form.repair_center_name}
+                    onChange={change}
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>Replaced Parts (if known)</span>
+                  <input
+                    type="text"
+                    name="replaced_parts"
+                    placeholder="e.g. Motherboard, battery, display cable"
+                    value={form.replaced_parts}
+                    onChange={change}
+                  />
+                </label>
+
+                <label className="form-field">
+                  <span>Prior Repair Outcome</span>
+                  <select
+                    name="repair_outcome"
+                    value={form.repair_outcome}
+                    onChange={change}
                   >
-                    <option value="">
-                      Select...
-                    </option>
-
-                    <option value="Yes">
-                      Yes
-                    </option>
-
-                    <option value="No">
-                      No
-                    </option>
+                    <option value="Fully Resolved">Fully Resolved</option>
+                    <option value="Partially Resolved">Partially Resolved</option>
+                    <option value="Recurring Fault">Recurring Fault</option>
+                    <option value="Unresolved">Unresolved</option>
                   </select>
                 </label>
 
                 <label className="form-field">
-                  <span>
-                    Repaired by Authorized
-                    Center?
-                  </span>
+                  <span>Prior Repair Cost ($ USD)</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    name="repair_cost"
+                    placeholder="0.00"
+                    value={form.repair_cost}
+                    onChange={change}
+                  />
+                </label>
 
+                <label className="form-field">
+                  <span>Repaired by Authorized Center?</span>
                   <select
                     name="repair_authorized"
-                    value={
-                      form
-                        .repair_authorized
-                    }
+                    value={form.repair_authorized}
                     onChange={change}
                     required
                   >
-                    <option value="">
-                      Select...
-                    </option>
-
-                    <option value="Yes">
-                      Yes
-                    </option>
-
-                    <option value="No">
-                      No
-                    </option>
-
-                    <option value="Unknown">
-                      Not sure
-                    </option>
+                    <option value="">Select authorization status...</option>
+                    <option value="Yes">Yes — Authorized Official Center</option>
+                    <option value="No">No — Independent Third-Party Repair</option>
+                    <option value="Unknown">Not sure</option>
                   </select>
                 </label>
+
+                {/* Repair Report Upload */}
+                <div className="form-field full-width">
+                  <span>Upload Previous Diagnostic / Repair Report</span>
+                  <div className={`evidence-upload-card ${evidenceFiles.repair_report ? 'has-file' : ''}`} style={{ marginTop: '6px' }}>
+                    {evidenceFiles.repair_report ? (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <strong>{evidenceFiles.repair_report.filename}</strong>
+                          <span className="sha256-badge" style={{ marginLeft: '10px' }}>
+                            SHA-256: {evidenceFiles.repair_report.sha256.substring(0, 16)}...
+                          </span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <a
+                            href={evidenceFiles.repair_report.file_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="button secondary"
+                            style={{ padding: '4px 8px', fontSize: '12px' }}
+                          >
+                            View Report ↗
+                          </a>
+                          <button
+                            type="button"
+                            className="text-button"
+                            style={{ color: 'var(--ax-danger)', fontSize: '12px' }}
+                            onClick={() => removeEvidenceFile('repair_report')}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="button secondary" style={{ cursor: 'pointer', textAlign: 'center', width: 'fit-content' }}>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,application/pdf"
+                          style={{ display: 'none' }}
+                          onChange={(e) => handleFileUpload(e, 'repair_report')}
+                          disabled={uploadingDoc === 'repair_report'}
+                        />
+                        {uploadingDoc === 'repair_report' ? 'Uploading & Hashing...' : 'Upload Repair Report (PDF / Image)'}
+                      </label>
+                    )}
+                  </div>
+                </div>
               </>
             )}
           </div>
@@ -3186,14 +4476,25 @@ function CustomerSubmit({
             Cancel
           </button>
 
-          <button
-            className="button primary large"
-            disabled={submitting || missingInformation.length > 0}
-          >
-            {submitting
-              ? 'Evaluating Claim...'
-              : 'Submit Claim'}
-          </button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              type="button"
+              className="button secondary"
+              onClick={saveDraft}
+            >
+              Save Draft
+            </button>
+
+            <button
+              type="submit"
+              className="button primary large"
+              disabled={submitting || missingInformation.length > 0}
+            >
+              {submitting
+                ? 'Evaluating Claim...'
+                : 'Submit Claim'}
+            </button>
+          </div>
         </div>
       </form>
     </>
@@ -3370,49 +4671,126 @@ function CustomerClaims({
 
           {selected.decision && (
             <div className="claim-analysis">
-              <p className="eyebrow">AI + Rule Analysis</p>
-              <div className="detail-grid">
-                <div>
-                  <span>Python prediction</span>
-                  <strong>{selected.decision.ml_prediction}</strong>
+              <p className="eyebrow">AI + Rule Analysis & Dual-Model Verification</p>
+
+              {/* Dual-Model Comparison Cards */}
+              <div className="dual-model-grid">
+                <div className="model-card python-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', color: 'var(--ax-primary)' }}>
+                      PYTHON CLASSIFIER (LOCAL ML)
+                    </span>
+                    <span className="status-badge status-approved" style={{ fontSize: '11px' }}>
+                      Primary Model
+                    </span>
+                  </div>
+                  <h3 style={{ margin: '8px 0 4px', fontSize: '16px' }}>
+                    {selected.decision.python_model_name || 'Random Forest Classifier'}
+                  </h3>
+                  <div style={{ fontSize: '12px', color: 'var(--ax-text-faint)', marginBottom: '10px' }}>
+                    Version: {selected.decision.python_model_version || 'v1.0.0'}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid var(--ax-border)', paddingTop: '10px' }}>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'var(--ax-text-soft)' }}>Prediction</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px' }}>{selected.decision.ml_prediction}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--ax-text-soft)' }}>Confidence</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--ax-primary)' }}>
+                        {(selected.decision.ml_confidence * 100).toFixed(2)}%
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span>Python confidence</span>
-                  <strong>{(selected.decision.ml_confidence * 100).toFixed(2)}%</strong>
-                </div>
-                <div>
-                  <span>Final decision</span>
-                  <strong>{selected.decision.final_decision}</strong>
-                </div>
-                <div>
-                  <span>Python model version</span>
-                  <strong>{selected.decision.python_model_version || '—'}</strong>
-                </div>
-                <div>
-                  <span>GTM model version</span>
-                  <strong>{selected.decision.gtm_model_version || 'Not run'}</strong>
-                </div>
-                <div>
-                  <span>Google inference</span>
-                  <strong>
-                    {selected.decision.google_inference_status === 'not_connected'
-                      ? 'Not connected'
-                      : selected.decision.google_prediction || 'Not run'}
-                  </strong>
-                </div>
-                <div>
-                  <span>Analysis timestamp</span>
-                  <strong>{formatDate(selected.decision.analysis_timestamp)}</strong>
+
+                <div className="model-card google-model">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '0.05em', color: '#ea4335' }}>
+                      GOOGLE TEACHABLE MACHINE (GTM)
+                    </span>
+                    <span
+                      className={`status-badge ${selected.decision.google_inference_status === 'connected' ? 'status-approved' : 'status-review'}`}
+                      style={{ fontSize: '11px' }}
+                    >
+                      {selected.decision.google_inference_status === 'connected' ? 'Connected' : 'Standby / Offline'}
+                    </span>
+                  </div>
+                  <h3 style={{ margin: '8px 0 4px', fontSize: '16px' }}>
+                    {selected.decision.google_model_name || 'Google Cloud GTM Model'}
+                  </h3>
+                  <div style={{ fontSize: '12px', color: 'var(--ax-text-faint)', marginBottom: '10px' }}>
+                    Endpoint: {selected.decision.google_model_version || 'Public GTM URL'}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', borderTop: '1px solid var(--ax-border)', paddingTop: '10px' }}>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'var(--ax-text-soft)' }}>GTM Prediction</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px' }}>
+                        {selected.decision.google_prediction || 'Standby'}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--ax-text-soft)' }}>Confidence</span>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#ea4335' }}>
+                        {selected.decision.google_confidence != null
+                          ? `${(selected.decision.google_confidence * 100).toFixed(2)}%`
+                          : '—'}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+
+              {/* Consistency & Agreement Bar */}
+              <div className="consistency-box">
+                <div>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
+                    Dual-Model Consistency Status
+                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                    <span
+                      className={`status-badge ${
+                        selected.decision.model_consistency_status === 'Strong Match'
+                          ? 'status-approved'
+                          : selected.decision.model_consistency_status === 'Acceptable Match'
+                            ? 'status-approved'
+                            : selected.decision.model_consistency_status === 'Model Disagreement'
+                              ? 'status-rejected'
+                              : 'status-review'
+                      }`}
+                      style={{ fontSize: '13px', padding: '4px 10px' }}
+                    >
+                      {selected.decision.model_consistency_status || 'Dual Evaluation Standby'}
+                    </span>
+                    {selected.decision.confidence_difference != null && (
+                      <span style={{ fontSize: '13px', color: 'var(--ax-text-soft)' }}>
+                        (Confidence Difference: {(selected.decision.confidence_difference * 100).toFixed(2)}%)
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
+                    Final Decision Engine Result
+                  </span>
+                  <div style={{ fontWeight: 700, fontSize: '15px', marginTop: '4px' }}>
+                    {selected.decision.final_decision}
+                  </div>
+                </div>
+              </div>
+
               {selected.decision.decision_reasons?.length > 0 && (
-                <ul className="decision-reason-list">
-                  {selected.decision.decision_reasons.map((reason) => (
-                    <li key={reason}>{reason}</li>
-                  ))}
-                </ul>
+                <div style={{ marginTop: '14px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600 }}>Decision Reasons:</span>
+                  <ul className="decision-reason-list" style={{ marginTop: '6px' }}>
+                    {selected.decision.decision_reasons.map((reason) => (
+                      <li key={reason}>{reason}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
-              <details className="analysis-inputs">
+
+              <details className="analysis-inputs" style={{ marginTop: '14px' }}>
                 <summary>Rule inputs and derived warranty values</summary>
                 <div className="feature-grid">
                   {Object.entries({
@@ -3426,14 +4804,149 @@ function CustomerClaims({
                   ))}
                 </div>
               </details>
-              <p className="reviewer-summary">
-                Reviewer: {selected.decision.reviewer_decision || 'No override'}
-                {selected.decision.reviewer_comment && ` · ${selected.decision.reviewer_comment}`}
-              </p>
+
+              {selected.decision.reviewer_decision && (
+                <p className="reviewer-summary" style={{ marginTop: '12px' }}>
+                  Reviewer Override: <strong>{selected.decision.reviewer_decision}</strong>
+                  {selected.decision.reviewer_comment && ` · "${selected.decision.reviewer_comment}"`}
+                </p>
+              )}
             </div>
           )}
 
-          <div className="detail-grid">
+          {/* Attached Evidence & Documents Section */}
+          <div className="claim-documents-panel" style={{ marginTop: '20px', borderTop: '1px solid var(--ax-border)', paddingTop: '16px' }}>
+            <p className="eyebrow">Evidence & Attached Documents</p>
+            <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Uploaded Verification Evidence</h3>
+
+            <div className="evidence-upload-grid">
+              {/* Receipt */}
+              {selected.receipt_url ? (
+                <div className="evidence-upload-card has-file">
+                  <h4><span>📄</span> Purchase Receipt</h4>
+                  <p>Retailer proof of purchase</p>
+                  {selected.document_hashes?.receipt && (
+                    <span className="sha256-badge" title={selected.document_hashes.receipt}>
+                      SHA-256: {selected.document_hashes.receipt.substring(0, 16)}...
+                    </span>
+                  )}
+                  <a
+                    href={selected.receipt_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button secondary"
+                    style={{ padding: '5px 10px', fontSize: '12px', marginTop: '6px', textAlign: 'center' }}
+                  >
+                    View / Download Receipt ↗
+                  </a>
+                </div>
+              ) : null}
+
+              {/* Product Photo */}
+              {selected.product_image_url ? (
+                <div className="evidence-upload-card has-file">
+                  <h4><span>📷</span> Product Photo</h4>
+                  <p>Product & Serial label evidence</p>
+                  {selected.document_hashes?.product_image && (
+                    <span className="sha256-badge" title={selected.document_hashes.product_image}>
+                      SHA-256: {selected.document_hashes.product_image.substring(0, 16)}...
+                    </span>
+                  )}
+                  <a
+                    href={selected.product_image_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button secondary"
+                    style={{ padding: '5px 10px', fontSize: '12px', marginTop: '6px', textAlign: 'center' }}
+                  >
+                    View Product Image ↗
+                  </a>
+                </div>
+              ) : null}
+
+              {/* Damage / Fault Photo */}
+              {selected.evidence_photo_url ? (
+                <div className="evidence-upload-card has-file">
+                  <h4><span>⚠️</span> Fault / Damage Evidence</h4>
+                  <p>Visual verification of defect</p>
+                  {selected.document_hashes?.fault_evidence && (
+                    <span className="sha256-badge" title={selected.document_hashes.fault_evidence}>
+                      SHA-256: {selected.document_hashes.fault_evidence.substring(0, 16)}...
+                    </span>
+                  )}
+                  <a
+                    href={selected.evidence_photo_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button secondary"
+                    style={{ padding: '5px 10px', fontSize: '12px', marginTop: '6px', textAlign: 'center' }}
+                  >
+                    View Fault Evidence ↗
+                  </a>
+                </div>
+              ) : null}
+
+              {/* Repair Diagnostic Report */}
+              {selected.repair_report_url ? (
+                <div className="evidence-upload-card has-file">
+                  <h4><span>🔧</span> Repair Diagnostic Report</h4>
+                  <p>Prior service documentation</p>
+                  {selected.document_hashes?.repair_report && (
+                    <span className="sha256-badge" title={selected.document_hashes.repair_report}>
+                      SHA-256: {selected.document_hashes.repair_report.substring(0, 16)}...
+                    </span>
+                  )}
+                  <a
+                    href={selected.repair_report_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="button secondary"
+                    style={{ padding: '5px 10px', fontSize: '12px', marginTop: '6px', textAlign: 'center' }}
+                  >
+                    View Diagnostic Report ↗
+                  </a>
+                </div>
+              ) : null}
+
+              {!selected.receipt_url && !selected.product_image_url && !selected.evidence_photo_url && !selected.repair_report_url && (
+                <p style={{ color: 'var(--ax-text-faint)', fontSize: '13px', gridColumn: '1 / -1' }}>
+                  No extra documents attached to this claim submission.
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Prior Repair History Section */}
+          {(selected.repair_center_name || selected.previous_repair_date || selected.replaced_parts || selected.raw_input?.previous_repair === 'Yes') && (
+            <div style={{ marginTop: '20px', borderTop: '1px solid var(--ax-border)', paddingTop: '16px' }}>
+              <p className="eyebrow">Service History</p>
+              <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Prior Product Repair Details</h3>
+              <div className="detail-grid">
+                <div>
+                  <span>Service Center</span>
+                  <strong>{selected.repair_center_name || 'Authorized Service Provider'}</strong>
+                </div>
+                <div>
+                  <span>Repair Date</span>
+                  <strong>{selected.previous_repair_date || 'Prior to claim'}</strong>
+                </div>
+                <div>
+                  <span>Replaced Parts</span>
+                  <strong>{selected.replaced_parts || 'Standard maintenance'}</strong>
+                </div>
+                <div>
+                  <span>Repair Outcome</span>
+                  <strong>{selected.repair_outcome || 'Resolved'}</strong>
+                </div>
+                <div>
+                  <span>Prior Repair Cost</span>
+                  <strong>{selected.repair_cost ? `$${Number(selected.repair_cost).toFixed(2)}` : 'Covered'}</strong>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="detail-grid" style={{ marginTop: '20px', borderTop: '1px solid var(--ax-border)', paddingTop: '16px' }}>
             <div>
               <span>Product</span>
               <strong>

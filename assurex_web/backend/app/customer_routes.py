@@ -92,6 +92,18 @@ class CustomerClaimCreate(BaseModel):
     warranty_ocr_data: dict[str, Any] | None = None
     warranty_ocr_confidence: float | None = None
 
+    receipt_url: str | None = None
+    evidence_photo_url: str | None = None
+    product_image_url: str | None = None
+    repair_report_url: str | None = None
+    document_hashes: dict[str, Any] | None = None
+
+    previous_repair_date: str | None = None
+    repair_center_name: str | None = None
+    replaced_parts: str | None = None
+    repair_outcome: str | None = None
+    repair_cost: float | None = None
+
 
 class CustomerClaimStatusUpdate(BaseModel):
     status: Literal[
@@ -231,6 +243,16 @@ def serialize_claim(
         "fault_description":
             claim.fault_description,
         "status": claim.status,
+        "receipt_url": claim.receipt_url,
+        "evidence_photo_url": claim.evidence_photo_url,
+        "product_image_url": claim.product_image_url,
+        "repair_report_url": claim.repair_report_url,
+        "document_hashes": claim.document_hashes or {},
+        "previous_repair_date": claim.previous_repair_date,
+        "repair_center_name": claim.repair_center_name,
+        "replaced_parts": claim.replaced_parts,
+        "repair_outcome": claim.repair_outcome,
+        "repair_cost": claim.repair_cost,
         "created_at": claim.created_at,
     }
 
@@ -603,6 +625,16 @@ def submit_customer_claim(
         fault_description=
             payload.fault_description,
         status=customer_status,
+        receipt_url=payload.receipt_url,
+        evidence_photo_url=payload.evidence_photo_url,
+        product_image_url=payload.product_image_url,
+        repair_report_url=payload.repair_report_url,
+        document_hashes=payload.document_hashes or {},
+        previous_repair_date=payload.previous_repair_date,
+        repair_center_name=payload.repair_center_name,
+        replaced_parts=payload.replaced_parts,
+        repair_outcome=payload.repair_outcome,
+        repair_cost=payload.repair_cost,
     )
 
     db.add(claim)

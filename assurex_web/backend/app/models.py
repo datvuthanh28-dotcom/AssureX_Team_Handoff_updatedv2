@@ -132,6 +132,18 @@ class CustomerClaim(Base):
         nullable=False,
     )
 
+    receipt_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    evidence_photo_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    product_image_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    repair_report_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    document_hashes: Mapped[dict | None] = mapped_column(JSON, default=dict, nullable=True)
+
+    previous_repair_date: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    repair_center_name: Mapped[str | None] = mapped_column(String(150), nullable=True)
+    replaced_parts: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    repair_outcome: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    repair_cost: Mapped[float | None] = mapped_column(Float, nullable=True)
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -325,6 +337,26 @@ class CustomerAccount(Base):
         nullable=False,
     )
 
+    full_name: Mapped[str | None] = mapped_column(
+        String(150),
+        nullable=True,
+    )
+
+    phone_number: Mapped[str | None] = mapped_column(
+        String(30),
+        nullable=True,
+    )
+
+    address: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+
+    city: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -504,6 +536,8 @@ class RegisteredProduct(Base):
         String(100), unique=True, index=True, nullable=False
     )
     purchase_date: Mapped[str] = mapped_column(String(20), nullable=False)
+    purchase_price: Mapped[float | None] = mapped_column(Float, nullable=True)
+    retailer: Mapped[str | None] = mapped_column(String(150), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
@@ -525,6 +559,17 @@ class Warranty(Base):
     start_date: Mapped[str] = mapped_column(String(20), nullable=False)
     end_date: Mapped[str] = mapped_column(String(20), nullable=False)
     status: Mapped[str] = mapped_column(String(30), nullable=False)
+    warranty_provider: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, default="AssureX Official Care"
+    )
+    warranty_type: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, default="Standard"
+    )
+    coverage_conditions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    exclusions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    service_center_details: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime,

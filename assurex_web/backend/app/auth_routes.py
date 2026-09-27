@@ -61,6 +61,18 @@ class ActiveUpdate(BaseModel):
     is_active: bool
 
 
+class ProfileUpdate(BaseModel):
+    full_name: str | None = Field(default=None, max_length=150)
+    phone_number: str | None = Field(default=None, max_length=30)
+    address: str | None = Field(default=None, max_length=255)
+    city: str | None = Field(default=None, max_length=100)
+
+
+class PasswordChange(BaseModel):
+    current_password: str = Field(min_length=1, max_length=128)
+    new_password: str = Field(min_length=8, max_length=128)
+
+
 def hash_password(password: str, salt: str) -> str:
     return hashlib.pbkdf2_hmac(
         "sha256",
@@ -291,10 +303,86 @@ def admin_login(
 def current_customer(account: CustomerAccount = Depends(get_current_customer)):
     return {
         "id": account.id,
+        "user_id": f"USR-{account.id:05d}",
         "username": account.username,
         "email": account.email,
         "role": account.role,
+        "full_name": account.full_name,
+        "phone_number": account.phone_number,
+        "address": account.address,
+        "city": account.city,
+        "created_at": account.created_at,
     }
+
+
+@router.put("/profile")
+@router.patch("/profile")
+def update_profile(
+    payload: ProfileUpdate,
+    account: CustomerAccount = Depends(get_current_customer),
+    db: Session = Depends(get_db),
+):
+    if payload.full_name is not None:
+        account.full_name = payload.full_name.strip() or None
+    if payload.phone_number is not None:
+        account.phone_number = payload.phone_number.strip() or None
+    if payload.address is not None:
+        account.address = payload.address.strip() or None
+    if payload.city is not None:
+        account.city = payload.city.strip() or None
+
+    record_audit(
+        db,
+        account=account,
+        action="PROFILE_UPDATED",
+        resource_type="ACCOUNT",
+        resource_id=str(account.id),
+        details={
+            "full_name": account.full_name,
+            "phone_number": account.phone_number,
+            "city": account.city,
+        },
+    )
+    db.commit()
+    db.refresh(account)
+    return {
+        "id": account.id,
+        "user_id": f"USR-{account.id:05d}",
+        "username": account.username,
+        "email": account.email,
+        "role": account.role,
+        "full_name": account.full_name,
+        "phone_number": account.phone_number,
+        "address": account.address,
+        "city": account.city,
+        "created_at": account.created_at,
+    }
+
+
+@router.post("/change-password")
+def change_password(
+    payload: PasswordChange,
+    account: CustomerAccount = Depends(get_current_customer),
+    db: Session = Depends(get_db),
+):
+    candidate_hash = hash_password(payload.current_password, account.password_salt)
+    if not hmac.compare_digest(candidate_hash, account.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect.")
+
+    salt = secrets.token_hex(16)
+    account.password_salt = salt
+    account.password_hash = hash_password(payload.new_password, salt)
+
+    record_audit(
+        db,
+        account=account,
+        action="PASSWORD_CHANGED",
+        resource_type="ACCOUNT",
+        resource_id=str(account.id),
+    )
+    db.commit()
+    return {"message": "Password changed successfully."}
+
 
 
 @router.post("/logout")
