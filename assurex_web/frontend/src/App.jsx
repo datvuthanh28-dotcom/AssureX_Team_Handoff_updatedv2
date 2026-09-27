@@ -1592,6 +1592,233 @@ function MLHistory({ refreshKey }) {
 }
 
 
+function parseCsvRows(csvText) {
+  const rows = []
+  const lines = csvText.trim().split(/\r?\n/)
+  const headers = lines[0].split(',')
+
+  for (let i = 1; i < lines.length; i += 1) {
+    if (!lines[i].trim()) continue
+    const values = lines[i].split(',')
+    const row = {}
+    headers.forEach((header, index) => {
+      row[header.trim()] = (values[index] || '').trim()
+    })
+    rows.push(row)
+  }
+
+  return rows
+}
+
+function AdminAIML() {
+  const [data, setData] = useState({
+    rawCsv: null,
+    audit: null,
+    modelComparison: null,
+    finalModel: null,
+    gtm: null,
+    googleValidation: null,
+  })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    Promise.all([
+      fetch(`${window.location.origin}/data/raw/assurex_raw.csv`).then((response) => response.text()).catch(() => null),
+      fetch(`${window.location.origin}/data/audit/model_selection_manifest.json`).then((response) => response.json()).catch(() => null),
+      fetch(`${window.location.origin}/model/model_comparison.csv`).then((response) => response.text()).catch(() => null),
+      fetch(`${window.location.origin}/model/final_model_info.json`).then((response) => response.json()).catch(() => null),
+      fetch(`${window.location.origin}/gtm/results/g5_final_test.json`).then((response) => response.json()).catch(() => null),
+      fetch(`${window.location.origin}/evaluation/google/g5_v2_validation.json`).then((response) => response.json()).catch(() => null),
+    ])
+      .then(([rawCsv, audit, comparisonCsv, finalModel, gtm, googleValidation]) => {
+        if (!active) return
+        setData({
+          rawCsv,
+          audit,
+          modelComparison: comparisonCsv ? parseCsvRows(comparisonCsv) : null,
+          finalModel,
+          gtm,
+          googleValidation,
+        })
+      })
+      .catch(() => {
+        if (active) setError('Unable to load the repository ML evidence files.')
+      })
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => { active = false }
+  }, [])
+
+  const rawRows = data.rawCsv ? parseCsvRows(data.rawCsv) : []
+  const classCounts = rawRows.reduce((accumulator, row) => {
+    const label = row.ClaimClass || row.claimclass || 'Unknown'
+    accumulator[label] = (accumulator[label] || 0) + 1
+    return accumulator
+  }, {})
+
+  const pythonMetrics = data.audit?.selection || {}
+  const comparisonRows = data.modelComparison || []
+
+  return (
+    <>
+      <PageHeader
+        eyebrow="AI & ML evidence"
+        title="AI & ML"
+        description="Review the repository-backed data audit, preprocessing, model selection, and validation evidence only."
+      />
+
+      {loading ? (
+        <LoadingState />
+      ) : error ? (
+        <div className="alert error">{error}</div>
+      ) : (
+        <>
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">01 · Data Audit</p>
+                <h2>Raw dataset and class balance</h2>
+              </div>
+            </div>
+
+            <div className="stats-grid">
+              <StatCard label="Rows" value={rawRows.length || 'Not available'} hint="Raw training/validation dataset" />
+              <StatCard label="Columns" value={rawRows[0] ? Object.keys(rawRows[0]).length : 'Not available'} hint="Feature and metadata columns" />
+              <StatCard label="Valid" value={classCounts['Valid Claim'] || 'Not available'} hint="Usable claim class" tone="success" />
+              <StatCard label="Manual Review" value={classCounts['Manual Review'] || 'Not available'} hint="Human review class" tone="warning" />
+              <StatCard label="Invalid" value={classCounts['Invalid Claim'] || 'Not available'} hint="Ineligible claim class" tone="danger" />
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">02 · Preprocessing</p>
+                <h2>Feature engineering and selection evidence</h2>
+              </div>
+            </div>
+
+            <div className="detail-grid">
+              <div>
+                <span>Model feature count</span>
+                <strong>{pythonMetrics.feature_count || 'Not available'}</strong>
+              </div>
+              <div>
+                <span>Selected model</span>
+                <strong>{pythonMetrics.selected_model || 'Not available'}</strong>
+              </div>
+              <div>
+                <span>Selection basis</span>
+                <strong>{pythonMetrics.selection_basis?.join(', ') || 'Not available'}</strong>
+              </div>
+              <div>
+                <span>Validation Macro F1</span>
+                <strong>{pythonMetrics.validation_macro_f1 != null ? Number(pythonMetrics.validation_macro_f1).toFixed(6) : 'Not available'}</strong>
+              </div>
+            </div>
+
+            <div className="feature-grid">
+              {(pythonMetrics?.selected_features || []).map((feature) => (
+                <div key={feature}><span>Feature</span><strong>{feature}</strong></div>
+              ))}
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">03 · Python ML</p>
+                <h2>Primary Python model evidence</h2>
+              </div>
+            </div>
+
+            <div className="stats-grid">
+              <StatCard label="Python Accuracy" value={data.finalModel?.test_metrics?.accuracy ? `${(data.finalModel.test_metrics.accuracy * 100).toFixed(2)}%` : 'Not available'} hint="Locked test metrics" />
+              <StatCard label="Python Macro F1" value={data.finalModel?.test_metrics?.macro_f1 ? `${(data.finalModel.test_metrics.macro_f1 * 100).toFixed(2)}%` : 'Not available'} hint="Primary selection metric" />
+              <StatCard label="Validation Macro F1" value={pythonMetrics.validation_macro_f1 != null ? Number(pythonMetrics.validation_macro_f1 * 100).toFixed(2) + '%' : 'Not available'} hint="Validation selection" />
+              <StatCard label="Model" value={data.finalModel?.model || 'Not available'} hint="Final artifact name" />
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">04 · Google ML</p>
+                <h2>Google GTM G5 evidence</h2>
+              </div>
+            </div>
+
+            <div className="stats-grid">
+              <StatCard label="Accuracy" value={data.gtm?.accuracy != null ? `${(data.gtm.accuracy * 100).toFixed(2)}%` : 'Not available'} hint="Locked final test" />
+              <StatCard label="Macro F1" value={data.gtm?.macro_f1 != null ? `${(data.gtm.macro_f1 * 100).toFixed(2)}%` : 'Not available'} hint="GTM final evaluation" />
+              <StatCard label="Correct" value={data.gtm?.correct ?? 'Not available'} hint="Correct predictions" />
+              <StatCard label="Incorrect" value={data.gtm?.incorrect ?? 'Not available'} hint="Incorrect predictions" />
+            </div>
+
+            <div className="detail-grid">
+              <div>
+                <span>Validation status</span>
+                <strong>{data.googleValidation?.selection_eligible === false ? 'Not eligible for selection' : (data.googleValidation?.status || 'Not available')}</strong>
+              </div>
+              <div>
+                <span>Validation F1</span>
+                <strong>{data.googleValidation?.macro_f1 != null ? Number(data.googleValidation.macro_f1 * 100).toFixed(2) + '%' : 'Not available'}</strong>
+              </div>
+              <div>
+                <span>Version</span>
+                <strong>{data.googleValidation?.model_version || 'Not available'}</strong>
+              </div>
+              <div>
+                <span>Inference status</span>
+                <strong>{data.gtm?.status || 'Not available'}</strong>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panel-heading">
+              <div>
+                <p className="eyebrow">05 · Model Comparison</p>
+                <h2>Selection ranking from model comparison artifact</h2>
+              </div>
+            </div>
+
+            <div className="table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Rank</th>
+                    <th>Model</th>
+                    <th>Validation Accuracy</th>
+                    <th>Validation Macro F1</th>
+                    <th>CV Macro F1 Mean</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.length > 0 ? comparisonRows.map((row) => (
+                    <tr key={`${row.Model}-${row.Rank}`}>
+                      <td>{row.Rank || '—'}</td>
+                      <td>{row.Model || '—'}</td>
+                      <td>{row.ValidationAccuracy != null ? Number(row.ValidationAccuracy * 100).toFixed(2) + '%' : '—'}</td>
+                      <td>{row.ValidationMacroF1 != null ? Number(row.ValidationMacroF1 * 100).toFixed(2) + '%' : '—'}</td>
+                      <td>{row.CVMacroF1Mean != null ? Number(row.CVMacroF1Mean * 100).toFixed(2) + '%' : '—'}</td>
+                    </tr>
+                  )) : <tr><td colSpan="5">Not available</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
+    </>
+  )
+}
+
 function ModelInfo() {
   return (
     <>
@@ -2829,9 +3056,11 @@ function CustomerHome({
             ) : (
               <div className="compact-list">
                 {claims.slice(0, 5).map((claim) => (
-                  <div
-                    className="compact-row"
+                  <button
+                    type="button"
+                    className="compact-row row-button"
                     key={claim.id}
+                    onClick={() => onNavigate('my-claims', claim.claim_id)}
                   >
                     <div>
                       <strong>
@@ -2849,7 +3078,7 @@ function CustomerHome({
                     <StatusBadge
                       value={claim.status}
                     />
-                  </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -4994,10 +5223,30 @@ function App({ onLogout, role, email }) {
     useState('checking')
 
   const [adminPage, setAdminPage] =
-    useState('dashboard')
+    useState(() => {
+      const match = window.location.pathname.match(/\/admin(?:\/(.+))?$/)
+      if (!match) return 'dashboard'
+      const suffix = match[1]
+      if (!suffix) return 'dashboard'
+      const pageMap = {
+        'customer-claims': 'customer-claims',
+        'products': 'products',
+        'warranties': 'warranties',
+        'notifications': 'notifications',
+        'profile': 'profile',
+        'classify': 'classify',
+        'history': 'history',
+        'model': 'model',
+        'users': 'users',
+        'audit': 'audit',
+        'ai-ml': 'ai-ml',
+      }
+      return pageMap[suffix] || 'dashboard'
+    })
 
   const [refreshKey, setRefreshKey] =
     useState(0)
+  const [notificationCount, setNotificationCount] = useState(0)
 
   useEffect(() => {
     document.body.classList.add('admin-light')
@@ -5012,6 +5261,56 @@ function App({ onLogout, role, email }) {
       )
   }, [])
 
+  useEffect(() => {
+    let active = true
+    api('/api/notifications')
+      .then((items) => {
+        if (!active) return
+        const unread = items.filter((item) => !item.is_read).length
+        setNotificationCount(unread)
+      })
+      .catch(() => {
+        if (active) setNotificationCount(0)
+      })
+    return () => { active = false }
+  }, [refreshKey, role, email])
+
+  useEffect(() => {
+    const syncPage = () => {
+      const nextPage = (() => {
+        const match = window.location.pathname.match(/\/admin(?:\/(.+))?$/)
+        if (!match) return 'dashboard'
+        const suffix = match[1]
+        if (!suffix) return 'dashboard'
+        const map = {
+          'customer-claims': 'customer-claims',
+          'products': 'products',
+          'warranties': 'warranties',
+          'notifications': 'notifications',
+          'profile': 'profile',
+          'classify': 'classify',
+          'history': 'history',
+          'model': 'model',
+          'users': 'users',
+          'audit': 'audit',
+          'ai-ml': 'ai-ml',
+        }
+        return map[suffix] || 'dashboard'
+      })()
+      setAdminPage(nextPage)
+    }
+    window.addEventListener('popstate', syncPage)
+    return () => window.removeEventListener('popstate', syncPage)
+  }, [])
+
+  function navigateAdminPage(nextPage) {
+    setAdminPage(nextPage)
+    const nextPath = nextPage === 'dashboard'
+      ? `${import.meta.env.BASE_URL}admin`
+      : `${import.meta.env.BASE_URL}admin/${nextPage}`
+    window.history.pushState({}, '', nextPath)
+  }
+
   function refresh() {
     setRefreshKey((value) => value + 1)
   }
@@ -5021,17 +5320,18 @@ function App({ onLogout, role, email }) {
     ['customer-claims', 'Customer Claims'],
     ['products', 'Products'],
     ['warranties', 'Warranties'],
-    ['notifications', 'Notifications'],
+    ['notifications', `Notifications${notificationCount ? ` (${notificationCount})` : ''}`],
     ['classify', 'New Classification'],
     ['history', 'ML History'],
     ['model', 'Model Intelligence'],
+    ['ai-ml', 'AI & ML'],
     ...(role === 'ADMIN' ? [['users', 'Users'], ['audit', 'Audit Logs']] : []),
   ]
 
   const adminNavigation = role === 'REVIEWER'
-    ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile'].includes(key))
+    ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile', 'ai-ml'].includes(key))
     : role === 'SERVICE_CENTER'
-      ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile', 'classify', 'history', 'model'].includes(key))
+      ? allAdminNavigation.filter(([key]) => ['dashboard', 'customer-claims', 'products', 'warranties', 'notifications', 'profile', 'classify', 'history', 'model', 'ai-ml'].includes(key))
       : [...allAdminNavigation, ['profile', 'Profile']]
 
   return (
@@ -5059,7 +5359,7 @@ function App({ onLogout, role, email }) {
                 className={`nav-item ${
                   adminPage === key ? 'active' : ''
                 }`}
-                onClick={() => setAdminPage(key)}
+                onClick={() => navigateAdminPage(key)}
               >
                 {label}
               </button>
@@ -5083,7 +5383,7 @@ function App({ onLogout, role, email }) {
       <main className="main-content">
         {adminPage === 'dashboard' && (
           <AdminDashboard
-            onNavigate={setAdminPage}
+            onNavigate={navigateAdminPage}
             refreshKey={refreshKey}
           />
         )}
@@ -5122,6 +5422,10 @@ function App({ onLogout, role, email }) {
 
         {adminPage === 'model' && (
           <ModelInfo />
+        )}
+
+        {adminPage === 'ai-ml' && (
+          <AdminAIML />
         )}
 
         {adminPage === 'users' && role === 'ADMIN' && (
