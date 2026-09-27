@@ -1,0 +1,79 @@
+﻿Column,NormalizedValue,RawVariants,VariantCount,RowCount,FormattingIssue
+Brand,primeview,"[""PRIMEVIEW"", ""PrimeView""]",2,322,True
+Brand,homepro,"["" HomePro "", ""HomePro"", ""homepro""]",3,315,True
+Brand,novatech,"[""NovaTech"", ""novatech""]",2,257,True
+Brand,zencore,"[""ZenCore"", ""zencore""]",2,256,True
+ClaimSubmissionChannel,web,"["" Web "", ""WEB"", ""Web"", ""web""]",4,616,True
+ClaimSubmissionChannel,mobile app,"["" Mobile App "", ""Mobile App"", ""mobile app""]",3,412,True
+ClaimSubmissionChannel,service center,"[""SERVICE CENTER"", ""Service Center""]",2,330,True
+ClaimSubmissionChannel,email,"["" Email "", ""Email""]",2,187,True
+ContradictionIndicator,no,"["" No "", ""NO"", ""No"", ""no""]",4,1492,True
+DocumentDuplicateIndicator,no,"["" No "", ""NO"", ""No"", ""no""]",4,1502,True
+DuplicateClaimIndicator,no,"[""NO"", ""No"", ""no""]",3,1516,True
+ExtendedWarranty,no,"["" No "", ""NO"", ""No"", ""no""]",4,1302,True
+ExtendedWarranty,yes,"["" Yes "", ""Yes"", ""yes""]",3,243,True
+FaultEvidenceAvailable,yes,"["" Yes "", ""YES"", ""Yes""]",3,1262,True
+PreviousRepair,no,"["" No "", ""No"", ""no""]",3,1114,True
+PreviousRepair,yes,"[""Yes"", ""yes""]",2,423,True
+PreviousReplacement,no,"["" No "", ""NO"", ""No"", ""no""]",4,1395,True
+PreviousReplacement,yes,"["" Yes "", ""Yes"", ""yes""]",3,146,True
+ProductCategory,camera,"["" Camera "", ""Camera""]",2,215,True
+ProductCategory,laptop,"["" Laptop "", ""LAPTOP"", ""Laptop"", ""laptop""]",4,207,True
+ProductCategory,printer,"["" Printer "", ""Printer""]",2,205,True
+ProductCategory,television,"["" Television "", ""TELEVISION"", ""Television"", ""television""]",4,185,True
+ProductCategory,washing machine,"[""WASHING MACHINE"", ""Washing Machine"", ""washing machine""]",3,173,True
+ProductCategory,smartphone,"[""Smartphone"", ""smartphone""]",2,171,True
+ProductImageAvailable,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,1389,True
+ProductModelConsistent,yes,"["" Yes "", ""YES"", ""Yes""]",3,1469,True
+ProductModelConsistent,no,"[""NO"", ""No""]",2,73,True
+ReceiptAvailable,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,1311,True
+ReceiptAvailable,no,"[""No"", ""no""]",2,146,True
+RepairAuthorized,not applicable,"[""Not Applicable"", ""not applicable""]",2,1108,True
+RepairAuthorized,yes,"[""Yes"", ""yes""]",2,378,True
+RepairAuthorized,no,"[""NO"", ""No"", ""no""]",3,21,True
+RepairReportAvailable,yes,"[""YES"", ""Yes""]",2,305,True
+ReplacementWithinWarranty,not applicable,"[""Not Applicable"", ""not applicable""]",2,1386,True
+ReplacementWithinWarranty,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,117,True
+ReplacementWithinWarranty,no,"[""No"", ""no""]",2,30,True
+SerialEvidenceAvailable,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,1320,True
+SerialEvidenceAvailable,no,"["" No "", ""NO"", ""No"", ""no""]",4,158,True
+SerialNumberMatch,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,1432,True
+WarrantyCardAvailable,yes,"["" Yes "", ""YES"", ""Yes"", ""yes""]",4,1253,True
+WarrantyCardAvailable,no,"["" No "", ""No"", ""no""]",3,196,True
+Brand,aster,"[""Aster""]",1,380,False
+ContradictionIndicator,yes,"[""Yes""]",1,50,False
+ContradictionIndicator,n,"[""N""]",1,3,False
+DocumentDuplicateIndicator,yes,"[""Yes""]",1,42,False
+DocumentDuplicateIndicator,n,"[""N""]",1,1,False
+DuplicateClaimIndicator,yes,"[""Yes""]",1,25,False
+DuplicateClaimIndicator,n,"[""N""]",1,4,False
+FaultEvidenceAvailable,no,"[""No""]",1,173,False
+FaultEvidenceAvailable,y,"[""Y""]",1,1,False
+PreviousRepair,n,"[""N""]",1,5,False
+PreviousRepair,y,"[""Y""]",1,3,False
+PreviousReplacement,n,"[""N""]",1,3,False
+PreviousReplacement,y,"[""Y""]",1,1,False
+ProductCategory,refrigerator,"[""Refrigerator""]",1,213,False
+ProductCategory,air conditioner,"[""Air Conditioner""]",1,176,False
+ProductImageAvailable,no,"[""No""]",1,89,False
+ProductImageAvailable,y,"[""Y""]",1,2,False
+ProductImageAvailable,n,"[""N""]",1,1,False
+ProductModelConsistent,y,"[""Y""]",1,3,False
+ReceiptAvailable,y,"[""Y""]",1,6,False
+RepairAuthorized,unknown,"[""Unknown""]",1,26,False
+RepairAuthorized,n/a,"[""N/A""]",1,8,False
+RepairAuthorized,na,"[""NA""]",1,3,False
+RepairAuthorized,y,"[""Y""]",1,1,False
+RepairReportAvailable,not applicable,"[""Not Applicable""]",1,1003,False
+RepairReportAvailable,no,"[""No""]",1,87,False
+RepairReportAvailable,n/a,"[""N/A""]",1,5,False
+RepairReportAvailable,na,"[""NA""]",1,5,False
+RepairReportAvailable,y,"[""Y""]",1,2,False
+ReplacementWithinWarranty,na,"[""NA""]",1,7,False
+ReplacementWithinWarranty,n/a,"[""N/A""]",1,5,False
+SerialEvidenceAvailable,y,"[""Y""]",1,5,False
+SerialNumberMatch,unknown,"[""Unknown""]",1,68,False
+SerialNumberMatch,no,"[""No""]",1,42,False
+SerialNumberMatch,y,"[""Y""]",1,3,False
+WarrantyCardAvailable,y,"[""Y""]",1,2,False
+WarrantyCardAvailable,n,"[""N""]",1,1,False

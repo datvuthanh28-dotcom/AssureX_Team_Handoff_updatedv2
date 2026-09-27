@@ -1,0 +1,2 @@
+FeatureSet,ValidationClaims,Correct,Incorrect,Accuracy,MacroPrecision,MacroRecall,MacroF1,MeanConfidence
+G0,225,172,53,0.764444,0.805466,0.764444,0.760131,0.821095

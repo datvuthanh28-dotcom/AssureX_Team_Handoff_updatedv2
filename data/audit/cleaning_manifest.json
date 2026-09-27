@@ -1,0 +1,43 @@
+{
+  "cleaner_version": "assurex-cleaning-v3.0",
+  "raw_sha256": "764688478787282f5c5b02e95b3e47a41ecc2e0935f8ccfdca18403c91e6cdce",
+  "clean_sha256": "7b9ec3b5627c3da99525c6ee40ee4c6fad4535dcad60f103bc8c1b2e855af2b3",
+  "script_sha256": "476a2b740ce05fc3122992eea7ea4996019928d8a8d8004aca79ae3d559d26d9",
+  "pandas_version": "3.0.6",
+  "python_version": "3.11.1",
+  "input": "/Users/htmt1810/Desktop/TECHWIZ ML/data/raw/assurex_v3_raw.csv",
+  "output": "/Users/htmt1810/Desktop/TECHWIZ ML/data/cleaned/assurex_v3_clean.csv",
+  "data_is_synthetic": true,
+  "schema": "generate_raw_dataset_v2",
+  "allowed_warranty_months_schema_only": [
+    0,
+    6,
+    12,
+    24,
+    60,
+    120
+  ],
+  "high_value_review_thresholds_not_deletion_rules": {
+    "RepairCount": 10,
+    "PriorClaimCount": 20,
+    "ClaimAmount": 100000,
+    "PreviousRepairCost": 20000
+  },
+  "date_format": "%Y-%m-%d",
+  "date_conflicts": "retain_and_review",
+  "duplicate_policy": "same ClaimID and business facts; stable RecordID tie-break",
+  "duplicate_conflicts": "quarantine all versions; no label majority voting",
+  "target_used_to_repair_features": false,
+  "truth_manifest_read": false,
+  "noise_columns_retained": [
+    "BrowserFamily",
+    "InternalBatchCode",
+    "RandomScore",
+    "SubmissionMinute",
+    "UiTheme"
+  ],
+  "read_clean_csv": "pd.read_csv(path, keep_default_na=False, na_values=[''])",
+  "learned_statistics": "none; imputation/scaling/feature selection deferred to train folds",
+  "next_step": "lock holdout groups before target-guided EDA/feature selection",
+  "warning": "Cleaned means normalized, not complete or guaranteed correct. Review flags remain."
+}

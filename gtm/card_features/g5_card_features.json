@@ -1,0 +1,133 @@
+{
+  "feature_set": "G5",
+  "description": "G5 candidate: G3 with WarrantyDurationMonths removed.",
+  "image_width": 1200,
+  "image_height": 1400,
+  "train_variants": 1,
+  "validation_variants": 1,
+  "test_variants": 1,
+  "groups": [
+    {
+      "name": "Product & Claim",
+      "fields": [
+        {
+          "column": "ProductCategory",
+          "label": "Product"
+        },
+        {
+          "column": "Brand",
+          "label": "Brand"
+        },
+        {
+          "column": "ClaimAmount",
+          "label": "Claim amount"
+        },
+        {
+          "column": "ClaimSubmissionChannel",
+          "label": "Channel"
+        }
+      ]
+    },
+    {
+      "name": "Warranty",
+      "fields": [
+        {
+          "column": "WarrantyStatus",
+          "label": "Warranty"
+        },
+        {
+          "column": "WarrantyRemainingDays",
+          "label": "Remaining days"
+        }
+      ]
+    },
+    {
+      "name": "Fault & Timing",
+      "fields": [
+        {
+          "column": "FaultType",
+          "label": "Fault"
+        },
+        {
+          "column": "FaultCovered",
+          "label": "Covered"
+        },
+        {
+          "column": "ClaimReportingDelayDays",
+          "label": "Report delay"
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "fields": [
+        {
+          "column": "ReceiptAvailable",
+          "label": "Receipt"
+        },
+        {
+          "column": "WarrantyCardAvailable",
+          "label": "Warranty card"
+        },
+        {
+          "column": "MissingDocumentCount",
+          "label": "Missing docs"
+        },
+        {
+          "column": "RequiredDocumentsComplete",
+          "label": "Required docs"
+        }
+      ]
+    },
+    {
+      "name": "Repair History",
+      "fields": [
+        {
+          "column": "PreviousRepair",
+          "label": "Previous repair"
+        },
+        {
+          "column": "RepairCount",
+          "label": "Repair count"
+        },
+        {
+          "column": "RepairAuthorized",
+          "label": "Authorized"
+        },
+        {
+          "column": "RepairReportAvailable",
+          "label": "Repair report"
+        }
+      ]
+    },
+    {
+      "name": "Verification & Evidence",
+      "fields": [
+        {
+          "column": "SerialNumberMatch",
+          "label": "Serial match"
+        },
+        {
+          "column": "ProductModelConsistent",
+          "label": "Model consistent"
+        },
+        {
+          "column": "DuplicateClaimIndicator",
+          "label": "Duplicate claim"
+        },
+        {
+          "column": "ContradictionIndicator",
+          "label": "Contradiction"
+        },
+        {
+          "column": "OCRConfidence",
+          "label": "OCR confidence"
+        },
+        {
+          "column": "PriorClaimCount",
+          "label": "Prior claims"
+        }
+      ]
+    }
+  ]
+}

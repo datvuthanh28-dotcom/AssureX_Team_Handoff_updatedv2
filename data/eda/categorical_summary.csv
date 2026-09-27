@@ -1,0 +1,24 @@
+﻿Column,UniqueCount,MostFrequentValue,MostFrequentCount,MostFrequentPercent,TopValues
+Brand,5,Aster,367,24.4667,Aster:367 | HomePro:310 | PrimeView:307 | ZenCore:253 | NovaTech:248 | <MISSING>:15
+BrowserFamily,5,MobileWebView,320,21.3333,MobileWebView:320 | Chrome:307 | Firefox:306 | Safari:303 | Edge:264
+ClaimSubmissionChannel,4,Web,601,40.0667,Web:601 | Mobile App:399 | Service Center:321 | Email:179
+ContradictionIndicator,2,No,1451,96.7333,No:1451 | Yes:49
+DamageType,8,Internal Component Failure,445,29.6667,Internal Component Failure:445 | Manufacturing Defect:408 | Electrical Failure:391 | Accidental Damage:61 | Misuse:53 | Water Damage:51 | Physical Damage:48 | Normal Wear:43
+DocumentDuplicateIndicator,2,No,1458,97.2,No:1458 | Yes:42
+DuplicateClaimIndicator,2,No,1475,98.3333,No:1475 | Yes:25
+ExtendedWarranty,2,No,1264,84.2667,No:1264 | Yes:236
+FaultEvidenceAvailable,2,Yes,1228,81.8667,Yes:1228 | No:167 | <MISSING>:105
+FaultType,12,Power Failure,363,24.2,Power Failure:363 | Connectivity Issue:219 | Display Failure:143 | Battery Problem:138 | Mechanical Failure:127 | Water Leakage:126 | Noise:119 | Cooling Failure:92 | Overheating:59 | Audio Failure:44
+PreviousRepair,2,No,1091,72.7333,No:1091 | Yes:409
+PreviousReplacement,2,No,1356,90.4,No:1356 | Yes:144
+ProductCategory,8,Refrigerator,209,13.9333,Refrigerator:209 | Camera:207 | Laptop:202 | Printer:196 | Television:180 | Air Conditioner:173 | Washing Machine:169 | Smartphone:164
+ProductImageAvailable,2,Yes,1355,90.3333,Yes:1355 | No:87 | <MISSING>:58
+ProductModelConsistent,2,Yes,1431,95.4,Yes:1431 | No:69
+ReceiptAvailable,2,Yes,1280,85.3333,Yes:1280 | No:141 | <MISSING>:79
+RepairAuthorized,4,Not Applicable,1091,72.7333,Not Applicable:1091 | Yes:363 | Unknown:26 | No:20
+RepairReportAvailable,3,Not Applicable,988,65.8667,Not Applicable:988 | Yes:295 | <MISSING>:134 | No:83
+ReplacementWithinWarranty,3,Not Applicable,1356,90.4,Not Applicable:1356 | Yes:115 | No:29
+SerialEvidenceAvailable,2,Yes,1286,85.7333,Yes:1286 | No:153 | <MISSING>:61
+SerialNumberMatch,3,Yes,1394,92.9333,Yes:1394 | Unknown:67 | No:39
+UiTheme,3,System,528,35.2,System:528 | Dark:496 | Light:476
+WarrantyCardAvailable,2,Yes,1219,81.2667,Yes:1219 | No:189 | <MISSING>:92

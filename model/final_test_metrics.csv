@@ -1,0 +1,2 @@
+﻿Model,FeatureCount,TrainValidationRows,TestRows,TestAccuracy,TestPrecisionMacro,TestRecallMacro,TestMacroF1,FitSeconds,TestPredictionSeconds,AvgPredictionMsPerClaim,MeanConfidence,LowConfidenceUnder060,SerializedModelSizeMB
+Gradient Boosting,22,1275,225,0.9555555555555556,0.9582204155374887,0.9555555555555556,0.9558862837808828,0.7571205840067705,0.0052790840054512955,0.023462595579783536,0.9320354586829743,2,0.5718975067138672

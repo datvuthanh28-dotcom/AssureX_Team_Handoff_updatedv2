@@ -1,0 +1,63 @@
+{
+  "selector_model": "GradientBoostingClassifier",
+  "random_seed": 20260925,
+  "train_rows": 1050,
+  "validation_rows": 225,
+  "test_loaded": false,
+  "initial_feature_count": 46,
+  "selected_feature_count": 23,
+  "accepted_removals": 23,
+  "rejected_removals": 9,
+  "baseline_validation_accuracy": 0.9644444444444444,
+  "baseline_validation_macro_f1": 0.964524532428204,
+  "final_validation_accuracy": 0.9733333333333334,
+  "final_validation_macro_f1": 0.9734165669815097,
+  "importance_method": "permutation importance on validation, scoring=f1_macro",
+  "thresholds": {
+    "importance_candidate_threshold": 0.002,
+    "local_f1_tolerance": 0.003,
+    "baseline_f1_tolerance": 0.005
+  },
+  "selected_features": [
+    "WarrantyCardAvailable",
+    "RepairReportAvailable",
+    "PreviousRepair",
+    "RepairCount",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "PriorClaimCount",
+    "ClaimAmount",
+    "OCRConfidence",
+    "ClaimSubmissionChannel",
+    "SubmissionMinute",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "WarrantyStatus",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "MissingDocumentCount",
+    "AvailableDocumentCount",
+    "RequiredDocumentsComplete",
+    "PurchaseProofAvailable",
+    "HasRepairHistory"
+  ],
+  "protected_after_failed_removal": [
+    "AvailableDocumentCount",
+    "ClaimAmount",
+    "ClaimSubmissionChannel",
+    "HasRepairHistory",
+    "PreviousRepair",
+    "PriorClaimCount",
+    "PurchaseProofAvailable",
+    "RepairReportAvailable",
+    "SubmissionMinute"
+  ],
+  "rules": {
+    "test_used": false,
+    "one_feature_removed_per_attempt": true,
+    "importance_recomputed_after_accepted_removal": true,
+    "rollback_on_excessive_validation_drop": true
+  }
+}

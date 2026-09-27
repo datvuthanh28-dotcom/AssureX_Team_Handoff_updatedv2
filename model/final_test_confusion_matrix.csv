@@ -1,0 +1,4 @@
+﻿,Predicted_Invalid Claim,Predicted_Manual Review,Predicted_Valid Claim
+Actual_Invalid Claim,71,1,3
+Actual_Manual Review,0,70,5
+Actual_Valid Claim,0,1,74

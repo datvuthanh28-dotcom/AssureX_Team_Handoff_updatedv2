@@ -1,0 +1,23 @@
+﻿Metric,Value
+CleanerVersion,assurex-cleaning-v1.0
+RawRows,1545
+RawColumns,42
+CleanRows,1500
+CleanColumns,42
+UniqueClaimIDs,1500
+DuplicateRowsRemoved,45
+QuarantinedRows,0
+InvalidCellsConvertedToMissing,53
+MissingCellsBeforeCleaning,845
+MissingCellsAfterCleaning,868
+ReviewFlags,39
+ClaimsWithReviewFlags,30
+NoiseColumnsRetained,5
+ImputationApplied,False
+FeatureEngineeringApplied,False
+FeatureSelectionApplied,False
+TruthOrManifestUsed,False
+ClaimClassModified,False
+CleanClassCount_Invalid Claim,500
+CleanClassCount_Manual Review,500
+CleanClassCount_Valid Claim,500

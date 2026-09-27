@@ -1,0 +1,1501 @@
+﻿ClaimID,PolicyClass,HardInvalidReasons,ManualReviewReasons,WarrantyRemainingDaysTruth,ReportingDelayDaysTruth
+CLM00936,Valid Claim,,,1029,9
+CLM00326,Invalid Claim,Fault/damage excluded,,1042,12
+CLM00787,Valid Claim,,,453,18
+CLM01050,Manual Review,,Product/model inconsistency | Serial verification uncertain,27,15
+CLM00802,Invalid Claim,Fault/damage excluded,Missing required evidence,711,11
+CLM00423,Manual Review,,Missing required evidence,546,7
+CLM00234,Invalid Claim,Fault/damage excluded,Product/model inconsistency | Low OCR confidence,831,11
+CLM00524,Invalid Claim,Fault/damage excluded,Contradictory evidence,626,20
+CLM00046,Valid Claim,,,1253,9
+CLM00158,Valid Claim,,,501,19
+CLM00003,Invalid Claim,Reporting period exceeded,,184,33
+CLM00304,Valid Claim,,,384,9
+CLM01228,Valid Claim,,,1013,8
+CLM00492,Invalid Claim,Warranty expired,Missing required evidence,-515,11
+CLM00668,Invalid Claim,Reporting period exceeded | Serial mismatch,Missing required evidence,815,35
+CLM01429,Valid Claim,,,116,10
+CLM00504,Manual Review,,Product/model inconsistency,560,14
+CLM00247,Invalid Claim,Fault/damage excluded,Missing required evidence,517,7
+CLM00631,Valid Claim,,,279,15
+CLM01197,Manual Review,,Missing required evidence,902,7
+CLM00028,Invalid Claim,Warranty expired | Reporting period exceeded | Duplicate claim,,-167,36
+CLM01262,Valid Claim,,,69,11
+CLM00195,Valid Claim,,,105,29
+CLM01280,Valid Claim,,,64,17
+CLM00577,Invalid Claim,Fault/damage excluded,Low OCR confidence,668,12
+CLM00319,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,961,42
+CLM00798,Invalid Claim,Warranty expired | Reporting period exceeded | Unauthorized repair,,-26,43
+CLM00832,Invalid Claim,Warranty expired,Missing required evidence,-70,11
+CLM00650,Valid Claim,,,76,10
+CLM01469,Manual Review,,Missing required evidence,483,18
+CLM00687,Invalid Claim,Reporting period exceeded,Missing required evidence,631,41
+CLM01180,Valid Claim,,,558,29
+CLM00365,Manual Review,,Missing required evidence,859,12
+CLM00669,Manual Review,,Low OCR confidence,597,16
+CLM01176,Valid Claim,,,495,6
+CLM01464,Valid Claim,,,618,10
+CLM01233,Manual Review,,Missing required evidence | Product/model inconsistency | Low OCR confidence,668,10
+CLM00336,Invalid Claim,Warranty expired | Fault/damage excluded,,-351,18
+CLM00229,Manual Review,,Product/model inconsistency | Serial verification uncertain,157,17
+CLM01257,Manual Review,,Missing required evidence,741,4
+CLM00395,Invalid Claim,Warranty expired,Low OCR confidence,-244,22
+CLM01115,Manual Review,,Repair authorization uncertain,136,5
+CLM00318,Invalid Claim,Fault/damage excluded,,172,5
+CLM01107,Valid Claim,,,126,17
+CLM00899,Manual Review,,Serial verification uncertain,38,16
+CLM00530,Valid Claim,,,69,6
+CLM01062,Manual Review,,Missing required evidence | Contradictory evidence,669,11
+CLM00773,Invalid Claim,Warranty expired,,-9,7
+CLM00460,Invalid Claim,Serial mismatch,Missing required evidence,829,17
+CLM01138,Valid Claim,,,13,27
+CLM00975,Manual Review,,Missing required evidence | Low OCR confidence,1018,9
+CLM00385,Invalid Claim,Warranty expired,,-572,27
+CLM00226,Valid Claim,,,396,29
+CLM01491,Manual Review,,Missing required evidence | Contradictory evidence,593,4
+CLM00905,Manual Review,,Contradictory evidence,523,12
+CLM00511,Invalid Claim,Duplicate claim,Contradictory evidence | Low OCR confidence,837,9
+CLM00038,Invalid Claim,Warranty expired,,-71,9
+CLM00205,Invalid Claim,Fault/damage excluded,Missing required evidence,706,14
+CLM00587,Manual Review,,Low OCR confidence,1001,27
+CLM00629,Valid Claim,,,141,11
+CLM00997,Manual Review,,Missing required evidence,455,19
+CLM01385,Manual Review,,Missing required evidence,208,3
+CLM00201,Valid Claim,,,356,10
+CLM00041,Valid Claim,,,684,8
+CLM01433,Valid Claim,,,684,18
+CLM01485,Manual Review,,Product/model inconsistency,238,4
+CLM01352,Manual Review,,Missing required evidence,588,26
+CLM00990,Valid Claim,,,705,21
+CLM01483,Manual Review,,Missing required evidence | Low OCR confidence,934,3
+CLM00045,Manual Review,,Missing required evidence,12,24
+CLM01211,Manual Review,,Missing required evidence,531,26
+CLM00904,Invalid Claim,Warranty expired,Repair authorization uncertain,-109,2
+CLM00523,Invalid Claim,Fault/damage excluded,,285,6
+CLM00456,Invalid Claim,Warranty expired,Missing required evidence,-466,26
+CLM00018,Invalid Claim,Fault/damage excluded | Serial mismatch,Missing required evidence | Low OCR confidence,979,4
+CLM00638,Valid Claim,,,671,3
+CLM00986,Valid Claim,,,490,4
+CLM00142,Valid Claim,,,60,10
+CLM00581,Manual Review,,Low OCR confidence,224,0
+CLM01237,Manual Review,,Missing required evidence,322,15
+CLM00063,Manual Review,,Missing required evidence,847,16
+CLM00578,Invalid Claim,Fault/damage excluded,Product/model inconsistency,526,19
+CLM00093,Invalid Claim,Fault/damage excluded,,130,9
+CLM01309,Valid Claim,,,245,19
+CLM00639,Manual Review,,Low OCR confidence,425,20
+CLM00302,Invalid Claim,Fault/damage excluded | Serial mismatch,,556,4
+CLM00526,Valid Claim,,,384,3
+CLM00092,Invalid Claim,Warranty expired,,-125,16
+CLM00354,Invalid Claim,Unauthorized repair,,153,2
+CLM01366,Manual Review,,Missing required evidence,180,2
+CLM00501,Invalid Claim,Fault/damage excluded,,1073,20
+CLM00907,Invalid Claim,Warranty expired,,-414,8
+CLM00620,Manual Review,,Missing required evidence,465,13
+CLM01418,Valid Claim,,,825,28
+CLM01193,Valid Claim,,,855,11
+CLM01227,Manual Review,,Missing required evidence,279,5
+CLM00942,Invalid Claim,Reporting period exceeded,Missing required evidence,120,35
+CLM01355,Valid Claim,,,144,7
+CLM00162,Invalid Claim,Warranty expired | Reporting period exceeded,Missing required evidence | Product/model inconsistency,-130,47
+CLM00191,Manual Review,,Missing required evidence,132,14
+CLM01493,Manual Review,,Missing required evidence,177,14
+CLM00557,Invalid Claim,Fault/damage excluded,Missing required evidence,421,6
+CLM00565,Valid Claim,,,619,9
+CLM00657,Valid Claim,,,88,14
+CLM01171,Valid Claim,,,346,7
+CLM00417,Manual Review,,Missing required evidence | Product/model inconsistency | Serial verification uncertain,1017,24
+CLM01076,Valid Claim,,,560,8
+CLM00685,Manual Review,,Missing required evidence,220,14
+CLM00619,Valid Claim,,,284,12
+CLM00464,Invalid Claim,Warranty expired,Low OCR confidence,-597,21
+CLM00796,Invalid Claim,Warranty expired,Missing required evidence,-820,13
+CLM00378,Invalid Claim,Reporting period exceeded,Missing required evidence,339,31
+CLM00290,Invalid Claim,Warranty expired | Fault/damage excluded,,-193,20
+CLM00715,Invalid Claim,Serial mismatch,,677,7
+CLM00353,Valid Claim,,,123,21
+CLM00813,Invalid Claim,Fault/damage excluded,Missing required evidence,350,21
+CLM00005,Valid Claim,,,124,6
+CLM01134,Manual Review,,Missing required evidence,226,26
+CLM01055,Valid Claim,,,855,23
+CLM01474,Manual Review,,Missing required evidence,189,19
+CLM01421,Manual Review,,Missing required evidence,230,16
+CLM00049,Invalid Claim,Warranty expired,Contradictory evidence,-171,11
+CLM00157,Valid Claim,,,549,18
+CLM01473,Manual Review,,Missing required evidence,707,19
+CLM01090,Manual Review,,Serial verification uncertain,499,8
+CLM00892,Invalid Claim,Warranty expired,,-231,6
+CLM00724,Invalid Claim,Warranty expired,,-161,11
+CLM00908,Invalid Claim,Reporting period exceeded,Missing required evidence,489,34
+CLM01152,Valid Claim,,,470,13
+CLM00294,Manual Review,,Low OCR confidence,791,3
+CLM00553,Manual Review,,Missing required evidence,616,8
+CLM00814,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence | Low OCR confidence,-459,7
+CLM00224,Invalid Claim,Warranty expired,,-359,5
+CLM00455,Invalid Claim,Fault/damage excluded,Product/model inconsistency,342,23
+CLM00974,Valid Claim,,,838,10
+CLM00614,Valid Claim,,,326,8
+CLM00965,Manual Review,,Missing required evidence,88,16
+CLM00289,Manual Review,,Missing required evidence | Product/model inconsistency,621,25
+CLM00640,Manual Review,,Missing required evidence,123,13
+CLM00307,Valid Claim,,,836,23
+CLM01102,Valid Claim,,,513,28
+CLM00007,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,704,33
+CLM01384,Manual Review,,Missing required evidence,158,10
+CLM00104,Valid Claim,,,636,13
+CLM00103,Invalid Claim,Warranty expired,,-70,12
+CLM01457,Manual Review,,Missing required evidence,988,6
+CLM00135,Valid Claim,,,646,3
+CLM01078,Manual Review,,Missing required evidence,703,22
+CLM00163,Manual Review,,Missing required evidence,259,12
+CLM00957,Valid Claim,,,416,18
+CLM00653,Manual Review,,Missing required evidence,1059,24
+CLM01104,Manual Review,,Missing required evidence,675,22
+CLM00320,Valid Claim,,,217,25
+CLM01412,Manual Review,,Missing required evidence,335,0
+CLM00976,Invalid Claim,Warranty expired,,-346,3
+CLM00903,Manual Review,,Missing required evidence,516,7
+CLM00788,Invalid Claim,Warranty expired | Fault/damage excluded,,-133,8
+CLM01490,Manual Review,,Missing required evidence,307,2
+CLM00225,Invalid Claim,Warranty expired | Reporting period exceeded,,-144,35
+CLM01151,Manual Review,,Contradictory evidence,75,6
+CLM01143,Manual Review,,Product/model inconsistency,1037,8
+CLM00419,Valid Claim,,,279,3
+CLM00424,Invalid Claim,Fault/damage excluded,Missing required evidence,459,3
+CLM01297,Valid Claim,,,4,12
+CLM00961,Invalid Claim,Fault/damage excluded,Missing required evidence,73,3
+CLM01343,Manual Review,,Missing required evidence,660,25
+CLM00744,Invalid Claim,Serial mismatch,,181,17
+CLM01264,Manual Review,,Missing required evidence | Low OCR confidence,554,3
+CLM00416,Valid Claim,,,109,4
+CLM00124,Manual Review,,Missing required evidence,694,14
+CLM00266,Invalid Claim,Warranty expired,Missing required evidence,-888,17
+CLM00043,Invalid Claim,Unauthorized repair,,996,13
+CLM00893,Manual Review,,Missing required evidence,579,22
+CLM00945,Valid Claim,,,314,14
+CLM00651,Valid Claim,,,370,4
+CLM00795,Invalid Claim,Unauthorized repair,,376,11
+CLM00420,Valid Claim,,,675,2
+CLM01198,Manual Review,,Serial verification uncertain | Low OCR confidence,716,12
+CLM00291,Valid Claim,,,567,16
+CLM00930,Invalid Claim,Warranty expired | Reporting period exceeded,,-108,79
+CLM01031,Manual Review,,Missing required evidence | Product/model inconsistency,201,17
+CLM01399,Manual Review,,Low OCR confidence,87,10
+CLM01427,Manual Review,,Missing required evidence | Low OCR confidence,121,11
+CLM01027,Valid Claim,,,170,3
+CLM01019,Manual Review,,Missing required evidence,849,10
+CLM00691,Valid Claim,,,147,13
+CLM00421,Manual Review,,Missing required evidence,699,15
+CLM00857,Invalid Claim,Fault/damage excluded,,473,8
+CLM01000,Valid Claim,,,561,18
+CLM00546,Manual Review,,Missing required evidence,504,21
+CLM01315,Valid Claim,,,205,7
+CLM00144,Invalid Claim,Warranty expired | Serial mismatch,Missing required evidence,-28,5
+CLM00833,Manual Review,,Missing required evidence,1000,18
+CLM01348,Manual Review,,Missing required evidence,772,11
+CLM00051,Invalid Claim,Duplicate claim,Missing required evidence | Repair authorization uncertain,484,8
+CLM00807,Manual Review,,Missing required evidence | Serial verification uncertain,1002,5
+CLM00730,Invalid Claim,Fault/damage excluded,Contradictory evidence,89,10
+CLM00390,Invalid Claim,Fault/damage excluded,Serial verification uncertain,120,16
+CLM01495,Manual Review,,Missing required evidence,253,6
+CLM01124,Manual Review,,Missing required evidence | Product/model inconsistency,700,13
+CLM01499,Manual Review,,Missing required evidence,519,10
+CLM01135,Valid Claim,,,338,24
+CLM00095,Manual Review,,Missing required evidence,595,13
+CLM00754,Manual Review,,Missing required evidence | Low OCR confidence,434,24
+CLM01224,Valid Claim,,,461,12
+CLM00200,Invalid Claim,Fault/damage excluded,Missing required evidence,350,8
+CLM00817,Manual Review,,Missing required evidence,308,27
+CLM00696,Invalid Claim,Fault/damage excluded | Serial mismatch,Missing required evidence | Repair authorization uncertain,465,25
+CLM00541,Invalid Claim,Reporting period exceeded,Missing required evidence,502,32
+CLM00531,Valid Claim,,,280,7
+CLM01448,Valid Claim,,,1053,19
+CLM00469,Valid Claim,,,213,10
+CLM01336,Valid Claim,,,700,26
+CLM00059,Valid Claim,,,384,8
+CLM00350,Invalid Claim,Fault/damage excluded,,949,20
+CLM00265,Manual Review,,Low OCR confidence,331,21
+CLM01313,Valid Claim,,,701,14
+CLM00270,Valid Claim,,,585,1
+CLM00563,Valid Claim,,,396,13
+CLM00955,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-599,10
+CLM00119,Valid Claim,,,166,19
+CLM00309,Invalid Claim,Warranty expired,,-146,10
+CLM01225,Valid Claim,,,909,28
+CLM00115,Invalid Claim,Duplicate claim,,444,13
+CLM00032,Invalid Claim,Serial mismatch,Missing required evidence,603,3
+CLM01245,Manual Review,,Repair authorization uncertain,711,10
+CLM00660,Invalid Claim,Unauthorized repair,Missing required evidence,436,6
+CLM01241,Manual Review,,Missing required evidence,553,5
+CLM00284,Invalid Claim,Fault/damage excluded,,336,6
+CLM01391,Valid Claim,,,502,10
+CLM00102,Invalid Claim,Fault/damage excluded,,27,9
+CLM01382,Manual Review,,Serial verification uncertain,194,8
+CLM00515,Manual Review,,Contradictory evidence,347,11
+CLM01092,Valid Claim,,,275,3
+CLM00804,Valid Claim,,,49,19
+CLM01356,Valid Claim,,,517,15
+CLM00006,Invalid Claim,Warranty expired | Unauthorized repair,Low OCR confidence,-144,10
+CLM00283,Invalid Claim,Fault/damage excluded,Missing required evidence,599,17
+CLM00909,Manual Review,,Missing required evidence | Low OCR confidence,1003,8
+CLM00883,Invalid Claim,Reporting period exceeded | Serial mismatch,Missing required evidence,705,37
+CLM00872,Invalid Claim,Warranty expired,,-184,22
+CLM00767,Valid Claim,,,235,6
+CLM01178,Manual Review,,Missing required evidence | Low OCR confidence,543,17
+CLM01498,Manual Review,,Missing required evidence,566,17
+CLM01328,Manual Review,,Missing required evidence,265,14
+CLM00665,Invalid Claim,Fault/damage excluded,Product/model inconsistency,449,15
+CLM00060,Manual Review,,Serial verification uncertain,662,25
+CLM01204,Manual Review,,Missing required evidence,629,19
+CLM01161,Manual Review,,Missing required evidence,516,19
+CLM01034,Valid Claim,,,1091,5
+CLM01212,Valid Claim,,,694,5
+CLM01168,Manual Review,,Missing required evidence,74,30
+CLM00902,Invalid Claim,Fault/damage excluded,,127,17
+CLM00552,Invalid Claim,Warranty expired,,-185,20
+CLM01415,Valid Claim,,,37,8
+CLM00468,Invalid Claim,Fault/damage excluded | Unauthorized repair,Missing required evidence,574,17
+CLM01327,Manual Review,,Missing required evidence,607,10
+CLM00521,Valid Claim,,,600,20
+CLM00014,Invalid Claim,Warranty expired,,-445,9
+CLM00580,Valid Claim,,,474,21
+CLM00512,Manual Review,,Low OCR confidence,320,9
+CLM00374,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,405,61
+CLM01053,Valid Claim,,,348,12
+CLM01452,Valid Claim,,,135,5
+CLM00890,Invalid Claim,Warranty expired,,-830,1
+CLM00731,Invalid Claim,Fault/damage excluded,Missing required evidence,211,20
+CLM00801,Manual Review,,Missing required evidence,1013,4
+CLM01014,Manual Review,,Missing required evidence,145,6
+CLM00238,Invalid Claim,Fault/damage excluded,Missing required evidence,138,12
+CLM01186,Manual Review,,Missing required evidence,714,16
+CLM00886,Invalid Claim,Fault/damage excluded,,558,13
+CLM00052,Manual Review,,Serial verification uncertain,127,10
+CLM01141,Manual Review,,Serial verification uncertain,1083,8
+CLM01455,Manual Review,,Missing required evidence,707,7
+CLM00328,Invalid Claim,Warranty expired,,-508,9
+CLM01419,Manual Review,,Contradictory evidence,222,4
+CLM01269,Valid Claim,,,359,13
+CLM00858,Valid Claim,,,961,30
+CLM00105,Invalid Claim,Warranty expired,,-96,14
+CLM01470,Manual Review,,Contradictory evidence,395,8
+CLM00430,Manual Review,,Contradictory evidence,5,9
+CLM01200,Valid Claim,,,814,19
+CLM01305,Valid Claim,,,220,5
+CLM00489,Valid Claim,,,417,21
+CLM00215,Manual Review,,Missing required evidence,152,25
+CLM00835,Invalid Claim,Reporting period exceeded,,1028,31
+CLM00932,Manual Review,,Missing required evidence | Product/model inconsistency,1040,25
+CLM01182,Manual Review,,Missing required evidence | Low OCR confidence,1110,12
+CLM00643,Invalid Claim,Fault/damage excluded,Low OCR confidence,333,9
+CLM00984,Valid Claim,,,517,9
+CLM00689,Invalid Claim,Warranty expired,,-378,4
+CLM00818,Invalid Claim,Fault/damage excluded,Serial verification uncertain,156,5
+CLM01057,Valid Claim,,,468,11
+CLM00099,Invalid Claim,Warranty expired,Missing required evidence,-407,11
+CLM00071,Valid Claim,,,258,22
+CLM01397,Manual Review,,Missing required evidence | Contradictory evidence,87,0
+CLM00397,Invalid Claim,Warranty expired,,-551,7
+CLM01079,Valid Claim,,,425,5
+CLM00329,Valid Claim,,,318,19
+CLM00967,Invalid Claim,Reporting period exceeded,Missing required evidence,42,31
+CLM00267,Invalid Claim,Fault/damage excluded,Missing required evidence,946,9
+CLM00996,Valid Claim,,,267,13
+CLM01111,Valid Claim,,,844,14
+CLM01258,Valid Claim,,,180,27
+CLM01085,Manual Review,,Contradictory evidence | Serial verification uncertain,261,9
+CLM00227,Invalid Claim,Fault/damage excluded,,57,26
+CLM01263,Manual Review,,Product/model inconsistency | Low OCR confidence,228,6
+CLM00160,Invalid Claim,Warranty expired,,-378,17
+CLM00896,Invalid Claim,Reporting period exceeded | Serial mismatch,,70,39
+CLM01149,Manual Review,,Low OCR confidence,753,5
+CLM00174,Valid Claim,,,243,9
+CLM00314,Manual Review,,Contradictory evidence | Low OCR confidence,948,13
+CLM00968,Invalid Claim,Unauthorized repair,,813,21
+CLM01438,Valid Claim,,,258,16
+CLM01023,Manual Review,,Serial verification uncertain,895,13
+CLM01373,Manual Review,,Missing required evidence,446,29
+CLM01088,Valid Claim,,,1047,11
+CLM00728,Invalid Claim,Duplicate claim,Contradictory evidence,194,5
+CLM00922,Invalid Claim,Fault/damage excluded,Missing required evidence,8,18
+CLM00720,Manual Review,,Low OCR confidence,617,15
+CLM00777,Valid Claim,,,35,5
+CLM00465,Invalid Claim,Warranty expired | Fault/damage excluded,Low OCR confidence,-307,19
+CLM01155,Valid Claim,,,957,12
+CLM00972,Invalid Claim,Fault/damage excluded,Missing required evidence,707,4
+CLM00403,Invalid Claim,Fault/damage excluded,Product/model inconsistency | Low OCR confidence,190,13
+CLM01270,Manual Review,,Missing required evidence,825,4
+CLM01497,Manual Review,,Missing required evidence,674,15
+CLM00112,Invalid Claim,Reporting period exceeded,,809,64
+CLM00582,Valid Claim,,,195,14
+CLM00790,Invalid Claim,Fault/damage excluded,,951,11
+CLM00013,Invalid Claim,Fault/damage excluded,,1088,7
+CLM01434,Valid Claim,,,1082,4
+CLM00180,Manual Review,,Missing required evidence,558,8
+CLM00625,Invalid Claim,Warranty expired,,-200,11
+CLM00352,Invalid Claim,Fault/damage excluded,,150,27
+CLM00914,Valid Claim,,,182,4
+CLM01369,Valid Claim,,,664,12
+CLM01437,Manual Review,,Missing required evidence,173,3
+CLM00860,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-258,10
+CLM01281,Valid Claim,,,480,29
+CLM00298,Valid Claim,,,633,11
+CLM00555,Valid Claim,,,934,25
+CLM00513,Invalid Claim,Fault/damage excluded,Missing required evidence,698,7
+CLM00221,Manual Review,,Missing required evidence,359,29
+CLM01136,Valid Claim,,,717,12
+CLM00757,Invalid Claim,Serial mismatch,,916,22
+CLM01077,Manual Review,,Missing required evidence,589,28
+CLM01252,Valid Claim,,,62,9
+CLM00789,Invalid Claim,Fault/damage excluded,Missing required evidence,443,4
+CLM00792,Valid Claim,,,735,25
+CLM01016,Valid Claim,,,318,16
+CLM00453,Invalid Claim,Fault/damage excluded | Serial mismatch,,173,7
+CLM00600,Invalid Claim,Warranty expired,,-10,5
+CLM00739,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Product/model inconsistency,459,42
+CLM00446,Invalid Claim,Warranty expired,Missing required evidence,-589,23
+CLM00116,Invalid Claim,Fault/damage excluded,Missing required evidence,53,8
+CLM00926,Invalid Claim,Warranty expired,,-15,23
+CLM00528,Invalid Claim,Fault/damage excluded,,298,21
+CLM00672,Manual Review,,Missing required evidence,174,8
+CLM00861,Manual Review,,Missing required evidence,825,11
+CLM01082,Valid Claim,,,653,12
+CLM00064,Manual Review,,Serial verification uncertain,617,8
+CLM00481,Invalid Claim,Warranty expired | Fault/damage excluded | Reporting period exceeded,Repair authorization uncertain,-6,37
+CLM01022,Valid Claim,,,270,17
+CLM00451,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence | Contradictory evidence,140,42
+CLM01148,Manual Review,,Missing required evidence,529,12
+CLM00311,Manual Review,,Missing required evidence,100,17
+CLM01256,Valid Claim,,,376,2
+CLM00449,Invalid Claim,Fault/damage excluded,Contradictory evidence,121,26
+CLM00708,Valid Claim,,,49,20
+CLM00673,Valid Claim,,,168,4
+CLM01386,Manual Review,,Missing required evidence | Serial verification uncertain,88,20
+CLM00870,Invalid Claim,Warranty expired,,-85,11
+CLM00771,Valid Claim,,,446,14
+CLM01105,Manual Review,,Product/model inconsistency,620,18
+CLM00507,Invalid Claim,Warranty expired,,-102,23
+CLM00697,Valid Claim,,,244,6
+CLM00837,Manual Review,,Missing required evidence,1050,11
+CLM01097,Valid Claim,,,1249,7
+CLM00062,Manual Review,,Serial verification uncertain,777,4
+CLM01290,Valid Claim,,,521,7
+CLM01054,Valid Claim,,,1226,21
+CLM00404,Invalid Claim,Fault/damage excluded,,357,21
+CLM00759,Invalid Claim,Fault/damage excluded,Repair authorization uncertain,580,19
+CLM01291,Manual Review,,Missing required evidence | Product/model inconsistency,617,12
+CLM01187,Manual Review,,Missing required evidence | Product/model inconsistency,1013,9
+CLM00761,Valid Claim,,,722,8
+CLM00496,Valid Claim,,,345,13
+CLM00824,Invalid Claim,Warranty expired,,-460,20
+CLM01007,Manual Review,,Missing required evidence,747,5
+CLM00933,Invalid Claim,Warranty expired,Missing required evidence | Low OCR confidence,-56,23
+CLM00747,Manual Review,,Missing required evidence,87,10
+CLM01475,Manual Review,,Missing required evidence,439,19
+CLM00138,Invalid Claim,Reporting period exceeded,,173,35
+CLM00822,Invalid Claim,Warranty expired,,-50,11
+CLM00851,Manual Review,,Missing required evidence,909,4
+CLM00118,Manual Review,,Missing required evidence,672,4
+CLM00520,Invalid Claim,Warranty expired | Reporting period exceeded,Low OCR confidence,-120,56
+CLM00371,Invalid Claim,Fault/damage excluded,Missing required evidence,554,4
+CLM00276,Invalid Claim,Fault/damage excluded,,66,16
+CLM00991,Valid Claim,,,531,4
+CLM00924,Invalid Claim,Fault/damage excluded,Missing required evidence,909,20
+CLM00726,Invalid Claim,Warranty expired,,-434,10
+CLM00331,Valid Claim,,,493,19
+CLM00879,Invalid Claim,Fault/damage excluded | Duplicate claim,Contradictory evidence | Low OCR confidence,489,2
+CLM00411,Valid Claim,,,175,25
+CLM00168,Invalid Claim,Warranty expired,,-347,9
+CLM00181,Invalid Claim,Warranty expired,,-164,7
+CLM00015,Valid Claim,,,334,9
+CLM00035,Invalid Claim,Fault/damage excluded,Missing required evidence,533,2
+CLM00027,Invalid Claim,Reporting period exceeded,,427,39
+CLM00920,Manual Review,,Low OCR confidence,405,6
+CLM00735,Invalid Claim,Warranty expired,Missing required evidence | Contradictory evidence,-277,2
+CLM01409,Manual Review,,Missing required evidence | Low OCR confidence,356,10
+CLM01292,Manual Review,,Missing required evidence,1044,7
+CLM01282,Manual Review,,Missing required evidence,336,13
+CLM00011,Manual Review,,Missing required evidence,109,23
+CLM00554,Invalid Claim,Warranty expired | Fault/damage excluded,,-806,21
+CLM00228,Invalid Claim,Fault/damage excluded,Missing required evidence,22,29
+CLM00183,Invalid Claim,Fault/damage excluded,Low OCR confidence,613,28
+CLM00775,Manual Review,,Missing required evidence,193,27
+CLM00806,Manual Review,,Missing required evidence,326,2
+CLM00370,Valid Claim,,,694,11
+CLM00480,Manual Review,,Missing required evidence | Contradictory evidence,342,16
+CLM00500,Invalid Claim,Serial mismatch,,263,9
+CLM00240,Invalid Claim,Warranty expired,Missing required evidence | Serial verification uncertain,-514,4
+CLM00916,Invalid Claim,Fault/damage excluded,,561,2
+CLM00034,Valid Claim,,,653,5
+CLM00248,Invalid Claim,Fault/damage excluded,,610,28
+CLM00401,Invalid Claim,Serial mismatch,,80,19
+CLM00628,Valid Claim,,,532,14
+CLM00443,Manual Review,,Missing required evidence,1306,1
+CLM01299,Manual Review,,Missing required evidence,335,6
+CLM01389,Manual Review,,Missing required evidence,300,1
+CLM00641,Valid Claim,,,937,3
+CLM00452,Invalid Claim,Warranty expired,Missing required evidence | Low OCR confidence,-438,7
+CLM00725,Manual Review,,Missing required evidence,595,15
+CLM00797,Manual Review,,Missing required evidence,548,11
+CLM01361,Valid Claim,,,259,3
+CLM00934,Invalid Claim,Warranty expired,,-202,13
+CLM00762,Valid Claim,,,878,17
+CLM00543,Invalid Claim,Serial mismatch,Missing required evidence | Low OCR confidence,385,4
+CLM00848,Invalid Claim,Reporting period exceeded,Missing required evidence,675,34
+CLM01058,Valid Claim,,,251,10
+CLM01323,Manual Review,,Contradictory evidence,359,6
+CLM01042,Valid Claim,,,350,12
+CLM00133,Invalid Claim,Warranty expired,Product/model inconsistency,-43,25
+CLM00486,Valid Claim,,,261,2
+CLM00733,Invalid Claim,Reporting period exceeded,Missing required evidence,369,40
+CLM01003,Manual Review,,Product/model inconsistency | Repair authorization uncertain,716,2
+CLM01353,Valid Claim,,,610,5
+CLM00029,Valid Claim,,,665,10
+CLM00839,Invalid Claim,Duplicate claim,,1164,26
+CLM01069,Valid Claim,,,671,4
+CLM01370,Manual Review,,Low OCR confidence,438,4
+CLM01146,Manual Review,,Missing required evidence,154,27
+CLM00040,Manual Review,,Low OCR confidence,1400,12
+CLM00376,Manual Review,,Missing required evidence | Low OCR confidence,402,21
+CLM00070,Valid Claim,,,151,6
+CLM00426,Invalid Claim,Fault/damage excluded,Missing required evidence,705,6
+CLM01360,Manual Review,,Missing required evidence | Low OCR confidence,682,4
+CLM00447,Invalid Claim,Fault/damage excluded,,458,24
+CLM00129,Valid Claim,,,305,7
+CLM00783,Manual Review,,Serial verification uncertain,70,5
+CLM00251,Valid Claim,,,435,17
+CLM00921,Valid Claim,,,288,7
+CLM01033,Valid Claim,,,684,9
+CLM00002,Valid Claim,,,560,16
+CLM00868,Invalid Claim,Fault/damage excluded,Serial verification uncertain,722,1
+CLM00139,Valid Claim,,,955,18
+CLM01026,Manual Review,,Product/model inconsistency,418,5
+CLM00843,Invalid Claim,Fault/damage excluded,,202,8
+CLM00368,Invalid Claim,Fault/damage excluded | Reporting period exceeded | Duplicate claim,,461,38
+CLM00407,Invalid Claim,Duplicate claim,Low OCR confidence,775,19
+CLM00287,Invalid Claim,Fault/damage excluded,,174,17
+CLM00356,Valid Claim,,,588,6
+CLM01489,Manual Review,,Missing required evidence,391,20
+CLM00254,Valid Claim,,,69,4
+CLM00766,Valid Claim,,,40,29
+CLM00125,Invalid Claim,Fault/damage excluded,Low OCR confidence,574,12
+CLM01215,Valid Claim,,,810,9
+CLM00717,Invalid Claim,Warranty expired,,-2,21
+CLM01218,Valid Claim,,,305,10
+CLM01428,Valid Claim,,,259,15
+CLM01094,Valid Claim,,,724,6
+CLM00499,Invalid Claim,Fault/damage excluded,Missing required evidence | Product/model inconsistency,636,17
+CLM00864,Invalid Claim,Fault/damage excluded,,358,15
+CLM00362,Valid Claim,,,183,3
+CLM00695,Invalid Claim,Warranty expired,Missing required evidence,-590,22
+CLM00016,Manual Review,,Serial verification uncertain,636,18
+CLM01047,Manual Review,,Missing required evidence,698,21
+CLM01009,Valid Claim,,,662,6
+CLM00445,Manual Review,,Low OCR confidence,324,5
+CLM00122,Invalid Claim,Fault/damage excluded,Missing required evidence | Product/model inconsistency,930,8
+CLM00087,Manual Review,,Missing required evidence,43,24
+CLM01005,Manual Review,,Low OCR confidence,674,17
+CLM00275,Manual Review,,Product/model inconsistency,293,23
+CLM00979,Invalid Claim,Fault/damage excluded,,51,29
+CLM01254,Valid Claim,,,575,10
+CLM01213,Valid Claim,,,49,3
+CLM00153,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,821,36
+CLM00623,Manual Review,,Missing required evidence,26,29
+CLM00606,Invalid Claim,Fault/damage excluded,,1380,10
+CLM00505,Manual Review,,Contradictory evidence | Product/model inconsistency | Low OCR confidence,772,15
+CLM01177,Valid Claim,,,1064,10
+CLM00348,Invalid Claim,Warranty expired | Fault/damage excluded,,-189,12
+CLM00077,Valid Claim,,,15,3
+CLM01243,Valid Claim,,,688,9
+CLM01020,Valid Claim,,,825,7
+CLM00437,Invalid Claim,Fault/damage excluded,,1084,12
+CLM01036,Valid Claim,,,1041,10
+CLM00722,Valid Claim,,,151,9
+CLM00718,Invalid Claim,Fault/damage excluded,Missing required evidence | Low OCR confidence,606,13
+CLM00597,Manual Review,,Product/model inconsistency | Low OCR confidence,431,27
+CLM01420,Manual Review,,Missing required evidence,951,9
+CLM00457,Valid Claim,,,816,6
+CLM01275,Manual Review,,Low OCR confidence,379,4
+CLM01396,Valid Claim,,,797,22
+CLM00111,Invalid Claim,Reporting period exceeded,Missing required evidence,366,37
+CLM00703,Valid Claim,,,675,3
+CLM01051,Valid Claim,,,836,18
+CLM00338,Valid Claim,,,295,22
+CLM01190,Manual Review,,Low OCR confidence,550,7
+CLM00222,Invalid Claim,Warranty expired,Serial verification uncertain,-249,2
+CLM01260,Valid Claim,,,503,6
+CLM01494,Manual Review,,Missing required evidence,772,4
+CLM00272,Valid Claim,,,748,19
+CLM00618,Valid Claim,,,226,9
+CLM01006,Manual Review,,Missing required evidence,224,9
+CLM01375,Manual Review,,Missing required evidence,782,13
+CLM01220,Valid Claim,,,166,18
+CLM00941,Manual Review,,Missing required evidence,365,1
+CLM00462,Valid Claim,,,578,13
+CLM01337,Manual Review,,Missing required evidence,50,8
+CLM01087,Valid Claim,,,869,23
+CLM00566,Invalid Claim,Warranty expired,Product/model inconsistency,-360,7
+CLM00572,Invalid Claim,Warranty expired,Missing required evidence,-55,25
+CLM00652,Valid Claim,,,772,16
+CLM00259,Manual Review,,Missing required evidence,253,27
+CLM01488,Manual Review,,Product/model inconsistency,243,16
+CLM00836,Valid Claim,,,775,14
+CLM00943,Invalid Claim,Reporting period exceeded,,302,39
+CLM00751,Manual Review,,Missing required evidence,671,9
+CLM01137,Manual Review,,Product/model inconsistency,684,2
+CLM00752,Manual Review,,Missing required evidence,1239,23
+CLM01345,Manual Review,,Missing required evidence,795,15
+CLM00591,Valid Claim,,,152,12
+CLM01219,Manual Review,,Missing required evidence,1001,5
+CLM00770,Invalid Claim,Fault/damage excluded,,387,1
+CLM00542,Invalid Claim,Fault/damage excluded,,303,6
+CLM00402,Invalid Claim,Reporting period exceeded,,842,53
+CLM01371,Valid Claim,,,828,20
+CLM00895,Invalid Claim,Fault/damage excluded,,207,11
+CLM00459,Invalid Claim,Fault/damage excluded,Missing required evidence,905,11
+CLM01451,Valid Claim,,,129,30
+CLM01325,Valid Claim,,,511,4
+CLM00794,Invalid Claim,Fault/damage excluded,,550,11
+CLM00937,Manual Review,,Missing required evidence,136,17
+CLM01066,Manual Review,,Missing required evidence | Repair authorization uncertain,224,18
+CLM00066,Invalid Claim,Warranty expired,Missing required evidence,-88,24
+CLM00123,Invalid Claim,Reporting period exceeded,,493,50
+CLM01380,Manual Review,,Missing required evidence,14,3
+CLM00743,Invalid Claim,Unauthorized repair,,318,6
+CLM00535,Manual Review,,Missing required evidence,1061,7
+CLM00022,Invalid Claim,Warranty expired,,-22,18
+CLM00310,Invalid Claim,Fault/damage excluded,,250,2
+CLM01064,Manual Review,,Missing required evidence | Repair authorization uncertain,317,14
+CLM01132,Valid Claim,,,237,7
+CLM00418,Valid Claim,,,694,7
+CLM01139,Valid Claim,,,864,9
+CLM00177,Valid Claim,,,116,10
+CLM00322,Invalid Claim,Warranty expired,Missing required evidence,-251,9
+CLM00547,Invalid Claim,Warranty expired,Missing required evidence,-410,20
+CLM00869,Manual Review,,Missing required evidence,253,17
+CLM01416,Manual Review,,Missing required evidence,760,3
+CLM01207,Valid Claim,,,525,14
+CLM00187,Invalid Claim,Fault/damage excluded,Product/model inconsistency,973,26
+CLM01296,Manual Review,,Missing required evidence | Low OCR confidence,174,18
+CLM00803,Manual Review,,Missing required evidence,1013,13
+CLM00738,Manual Review,,Low OCR confidence,132,14
+CLM01302,Manual Review,,Missing required evidence,1052,2
+CLM00867,Manual Review,,Low OCR confidence,990,13
+CLM00948,Invalid Claim,Serial mismatch,,134,14
+CLM01174,Valid Claim,,,633,14
+CLM01393,Manual Review,,Missing required evidence,172,21
+CLM01040,Manual Review,,Missing required evidence,640,19
+CLM00136,Valid Claim,,,344,21
+CLM00573,Valid Claim,,,481,6
+CLM00334,Manual Review,,Missing required evidence,640,15
+CLM00054,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,962,37
+CLM00772,Invalid Claim,Fault/damage excluded,Low OCR confidence,499,11
+CLM00241,Invalid Claim,Serial mismatch,Missing required evidence,597,5
+CLM00516,Invalid Claim,Duplicate claim,Missing required evidence,378,13
+CLM00333,Invalid Claim,Fault/damage excluded,Missing required evidence,674,8
+CLM01059,Manual Review,,Missing required evidence,568,22
+CLM00594,Valid Claim,,,453,24
+CLM00829,Manual Review,,Missing required evidence | Low OCR confidence,315,10
+CLM00874,Manual Review,,Missing required evidence | Repair authorization uncertain,632,6
+CLM00345,Invalid Claim,Fault/damage excluded,Missing required evidence,545,23
+CLM00082,Invalid Claim,Warranty expired | Fault/damage excluded,,-114,14
+CLM00502,Manual Review,,Missing required evidence,241,13
+CLM00701,Invalid Claim,Warranty expired,Serial verification uncertain,-129,11
+CLM01128,Valid Claim,,,858,3
+CLM00876,Manual Review,,Missing required evidence,228,23
+CLM01041,Manual Review,,Missing required evidence,884,10
+CLM00167,Invalid Claim,Fault/damage excluded,Missing required evidence,566,4
+CLM01221,Valid Claim,,,616,12
+CLM00490,Invalid Claim,Fault/damage excluded,,149,7
+CLM00223,Invalid Claim,Warranty expired,,-9,10
+CLM01261,Manual Review,,Low OCR confidence,533,10
+CLM00596,Manual Review,,Missing required evidence | Contradictory evidence | Serial verification uncertain,614,14
+CLM00440,Invalid Claim,Warranty expired,Missing required evidence,-459,21
+CLM00479,Invalid Claim,Warranty expired | Fault/damage excluded,,-337,9
+CLM01319,Valid Claim,,,665,21
+CLM01011,Valid Claim,,,385,5
+CLM00470,Manual Review,,Missing required evidence | Serial verification uncertain,112,7
+CLM00341,Valid Claim,,,373,7
+CLM01210,Manual Review,,Product/model inconsistency,296,21
+CLM00165,Invalid Claim,Fault/damage excluded,Product/model inconsistency,273,11
+CLM00655,Invalid Claim,Warranty expired,,-195,10
+CLM00375,Invalid Claim,Warranty expired,,-273,22
+CLM01195,Manual Review,,Missing required evidence,177,14
+CLM01480,Manual Review,,Missing required evidence,491,16
+CLM00330,Valid Claim,,,27,23
+CLM00745,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,1043,31
+CLM00268,Manual Review,,Missing required evidence,1239,12
+CLM00067,Manual Review,,Serial verification uncertain,233,7
+CLM01126,Valid Claim,,,408,5
+CLM00897,Invalid Claim,Warranty expired,Missing required evidence,-89,4
+CLM01024,Valid Claim,,,499,9
+CLM01465,Valid Claim,,,677,15
+CLM01199,Valid Claim,,,167,9
+CLM01131,Valid Claim,,,479,4
+CLM01061,Valid Claim,,,284,14
+CLM00562,Invalid Claim,Fault/damage excluded,,62,17
+CLM00710,Manual Review,,Missing required evidence,1019,24
+CLM01377,Valid Claim,,,283,16
+CLM01316,Valid Claim,,,1003,21
+CLM00091,Invalid Claim,Fault/damage excluded,Serial verification uncertain,266,28
+CLM00477,Manual Review,,Missing required evidence,452,23
+CLM01441,Manual Review,,Missing required evidence,389,1
+CLM01468,Valid Claim,,,299,19
+CLM00121,Invalid Claim,Fault/damage excluded,Missing required evidence,289,30
+CLM01417,Manual Review,,Missing required evidence,634,21
+CLM00113,Invalid Claim,Fault/damage excluded,Missing required evidence,3,2
+CLM01403,Manual Review,,Missing required evidence | Serial verification uncertain,605,25
+CLM00518,Manual Review,,Missing required evidence,906,20
+CLM01267,Manual Review,,Missing required evidence,51,18
+CLM00342,Manual Review,,Missing required evidence | Product/model inconsistency,75,15
+CLM00734,Manual Review,,Missing required evidence,722,8
+CLM01277,Valid Claim,,,904,3
+CLM00765,Invalid Claim,Fault/damage excluded,Missing required evidence,652,16
+CLM01359,Valid Claim,,,583,25
+CLM01435,Valid Claim,,,584,25
+CLM00675,Valid Claim,,,159,9
+CLM01342,Valid Claim,,,389,26
+CLM00776,Manual Review,,Missing required evidence,57,5
+CLM00569,Manual Review,,Missing required evidence,680,7
+CLM00147,Manual Review,,Low OCR confidence,692,7
+CLM00117,Invalid Claim,Serial mismatch,Contradictory evidence,45,19
+CLM01445,Manual Review,,Missing required evidence,413,23
+CLM00450,Invalid Claim,Warranty expired,,-35,8
+CLM00574,Valid Claim,,,305,12
+CLM00753,Valid Claim,,,1006,9
+CLM00257,Valid Claim,,,1034,12
+CLM01129,Valid Claim,,,279,16
+CLM00442,Manual Review,,Low OCR confidence,346,19
+CLM01192,Valid Claim,,,827,21
+CLM01283,Valid Claim,,,424,1
+CLM00894,Manual Review,,Missing required evidence,475,5
+CLM00315,Manual Review,,Missing required evidence,1251,23
+CLM00593,Invalid Claim,Warranty expired,Missing required evidence,-171,3
+CLM00396,Invalid Claim,Fault/damage excluded,,430,8
+CLM00866,Invalid Claim,Warranty expired,Contradictory evidence,-5,30
+CLM00495,Manual Review,,Missing required evidence | Product/model inconsistency,104,10
+CLM00971,Invalid Claim,Fault/damage excluded,,270,12
+CLM00384,Invalid Claim,Fault/damage excluded,Missing required evidence,763,15
+CLM00387,Valid Claim,,,474,1
+CLM00664,Valid Claim,,,897,7
+CLM00613,Valid Claim,,,340,4
+CLM00483,Valid Claim,,,158,11
+CLM01095,Valid Claim,,,787,3
+CLM01288,Valid Claim,,,640,13
+CLM00130,Invalid Claim,Fault/damage excluded,,206,21
+CLM00410,Invalid Claim,Serial mismatch,,595,22
+CLM01321,Manual Review,,Missing required evidence,43,2
+CLM00677,Valid Claim,,,519,9
+CLM00391,Valid Claim,,,217,21
+CLM00808,Invalid Claim,Fault/damage excluded,Contradictory evidence | Low OCR confidence,975,23
+CLM00004,Manual Review,,Missing required evidence,224,22
+CLM00778,Valid Claim,,,707,11
+CLM00176,Invalid Claim,Warranty expired | Fault/damage excluded,,-177,7
+CLM00399,Manual Review,,Serial verification uncertain,828,6
+CLM00217,Valid Claim,,,816,19
+CLM00237,Invalid Claim,Warranty expired,,-231,11
+CLM00030,Valid Claim,,,117,3
+CLM00682,Invalid Claim,Duplicate claim,Missing required evidence | Low OCR confidence,814,12
+CLM00394,Invalid Claim,Fault/damage excluded,,104,4
+CLM00927,Invalid Claim,Warranty expired | Fault/damage excluded | Reporting period exceeded,Missing required evidence | Product/model inconsistency,-203,37
+CLM01167,Valid Claim,,,1006,12
+CLM00400,Valid Claim,,,228,5
+CLM00069,Invalid Claim,Warranty expired,Missing required evidence,-424,5
+CLM01446,Valid Claim,,,489,29
+CLM00845,Valid Claim,,,167,21
+CLM01453,Valid Claim,,,260,4
+CLM00826,Invalid Claim,Fault/damage excluded,Missing required evidence,707,1
+CLM01165,Valid Claim,,,509,9
+CLM00494,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,451,42
+CLM00626,Invalid Claim,Fault/damage excluded,Missing required evidence | Low OCR confidence,681,16
+CLM00422,Invalid Claim,Fault/damage excluded,Low OCR confidence,936,14
+CLM00256,Valid Claim,,,682,2
+CLM00536,Invalid Claim,Warranty expired | Reporting period exceeded,,-341,34
+CLM00560,Invalid Claim,Warranty expired | Reporting period exceeded,,-283,45
+CLM01046,Valid Claim,,,361,14
+CLM00012,Valid Claim,,,456,25
+CLM00210,Invalid Claim,Warranty expired | Fault/damage excluded,,-480,3
+CLM01381,Manual Review,,Serial verification uncertain,619,3
+CLM01029,Manual Review,,Missing required evidence | Low OCR confidence,969,11
+CLM01294,Valid Claim,,,512,19
+CLM00823,Manual Review,,Product/model inconsistency,593,9
+CLM01368,Manual Review,,Missing required evidence,506,8
+CLM00999,Valid Claim,,,597,2
+CLM00337,Valid Claim,,,582,9
+CLM00044,Invalid Claim,Warranty expired | Fault/damage excluded,,-23,13
+CLM00101,Valid Claim,,,447,4
+CLM00233,Valid Claim,,,170,10
+CLM00601,Manual Review,,Missing required evidence,983,23
+CLM00057,Valid Claim,,,664,9
+CLM00218,Manual Review,,Missing required evidence,393,21
+CLM00145,Invalid Claim,Fault/damage excluded,Missing required evidence,881,19
+CLM01367,Manual Review,,Missing required evidence,450,9
+CLM00982,Manual Review,,Missing required evidence,696,1
+CLM00436,Valid Claim,,,1055,15
+CLM01411,Manual Review,,Contradictory evidence | Repair authorization uncertain | Low OCR confidence,349,11
+CLM01169,Manual Review,,Serial verification uncertain,2,5
+CLM01273,Valid Claim,,,400,29
+CLM01496,Manual Review,,Missing required evidence | Product/model inconsistency,942,22
+CLM01179,Manual Review,,Missing required evidence | Product/model inconsistency,657,13
+CLM00475,Invalid Claim,Warranty expired | Fault/damage excluded | Reporting period exceeded,,-89,62
+CLM00637,Valid Claim,,,855,28
+CLM00193,Invalid Claim,Warranty expired,,-64,4
+CLM00615,Invalid Claim,Reporting period exceeded,Missing required evidence,559,42
+CLM00127,Manual Review,,Missing required evidence,746,5
+CLM00439,Valid Claim,,,333,18
+CLM01093,Valid Claim,,,496,16
+CLM01379,Valid Claim,,,105,23
+CLM01401,Manual Review,,Missing required evidence | Repair authorization uncertain,147,11
+CLM01045,Manual Review,,Missing required evidence,275,25
+CLM01253,Manual Review,,Low OCR confidence,187,16
+CLM01349,Valid Claim,,,540,12
+CLM00609,Invalid Claim,Fault/damage excluded,Missing required evidence,305,24
+CLM00219,Valid Claim,,,296,9
+CLM00522,Manual Review,,Missing required evidence,626,6
+CLM01484,Manual Review,,Missing required evidence,530,21
+CLM01239,Valid Claim,,,235,21
+CLM00850,Invalid Claim,Reporting period exceeded,Missing required evidence,454,51
+CLM00431,Invalid Claim,Unauthorized repair,,226,26
+CLM00540,Valid Claim,,,1062,18
+CLM00877,Invalid Claim,Fault/damage excluded,,312,26
+CLM00656,Invalid Claim,Warranty expired,,-23,19
+CLM00086,Invalid Claim,Reporting period exceeded,,309,34
+CLM01458,Valid Claim,,,711,6
+CLM00448,Valid Claim,,,473,13
+CLM01456,Valid Claim,,,428,18
+CLM01203,Valid Claim,,,712,18
+CLM00230,Invalid Claim,Fault/damage excluded,Missing required evidence,745,15
+CLM00308,Manual Review,,Missing required evidence,105,9
+CLM01081,Manual Review,,Missing required evidence,1061,16
+CLM01407,Valid Claim,,,571,3
+CLM00537,Invalid Claim,Warranty expired,,-117,21
+CLM00992,Valid Claim,,,922,1
+CLM00042,Invalid Claim,Fault/damage excluded,,253,8
+CLM00386,Invalid Claim,Fault/damage excluded,,988,14
+CLM01314,Manual Review,,Missing required evidence,521,5
+CLM00768,Invalid Claim,Warranty expired,,-741,7
+CLM01357,Manual Review,,Missing required evidence,44,5
+CLM00098,Manual Review,,Low OCR confidence,601,7
+CLM01363,Valid Claim,,,719,9
+CLM00305,Valid Claim,,,948,8
+CLM00532,Invalid Claim,Fault/damage excluded,,541,13
+CLM01459,Manual Review,,Missing required evidence,1039,16
+CLM00280,Valid Claim,,,186,10
+CLM01326,Valid Claim,,,166,7
+CLM00901,Invalid Claim,Reporting period exceeded,Missing required evidence,396,37
+CLM01295,Valid Claim,,,608,4
+CLM00840,Invalid Claim,Serial mismatch,,506,7
+CLM01432,Valid Claim,,,582,20
+CLM00427,Manual Review,,Missing required evidence | Product/model inconsistency,492,3
+CLM01255,Manual Review,,Missing required evidence | Low OCR confidence,215,27
+CLM00361,Manual Review,,Missing required evidence,630,19
+CLM00740,Invalid Claim,Warranty expired,,-505,5
+CLM00662,Invalid Claim,Fault/damage excluded,,739,2
+CLM00324,Invalid Claim,Warranty expired,Missing required evidence,-24,6
+CLM01414,Manual Review,,Missing required evidence | Low OCR confidence,880,26
+CLM01293,Valid Claim,,,635,4
+CLM01404,Valid Claim,,,448,7
+CLM00053,Invalid Claim,Reporting period exceeded,,30,50
+CLM01383,Valid Claim,,,593,4
+CLM01089,Manual Review,,Missing required evidence,346,13
+CLM00611,Invalid Claim,Warranty expired,,-286,2
+CLM00729,Valid Claim,,,69,14
+CLM00078,Invalid Claim,Serial mismatch | Unauthorized repair,,916,6
+CLM00164,Manual Review,,Missing required evidence,65,14
+CLM00128,Valid Claim,,,540,19
+CLM00175,Invalid Claim,Fault/damage excluded,,307,16
+CLM00648,Valid Claim,,,1188,13
+CLM01101,Valid Claim,,,326,24
+CLM01376,Manual Review,,Missing required evidence | Low OCR confidence,0,17
+CLM00827,Valid Claim,,,620,6
+CLM00545,Manual Review,,Missing required evidence | Serial verification uncertain,552,17
+CLM00055,Invalid Claim,Warranty expired,,-46,12
+CLM01048,Manual Review,,Missing required evidence | Serial verification uncertain,1084,4
+CLM00676,Valid Claim,,,261,15
+CLM00923,Manual Review,,Contradictory evidence,644,4
+CLM01173,Valid Claim,,,121,8
+CLM01467,Valid Claim,,,686,5
+CLM00624,Invalid Claim,Fault/damage excluded,Missing required evidence | Contradictory evidence,811,10
+CLM00627,Manual Review,,Low OCR confidence,600,15
+CLM00551,Invalid Claim,Fault/damage excluded,,835,4
+CLM00100,Invalid Claim,Warranty expired,,-360,16
+CLM00758,Manual Review,,Serial verification uncertain,487,20
+CLM00973,Manual Review,,Missing required evidence,358,7
+CLM01320,Manual Review,,Missing required evidence,539,16
+CLM00917,Invalid Claim,Fault/damage excluded,Missing required evidence,976,9
+CLM01109,Valid Claim,,,312,14
+CLM00339,Valid Claim,,,367,4
+CLM00263,Manual Review,,Missing required evidence,194,23
+CLM01222,Manual Review,,Serial verification uncertain,410,5
+CLM00154,Manual Review,,Missing required evidence,155,11
+CLM00024,Manual Review,,Low OCR confidence,191,24
+CLM01070,Valid Claim,,,1047,28
+CLM00484,Valid Claim,,,792,7
+CLM00605,Invalid Claim,Fault/damage excluded | Reporting period exceeded | Serial mismatch,,318,47
+CLM01477,Manual Review,,Missing required evidence,65,15
+CLM00585,Invalid Claim,Warranty expired | Fault/damage excluded,,-47,26
+CLM00995,Valid Claim,,,176,18
+CLM00405,Manual Review,,Missing required evidence,439,10
+CLM00192,Manual Review,,Serial verification uncertain,395,16
+CLM01306,Manual Review,,Missing required evidence,719,11
+CLM01068,Valid Claim,,,885,16
+CLM00853,Manual Review,,Missing required evidence,576,17
+CLM01018,Manual Review,,Low OCR confidence,682,4
+CLM00561,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,821,36
+CLM00960,Invalid Claim,Warranty expired | Reporting period exceeded,,-287,31
+CLM01206,Valid Claim,,,390,8
+CLM01071,Manual Review,,Missing required evidence | Serial verification uncertain,649,9
+CLM00793,Invalid Claim,Reporting period exceeded,Missing required evidence,528,38
+CLM01450,Valid Claim,,,202,10
+CLM01074,Manual Review,,Missing required evidence,630,4
+CLM00198,Manual Review,,Missing required evidence | Serial verification uncertain,332,18
+CLM00980,Invalid Claim,Fault/damage excluded,,501,10
+CLM00636,Valid Claim,,,480,1
+CLM00173,Manual Review,,Missing required evidence,539,7
+CLM00635,Manual Review,,Repair authorization uncertain,164,24
+CLM00108,Valid Claim,,,1000,14
+CLM00482,Valid Claim,,,616,11
+CLM00346,Invalid Claim,Fault/damage excluded,,151,21
+CLM00211,Valid Claim,,,358,14
+CLM00323,Valid Claim,,,316,18
+CLM00755,Invalid Claim,Fault/damage excluded,,569,3
+CLM00182,Invalid Claim,Reporting period exceeded,,169,33
+CLM00039,Manual Review,,Missing required evidence,42,16
+CLM01235,Manual Review,,Serial verification uncertain,168,19
+CLM00834,Invalid Claim,Warranty expired | Fault/damage excluded,,-120,30
+CLM01394,Manual Review,,Missing required evidence,647,18
+CLM00363,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,1031,65
+CLM01075,Manual Review,,Serial verification uncertain,249,16
+CLM01285,Valid Claim,,,129,11
+CLM00736,Valid Claim,,,233,7
+CLM00709,Manual Review,,Missing required evidence | Repair authorization uncertain,211,22
+CLM01301,Valid Claim,,,89,27
+CLM00300,Valid Claim,,,355,9
+CLM01133,Valid Claim,,,783,4
+CLM01351,Valid Claim,,,553,9
+CLM00261,Valid Claim,,,711,6
+CLM01150,Manual Review,,Missing required evidence | Product/model inconsistency,467,25
+CLM01444,Manual Review,,Missing required evidence,215,18
+CLM00644,Invalid Claim,Fault/damage excluded,,582,4
+CLM00610,Invalid Claim,Reporting period exceeded,Missing required evidence,534,45
+CLM00109,Manual Review,,Missing required evidence,858,12
+CLM01216,Manual Review,,Low OCR confidence,476,26
+CLM00471,Valid Claim,,,457,12
+CLM00525,Invalid Claim,Warranty expired | Fault/damage excluded | Unauthorized repair,Contradictory evidence,-304,12
+CLM01317,Manual Review,,Serial verification uncertain,545,3
+CLM00094,Valid Claim,,,677,21
+CLM00435,Invalid Claim,Warranty expired,,-474,13
+CLM01147,Manual Review,,Missing required evidence,281,21
+CLM00380,Invalid Claim,Fault/damage excluded,Low OCR confidence,274,5
+CLM00037,Manual Review,,Missing required evidence,557,12
+CLM00415,Invalid Claim,Fault/damage excluded,,402,20
+CLM01153,Manual Review,,Missing required evidence,311,6
+CLM00209,Valid Claim,,,1402,6
+CLM00185,Valid Claim,,,389,19
+CLM00458,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,290,48
+CLM00474,Invalid Claim,Fault/damage excluded,,22,5
+CLM01481,Manual Review,,Missing required evidence,216,16
+CLM00958,Invalid Claim,Fault/damage excluded,,354,19
+CLM00377,Manual Review,,Missing required evidence,536,22
+CLM00885,Invalid Claim,Fault/damage excluded,,998,21
+CLM00274,Valid Claim,,,792,16
+CLM00679,Invalid Claim,Fault/damage excluded,,235,12
+CLM00156,Invalid Claim,Warranty expired,,-179,6
+CLM00487,Invalid Claim,Fault/damage excluded,Missing required evidence | Low OCR confidence,958,23
+CLM01447,Valid Claim,,,669,14
+CLM00262,Invalid Claim,Fault/damage excluded,,486,9
+CLM00564,Manual Review,,Missing required evidence,123,23
+CLM01015,Valid Claim,,,647,8
+CLM00841,Invalid Claim,Fault/damage excluded,,540,28
+CLM00297,Manual Review,,Missing required evidence,977,8
+CLM00763,Valid Claim,,,595,1
+CLM00568,Valid Claim,,,72,8
+CLM00849,Invalid Claim,Warranty expired,,-68,9
+CLM00821,Valid Claim,,,304,19
+CLM00036,Valid Claim,,,307,27
+CLM00741,Valid Claim,,,853,16
+CLM00988,Valid Claim,,,752,8
+CLM00351,Valid Claim,,,655,6
+CLM01025,Valid Claim,,,495,8
+CLM00805,Valid Claim,,,187,6
+CLM00785,Manual Review,,Low OCR confidence,594,19
+CLM01430,Manual Review,,Missing required evidence,181,22
+CLM00779,Valid Claim,,,279,20
+CLM01035,Valid Claim,,,234,14
+CLM01408,Manual Review,,Low OCR confidence,475,17
+CLM00994,Valid Claim,,,517,15
+CLM00539,Valid Claim,,,294,8
+CLM01449,Manual Review,,Low OCR confidence,705,18
+CLM00278,Valid Claim,,,684,19
+CLM00911,Invalid Claim,Reporting period exceeded,Missing required evidence,544,46
+CLM00811,Valid Claim,,,314,28
+CLM00713,Invalid Claim,Fault/damage excluded,Missing required evidence,113,7
+CLM00716,Invalid Claim,Unauthorized repair,,253,26
+CLM01251,Manual Review,,Missing required evidence,824,7
+CLM00732,Invalid Claim,Serial mismatch,,723,7
+CLM01308,Manual Review,,Missing required evidence | Product/model inconsistency,554,14
+CLM01201,Valid Claim,,,598,24
+CLM00432,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-232,25
+CLM01119,Valid Claim,,,178,0
+CLM00316,Valid Claim,,,125,13
+CLM00919,Valid Claim,,,862,27
+CLM01400,Manual Review,,Serial verification uncertain,813,7
+CLM00854,Invalid Claim,Warranty expired,,-586,10
+CLM00202,Invalid Claim,Warranty expired | Unauthorized repair,,-86,5
+CLM01364,Manual Review,,Missing required evidence,1028,5
+CLM00548,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence | Contradictory evidence,1033,46
+CLM01067,Manual Review,,Low OCR confidence,207,5
+CLM01278,Valid Claim,,,241,4
+CLM00148,Invalid Claim,Warranty expired,,-199,11
+CLM00441,Valid Claim,,,339,22
+CLM00671,Invalid Claim,Fault/damage excluded | Duplicate claim,,118,9
+CLM00510,Invalid Claim,Fault/damage excluded,,416,11
+CLM00020,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,59,40
+CLM00047,Invalid Claim,Fault/damage excluded,,201,7
+CLM00478,Manual Review,,Low OCR confidence,617,5
+CLM00190,Invalid Claim,Warranty expired,,-622,22
+CLM01166,Valid Claim,,,996,2
+CLM00242,Manual Review,,Product/model inconsistency,1406,9
+CLM00989,Manual Review,,Missing required evidence,208,30
+CLM01268,Manual Review,,Missing required evidence,410,6
+CLM01232,Manual Review,,Serial verification uncertain,591,12
+CLM00367,Valid Claim,,,136,28
+CLM00935,Valid Claim,,,970,12
+CLM00461,Invalid Claim,Serial mismatch,,234,8
+CLM00649,Valid Claim,,,127,7
+CLM01248,Valid Claim,,,90,13
+CLM00780,Manual Review,,Product/model inconsistency,756,27
+CLM01440,Manual Review,,Missing required evidence,109,11
+CLM00828,Manual Review,,Missing required evidence,257,4
+CLM00634,Invalid Claim,Fault/damage excluded,,506,11
+CLM00694,Invalid Claim,Warranty expired,,-11,18
+CLM01113,Manual Review,,Missing required evidence,349,8
+CLM01073,Valid Claim,,,415,21
+CLM01096,Valid Claim,,,537,25
+CLM00825,Invalid Claim,Fault/damage excluded,,338,17
+CLM00114,Invalid Claim,Warranty expired,Missing required evidence | Product/model inconsistency,-145,25
+CLM01347,Valid Claim,,,171,10
+CLM00260,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Contradictory evidence,186,70
+CLM00074,Invalid Claim,Warranty expired,Contradictory evidence | Repair authorization uncertain,-148,15
+CLM00533,Invalid Claim,Fault/damage excluded | Duplicate claim,,422,10
+CLM00344,Invalid Claim,Fault/damage excluded,,211,24
+CLM00538,Invalid Claim,Fault/damage excluded,,347,9
+CLM01154,Manual Review,,Product/model inconsistency,265,11
+CLM00253,Valid Claim,,,179,26
+CLM00642,Invalid Claim,Warranty expired,Missing required evidence | Product/model inconsistency,-94,16
+CLM00058,Invalid Claim,Reporting period exceeded,Missing required evidence,272,33
+CLM01120,Valid Claim,,,973,18
+CLM00466,Invalid Claim,Fault/damage excluded,,451,14
+CLM01388,Manual Review,,Missing required evidence,1019,6
+CLM00179,Valid Claim,,,309,16
+CLM00727,Invalid Claim,Fault/damage excluded,,948,6
+CLM00742,Valid Claim,,,510,6
+CLM00017,Valid Claim,,,894,13
+CLM00340,Invalid Claim,Warranty expired,Missing required evidence | Serial verification uncertain,-206,8
+CLM00408,Invalid Claim,Warranty expired,,-30,6
+CLM00491,Manual Review,,Low OCR confidence,196,6
+CLM01163,Manual Review,,Missing required evidence,1068,18
+CLM01405,Valid Claim,,,453,11
+CLM00277,Invalid Claim,Fault/damage excluded,,570,11
+CLM00830,Valid Claim,,,200,6
+CLM01298,Valid Claim,,,17,3
+CLM00617,Valid Claim,,,306,23
+CLM00658,Valid Claim,,,337,21
+CLM00949,Invalid Claim,Warranty expired | Unauthorized repair,Low OCR confidence,-40,16
+CLM01030,Manual Review,,Low OCR confidence,220,7
+CLM01238,Valid Claim,,,569,17
+CLM00882,Manual Review,,Missing required evidence | Serial verification uncertain,153,5
+CLM01170,Manual Review,,Repair authorization uncertain,229,9
+CLM00372,Invalid Claim,Warranty expired | Reporting period exceeded | Duplicate claim,,-4,46
+CLM01106,Valid Claim,,,534,23
+CLM00570,Invalid Claim,Warranty expired,,-255,2
+CLM00050,Invalid Claim,Fault/damage excluded | Serial mismatch,,187,24
+CLM01460,Valid Claim,,,1347,8
+CLM01012,Valid Claim,,,90,19
+CLM00472,Valid Claim,,,300,12
+CLM01028,Valid Claim,,,925,23
+CLM01486,Manual Review,,Low OCR confidence,1083,2
+CLM01184,Manual Review,,Missing required evidence,120,11
+CLM01358,Valid Claim,,,913,15
+CLM01162,Valid Claim,,,508,20
+CLM00871,Manual Review,,Missing required evidence,544,25
+CLM00529,Manual Review,,Missing required evidence | Product/model inconsistency,861,17
+CLM00096,Valid Claim,,,37,11
+CLM00608,Invalid Claim,Fault/damage excluded,Missing required evidence,593,7
+CLM00081,Valid Claim,,,222,12
+CLM00429,Manual Review,,Missing required evidence,91,18
+CLM01410,Manual Review,,Missing required evidence,1065,12
+CLM00388,Valid Claim,,,593,10
+CLM00964,Manual Review,,Missing required evidence,382,13
+CLM00873,Invalid Claim,Fault/damage excluded,Missing required evidence,213,8
+CLM00906,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-883,6
+CLM01330,Valid Claim,,,1071,2
+CLM00674,Valid Claim,,,310,23
+CLM00527,Manual Review,,Missing required evidence,579,6
+CLM00454,Manual Review,,Missing required evidence,911,8
+CLM00255,Invalid Claim,Warranty expired | Reporting period exceeded,,-221,47
+CLM00950,Valid Claim,,,672,19
+CLM00243,Invalid Claim,Warranty expired,,-236,3
+CLM00282,Manual Review,,Low OCR confidence,164,1
+CLM00977,Invalid Claim,Fault/damage excluded,,247,8
+CLM01341,Manual Review,,Missing required evidence,178,5
+CLM01084,Manual Review,,Missing required evidence,593,21
+CLM01231,Manual Review,,Missing required evidence,236,15
+CLM01266,Manual Review,,Low OCR confidence,556,9
+CLM00382,Manual Review,,Missing required evidence | Serial verification uncertain,868,2
+CLM00166,Invalid Claim,Fault/damage excluded,,1015,13
+CLM00764,Invalid Claim,Warranty expired,Missing required evidence,-287,8
+CLM00292,Valid Claim,,,415,16
+CLM01098,Manual Review,,Missing required evidence | Serial verification uncertain,334,14
+CLM00061,Invalid Claim,Fault/damage excluded,Missing required evidence,686,12
+CLM01476,Manual Review,,Missing required evidence,725,2
+CLM00750,Invalid Claim,Fault/damage excluded,,264,10
+CLM01365,Manual Review,,Missing required evidence,319,20
+CLM01103,Valid Claim,,,536,5
+CLM00088,Invalid Claim,Warranty expired,,-4,6
+CLM00852,Valid Claim,,,597,1
+CLM00632,Manual Review,,Low OCR confidence,1190,7
+CLM00506,Valid Claim,,,674,29
+CLM01350,Manual Review,,Missing required evidence,620,9
+CLM00704,Invalid Claim,Reporting period exceeded,,326,31
+CLM01443,Valid Claim,,,560,6
+CLM00444,Valid Claim,,,330,19
+CLM01436,Valid Claim,,,44,25
+CLM00558,Manual Review,,Missing required evidence,573,16
+CLM01324,Valid Claim,,,45,9
+CLM00970,Valid Claim,,,1378,4
+CLM00301,Invalid Claim,Fault/damage excluded,,1061,25
+CLM00258,Invalid Claim,Reporting period exceeded,,503,44
+CLM01318,Manual Review,,Missing required evidence,121,11
+CLM00947,Invalid Claim,Serial mismatch,Missing required evidence | Product/model inconsistency | Low OCR confidence,268,5
+CLM00800,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-427,9
+CLM01142,Valid Claim,,,469,5
+CLM00383,Manual Review,,Missing required evidence,57,29
+CLM00295,Invalid Claim,Fault/damage excluded,,755,7
+CLM00981,Invalid Claim,Fault/damage excluded,Missing required evidence,988,26
+CLM01100,Valid Claim,,,568,1
+CLM00938,Manual Review,,Missing required evidence,573,16
+CLM00355,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,555,44
+CLM00567,Manual Review,,Serial verification uncertain,528,10
+CLM00332,Valid Claim,,,1031,6
+CLM00714,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-27,6
+CLM00120,Valid Claim,,,538,15
+CLM00325,Invalid Claim,Reporting period exceeded,Missing required evidence,570,34
+CLM00056,Manual Review,,Missing required evidence,416,8
+CLM00702,Invalid Claim,Reporting period exceeded | Serial mismatch,Low OCR confidence,312,33
+CLM00645,Valid Claim,,,942,0
+CLM00369,Valid Claim,,,546,12
+CLM00155,Invalid Claim,Warranty expired,Missing required evidence,-399,16
+CLM00503,Invalid Claim,Warranty expired,,-568,16
+CLM01039,Manual Review,,Missing required evidence | Product/model inconsistency | Low OCR confidence,225,3
+CLM00680,Invalid Claim,Warranty expired,,-257,6
+CLM01431,Manual Review,,Missing required evidence | Repair authorization uncertain | Low OCR confidence,15,18
+CLM01406,Manual Review,,Missing required evidence,925,3
+CLM01426,Valid Claim,,,523,9
+CLM01172,Valid Claim,,,486,18
+CLM00488,Valid Claim,,,4,25
+CLM00033,Invalid Claim,Warranty expired | Reporting period exceeded,Missing required evidence,-221,52
+CLM01300,Valid Claim,,,343,22
+CLM00681,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Product/model inconsistency,141,40
+CLM00178,Valid Claim,,,179,20
+CLM00279,Invalid Claim,Warranty expired,Missing required evidence,-176,4
+CLM00819,Valid Claim,,,61,23
+CLM01217,Valid Claim,,,1018,11
+CLM00588,Valid Claim,,,170,7
+CLM00126,Invalid Claim,Warranty expired,,-21,4
+CLM00110,Invalid Claim,Duplicate claim,Missing required evidence,422,11
+CLM00414,Invalid Claim,Fault/damage excluded,Missing required evidence | Low OCR confidence,693,12
+CLM00586,Invalid Claim,Warranty expired,Low OCR confidence,-375,15
+CLM00939,Manual Review,,Missing required evidence | Repair authorization uncertain,382,21
+CLM00509,Invalid Claim,Warranty expired,,-309,1
+CLM01010,Valid Claim,,,506,4
+CLM00993,Valid Claim,,,16,21
+CLM00712,Valid Claim,,,1281,19
+CLM01156,Valid Claim,,,353,12
+CLM00264,Valid Claim,,,151,5
+CLM00313,Valid Claim,,,668,13
+CLM00963,Valid Claim,,,1331,23
+CLM00244,Invalid Claim,Reporting period exceeded,Missing required evidence,490,37
+CLM00508,Invalid Claim,Fault/damage excluded,,698,10
+CLM00137,Invalid Claim,Reporting period exceeded,Missing required evidence,977,49
+CLM00959,Manual Review,,Missing required evidence,668,16
+CLM01181,Manual Review,,Contradictory evidence,1030,4
+CLM00584,Invalid Claim,Fault/damage excluded,,1080,14
+CLM01338,Manual Review,,Contradictory evidence,288,3
+CLM00306,Manual Review,,Missing required evidence,436,25
+CLM01331,Manual Review,,Missing required evidence | Product/model inconsistency,591,10
+CLM01004,Valid Claim,,,674,3
+CLM00812,Invalid Claim,Warranty expired | Duplicate claim,,-76,20
+CLM00216,Invalid Claim,Fault/damage excluded | Reporting period exceeded,,298,32
+CLM00398,Valid Claim,,,340,25
+CLM00001,Invalid Claim,Serial mismatch,,389,8
+CLM00171,Invalid Claim,Fault/damage excluded | Serial mismatch,,649,7
+CLM00816,Invalid Claim,Fault/damage excluded,,890,4
+CLM00303,Manual Review,,Missing required evidence,496,20
+CLM00844,Manual Review,,Low OCR confidence,612,10
+CLM00863,Invalid Claim,Warranty expired,,-232,12
+CLM00878,Manual Review,,Low OCR confidence,468,27
+CLM01086,Valid Claim,,,722,8
+CLM00026,Valid Claim,,,39,4
+CLM00188,Manual Review,,Missing required evidence,342,17
+CLM01032,Manual Review,,Low OCR confidence,160,25
+CLM00746,Valid Claim,,,33,1
+CLM00075,Invalid Claim,Serial mismatch | Unauthorized repair,Missing required evidence,712,17
+CLM01482,Manual Review,,Product/model inconsistency,1090,6
+CLM00705,Manual Review,,Low OCR confidence,708,5
+CLM00910,Manual Review,,Missing required evidence | Low OCR confidence,65,29
+CLM00693,Manual Review,,Missing required evidence,313,10
+CLM00413,Valid Claim,,,68,18
+CLM01099,Valid Claim,,,675,18
+CLM01354,Manual Review,,Missing required evidence,314,7
+CLM01021,Manual Review,,Missing required evidence,23,17
+CLM01060,Valid Claim,,,224,10
+CLM01226,Manual Review,,Missing required evidence,898,2
+CLM01340,Manual Review,,Missing required evidence,232,6
+CLM00151,Invalid Claim,Warranty expired | Fault/damage excluded | Serial mismatch,Missing required evidence | Low OCR confidence,-265,18
+CLM01247,Manual Review,,Missing required evidence | Serial verification uncertain,1039,13
+CLM01249,Valid Claim,,,334,4
+CLM01471,Manual Review,,Product/model inconsistency,1156,9
+CLM00881,Valid Claim,,,521,0
+CLM00913,Invalid Claim,Reporting period exceeded,,333,51
+CLM01284,Manual Review,,Contradictory evidence,257,29
+CLM01442,Valid Claim,,,875,5
+CLM00595,Invalid Claim,Warranty expired | Reporting period exceeded,,-350,34
+CLM01072,Manual Review,,Missing required evidence,99,22
+CLM00079,Invalid Claim,Reporting period exceeded,Low OCR confidence,325,35
+CLM00929,Invalid Claim,Fault/damage excluded | Duplicate claim,,666,16
+CLM00273,Invalid Claim,Warranty expired | Duplicate claim,,-53,30
+CLM01378,Valid Claim,,,859,0
+CLM01121,Valid Claim,,,173,3
+CLM01286,Manual Review,,Missing required evidence,212,15
+CLM00428,Manual Review,,Low OCR confidence,53,21
+CLM00293,Invalid Claim,Reporting period exceeded,,22,31
+CLM00271,Valid Claim,,,514,1
+CLM00031,Invalid Claim,Serial mismatch,,957,13
+CLM00434,Invalid Claim,Fault/damage excluded,Missing required evidence,111,17
+CLM01043,Manual Review,,Missing required evidence,665,14
+CLM00245,Invalid Claim,Reporting period exceeded,,931,45
+CLM00887,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Contradictory evidence,80,53
+CLM00236,Manual Review,,Low OCR confidence,240,6
+CLM00900,Invalid Claim,Warranty expired,,-162,21
+CLM00106,Valid Claim,,,601,3
+CLM00080,Invalid Claim,Warranty expired,Missing required evidence,-180,14
+CLM01118,Manual Review,,Missing required evidence,711,13
+CLM00969,Valid Claim,,,652,11
+CLM01188,Valid Claim,,,417,27
+CLM00299,Manual Review,,Missing required evidence,668,15
+CLM01339,Valid Claim,,,186,8
+CLM00592,Manual Review,,Missing required evidence,104,6
+CLM00711,Manual Review,,Missing required evidence,852,20
+CLM01037,Valid Claim,,,1030,13
+CLM00953,Invalid Claim,Warranty expired | Duplicate claim,,-189,11
+CLM01116,Manual Review,,Missing required evidence,1049,17
+CLM00184,Invalid Claim,Warranty expired,Missing required evidence,-19,3
+CLM01310,Manual Review,,Serial verification uncertain,819,6
+CLM00985,Manual Review,,Missing required evidence,966,16
+CLM00799,Invalid Claim,Warranty expired,,-534,5
+CLM00534,Manual Review,,Missing required evidence,205,26
+CLM01159,Manual Review,,Missing required evidence,608,29
+CLM01229,Manual Review,,Missing required evidence,717,15
+CLM00285,Invalid Claim,Fault/damage excluded,,676,0
+CLM00842,Manual Review,,Missing required evidence,1071,0
+CLM00888,Manual Review,,Missing required evidence,564,27
+CLM00498,Invalid Claim,Warranty expired,Missing required evidence,-63,28
+CLM00433,Valid Claim,,,933,9
+CLM01466,Valid Claim,,,1058,27
+CLM00748,Invalid Claim,Fault/damage excluded,,1061,5
+CLM00983,Valid Claim,,,245,5
+CLM01423,Valid Claim,,,141,3
+CLM00898,Invalid Claim,Warranty expired,,-154,12
+CLM00820,Invalid Claim,Fault/damage excluded,Missing required evidence | Serial verification uncertain,9,7
+CLM01223,Manual Review,,Missing required evidence,1129,22
+CLM00559,Invalid Claim,Warranty expired,Missing required evidence,-185,15
+CLM00476,Valid Claim,,,193,10
+CLM01271,Manual Review,,Contradictory evidence,667,7
+CLM00884,Manual Review,,Low OCR confidence,355,6
+CLM00810,Invalid Claim,Fault/damage excluded,,547,3
+CLM01158,Manual Review,,Missing required evidence,213,3
+CLM00590,Invalid Claim,Warranty expired | Fault/damage excluded,,-14,3
+CLM00220,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence | Contradictory evidence | Repair authorization uncertain,-12,7
+CLM00944,Valid Claim,,,1011,11
+CLM00666,Valid Claim,,,1023,26
+CLM01487,Manual Review,,Missing required evidence,390,7
+CLM00364,Invalid Claim,Fault/damage excluded,,278,20
+CLM00347,Manual Review,,Missing required evidence | Low OCR confidence,424,10
+CLM01083,Valid Claim,,,993,24
+CLM01439,Manual Review,,Missing required evidence,572,16
+CLM00602,Manual Review,,Low OCR confidence,70,4
+CLM00134,Manual Review,,Low OCR confidence,598,26
+CLM00579,Valid Claim,,,622,4
+CLM00249,Invalid Claim,Reporting period exceeded,,79,37
+CLM01374,Valid Claim,,,217,18
+CLM01208,Valid Claim,,,322,19
+CLM01144,Manual Review,,Missing required evidence,95,20
+CLM01289,Valid Claim,,,352,24
+CLM00097,Invalid Claim,Fault/damage excluded,,622,20
+CLM00143,Invalid Claim,Warranty expired | Fault/damage excluded,,-174,1
+CLM00951,Manual Review,,Repair authorization uncertain,484,9
+CLM01214,Valid Claim,,,272,6
+CLM00327,Invalid Claim,Warranty expired | Reporting period exceeded,Missing required evidence | Contradictory evidence,-331,33
+CLM00159,Invalid Claim,Fault/damage excluded | Unauthorized repair,Serial verification uncertain,561,5
+CLM01160,Manual Review,,Missing required evidence,987,9
+CLM01196,Manual Review,,Missing required evidence,342,3
+CLM01049,Valid Claim,,,851,14
+CLM00749,Invalid Claim,Fault/damage excluded,,155,23
+CLM01052,Valid Claim,,,470,13
+CLM00966,Invalid Claim,Fault/damage excluded,Missing required evidence,73,19
+CLM01274,Manual Review,,Missing required evidence,328,6
+CLM00360,Invalid Claim,Fault/damage excluded,Contradictory evidence | Low OCR confidence,71,9
+CLM01112,Manual Review,,Product/model inconsistency | Low OCR confidence,280,8
+CLM00025,Invalid Claim,Reporting period exceeded,Low OCR confidence,198,32
+CLM00288,Invalid Claim,Fault/damage excluded,Serial verification uncertain | Repair authorization uncertain,56,11
+CLM00683,Invalid Claim,Warranty expired,,-31,4
+CLM00021,Invalid Claim,Warranty expired,Missing required evidence | Serial verification uncertain,-8,5
+CLM00630,Manual Review,,Missing required evidence,308,30
+CLM00343,Manual Review,,Repair authorization uncertain,168,2
+CLM00809,Invalid Claim,Warranty expired,Missing required evidence,-72,3
+CLM00214,Manual Review,,Missing required evidence,111,20
+CLM00698,Invalid Claim,Warranty expired,,-150,20
+CLM01265,Manual Review,,Missing required evidence,441,2
+CLM01240,Valid Claim,,,323,8
+CLM00616,Valid Claim,,,818,2
+CLM01312,Valid Claim,,,10,3
+CLM01056,Manual Review,,Missing required evidence,722,5
+CLM01122,Valid Claim,,,555,17
+CLM00286,Manual Review,,Repair authorization uncertain,195,10
+CLM00915,Valid Claim,,,143,26
+CLM00791,Valid Claim,,,343,15
+CLM00406,Invalid Claim,Fault/damage excluded,Missing required evidence,217,16
+CLM01013,Valid Claim,,,691,17
+CLM00855,Valid Claim,,,559,2
+CLM00604,Invalid Claim,Fault/damage excluded,,95,23
+CLM00169,Manual Review,,Missing required evidence,318,21
+CLM00880,Invalid Claim,Fault/damage excluded,,578,2
+CLM01334,Valid Claim,,,878,18
+CLM00206,Valid Claim,,,841,11
+CLM00076,Invalid Claim,Fault/damage excluded | Duplicate claim,,271,9
+CLM01008,Manual Review,,Contradictory evidence,215,7
+CLM01130,Manual Review,,Missing required evidence,1072,13
+CLM00786,Manual Review,,Missing required evidence,262,3
+CLM00815,Manual Review,,Missing required evidence,571,22
+CLM00925,Valid Claim,,,157,13
+CLM00392,Invalid Claim,Warranty expired,,-204,19
+CLM00239,Valid Claim,,,57,24
+CLM00194,Invalid Claim,Fault/damage excluded,Product/model inconsistency | Low OCR confidence,630,9
+CLM01250,Valid Claim,,,342,19
+CLM01185,Manual Review,,Missing required evidence,222,6
+CLM00690,Valid Claim,,,652,0
+CLM00085,Manual Review,,Missing required evidence,605,20
+CLM00918,Valid Claim,,,168,27
+CLM00875,Manual Review,,Missing required evidence,961,6
+CLM00393,Manual Review,,Missing required evidence | Low OCR confidence,313,8
+CLM01140,Manual Review,,Missing required evidence,1039,7
+CLM00089,Invalid Claim,Duplicate claim,Missing required evidence | Repair authorization uncertain,359,7
+CLM00928,Valid Claim,,,179,8
+CLM01246,Valid Claim,,,1020,4
+CLM00485,Invalid Claim,Warranty expired,,-370,14
+CLM00232,Manual Review,,Low OCR confidence,927,8
+CLM01422,Valid Claim,,,513,19
+CLM00519,Invalid Claim,Fault/damage excluded,,256,16
+CLM01454,Manual Review,,Missing required evidence,372,30
+CLM00599,Invalid Claim,Fault/damage excluded,,4,9
+CLM01234,Manual Review,,Missing required evidence | Serial verification uncertain,218,3
+CLM00203,Invalid Claim,Warranty expired | Fault/damage excluded,Missing required evidence,-26,19
+CLM01127,Valid Claim,,,162,6
+CLM00389,Manual Review,,Missing required evidence,530,22
+CLM00952,Invalid Claim,Reporting period exceeded,,495,31
+CLM00699,Manual Review,,Low OCR confidence,141,5
+CLM01479,Manual Review,,Missing required evidence,216,12
+CLM00381,Manual Review,,Missing required evidence,597,26
+CLM00688,Valid Claim,,,40,7
+CLM00359,Invalid Claim,Fault/damage excluded,,793,3
+CLM00146,Invalid Claim,Fault/damage excluded,Missing required evidence,714,16
+CLM00072,Valid Claim,,,84,3
+CLM01091,Valid Claim,,,190,19
+CLM00152,Manual Review,,Low OCR confidence,166,27
+CLM00141,Manual Review,,Missing required evidence,255,7
+CLM00667,Invalid Claim,Warranty expired,Missing required evidence,-110,1
+CLM01307,Manual Review,,Missing required evidence,640,6
+CLM01209,Valid Claim,,,378,29
+CLM00207,Invalid Claim,Reporting period exceeded,Missing required evidence,233,32
+CLM01472,Manual Review,,Missing required evidence,345,6
+CLM00438,Invalid Claim,Reporting period exceeded,Low OCR confidence,697,34
+CLM01001,Manual Review,,Missing required evidence,952,17
+CLM00663,Invalid Claim,Fault/damage excluded,Missing required evidence,315,5
+CLM00107,Invalid Claim,Warranty expired | Reporting period exceeded | Unauthorized repair | Duplicate claim,,-271,43
+CLM01461,Manual Review,,Missing required evidence,549,15
+CLM00774,Manual Review,,Missing required evidence,33,6
+CLM00856,Valid Claim,,,717,14
+CLM00721,Invalid Claim,Fault/damage excluded,,450,1
+CLM01125,Manual Review,,Missing required evidence,561,14
+CLM00607,Invalid Claim,Serial mismatch,,713,5
+CLM00889,Manual Review,,Product/model inconsistency,486,21
+CLM00661,Valid Claim,,,126,9
+CLM00149,Invalid Claim,Warranty expired,,-462,15
+CLM00349,Invalid Claim,Warranty expired | Fault/damage excluded,,-308,11
+CLM01110,Manual Review,,Missing required evidence,77,8
+CLM01478,Manual Review,,Missing required evidence,259,16
+CLM01108,Manual Review,,Missing required evidence,271,2
+CLM01114,Valid Claim,,,256,6
+CLM00373,Valid Claim,,,343,9
+CLM01463,Manual Review,,Missing required evidence,968,13
+CLM01335,Manual Review,,Missing required evidence,1059,27
+CLM00706,Invalid Claim,Reporting period exceeded,,1016,31
+CLM01236,Valid Claim,,,295,7
+CLM00140,Invalid Claim,Warranty expired,,-263,4
+CLM00978,Invalid Claim,Fault/damage excluded,,353,3
+CLM00621,Invalid Claim,Fault/damage excluded | Duplicate claim,Missing required evidence,246,21
+CLM01390,Manual Review,,Serial verification uncertain,750,11
+CLM01017,Valid Claim,,,199,7
+CLM00213,Valid Claim,,,289,14
+CLM00065,Invalid Claim,Fault/damage excluded,,612,19
+CLM00571,Valid Claim,,,11,5
+CLM00170,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,1054,42
+CLM01117,Valid Claim,,,1010,27
+CLM00357,Invalid Claim,Fault/damage excluded,,636,9
+CLM00575,Manual Review,,Product/model inconsistency,921,24
+CLM01183,Valid Claim,,,469,22
+CLM00544,Manual Review,,Missing required evidence,337,25
+CLM00199,Valid Claim,,,700,9
+CLM00670,Valid Claim,,,765,3
+CLM01279,Valid Claim,,,420,3
+CLM00073,Invalid Claim,Fault/damage excluded | Serial mismatch,Missing required evidence,510,13
+CLM01272,Valid Claim,,,694,24
+CLM00831,Valid Claim,,,269,14
+CLM00132,Invalid Claim,Duplicate claim,Low OCR confidence,582,11
+CLM00847,Manual Review,,Low OCR confidence,15,13
+CLM00598,Invalid Claim,Warranty expired,,-346,12
+CLM00463,Invalid Claim,Warranty expired,Serial verification uncertain | Low OCR confidence,-28,11
+CLM00204,Manual Review,,Missing required evidence,693,16
+CLM00760,Invalid Claim,Fault/damage excluded | Reporting period exceeded,Missing required evidence,218,34
+CLM00514,Manual Review,,Product/model inconsistency | Low OCR confidence,335,20
+CLM00186,Manual Review,,Missing required evidence,127,3
+CLM00048,Manual Review,,Missing required evidence,714,14
+CLM01145,Manual Review,,Contradictory evidence,856,9
+CLM00633,Invalid Claim,Reporting period exceeded,,116,31
+CLM00131,Manual Review,,Low OCR confidence,0,15
+CLM00700,Invalid Claim,Warranty expired | Fault/damage excluded | Reporting period exceeded,Missing required evidence | Contradictory evidence,-272,32
+CLM00023,Valid Claim,,,89,2
+CLM01332,Manual Review,,Missing required evidence,251,28
+CLM00212,Manual Review,,Low OCR confidence,482,19
+CLM01402,Manual Review,,Missing required evidence,599,11
+CLM00409,Invalid Claim,Serial mismatch,,896,8
+CLM00998,Valid Claim,,,212,20
+CLM00358,Invalid Claim,Warranty expired,Missing required evidence,-426,11
+CLM01362,Valid Claim,,,631,16
+CLM00647,Valid Claim,,,996,6
+CLM00412,Manual Review,,Missing required evidence,1087,5
+CLM00497,Manual Review,,Missing required evidence | Product/model inconsistency,411,25
+CLM01329,Manual Review,,Low OCR confidence,312,27
+CLM00250,Valid Claim,,,140,15
+CLM00556,Manual Review,,Missing required evidence,307,22
+CLM00612,Invalid Claim,Fault/damage excluded,,421,22
+CLM00576,Invalid Claim,Warranty expired,,-613,11
+CLM00859,Valid Claim,,,874,5
+CLM01333,Manual Review,,Missing required evidence,922,3
+CLM00493,Manual Review,,Missing required evidence,223,18
+CLM01392,Manual Review,,Low OCR confidence,306,1
+CLM00622,Manual Review,,Missing required evidence | Serial verification uncertain,548,15
+CLM01202,Valid Claim,,,512,9
+CLM01387,Manual Review,,Product/model inconsistency,276,5
+CLM01346,Valid Claim,,,613,8
+CLM00862,Invalid Claim,Fault/damage excluded,,141,18
+CLM00707,Invalid Claim,Fault/damage excluded,Missing required evidence,391,15
+CLM00317,Manual Review,,Missing required evidence,53,5
+CLM01189,Valid Claim,,,264,9
+CLM01398,Manual Review,,Missing required evidence,627,19
+CLM01303,Manual Review,,Serial verification uncertain,79,17
+CLM00946,Manual Review,,Missing required evidence | Contradictory evidence,669,3
+CLM00865,Valid Claim,,,560,9
+CLM01304,Manual Review,,Missing required evidence,848,8
+CLM00769,Manual Review,,Missing required evidence,241,14
+CLM00379,Invalid Claim,Fault/damage excluded,Low OCR confidence,421,12
+CLM00784,Invalid Claim,Warranty expired,,-136,3
+CLM00467,Invalid Claim,Unauthorized repair,Serial verification uncertain,940,23
+CLM01038,Manual Review,,Missing required evidence,235,5
+CLM01230,Manual Review,,Missing required evidence,29,26
+CLM01065,Manual Review,,Low OCR confidence,122,24
+CLM00246,Invalid Claim,Warranty expired,,-396,12
+CLM00719,Manual Review,,Missing required evidence,106,16
+CLM01413,Valid Claim,,,597,14
+CLM00782,Valid Claim,,,712,4
+CLM01205,Valid Claim,,,1032,17
+CLM01311,Valid Claim,,,495,16
+CLM01259,Manual Review,,Missing required evidence,775,15
+CLM00010,Invalid Claim,Fault/damage excluded,,857,4
+CLM00692,Valid Claim,,,379,3
+CLM00196,Invalid Claim,Fault/damage excluded,Low OCR confidence,663,18
+CLM00756,Manual Review,,Missing required evidence | Low OCR confidence,633,7
+CLM00987,Valid Claim,,,254,5
+CLM01322,Manual Review,,Missing required evidence,485,14
+CLM01164,Valid Claim,,,39,4
+CLM00940,Invalid Claim,Warranty expired | Fault/damage excluded,Product/model inconsistency,-295,15
+CLM00172,Invalid Claim,Fault/damage excluded,Missing required evidence,920,7
+CLM00583,Manual Review,,Missing required evidence,326,13
+CLM01287,Valid Claim,,,164,6
+CLM01175,Valid Claim,,,803,12
+CLM00019,Invalid Claim,Serial mismatch,,758,30
+CLM01244,Valid Claim,,,271,18
+CLM00891,Invalid Claim,Fault/damage excluded,,258,16
+CLM00659,Manual Review,,Missing required evidence,87,19
+CLM01462,Manual Review,,Serial verification uncertain,448,26
+CLM01063,Valid Claim,,,80,17
+CLM00678,Invalid Claim,Fault/damage excluded,,205,4
+CLM00912,Invalid Claim,Warranty expired,Missing required evidence,-147,9
+CLM00954,Manual Review,,Missing required evidence,1074,3
+CLM01123,Manual Review,,Missing required evidence,325,10
+CLM01276,Valid Claim,,,209,10
+CLM01191,Manual Review,,Missing required evidence,5,18
+CLM00425,Valid Claim,,,177,8
+CLM00366,Invalid Claim,Fault/damage excluded,,972,4
+CLM00189,Valid Claim,,,945,24
+CLM00235,Valid Claim,,,196,17
+CLM00589,Invalid Claim,Warranty expired,Missing required evidence | Contradictory evidence | Product/model inconsistency,-290,11
+CLM00084,Manual Review,,Missing required evidence,509,24
+CLM00161,Manual Review,,Repair authorization uncertain,40,17
+CLM00654,Invalid Claim,Serial mismatch,,53,15
+CLM00781,Valid Claim,,,583,20
+CLM00838,Invalid Claim,Fault/damage excluded,Missing required evidence,120,19
+CLM00090,Invalid Claim,Warranty expired,,-161,13
+CLM01344,Manual Review,,Missing required evidence | Product/model inconsistency,1216,5
+CLM00252,Invalid Claim,Warranty expired | Reporting period exceeded | Duplicate claim,Serial verification uncertain,-287,34
+CLM00549,Invalid Claim,Fault/damage excluded,Missing required evidence,304,20
+CLM00321,Invalid Claim,Fault/damage excluded,,674,26
+CLM00956,Invalid Claim,Warranty expired | Fault/damage excluded,Contradictory evidence,-218,11
+CLM00150,Invalid Claim,Fault/damage excluded,Product/model inconsistency,611,4
+CLM00603,Manual Review,,Serial verification uncertain,385,7
+CLM00208,Invalid Claim,Unauthorized repair,Low OCR confidence,431,3
+CLM01425,Valid Claim,,,73,17
+CLM00009,Manual Review,,Low OCR confidence,807,20
+CLM00281,Invalid Claim,Fault/damage excluded,,89,2
+CLM00083,Valid Claim,,,361,14
+CLM01492,Manual Review,,Missing required evidence,623,0
+CLM01157,Manual Review,,Missing required evidence | Serial verification uncertain,684,29
+CLM00931,Valid Claim,,,244,23
+CLM00335,Invalid Claim,Fault/damage excluded,,609,9
+CLM00068,Invalid Claim,Reporting period exceeded,,610,43
+CLM01500,Manual Review,,Missing required evidence,704,11
+CLM00312,Valid Claim,,,1240,22
+CLM00723,Valid Claim,,,277,8
+CLM01002,Manual Review,,Serial verification uncertain,868,9
+CLM00550,Valid Claim,,,920,12
+CLM01372,Valid Claim,,,584,10
+CLM00517,Manual Review,,Missing required evidence,414,16
+CLM01395,Valid Claim,,,679,4
+CLM00296,Manual Review,,Missing required evidence,375,16
+CLM01424,Manual Review,,Missing required evidence,1314,16
+CLM01080,Valid Claim,,,43,8
+CLM00231,Invalid Claim,Fault/damage excluded,,532,24
+CLM00008,Valid Claim,,,539,20
+CLM00684,Invalid Claim,Serial mismatch,,539,18
+CLM00686,Valid Claim,,,149,7
+CLM00473,Valid Claim,,,43,27
+CLM00846,Invalid Claim,Fault/damage excluded,,964,13
+CLM00197,Valid Claim,,,373,14
+CLM00646,Valid Claim,,,507,15
+CLM00737,Invalid Claim,Reporting period exceeded,,703,46
+CLM00269,Manual Review,,Low OCR confidence,357,11
+CLM01194,Manual Review,,Missing required evidence | Serial verification uncertain,678,17
+CLM01044,Manual Review,,Contradictory evidence | Product/model inconsistency,672,19
+CLM00962,Invalid Claim,Warranty expired,,-418,19
+CLM01242,Valid Claim,,,957,22

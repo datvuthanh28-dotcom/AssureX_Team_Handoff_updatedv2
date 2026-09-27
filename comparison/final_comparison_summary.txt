@@ -1,0 +1,65 @@
+ASSUREX CLAIM ENGINE - FINAL MODEL COMPARISON
+=============================================
+
+TEST SET
+--------
+Locked unseen Test ClaimIDs : 225
+Invalid Claim               : 75
+Manual Review               : 75
+Valid Claim                 : 75
+
+PYTHON MODEL
+------------
+Model               : Gradient Boosting
+Accuracy            : 0.955556
+Macro Precision     : 0.958220
+Macro Recall        : 0.955556
+Macro F1            : 0.955886
+Mean Confidence     : 0.932035
+Total Errors        : 10
+SRS Accuracy >= 85% : PASS
+
+GTM MODEL
+---------
+Feature Set         : G5
+Rendered Fields     : 23
+Accuracy            : 0.813333
+Macro Precision     : 0.832807
+Macro Recall        : 0.813333
+Macro F1            : 0.812936
+Mean Confidence     : 0.877439
+Total Errors        : 42
+SRS Accuracy >= 85% : FAIL
+
+GTM FEATURE ABLATION
+--------------------
+Removed from final G5:
+- DamageType
+- ExtendedWarranty
+- WarrantyDurationMonths
+
+Tested removal but rolled back:
+- Brand
+- ClaimSubmissionChannel
+- ReceiptAvailable
+- PriorClaimCount
+
+MAIN ERROR PATTERN
+------------------
+Manual Review -> Valid Claim:
+Python : 5
+GTM G5 : 23
+
+FINAL SELECTION
+---------------
+Primary selection metric : Macro F1
+
+Python Macro F1          : 0.955886
+GTM G5 Macro F1          : 0.812936
+Macro F1 difference      : 0.142950
+
+Primary Model            : Python Gradient Boosting
+Secondary Model          : GTM G5
+
+Test data was not used for feature selection or tuning.
+Both models were evaluated on the same locked 225 Test ClaimIDs.

@@ -1,0 +1,11 @@
+﻿Metric,Value
+InputRows,1500
+OutputRows,1500
+InputColumns,42
+OutputColumns,58
+EngineeredFeatureCount,16
+EngineeredFeatures,ProductAgeDays | ClaimReportingDelayDays | WarrantyExpiryDate | WarrantyRemainingDays | WarrantyStatus | ClaimReportingWithinPeriod | FaultCovered | MissingDocumentCount | AvailableDocumentCount | RequiredDocumentsComplete | PurchaseProofAvailable | HasRepairHistory | HasPreviousReplacement | OCRQualityBand | ClaimMonth | ClaimDayOfWeek
+TargetUsedForEngineering,NO
+ImputationPerformed,NO
+FeatureSelectionPerformed,NO
+RowsRemoved,0

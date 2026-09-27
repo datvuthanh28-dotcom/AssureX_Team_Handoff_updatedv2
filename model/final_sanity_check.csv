@@ -1,0 +1,11 @@
+﻿Check,Status,Observed,Expected,Note
+Final test Accuracy,PASS,0.955556,>= 0.85,
+Final test Macro F1,PASS,0.955886,>= 0.85,
+Invalid Claim Recall,PASS,0.946667,>= 0.85,
+Manual Review Recall,PASS,0.933333,>= 0.85,
+Valid Claim Recall,PASS,0.986667,>= 0.85,
+No identifier leakage in final feature set,PASS,NONE,NONE,
+No known injected noise in final feature set,PASS,NONE,NONE,
+Inference within normal-response requirement,PASS,0.023463 ms/claim,< 5.0 sec/claim,
+No single feature dominates native importance,PASS,FaultCovered=0.297401,< 0.50,A single feature above 50% would warrant shortcut review; this is a reporting check only.
+Final prediction/Test ClaimID alignment,PASS,225 matched IDs,225 matched IDs,

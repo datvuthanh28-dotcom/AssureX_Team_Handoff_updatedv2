@@ -1,0 +1,43 @@
+﻿Column,UniqueCount,UniqueRatio,Flag
+RecordID,1545,1.0,Near-unique / possible identifier
+RandomScore,1514,0.979935,Near-unique / possible identifier
+ClaimID,1500,0.970874,Near-unique / possible identifier
+SerialNumber,1484,0.960518,Near-unique / possible identifier
+ClaimAmount,1450,0.938511,High cardinality
+ModelNumber,1419,0.918447,High cardinality
+PurchaseDate,828,0.535922,High cardinality
+FaultDate,792,0.512621,High cardinality
+InternalBatchCode,779,0.504207,High cardinality
+ProductID,772,0.499676,
+ClaimDate,771,0.499029,
+CustomerID,614,0.397411,
+OCRConfidence,387,0.250485,
+PreviousRepairCost,365,0.236246,
+SubmissionMinute,60,0.038835,
+ProductCategory,19,0.012298,
+FaultType,12,0.007767,
+ClaimSubmissionChannel,11,0.00712,
+RepairAuthorized,11,0.00712,
+Brand,10,0.006472,
+ReplacementWithinWarranty,10,0.006472,
+PreviousReplacement,9,0.005825,
+PriorClaimCount,9,0.005825,
+SerialEvidenceAvailable,9,0.005825,
+WarrantyCardAvailable,9,0.005825,
+DamageType,8,0.005178,
+ExtendedWarranty,7,0.004531,
+PreviousRepair,7,0.004531,
+ProductImageAvailable,7,0.004531,
+ReceiptAvailable,7,0.004531,
+RepairCount,7,0.004531,
+RepairReportAvailable,7,0.004531,
+SerialNumberMatch,7,0.004531,
+ContradictionIndicator,6,0.003883,
+DocumentDuplicateIndicator,6,0.003883,
+ProductModelConsistent,6,0.003883,
+WarrantyDurationMonths,6,0.003883,
+BrowserFamily,5,0.003236,
+DuplicateClaimIndicator,5,0.003236,
+FaultEvidenceAvailable,5,0.003236,
+ClaimClass,3,0.001942,
+UiTheme,3,0.001942,

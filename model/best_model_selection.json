@@ -1,0 +1,16 @@
+{
+  "selected_model": "Gradient Boosting",
+  "selection_basis": [
+    "Validation Macro F1",
+    "Validation Accuracy",
+    "Train 5-fold CV Macro F1 mean"
+  ],
+  "validation_macro_f1": 0.9689450135405627,
+  "validation_accuracy": 0.9688888888888889,
+  "cv_macro_f1_mean": 0.965782024360563,
+  "feature_count": 22,
+  "selected_features_file": "/Users/htmt1810/Desktop/TECHWIZ ML/data/feature_selection/selected_features_final.csv",
+  "candidate_model_file": "/Users/htmt1810/Desktop/TECHWIZ ML/model/candidate_gradient_boosting.joblib",
+  "test_used": false,
+  "note": "Candidate model file is trained on Train only. The selected algorithm will be refit on Train+Validation before the single final Test evaluation."
+}

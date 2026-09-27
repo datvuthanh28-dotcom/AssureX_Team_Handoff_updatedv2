@@ -1,0 +1,23 @@
+{
+  "input": "/Users/htmt1810/Desktop/TECHWIZ ML/data/cleaned/assurex_clean.csv",
+  "rows": 1500,
+  "columns": 42,
+  "outputs": {
+    "eda_summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/eda_summary.csv",
+    "column_profile": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/column_profile.csv",
+    "numeric_summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/numeric_summary.csv",
+    "categorical_summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/categorical_summary.csv",
+    "missing_summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/missing_summary.csv",
+    "class_distribution": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/class_distribution.csv",
+    "numeric_outlier_summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/eda/numeric_outlier_summary.csv"
+  },
+  "rules": {
+    "dataset_modified": false,
+    "correlation_performed": false,
+    "feature_engineering_performed": false,
+    "feature_selection_performed": false,
+    "imputation_performed": false,
+    "training_performed": false,
+    "target_used_for_feature_decisions": false
+  }
+}

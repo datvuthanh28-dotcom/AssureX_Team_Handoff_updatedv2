@@ -1,0 +1,11 @@
+﻿Metric,Value
+Rows,1500
+Columns,42
+UniqueClaimIDs,1500
+TotalMissingCells,868
+ColumnsWithMissing,18
+ConstantColumns,0
+NearUniqueColumns,5
+IdentifierColumns,7
+KnownNoiseColumns,4
+ClassDistribution,"{""Invalid Claim"": 500, ""Valid Claim"": 500, ""Manual Review"": 500}"

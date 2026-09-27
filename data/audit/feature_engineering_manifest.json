@@ -1,0 +1,37 @@
+{
+  "input": "/Users/htmt1810/Desktop/TECHWIZ ML/data/cleaned/assurex_clean.csv",
+  "output": "/Users/htmt1810/Desktop/TECHWIZ ML/data/engineered/assurex_engineered.csv",
+  "input_rows": 1500,
+  "output_rows": 1500,
+  "input_columns": 42,
+  "output_columns": 58,
+  "engineered_features": [
+    "ProductAgeDays",
+    "ClaimReportingDelayDays",
+    "WarrantyExpiryDate",
+    "WarrantyRemainingDays",
+    "WarrantyStatus",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "MissingDocumentCount",
+    "AvailableDocumentCount",
+    "RequiredDocumentsComplete",
+    "PurchaseProofAvailable",
+    "HasRepairHistory",
+    "HasPreviousReplacement",
+    "OCRQualityBand",
+    "ClaimMonth",
+    "ClaimDayOfWeek"
+  ],
+  "rules": {
+    "target_used_to_create_features": false,
+    "target_modified": false,
+    "rows_removed": false,
+    "imputation_performed": false,
+    "scaling_performed": false,
+    "encoding_performed": false,
+    "feature_filtering_performed": false,
+    "feature_selection_performed": false,
+    "training_performed": false
+  }
+}

@@ -1,0 +1,3 @@
+Model,TestClaims,Accuracy,MacroPrecision,MacroRecall,MacroF1,MeanConfidence,SRS_Accuracy_85
+Python Gradient Boosting,225,0.955556,0.958220,0.955556,0.955886,0.932035,PASS
+GTM G5,225,0.813333,0.832807,0.813333,0.812936,0.877439,FAIL

@@ -1,0 +1,6 @@
+﻿AssociationType,FeatureA,FeatureB,PrimaryMeasure,MeasureName,Strength,Action
+Categorical-Categorical,PreviousReplacement,ReplacementWithinWarranty,0.9996661659062376,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,RepairReportAvailable,PreviousRepair,0.9996333638740196,CramersV,Very strong,Review later; do not drop automatically
+Categorical-Categorical,PreviousRepair,RepairAuthorized,0.9993322202928082,CramersV,Very strong,Review later; do not drop automatically
+Numeric-Numeric,RepairCount,PreviousRepairCost,0.9448104400158426,"max(|Pearson|, |Spearman|)",Very strong,Review later; do not drop automatically
+Categorical-Categorical,RepairReportAvailable,RepairAuthorized,0.7065320161957075,CramersV,Strong,Review later; do not drop automatically

@@ -1,0 +1,37 @@
+{
+  "input": "/Users/htmt1810/Desktop/TECHWIZ ML/data/filtered/assurex_initial_filtered.csv",
+  "random_seed": 20260925,
+  "split_ratios": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "rows": {
+    "source": 1500,
+    "train": 1050,
+    "validation": 225,
+    "test": 225
+  },
+  "expected_per_class": {
+    "train": 350,
+    "validation": 75,
+    "test": 75
+  },
+  "id_column": "ClaimID",
+  "target": "ClaimClass",
+  "rules": {
+    "exact_stratification": true,
+    "claimid_overlap": false,
+    "test_locked": true,
+    "test_allowed_for_feature_selection": false,
+    "test_allowed_for_model_selection": false,
+    "test_allowed_only_after_freeze": true
+  },
+  "outputs": {
+    "train": "/Users/htmt1810/Desktop/TECHWIZ ML/data/train/assurex_train.csv",
+    "validation": "/Users/htmt1810/Desktop/TECHWIZ ML/data/validation/assurex_validation.csv",
+    "test": "/Users/htmt1810/Desktop/TECHWIZ ML/data/test/assurex_test.csv",
+    "assignments": "/Users/htmt1810/Desktop/TECHWIZ ML/data/audit/split_assignments.csv",
+    "summary": "/Users/htmt1810/Desktop/TECHWIZ ML/data/audit/split_summary.csv"
+  }
+}

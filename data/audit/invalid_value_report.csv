@@ -1,0 +1,85 @@
+﻿RecordID,ClaimID,Column,Value,IssueType,Rule
+REC00145,CLM00103,FaultDate,2023-09-01,Impossible date logic,FaultDate >= PurchaseDate
+REC00643,CLM00121,FaultDate,2024-08-16,Impossible date logic,FaultDate >= PurchaseDate
+REC01368,CLM00204,FaultDate,2023-11-22,Impossible date logic,FaultDate >= PurchaseDate
+REC00890,CLM00415,FaultDate,2023-03-21,Impossible date logic,FaultDate >= PurchaseDate
+REC00510,CLM00437,FaultDate,2025-05-08,Impossible date logic,FaultDate >= PurchaseDate
+REC01278,CLM00786,FaultDate,2024-05-02,Impossible date logic,FaultDate >= PurchaseDate
+REC-DUP-0041,CLM00786,FaultDate,2024-05-02,Impossible date logic,FaultDate >= PurchaseDate
+REC00330,CLM00790,FaultDate,2025-12-11,Impossible date logic,FaultDate >= PurchaseDate
+REC00986,CLM01120,FaultDate,2023-06-05,Impossible date logic,FaultDate >= PurchaseDate
+REC01472,CLM01157,FaultDate,2025-08-05,Impossible date logic,FaultDate >= PurchaseDate
+REC00778,CLM01363,FaultDate,2025-05-03,Impossible date logic,FaultDate >= PurchaseDate
+REC00094,CLM01418,FaultDate,2025-10-04,Impossible date logic,FaultDate >= PurchaseDate
+REC00009,CLM00046,ClaimDate,2026-99-41,Invalid date format,must parse as a valid date
+REC-DUP-0002,CLM00046,ClaimDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00677,CLM00384,ClaimDate,not-a-date,Invalid date format,must parse as a valid date
+REC00753,CLM00522,ClaimDate,not-a-date,Invalid date format,must parse as a valid date
+REC-DUP-0024,CLM00522,ClaimDate,not-a-date,Invalid date format,must parse as a valid date
+REC00453,CLM00839,ClaimDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00908,CLM00841,ClaimDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00500,CLM01213,ClaimDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00328,CLM00112,FaultDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00397,CLM00118,FaultDate,not-a-date,Invalid date format,must parse as a valid date
+REC00219,CLM00563,FaultDate,not-a-date,Invalid date format,must parse as a valid date
+REC00161,CLM01143,FaultDate,not-a-date,Invalid date format,must parse as a valid date
+REC00095,CLM01193,FaultDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00531,CLM01220,FaultDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00400,CLM00276,PurchaseDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00169,CLM00416,PurchaseDate,not-a-date,Invalid date format,must parse as a valid date
+REC00049,CLM00460,PurchaseDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00031,CLM00687,PurchaseDate,2026-99-41,Invalid date format,must parse as a valid date
+REC00374,CLM00771,PurchaseDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00421,CLM00775,PurchaseDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00541,CLM00836,PurchaseDate,not-a-date,Invalid date format,must parse as a valid date
+REC01405,CLM01398,PurchaseDate,31/31/2026,Invalid date format,must parse as a valid date
+REC00793,CLM00324,ClaimAmount,-500.0,Out-of-range numeric,0.01 <= value <= 100000.0
+REC00235,CLM00804,ClaimAmount,999999.0,Out-of-range numeric,0.01 <= value <= 100000.0
+REC00373,CLM00870,ClaimAmount,-500.0,Out-of-range numeric,0.01 <= value <= 100000.0
+REC01061,CLM00444,OCRConfidence,9.99,Out-of-range numeric,0.0 <= value <= 1.0
+REC00593,CLM00516,OCRConfidence,1.25,Out-of-range numeric,0.0 <= value <= 1.0
+REC00852,CLM00636,OCRConfidence,9.99,Out-of-range numeric,0.0 <= value <= 1.0
+REC00878,CLM00644,OCRConfidence,9.99,Out-of-range numeric,0.0 <= value <= 1.0
+REC-DUP-0022,CLM01198,OCRConfidence,1.25,Out-of-range numeric,0.0 <= value <= 1.0
+REC00178,CLM01198,OCRConfidence,1.25,Out-of-range numeric,0.0 <= value <= 1.0
+REC00062,CLM01385,OCRConfidence,-0.25,Out-of-range numeric,0.0 <= value <= 1.0
+REC-DUP-0044,CLM01385,OCRConfidence,-0.25,Out-of-range numeric,0.0 <= value <= 1.0
+REC01254,CLM00343,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC00034,CLM00669,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC01195,CLM00799,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC00234,CLM01092,PreviousRepairCost,-100.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC01053,CLM01103,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC00345,CLM01136,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC01156,CLM01249,PreviousRepairCost,99999.0,Out-of-range numeric,0.0 <= value <= 20000.0
+REC00011,CLM00003,PriorClaimCount,999,Out-of-range numeric,0 <= value <= 20
+REC00070,CLM00045,PriorClaimCount,999,Out-of-range numeric,0 <= value <= 20
+REC00640,CLM00477,PriorClaimCount,50,Out-of-range numeric,0 <= value <= 20
+REC01457,CLM00838,PriorClaimCount,-2,Out-of-range numeric,0 <= value <= 20
+REC01055,CLM00852,PriorClaimCount,999,Out-of-range numeric,0 <= value <= 20
+REC00466,CLM00921,PriorClaimCount,50,Out-of-range numeric,0 <= value <= 20
+REC00165,CLM00961,PriorClaimCount,999,Out-of-range numeric,0 <= value <= 20
+REC00382,CLM01054,PriorClaimCount,-2,Out-of-range numeric,0 <= value <= 20
+REC-DUP-0040,CLM01054,PriorClaimCount,-2,Out-of-range numeric,0 <= value <= 20
+REC00846,CLM01071,PriorClaimCount,999,Out-of-range numeric,0 <= value <= 20
+REC01424,CLM00010,RepairCount,99,Out-of-range numeric,0 <= value <= 10
+REC01377,CLM00023,RepairCount,-3,Out-of-range numeric,0 <= value <= 10
+REC01344,CLM00140,RepairCount,-1,Out-of-range numeric,0 <= value <= 10
+REC00665,CLM00257,RepairCount,99,Out-of-range numeric,0 <= value <= 10
+REC01044,CLM00382,RepairCount,-1,Out-of-range numeric,0 <= value <= 10
+REC00187,CLM00421,RepairCount,99,Out-of-range numeric,0 <= value <= 10
+REC01495,CLM00737,RepairCount,-3,Out-of-range numeric,0 <= value <= 10
+REC00634,CLM01061,RepairCount,-3,Out-of-range numeric,0 <= value <= 10
+REC00248,CLM01204,RepairCount,99,Out-of-range numeric,0 <= value <= 10
+REC00638,CLM01316,RepairCount,-1,Out-of-range numeric,0 <= value <= 10
+REC00276,CLM01419,RepairCount,99,Out-of-range numeric,0 <= value <= 10
+REC01440,CLM01462,RepairCount,-3,Out-of-range numeric,0 <= value <= 10
+REC00572,CLM00322,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC00033,CLM00365,WarrantyDurationMonths,-12,Out-of-range numeric,1 <= value <= 60
+REC01290,CLM00393,WarrantyDurationMonths,-12,Out-of-range numeric,1 <= value <= 60
+REC00818,CLM00627,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC00580,CLM00738,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC01278,CLM00786,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC-DUP-0041,CLM00786,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC01158,CLM00881,WarrantyDurationMonths,-12,Out-of-range numeric,1 <= value <= 60
+REC01208,CLM00898,WarrantyDurationMonths,240,Out-of-range numeric,1 <= value <= 60
+REC00586,CLM01040,WarrantyDurationMonths,0,Out-of-range numeric,1 <= value <= 60

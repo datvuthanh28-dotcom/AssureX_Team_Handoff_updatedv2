@@ -1,0 +1,9 @@
+﻿Column,LowerFence,UpperFence,OutlierCount,OutlierPercent,Note
+PreviousRepairCost,-116.4075,194.0125,281,18.7333,Descriptive flag only; not an automatic deletion rule
+RepairCount,-1.5,2.5,155,10.3333,Descriptive flag only; not an automatic deletion rule
+PriorClaimCount,-1.5,2.5,65,4.3333,Descriptive flag only; not an automatic deletion rule
+OCRConfidence,0.556,1.1320000000000001,49,3.2667,Descriptive flag only; not an automatic deletion rule
+ClaimAmount,-874.235,2241.545,35,2.3333,Descriptive flag only; not an automatic deletion rule
+RandomScore,-2.80055875,2.7981712499999998,11,0.7333,Descriptive flag only; not an automatic deletion rule
+SubmissionMinute,-30.625,90.375,0,0.0,Descriptive flag only; not an automatic deletion rule
+WarrantyDurationMonths,-6.0,42.0,0,0.0,Descriptive flag only; not an automatic deletion rule

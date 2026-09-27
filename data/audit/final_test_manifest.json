@@ -1,0 +1,18 @@
+{
+  "algorithm_frozen_before_test": true,
+  "feature_set_frozen_before_test": true,
+  "hyperparameters_frozen_before_test": true,
+  "refit_data": "Train + Validation",
+  "test_rows": 225,
+  "test_claimids_unique": true,
+  "test_metrics_used_for_tuning": false,
+  "next_steps_may_report_but_must_not_retune": true,
+  "outputs": {
+    "final_model": "/Users/htmt1810/Desktop/TECHWIZ ML/model/assurex_final_model.joblib",
+    "metrics": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_test_metrics.csv",
+    "class_metrics": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_test_class_metrics.csv",
+    "confusion_matrix": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_test_confusion_matrix.csv",
+    "predictions": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_test_predictions.csv",
+    "model_info": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_model_info.json"
+  }
+}

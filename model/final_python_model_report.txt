@@ -1,0 +1,45 @@
+ASSUREX CLAIM ENGINE - FINAL PYTHON MODEL REPORT
+================================================================
+
+MODEL
+Algorithm: Gradient Boosting
+Frozen selected features: 22
+Serialized model size: 0.5719 MB
+
+FINAL TEST
+Claims: 225
+Accuracy: 0.955556
+Macro F1: 0.955886
+Mean confidence: 0.932035
+Incorrect claims: 10
+Low confidence (<0.60): 2
+
+PER-CLASS RECALL
+Invalid Claim: 0.946667
+Manual Review: 0.933333
+Valid Claim: 0.986667
+
+TOP 5 MODEL-NATIVE FEATURE IMPORTANCE
+FaultCovered: 0.297401
+RequiredDocumentsComplete: 0.131293
+WarrantyRemainingDays: 0.109358
+WarrantyStatus: 0.104198
+SerialNumberMatch: 0.074888
+
+TOP 5 POST-HOC TEST PERMUTATION IMPORTANCE
+FaultCovered: 0.175599
+RequiredDocumentsComplete: 0.160320
+WarrantyStatus: 0.119165
+SerialNumberMatch: 0.089902
+OCRConfidence: 0.074855
+
+SANITY
+Identifier features present: NONE
+Known noise features present: NONE
+Highest native importance: FaultCovered (0.297401)
+All sanity PASS: True
+
+IMPORTANT
+Test-set permutation importance is POST-HOC reporting only.
+No model/feature/hyperparameter changes are allowed from this analysis.
+The final Python model remains assurex_final_model.joblib.

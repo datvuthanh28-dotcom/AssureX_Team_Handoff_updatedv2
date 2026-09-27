@@ -1,0 +1,24 @@
+{
+  "stage": "post-hoc final model reporting",
+  "final_model": "/Users/htmt1810/Desktop/TECHWIZ ML/model/assurex_final_model.joblib",
+  "feature_count": 22,
+  "test_rows": 225,
+  "test_already_consumed_before_analysis": true,
+  "native_importance": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_native_feature_importance.csv",
+  "permutation_importance": {
+    "file": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_permutation_importance.csv",
+    "dataset": "Final Test",
+    "purpose": "post-hoc reporting only",
+    "used_for_model_changes": false
+  },
+  "error_analysis": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_error_analysis.csv",
+  "confidence_analysis": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_confidence_analysis.csv",
+  "sanity_check": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_sanity_check.csv",
+  "report": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_python_model_report.txt",
+  "rules": {
+    "retraining": false,
+    "feature_removal": false,
+    "hyperparameter_tuning": false,
+    "model_reselection": false
+  }
+}

@@ -1,0 +1,19 @@
+﻿Section,Metric,Value,Status,Notes
+Dataset,Raw rows,1545,INFO,
+Dataset,Columns,42,INFO,
+Dataset,Unique ClaimIDs,1500,INFO,
+Target,Unique-claim class distribution,"{""Manual Review"": 500, ""Valid Claim"": 500, ""Invalid Claim"": 500}",PASS,Calculated on one row per ClaimID.
+Missingness,Missing cells,845,INFO,
+Missingness,Columns with missing values,15,INFO,
+Duplicates,Duplicate ClaimID groups,45,INFO,
+Duplicates,Rows in duplicate ClaimID groups,90,INFO,
+Duplicates,Exact duplicate groups,30,INFO,
+Duplicates,Near duplicate groups,15,INFO,
+Invalid values,Detected invalid cells/rules,84,INFO,
+Invalid values,Out-of-range numeric,50,INFO,
+Invalid values,Invalid date format,22,INFO,
+Invalid values,Impossible date logic,12,INFO,
+Categorical quality,Normalized groups with formatting variants,41,INFO,
+Outliers,IQR-flagged numeric cells,630,INFO,Outliers are not automatically errors. Review before cleaning.
+Cardinality,Near-unique possible identifiers,4,INFO,
+Feature design,Deliberate noise columns present,5,PASS,BrowserFamily | SubmissionMinute | UiTheme | RandomScore | InternalBatchCode
