@@ -1410,6 +1410,8 @@ function CustomerApp() {
 
         {(customerPage === 'submit' || customerPage === 'warranty-ticket') && (
           <CustomerWarrantyClaimForm
+            email={session?.email || ''}
+            customerName={session?.full_name || ''}
             onCreated={() => {
               refresh()
             }}

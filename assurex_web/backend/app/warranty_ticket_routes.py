@@ -2,18 +2,29 @@ from datetime import date, datetime
 import csv
 import io
 import re
+from pathlib import Path
 from typing import Any, Literal
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import WarrantyTicket
+from app.auth_routes import record_audit, require_roles
+from app.models import (
+    CustomerAccount,
+    CustomerClaim,
+    CustomerClaimDecision,
+    Product,
+    RegisteredProduct,
+    Warranty,
+    WarrantyTicket,
+)
 from app.ml.model_service import MODEL_14_FEATURES, predict_claim
+from app.ocr.ocr_service import extract_warranty_image
 
 router = APIRouter(
     prefix="/api",
@@ -34,40 +45,26 @@ ALLOWED_PRODUCT_TYPES = {
 # PYDANTIC SCHEMAS - 14 FINAL ML FEATURES
 # ==============================================================================
 
+class EvidenceReference(BaseModel):
+    document_id: str
+    filename: str
+    file_url: str
+    sha256: str | None = None
+    content_type: str | None = None
+
+
 class WarrantyClaimCreatePayload(BaseModel):
-    # Identifying Product Information (Optional context)
-    product_type: str | None = Field(default="Laptop", description="Allowed: Laptop, Smartphone, Tablet, Monitor, Printer, Other")
-    product_model: str | None = Field(default="Standard Equipment", description="Product model or order description")
-    order_code: str | None = Field(default=None, description="Optional Order Code or Serial")
-    purchase_date: str | None = Field(default=None, description="YYYY-MM-DD")
-    usage_duration: int | None = Field(default=1, description="Usage duration in months")
-    problem_category: str | None = Field(default="Hardware Component", description="Problem category")
-    problem_description: str | None = Field(default=None, description="Optional description of the issue")
+    """Customer-entered facts only; engineered ML fields are rejected by schema."""
 
-    # ==========================================================================
-    # THE 14 FEATURES FINALIZED DURING MODEL TRAINING (V3 GRADIENT BOOSTING)
-    # ==========================================================================
-    # Group 1: Product & Identity Verification
-    ProductIdentityMatch: str = Field(default="Yes", description="Product identity match: Yes, No")
-    SerialNumberMatch: str = Field(default="Yes", description="Serial number match: Yes, No, Unknown")
-    ProductModelConsistent: str = Field(default="Yes", description="Model consistent: Yes, No")
+    model_config = ConfigDict(extra="forbid")
 
-    # Group 2: Warranty Status & Coverage
-    WarrantyRemainingDays: float = Field(default=180.0, description="Remaining days under warranty coverage")
-    FaultCovered: str = Field(default="Yes", description="Fault covered by policy: Yes, No, Unknown")
-    ClaimReportingDelayDays: float = Field(default=5.0, ge=0.0, description="Delay days before reporting issue")
-    ClaimReportingWithinPeriod: str = Field(default="Yes", description="Reporting within period: Yes, No, Unknown")
-
-    # Group 3: Repair History & Integrity
-    RepairAuthorized: str = Field(default="Not Applicable", description="Authorized repair: Yes, No, Not Applicable, Unknown")
-    DuplicateClaimIndicator: str = Field(default="No", description="Duplicate claim: Yes, No")
-    ContradictionIndicator: str = Field(default="No", description="Contradictory evidence: Yes, No")
-
-    # Group 4: Documents & OCR Quality
-    RequiredDocumentsComplete: str = Field(default="Yes", description="Required documents complete: Yes, No, Unknown")
-    MissingDocumentCount: float = Field(default=0.0, ge=0.0, description="Count of missing documents")
-    OCRConfidence: float = Field(default=0.90, ge=0.0, le=1.0, description="OCR document confidence: 0.0 to 1.0")
-    OCRQualityBand: str = Field(default="High", description="OCR quality band: High, Medium, Low, Missing")
+    product_code: str = Field(min_length=1, max_length=30)
+    incident_date: date
+    fault_description: str = Field(min_length=10, max_length=5000)
+    previous_repair: Literal["Yes", "No"]
+    repair_centre: str | None = Field(default=None, max_length=150)
+    repair_date: date | None = None
+    evidence: dict[str, EvidenceReference] = Field(default_factory=dict)
 
 
 class ModelPredictRequest(BaseModel):
@@ -201,95 +198,291 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
 # API ENDPOINTS
 # ==============================================================================
 
+EVIDENCE_DIR = Path("app/uploads/evidence")
+EXCLUDED_FAULT_TERMS = {
+    "water", "liquid", "dropped", "falling", "shattered", "physical impact",
+    "spilled", "tampered", "cracked glass", "misuse", "accident",
+}
+AUTHORIZED_REPAIR_TERMS = {
+    "assurex", "official", "authorized", "authorised", "premier",
+    "apple", "dell", "hp", "lenovo", "samsung",
+}
+
+
+def _registration_id(product_code: str) -> int:
+    match = re.fullmatch(r"REG-(\d+)", product_code.strip().upper())
+    if not match:
+        raise HTTPException(
+            status_code=422,
+            detail="Product Code must use the registration code shown in My Products (REG-xxxxx).",
+        )
+    return int(match.group(1))
+
+
+def _owned_product(db: Session, account: CustomerAccount, product_code: str):
+    registration_id = _registration_id(product_code)
+    row = db.execute(
+        select(RegisteredProduct, Product, Warranty)
+        .join(Product, Product.id == RegisteredProduct.product_id)
+        .outerjoin(Warranty, Warranty.registered_product_id == RegisteredProduct.id)
+        .where(
+            RegisteredProduct.id == registration_id,
+            RegisteredProduct.account_id == account.id,
+            RegisteredProduct.is_active.is_(True),
+        )
+    ).first()
+    if row is None:
+        # Do not reveal whether the code belongs to a different customer.
+        raise HTTPException(status_code=404, detail="Registered product not found.")
+    return row
+
+
+def _serialize_owned_product(registered, product, warranty):
+    expiry = warranty.end_date if warranty else None
+    return {
+        "registered_product_id": registered.id,
+        "product_code": f"REG-{registered.id:05d}",
+        "product_name": product.name,
+        "category": product.category,
+        "brand": product.brand,
+        "model_number": product.model,
+        "serial_number": registered.serial_number,
+        "purchase_date": registered.purchase_date,
+        "purchase_price": registered.purchase_price,
+        "retailer": registered.retailer,
+        "warranty_months": product.warranty_months,
+        "warranty_start_date": warranty.start_date if warranty else registered.purchase_date,
+        "warranty_expiry_date": expiry,
+        "warranty_provider": warranty.warranty_provider if warranty else "AssureX Official Care",
+        "status": (
+            "expired"
+            if expiry and date.fromisoformat(expiry) < date.today()
+            else "active"
+        ),
+    }
+
+
+def _ocr_evidence(evidence: dict[str, EvidenceReference]):
+    candidates = []
+    extracted = {}
+    for key in ("serial_image", "purchase_invoice"):
+        reference = evidence.get(key)
+        if not reference or not reference.document_id.startswith("EVD-"):
+            continue
+        matches = list(EVIDENCE_DIR.glob(f"{reference.document_id}.*"))
+        if not matches or matches[0].suffix.lower() not in {".jpg", ".jpeg", ".png", ".webp"}:
+            continue
+        try:
+            result = extract_warranty_image(matches[0])
+        except Exception:
+            continue
+        candidates.append(float(result.get("ocr_confidence") or 0))
+        for field, value in (result.get("extracted_data") or {}).items():
+            if value and not extracted.get(field):
+                extracted[field] = value
+    return (max(candidates) if candidates else 0.0), extracted
+
+
+def _derive_features(db, account, registered, product, warranty, payload):
+    today = date.today()
+    evidence = payload.evidence
+    ocr_confidence, ocr_data = _ocr_evidence(evidence)
+    ocr_serial = str(ocr_data.get("serial_number") or "").strip().casefold()
+    ocr_model = str(ocr_data.get("model_number") or "").strip().casefold()
+    expected_serial = registered.serial_number.strip().casefold()
+    expected_model = product.model.strip().casefold()
+
+    serial_match = "Unknown" if not ocr_serial else ("Yes" if ocr_serial == expected_serial else "No")
+    model_match = "Unknown" if not ocr_model else ("Yes" if ocr_model == expected_model else "No")
+    product_identity = (
+        "Yes" if serial_match == "Yes" and model_match in {"Yes", "Unknown"}
+        else "No" if "No" in {serial_match, model_match}
+        else "Unknown"
+    )
+
+    duplicate = db.scalar(
+        select(func.count()).select_from(WarrantyTicket).where(
+            WarrantyTicket.registered_product_id == registered.id,
+            WarrantyTicket.status.in_(("PENDING_AI", "WAITING_REVIEW", "REVIEW_REQUIRED")),
+        )
+    ) or 0
+    delay = max(0, (today - payload.incident_date).days)
+    expiry = date.fromisoformat(warranty.end_date) if warranty else None
+    remaining = (expiry - today).days if expiry else 0
+    description = payload.fault_description.casefold()
+    fault_covered = "No" if any(term in description for term in EXCLUDED_FAULT_TERMS) else "Yes"
+
+    required = ["purchase_invoice", "serial_image", "fault_evidence"]
+    if payload.previous_repair == "Yes":
+        required.append("repair_report")
+    missing_count = sum(1 for name in required if name not in evidence)
+
+    if payload.previous_repair == "No":
+        repair_authorized = "Not Applicable"
+    elif "repair_report" not in evidence:
+        repair_authorized = "Unknown"
+    else:
+        centre = (payload.repair_centre or "").casefold()
+        repair_authorized = "Yes" if any(term in centre for term in AUTHORIZED_REPAIR_TERMS) else "No"
+
+    contradiction = any((
+        payload.incident_date < date.fromisoformat(registered.purchase_date),
+        payload.incident_date > today,
+        bool(payload.repair_date and payload.repair_date > today),
+        bool(payload.repair_date and payload.repair_date < date.fromisoformat(registered.purchase_date)),
+    ))
+    quality = "High" if ocr_confidence >= .85 else "Medium" if ocr_confidence >= .65 else "Low" if ocr_confidence > 0 else "Missing"
+
+    return {
+        "RepairAuthorized": repair_authorized,
+        "SerialNumberMatch": serial_match,
+        "ProductModelConsistent": model_match,
+        "DuplicateClaimIndicator": "Yes" if duplicate else "No",
+        "ContradictionIndicator": "Yes" if contradiction else "No",
+        "OCRConfidence": round(ocr_confidence, 4),
+        "ClaimReportingDelayDays": float(delay),
+        "WarrantyRemainingDays": float(remaining),
+        "ClaimReportingWithinPeriod": "Yes" if delay <= 30 else "No",
+        "FaultCovered": fault_covered,
+        "RequiredDocumentsComplete": "Yes" if missing_count == 0 else "No",
+        "MissingDocumentCount": float(missing_count),
+        "ProductIdentityMatch": product_identity,
+        "OCRQualityBand": quality,
+    }, ocr_data
+
+
+@router.get("/claims/v3/product/{product_code}")
+def lookup_claim_product(
+    product_code: str,
+    account: CustomerAccount = Depends(require_roles("CUSTOMER")),
+    db: Session = Depends(get_db),
+):
+    registered, product, warranty = _owned_product(db, account, product_code)
+    return _serialize_owned_product(registered, product, warranty)
+
 @router.post(
-    "/warranty/claims",
+    "/claims/v3/ticket",
     status_code=status.HTTP_201_CREATED,
-    summary="Customer: Create Warranty Claim Ticket via 14-Feature Form",
+    summary="Customer: submit raw claim facts; backend derives Model V3 features",
 )
 def create_warranty_claim(
     payload: WarrantyClaimCreatePayload,
+    account: CustomerAccount = Depends(require_roles("CUSTOMER")),
     db: Session = Depends(get_db),
 ):
-    """
-    1. Customer fills the form with the 14 features.
-    2. System validates input data.
-    3. Ticket is created with status PENDING_AI.
-    4. 14 features are sent to the AI Model.
-    5. Result enqueues ticket for Reviewer as WAITING_REVIEW.
-    """
-    # 1. Extract and sanitize 14 features
-    features_14 = extract_14_features(payload)
+    if payload.previous_repair == "Yes" and not (payload.repair_centre or "").strip():
+        raise HTTPException(status_code=422, detail="Repair centre is required for a previously repaired product.")
 
-    # Validate numbers
-    if features_14["OCRConfidence"] < 0 or features_14["OCRConfidence"] > 1:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"OCRConfidence": "OCR Confidence must be between 0.0 and 1.0"},
-        )
-    if features_14["ClaimReportingDelayDays"] < 0:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail={"ClaimReportingDelayDays": "Claim Reporting Delay Days cannot be negative."},
-        )
-
-    # 2. Generate unique Ticket ID
-    ticket_id = f"TCK-{uuid.uuid4().hex[:8].upper()}"
-
-    p_type = payload.product_type if payload.product_type in ALLOWED_PRODUCT_TYPES else "Laptop"
-    p_model = (payload.product_model or "Standard Device").strip()
-    p_date = payload.purchase_date or date.today().isoformat()
-    duration = int(payload.usage_duration or 1)
-    prob_cat = payload.problem_category or "Hardware Issue"
-    prob_desc = payload.problem_description or (
-        f"Claim with 14 features: FaultCovered={features_14['FaultCovered']}, "
-        f"WarrantyDays={features_14['WarrantyRemainingDays']}, MissingDocs={features_14['MissingDocumentCount']}"
+    registered, product, warranty = _owned_product(db, account, payload.product_code)
+    features_14, ocr_data = _derive_features(
+        db, account, registered, product, warranty, payload
     )
-
+    ticket_id = f"TCK-{uuid.uuid4().hex[:8].upper()}"
+    raw_input = payload.model_dump(mode="json", exclude={"evidence"})
+    raw_input["customer_email"] = account.email
+    raw_input["submitted_at"] = datetime.utcnow().isoformat()
     ticket = WarrantyTicket(
         ticket_id=ticket_id,
-        product_type=p_type,
-        product_model=p_model,
-        order_code=payload.order_code,
-        purchase_date=p_date,
-        usage_duration=duration,
-        problem_category=prob_cat,
-        problem_description=prob_desc,
+        product_type=product.category if product.category in ALLOWED_PRODUCT_TYPES else "Other",
+        product_model=product.model,
+        order_code=f"REG-{registered.id:05d}",
+        purchase_date=registered.purchase_date,
+        usage_duration=max(0, (date.today() - date.fromisoformat(registered.purchase_date)).days // 30),
+        problem_category="Warranty Claim",
+        problem_description=payload.fault_description,
         status="PENDING_AI",
+        customer_account_id=account.id,
+        registered_product_id=registered.id,
+        raw_input=raw_input,
+        evidence={key: value.model_dump() for key, value in payload.evidence.items()},
         model_features=features_14,
     )
     db.add(ticket)
-    db.commit()
-    db.refresh(ticket)
-
-    # 3. Call AI Prediction Engine with the 14 features
     try:
         ai_res = execute_ai_prediction_14(features_14)
         ticket.ai_prediction = ai_res["prediction"]
         ticket.ai_confidence = ai_res["confidence"]
-        ticket.status = "WAITING_REVIEW"
+        ticket.model_name = ai_res["model_name"]
+        ticket.model_version = ai_res["model_version"]
+        ticket.status = "WAITING_REVIEW" if ai_res["prediction"] != "REVIEW_REQUIRED" else "REVIEW_REQUIRED"
         ticket.ai_error_message = None
     except Exception as exc:
         ticket.status = "AI_ERROR"
         ticket.ai_error_message = f"AI Prediction Failed: {str(exc)}"
-
+    customer_claim = CustomerClaim(
+        claim_id=ticket_id,
+        customer_name=account.full_name or account.email,
+        email=account.email,
+        product_name=product.name,
+        serial_number=registered.serial_number,
+        purchase_date=registered.purchase_date,
+        claim_amount=0.0,
+        fault_description=payload.fault_description,
+        status="Under Review" if ticket.status != "AI_ERROR" else "Manual Review",
+        receipt_url=(ticket.evidence.get("purchase_invoice") or {}).get("file_url"),
+        evidence_photo_url=(ticket.evidence.get("fault_evidence") or {}).get("file_url"),
+        product_image_url=(ticket.evidence.get("serial_image") or {}).get("file_url"),
+        repair_report_url=(ticket.evidence.get("repair_report") or {}).get("file_url"),
+        document_hashes={key: value.get("sha256") for key, value in ticket.evidence.items()},
+        previous_repair_date=payload.repair_date.isoformat() if payload.repair_date else None,
+        repair_center_name=payload.repair_centre,
+    )
+    db.add(customer_claim)
+    if ticket.ai_prediction:
+        label_map = {
+            "WARRANTY": "Valid Claim",
+            "NOT_WARRANTY": "Invalid Claim",
+            "REVIEW_REQUIRED": "Manual Review",
+        }
+        predicted_class = label_map.get(ticket.ai_prediction, "Manual Review")
+        db.add(CustomerClaimDecision(
+            claim_id=ticket_id,
+            ml_prediction=predicted_class,
+            ml_confidence=ticket.ai_confidence or 0.0,
+            probabilities={},
+            final_decision="Manual Review",
+            requires_admin_review=1,
+            decision_reasons=["Reviewer confirmation required"],
+            raw_input=raw_input,
+            model_features=features_14,
+            derived_data={"ocr_extracted_data": ocr_data, "evidence": ticket.evidence},
+            model_name=ticket.model_name or "Gradient Boosting V3",
+            python_model_name=ticket.model_name,
+            python_model_version=ticket.model_version,
+        ))
+    record_audit(
+        db,
+        account=account,
+        action="WARRANTY_TICKET_SUBMITTED",
+        resource_type="CLAIM",
+        resource_id=ticket_id,
+        details={
+            "registered_product_id": registered.id,
+            "model_version": ticket.model_version,
+            "prediction": ticket.ai_prediction,
+            "derived_feature_count": len(features_14),
+        },
+    )
     db.commit()
     db.refresh(ticket)
-
     return {
         "success": True,
-        "message": "Warranty ticket submitted and evaluated by AI successfully.",
+        "message": "Claim stored and evaluated from backend-derived features.",
         "ticket": {
             "ticket_id": ticket.ticket_id,
             "status": ticket.status,
-            "product_type": ticket.product_type,
-            "product_model": ticket.product_model,
-            "purchase_date": ticket.purchase_date,
-            "usage_duration": ticket.usage_duration,
-            "problem_category": ticket.problem_category,
-            "problem_description": ticket.problem_description,
-            "model_features": ticket.model_features or features_14,
+            **_serialize_owned_product(registered, product, warranty),
+            "customer_name": account.full_name or account.email,
+            "customer_email": account.email,
+            "fault_description": payload.fault_description,
+            "evidence": ticket.evidence,
+            "model_features": features_14,
             "ai_prediction": ticket.ai_prediction,
             "ai_confidence": ticket.ai_confidence,
+            "ai_reason": "Backend-derived Model V3 assessment",
+            "model_name": ticket.model_name,
+            "model_version": ticket.model_version,
+            "ocr_extracted_data": ocr_data,
             "ai_error_message": ticket.ai_error_message,
             "created_at": ticket.created_at.isoformat() if ticket.created_at else None,
         },
@@ -330,6 +523,7 @@ def predict_model_endpoint(request: ModelPredictRequest):
 def list_reviewer_tickets(
     status_filter: str = Query("ALL", description="ALL, WAITING_REVIEW, REVIEWED, PENDING_AI, AI_ERROR"),
     search: str | None = Query(None, description="Search by Ticket ID, Model, or Serial"),
+    _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
     db: Session = Depends(get_db),
 ):
     """
@@ -368,7 +562,14 @@ def list_reviewer_tickets(
             "usage_duration": t.usage_duration,
             "problem_category": t.problem_category,
             "problem_description": t.problem_description,
+            "fault_description": t.problem_description,
+            "customer_name": (t.raw_input or {}).get("customer_email", "Customer"),
+            "customer_email": (t.raw_input or {}).get("customer_email", ""),
+            "product_name": t.product_model,
+            "product_code": t.order_code,
             "status": t.status,
+            "raw_input": t.raw_input or {},
+            "evidence": t.evidence or {},
             "model_features": t.model_features or {},
             "ai_prediction": t.ai_prediction,
             "ai_confidence": t.ai_confidence,
@@ -391,7 +592,11 @@ def list_reviewer_tickets(
     "/warranty/reviewer/tickets/{ticket_id}",
     summary="Reviewer: Get Detailed Ticket",
 )
-def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
+def get_ticket_detail(
+    ticket_id: str,
+    _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
+    db: Session = Depends(get_db),
+):
     ticket = db.get(WarrantyTicket, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Warranty ticket not found.")
@@ -406,7 +611,12 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
             "usage_duration": ticket.usage_duration,
             "problem_category": ticket.problem_category,
             "problem_description": ticket.problem_description,
+            "fault_description": ticket.problem_description,
+            "customer_name": (ticket.raw_input or {}).get("customer_email", "Customer"),
+            "customer_email": (ticket.raw_input or {}).get("customer_email", ""),
             "status": ticket.status,
+            "raw_input": ticket.raw_input or {},
+            "evidence": ticket.evidence or {},
             "model_features": ticket.model_features or {},
             "ai_prediction": ticket.ai_prediction,
             "ai_confidence": ticket.ai_confidence,
@@ -432,6 +642,7 @@ def get_ticket_detail(ticket_id: str, db: Session = Depends(get_db)):
 def submit_reviewer_decision(
     ticket_id: str,
     payload: ReviewerDecisionPayload,
+    account: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
     db: Session = Depends(get_db),
 ):
     ticket = db.get(WarrantyTicket, ticket_id)
@@ -450,6 +661,28 @@ def submit_reviewer_decision(
     ticket.reviewer_note = payload.reviewer_note.strip() if payload.reviewer_note else None
     ticket.status = "REVIEWED"
     ticket.reviewed_at = datetime.utcnow()
+
+    customer_claim = db.scalar(
+        select(CustomerClaim).where(CustomerClaim.claim_id == ticket_id)
+    )
+    if customer_claim is not None:
+        customer_claim.status = "Approved" if decision_choice == "APPROVE" else "Rejected"
+    customer_decision = db.scalar(
+        select(CustomerClaimDecision).where(CustomerClaimDecision.claim_id == ticket_id)
+    )
+    if customer_decision is not None:
+        customer_decision.reviewer_decision = customer_claim.status
+        customer_decision.reviewer_comment = ticket.reviewer_note
+        customer_decision.reviewed_at = ticket.reviewed_at
+
+    record_audit(
+        db,
+        account=account,
+        action="WARRANTY_TICKET_REVIEWED",
+        resource_type="CLAIM",
+        resource_id=ticket_id,
+        details={"decision": decision_choice, "ground_truth": ground_truth},
+    )
 
     db.commit()
     db.refresh(ticket)
@@ -474,6 +707,7 @@ def submit_reviewer_decision(
 )
 def export_retraining_dataset(
     format: str = Query("csv", description="Format: csv or json"),
+    _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
     db: Session = Depends(get_db),
 ):
     """
@@ -574,4 +808,3 @@ def get_retraining_dataset_json(db: Session = Depends(get_db)):
         "records": records,
         "data": records,
     }
-

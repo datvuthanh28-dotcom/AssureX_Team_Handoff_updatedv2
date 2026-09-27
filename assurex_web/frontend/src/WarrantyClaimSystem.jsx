@@ -2,14 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { api } from './api'
 import {
   MODEL_14_FEATURES,
-  claim14FieldGroups,
-  DEMO_USERS,
-  DEMO_CATALOG,
-  DEMO_SOLD_PRODUCTS,
-  lookupSoldProduct,
-  derive14Features,
-  predictModelV3,
-  CLAIM_PRESETS,
 } from './claimFields'
 
 // Shared mock storage to persist tickets across views within the session
@@ -167,116 +159,95 @@ function loadStoredTickets() {
   ]
 }
 
-function saveStoredTickets(tickets) {
-  try {
-    localStorage.setItem(LOCAL_STORAGE_TICKETS_KEY, JSON.stringify(tickets))
-  } catch {
-    // ignore
-  }
-}
-
 // ==============================================================================
 // 1. CUSTOMER - WARRANTY CLAIM FORM (CLEAN CUSTOMER INPUTS → FEATURE ENGINE)
 // ==============================================================================
 
-export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
-  // Preset 1 is default
-  const defaultPreset = CLAIM_PRESETS[0]
-
-  // Section 1: Customer Information
-  const [customer, setCustomer] = useState({ ...defaultPreset.customer })
+export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCreated, onCancel }) {
+  // Identity comes from the authenticated session and is never a claim source of truth.
+  const customer = {
+    customer_name: customerName || email,
+    email,
+  }
 
   // Section 2: Product Identification
-  const [productCodeInput, setProductCodeInput] = useState(defaultPreset.product_code)
-  const [productRecord, setProductRecord] = useState(() => lookupSoldProduct(defaultPreset.product_code))
+  const [productCodeInput, setProductCodeInput] = useState('')
+  const [productRecord, setProductRecord] = useState(null)
+  const [lookingUp, setLookingUp] = useState(false)
 
   // Section 3: Claim Incident
-  const [incidentDate, setIncidentDate] = useState(defaultPreset.claim.incident_date)
-  const [faultDescription, setFaultDescription] = useState(defaultPreset.claim.fault_description)
+  const [incidentDate, setIncidentDate] = useState('')
+  const [faultDescription, setFaultDescription] = useState('')
 
   // Section 4: Repair History
-  const [previousRepair, setPreviousRepair] = useState(defaultPreset.claim.previous_repair)
-  const [repairCentre, setRepairCentre] = useState(defaultPreset.claim.repair_centre)
-  const [repairDate, setRepairDate] = useState(defaultPreset.claim.repair_date)
+  const [previousRepair, setPreviousRepair] = useState('No')
+  const [repairCentre, setRepairCentre] = useState('')
+  const [repairDate, setRepairDate] = useState('')
+  const [evidence, setEvidence] = useState({})
+  const [uploading, setUploading] = useState('')
 
   // Active Preset & State
-  const [activePreset, setActivePreset] = useState('valid')
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
   const [createdTicket, setCreatedTicket] = useState(null)
   const [submitError, setSubmitError] = useState('')
 
   // Handle Product Code Lookup
-  function handleProductLookup(code) {
+  async function handleProductLookup(code) {
     const targetCode = code !== undefined ? code : productCodeInput
-    const found = lookupSoldProduct(targetCode)
-    if (found) {
+    if (!targetCode.trim()) {
+      setErrors((prev) => ({ ...prev, product_code: 'Enter the REG-xxxxx code from My Products.' }))
+      return
+    }
+    setLookingUp(true)
+    try {
+      const found = await api(`/api/claims/v3/product/${encodeURIComponent(targetCode.trim())}`)
       setProductRecord(found)
-      // Auto-fill customer if empty or preset
-      setCustomer((prev) => ({
-        customer_name: prev.customer_name || found.customer_name,
-        email: prev.email || found.customer_email,
-        phone_number: prev.phone_number || found.customer_phone,
-      }))
+      setProductCodeInput(found.product_code)
       setErrors((prev) => ({ ...prev, product_code: '' }))
-    } else {
+    } catch (error) {
       setProductRecord(null)
       setErrors((prev) => ({
         ...prev,
-        product_code: 'Product Code not found in database. Please check code (e.g. AX26-00001) or enter manually.',
+        product_code: error.message || 'Product Code was not found for this account.',
       }))
+    } finally {
+      setLookingUp(false)
     }
   }
 
-  // Apply Presets
-  function applyPreset(preset) {
-    setActivePreset(preset.id)
-    setCustomer({ ...preset.customer })
-    setProductCodeInput(preset.product_code)
-    const product = lookupSoldProduct(preset.product_code)
-    setProductRecord(product)
-
-    setIncidentDate(preset.claim.incident_date)
-    setFaultDescription(preset.claim.fault_description)
-    setPreviousRepair(preset.claim.previous_repair)
-    setRepairCentre(preset.claim.repair_centre)
-    setRepairDate(preset.claim.repair_date)
-
-    setErrors({})
+  async function uploadEvidence(kind, file) {
+    if (!file) return
+    setUploading(kind)
     setSubmitError('')
+    try {
+      const body = new FormData()
+      body.append('file', file)
+      body.append('document_type', kind)
+      const uploaded = await api('/api/customer/evidence/upload', { method: 'POST', body })
+      setEvidence((current) => ({ ...current, [kind]: uploaded }))
+    } catch (error) {
+      setSubmitError(error.message)
+    } finally {
+      setUploading('')
+    }
   }
-
-  // Compute derived 14 features in real-time
-  const derivedFeatures = useMemo(() => {
-    return derive14Features(
-      {
-        incident_date: incidentDate,
-        fault_description: faultDescription,
-        previous_repair: previousRepair,
-        repair_centre: repairCentre,
-        repair_date: repairDate,
-      },
-      productRecord || {}
-    )
-  }, [incidentDate, faultDescription, previousRepair, repairCentre, repairDate, productRecord])
-
-  // Compute preview AI prediction in real-time
-  const previewPrediction = useMemo(() => {
-    return predictModelV3(derivedFeatures)
-  }, [derivedFeatures])
 
   // Validation
   function validate() {
     const errs = {}
-    if (!customer.customer_name?.trim()) errs.customer_name = 'Please enter your Full Name.'
-    if (!customer.email?.trim() || !customer.email.includes('@')) errs.email = 'Please enter a valid email address.'
-    if (!productRecord && !productCodeInput.trim()) errs.product_code = 'Product Code or equipment record is required.'
+    if (!productRecord) errs.product_code = 'Verify a Product Code that belongs to your account.'
     if (!incidentDate) errs.incident_date = 'Please select the date the incident/defect occurred.'
     if (!faultDescription?.trim() || faultDescription.trim().length < 10)
       errs.fault_description = 'Please describe the fault or symptom (minimum 10 characters).'
 
     if (previousRepair === 'Yes') {
       if (!repairCentre?.trim()) errs.repair_centre = 'Please state the repair centre name.'
+    }
+    const required = ['purchase_invoice', 'serial_image', 'fault_evidence']
+    if (previousRepair === 'Yes') required.push('repair_report')
+    if (required.some((name) => !evidence[name])) {
+      errs.evidence = 'Upload the required evidence before submitting the claim.'
     }
 
     setErrors(errs)
@@ -295,55 +266,20 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
 
     setSubmitting(true)
     try {
-      const ticketId = `TCK-${Math.floor(1000000 + Math.random() * 9000000)}`
       const payload = {
-        ticket_id: ticketId,
-        customer_name: customer.customer_name.trim(),
-        customer_email: customer.email.trim(),
-        customer_phone: customer.phone_number?.trim() || '',
-        product_code: productRecord?.product_code || productCodeInput,
-        product_name: productRecord?.product_name || 'Product',
-        product_model: productRecord?.model_number || 'Model',
-        serial_number: productRecord?.serial_number || 'Serial',
-        purchase_date: productRecord?.purchase_date || '',
-        warranty_expiry: productRecord?.warranty_expiry_date || '',
+        product_code: productRecord.product_code,
         incident_date: incidentDate,
         fault_description: faultDescription.trim(),
         previous_repair: previousRepair,
         repair_centre: repairCentre?.trim() || '',
         repair_date: repairDate || '',
-        evidence: null,
-        model_features: derivedFeatures,
-        ai_prediction: previewPrediction.prediction,
-        ai_confidence: previewPrediction.confidence,
-        ai_reason: previewPrediction.reason,
-        status: 'WAITING_REVIEW',
-        ground_truth: null,
-        reviewer_note: null,
-        created_at: new Date().toISOString(),
+        evidence,
       }
-
-      // Try API first
-      let created = null
-      try {
-        const response = await api('/api/claims/v3/ticket', {
-          method: 'POST',
-          body: JSON.stringify(payload),
-        })
-        if (response && response.ticket) {
-          created = response.ticket
-        }
-      } catch {
-        // Fallback to client-side persistence
-        created = payload
-      }
-
-      if (!created) created = payload
-
-      // Save to local storage list
-      const existing = loadStoredTickets()
-      const updated = [created, ...existing]
-      saveStoredTickets(updated)
+      const response = await api('/api/claims/v3/ticket', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+      })
+      const created = response.ticket
 
       setCreatedTicket(created)
       if (onCreated) onCreated(created)
@@ -356,7 +292,15 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
 
   function resetForm() {
     setCreatedTicket(null)
-    applyPreset(CLAIM_PRESETS[0])
+    setProductCodeInput('')
+    setProductRecord(null)
+    setIncidentDate('')
+    setFaultDescription('')
+    setPreviousRepair('No')
+    setRepairCentre('')
+    setRepairDate('')
+    setEvidence({})
+    setErrors({})
   }
 
   // ============================================================================
@@ -514,66 +458,6 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
         </div>
       </header>
 
-      {/* 1-Click Test Presets */}
-      <div
-        className="panel"
-        style={{
-          marginBottom: '20px',
-          padding: '16px 20px',
-          borderRadius: '12px',
-          border: '1px solid var(--ax-border, #e2e8f0)',
-          background: 'var(--ax-surface, #ffffff)',
-        }}
-      >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#334155' }}>
-            ⚡ 1-Click Test Presets:
-          </span>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '10px' }}>
-          {CLAIM_PRESETS.map((preset) => {
-            const isSelected = activePreset === preset.id
-            const color = preset.tone === 'success' ? '#16a34a' : preset.tone === 'warning' ? '#d97706' : '#dc2626'
-            const bg = preset.tone === 'success' ? '#f0fdf4' : preset.tone === 'warning' ? '#fffbeb' : '#fef2f2'
-            const border = isSelected ? color : '#e2e8f0'
-
-            return (
-              <button
-                key={preset.id}
-                type="button"
-                onClick={() => applyPreset(preset)}
-                style={{
-                  textAlign: 'left',
-                  padding: '10px 14px',
-                  borderRadius: '8px',
-                  border: `2px solid ${border}`,
-                  background: isSelected ? bg : '#ffffff',
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <strong style={{ fontSize: '13px', color: '#1e293b' }}>{preset.name}</strong>
-                  <span
-                    style={{
-                      fontSize: '10.5px',
-                      fontWeight: 700,
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      background: bg,
-                      color,
-                    }}
-                  >
-                    {preset.badge}
-                  </span>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
       {submitError && (
         <div className="alert error" style={{ marginBottom: '20px' }}>
           {submitError}
@@ -608,21 +492,17 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
               </label>
               <input
                 type="text"
-                placeholder="e.g. Bui Ngoc Mai"
                 value={customer.customer_name}
-                onChange={(e) => {
-                  setCustomer({ ...customer, customer_name: e.target.value })
-                  setErrors({ ...errors, customer_name: '' })
-                }}
+                readOnly
                 style={{
                   width: '100%',
                   padding: '9px 12px',
                   borderRadius: '6px',
-                  border: `1px solid ${errors.customer_name ? '#ef4444' : '#cbd5e1'}`,
+                  border: '1px solid #cbd5e1',
+                  background: '#f8fafc',
                   fontSize: '13px',
                 }}
               />
-              {errors.customer_name && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.customer_name}</p>}
             </div>
 
             <div>
@@ -631,37 +511,14 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
               </label>
               <input
                 type="email"
-                placeholder="name@example.com"
                 value={customer.email}
-                onChange={(e) => {
-                  setCustomer({ ...customer, email: e.target.value })
-                  setErrors({ ...errors, email: '' })
-                }}
-                style={{
-                  width: '100%',
-                  padding: '9px 12px',
-                  borderRadius: '6px',
-                  border: `1px solid ${errors.email ? '#ef4444' : '#cbd5e1'}`,
-                  fontSize: '13px',
-                }}
-              />
-              {errors.email && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.email}</p>}
-            </div>
-
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                placeholder="e.g. 0912345678"
-                value={customer.phone_number}
-                onChange={(e) => setCustomer({ ...customer, phone_number: e.target.value })}
+                readOnly
                 style={{
                   width: '100%',
                   padding: '9px 12px',
                   borderRadius: '6px',
                   border: '1px solid #cbd5e1',
+                  background: '#f8fafc',
                   fontSize: '13px',
                 }}
               />
@@ -697,9 +554,12 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
-                placeholder="Enter Product Code (e.g. AX26-00001, AX26-00002)"
+                placeholder="Enter registration code from My Products (e.g. REG-00001)"
                 value={productCodeInput}
-                onChange={(e) => setProductCodeInput(e.target.value)}
+                onChange={(e) => {
+                  setProductCodeInput(e.target.value.toUpperCase())
+                  setProductRecord(null)
+                }}
                 style={{
                   flex: 1,
                   padding: '9px 12px',
@@ -712,10 +572,11 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
               <button
                 type="button"
                 className="button primary"
+                disabled={lookingUp}
                 onClick={() => handleProductLookup(productCodeInput)}
                 style={{ padding: '8px 16px', fontSize: '13px' }}
               >
-                ⌕ Verify Code
+                {lookingUp ? 'Checking…' : '⌕ Verify Code'}
               </button>
             </div>
             {errors.product_code && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '6px 0 0' }}>{errors.product_code}</p>}
@@ -777,7 +638,7 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
             </div>
           ) : (
             <div style={{ padding: '16px', background: '#fffbeb', borderRadius: '8px', border: '1px solid #fef3c7', fontSize: '12.5px', color: '#92400e' }}>
-              Please enter a valid Product Code (e.g. <button type="button" onClick={() => { setProductCodeInput('AX26-00001'); handleProductLookup('AX26-00001') }} style={{ textDecoration: 'underline', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontWeight: 700 }}>AX26-00001</button> or <button type="button" onClick={() => { setProductCodeInput('AX26-00002'); handleProductLookup('AX26-00002') }} style={{ textDecoration: 'underline', background: 'none', border: 'none', color: '#1d4ed8', cursor: 'pointer', fontWeight: 700 }}>AX26-00002</button>) to lookup registered equipment.
+              Enter the registration code shown in My Products. The backend will only return a product owned by the signed-in account.
             </div>
           )}
         </section>
@@ -825,16 +686,8 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
               {errors.incident_date && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.incident_date}</p>}
             </div>
 
-            <div>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-                Reporting Delay Analysis
-              </label>
-              <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '12.5px' }}>
-                Reported {derivedFeatures.ClaimReportingDelayDays} days after fault occurrence ·
-                <strong style={{ color: derivedFeatures.ClaimReportingWithinPeriod === 'Yes' ? '#16a34a' : '#dc2626', marginLeft: '6px' }}>
-                  {derivedFeatures.ClaimReportingWithinPeriod === 'Yes' ? 'Within 30-Day Window' : 'Exceeds 30-Day Limit'}
-                </strong>
-              </div>
+            <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '12.5px', alignSelf: 'end' }}>
+              Reporting delay and warranty dates are calculated by the backend when the claim is submitted.
             </div>
           </div>
 
@@ -968,6 +821,39 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
           )}
         </section>
 
+        {/* GROUP 5: EVIDENCE */}
+        <section className="panel" style={{ marginBottom: '20px', padding: '22px', borderRadius: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+            <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>5</span>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>Claim Evidence</h3>
+              <small>The backend uses these files for document completeness and OCR verification.</small>
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+            {[
+              ['purchase_invoice', 'Purchase invoice / receipt', true, '.pdf,image/*'],
+              ['serial_image', 'Serial or equipment tag image', true, 'image/*'],
+              ['fault_evidence', 'Fault evidence', true, 'image/*,video/mp4,.pdf'],
+              ['repair_report', 'Previous repair report', previousRepair === 'Yes', '.pdf,image/*'],
+            ].filter(([, , required]) => required).map(([kind, label]) => (
+              <label key={kind} style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px', cursor: 'pointer' }}>
+                <strong style={{ display: 'block', fontSize: '13px', marginBottom: '6px' }}>{label} *</strong>
+                <input
+                  type="file"
+                  accept={kind === 'fault_evidence' ? 'image/*,video/mp4,.pdf' : kind === 'serial_image' ? 'image/*' : '.pdf,image/*'}
+                  disabled={uploading === kind}
+                  onChange={(event) => uploadEvidence(kind, event.target.files?.[0])}
+                />
+                <small style={{ display: 'block', marginTop: '8px', color: evidence[kind] ? '#15803d' : '#64748b' }}>
+                  {uploading === kind ? 'Uploading…' : evidence[kind] ? `✓ ${evidence[kind].filename}` : 'Not uploaded'}
+                </small>
+              </label>
+            ))}
+          </div>
+          {errors.evidence && <p style={{ color: '#ef4444', fontSize: '12px' }}>{errors.evidence}</p>}
+        </section>
+
         {/* FORM ACTIONS */}
         <div
           style={{
@@ -987,7 +873,7 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
           <button
             type="submit"
             className="button primary"
-            disabled={submitting}
+            disabled={submitting || Boolean(uploading)}
             style={{ minWidth: '240px', padding: '12px 24px', fontSize: '14px', fontWeight: 700 }}
           >
             {submitting ? 'Evaluating AI Model...' : 'Submit Warranty Claim →'}
@@ -1003,8 +889,8 @@ export function CustomerWarrantyClaimForm({ onCreated, onCancel }) {
 // ==============================================================================
 
 export function ReviewerWarrantyDesk() {
-  const [tickets, setTickets] = useState(() => loadStoredTickets())
-  const [loading, setLoading] = useState(false)
+  const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [selectedTicket, setSelectedTicket] = useState(null)
 
@@ -1013,39 +899,36 @@ export function ReviewerWarrantyDesk() {
   const [statusFilter, setStatusFilter] = useState('ALL_QUEUE')
 
   // Review Decision State
-  const [decisionModal, setDecisionModal] = useState(null) // 'APPROVE' | 'REJECT' | null
   const [reviewerNote, setReviewerNote] = useState('')
   const [submittingDecision, setSubmittingDecision] = useState(false)
   const [decisionFeedback, setDecisionFeedback] = useState('')
 
   useEffect(() => {
-    // Sync with local storage
-    const current = loadStoredTickets()
-    setTickets(current)
+    api('/api/warranty/reviewer/tickets')
+      .then((response) => setTickets(response.tickets || []))
+      .catch((requestError) => setError(requestError.message))
+      .finally(() => setLoading(false))
   }, [])
 
-  function handleRecordDecision(decision) {
+  async function handleRecordDecision(decision) {
     if (!selectedTicket) return
     setSubmittingDecision(true)
-
-    const isApprove = decision === 'APPROVE'
-    const groundTruth = isApprove ? 'Valid Claim' : 'Invalid Claim'
-    const updatedTicket = {
-      ...selectedTicket,
-      status: 'REVIEWED',
-      ground_truth: groundTruth,
-      reviewer_note: reviewerNote.trim() || (isApprove ? 'Claim approved under standard warranty.' : 'Claim rejected after audit.'),
-      reviewed_at: new Date().toISOString(),
+    setError('')
+    try {
+      const response = await api(`/api/warranty/reviewer/tickets/${encodeURIComponent(selectedTicket.ticket_id)}/decision`, {
+        method: 'POST',
+        body: JSON.stringify({ decision, reviewer_note: reviewerNote.trim() || null }),
+      })
+      const updatedTicket = { ...selectedTicket, ...response.ticket }
+      setTickets((current) => current.map((ticket) => ticket.ticket_id === updatedTicket.ticket_id ? updatedTicket : ticket))
+      setSelectedTicket(updatedTicket)
+      setReviewerNote('')
+      setDecisionFeedback(response.message)
+    } catch (requestError) {
+      setError(requestError.message)
+    } finally {
+      setSubmittingDecision(false)
     }
-
-    const updatedList = tickets.map((t) => (t.ticket_id === selectedTicket.ticket_id ? updatedTicket : t))
-    setTickets(updatedList)
-    saveStoredTickets(updatedList)
-    setSelectedTicket(updatedTicket)
-    setDecisionModal(null)
-    setReviewerNote('')
-    setSubmittingDecision(false)
-    setDecisionFeedback(`Decision recorded: ${groundTruth} established as official Ground Truth.`)
   }
 
   const filteredTickets = useMemo(() => {

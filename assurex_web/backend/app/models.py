@@ -594,6 +594,23 @@ class WarrantyTicket(Base):
     problem_category: Mapped[str] = mapped_column(String(100), nullable=False)
     problem_description: Mapped[str] = mapped_column(Text, nullable=False)
 
+    # Runtime claim provenance. Customer input and engineered features are
+    # intentionally stored separately so a reviewer can audit every model run.
+    customer_account_id: Mapped[int | None] = mapped_column(
+        ForeignKey("customer_accounts.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
+    registered_product_id: Mapped[int | None] = mapped_column(
+        ForeignKey("registered_products.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
+    raw_input: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    evidence: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    model_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    model_version: Mapped[str | None] = mapped_column(String(100), nullable=True)
+
     # Status: PENDING_AI, WAITING_REVIEW, AI_ERROR, REVIEW_REQUIRED, REVIEWED
     status: Mapped[str] = mapped_column(String(30), default="PENDING_AI", nullable=False)
 
@@ -622,4 +639,3 @@ class WarrantyTicket(Base):
         onupdate=datetime.utcnow,
         nullable=False,
     )
-

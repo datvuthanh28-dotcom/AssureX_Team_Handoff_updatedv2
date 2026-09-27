@@ -201,8 +201,18 @@ def create_database_tables():
 
         if "warranty_tickets" in table_names:
             wt_columns = {col["name"] for col in inspect(engine).get_columns("warranty_tickets")}
-            if "model_features" not in wt_columns:
-                connection.execute(text("ALTER TABLE warranty_tickets ADD COLUMN model_features JSON"))
+            wt_migrations = {
+                "model_features": "ALTER TABLE warranty_tickets ADD COLUMN model_features JSON",
+                "customer_account_id": "ALTER TABLE warranty_tickets ADD COLUMN customer_account_id INTEGER",
+                "registered_product_id": "ALTER TABLE warranty_tickets ADD COLUMN registered_product_id INTEGER",
+                "raw_input": "ALTER TABLE warranty_tickets ADD COLUMN raw_input JSON",
+                "evidence": "ALTER TABLE warranty_tickets ADD COLUMN evidence JSON",
+                "model_name": "ALTER TABLE warranty_tickets ADD COLUMN model_name VARCHAR(100)",
+                "model_version": "ALTER TABLE warranty_tickets ADD COLUMN model_version VARCHAR(100)",
+            }
+            for col_name, stmt in wt_migrations.items():
+                if col_name not in wt_columns:
+                    connection.execute(text(stmt))
 
     with SessionLocal() as db:
         seed_default_admin(db)
