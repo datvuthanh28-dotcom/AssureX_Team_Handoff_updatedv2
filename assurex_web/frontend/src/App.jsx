@@ -302,11 +302,6 @@ function AdminDashboard({
               tone={modelDisagreements > 0 ? 'warning' : 'success'}
             />
 
-            <StatCard
-              label="Catalog Models"
-              value={products.length}
-              hint="Active product lines"
-            />
           </section>
 
           {totalClaims > 0 && (
@@ -465,13 +460,6 @@ function AdminDashboard({
                   onClick={() => onNavigate('warranties')}
                 >
                   Manage Warranties
-                </button>
-                <button
-                  className="button secondary"
-                  style={{ flex: 1, fontSize: '12.5px', padding: '8px' }}
-                  onClick={() => onNavigate('products')}
-                >
-                  Product Catalog
                 </button>
               </div>
             </article>
@@ -1834,7 +1822,7 @@ function ModelInfo() {
           <p className="eyebrow">
             Final Selection
           </p>
-          <h2>Python Gradient Boosting</h2>
+          <h2>Gradient Boosting</h2>
           <p>
             Selected as the production primary model
             using Macro F1 as the pre-defined selection
@@ -1884,7 +1872,7 @@ function ModelInfo() {
             <p className="eyebrow">
               Final Comparison
             </p>
-            <h2>Python vs GTM G5</h2>
+            <h2>Gradient Boosting vs Inception-v1</h2>
           </div>
         </div>
 
@@ -1893,8 +1881,8 @@ function ModelInfo() {
             <thead>
               <tr>
                 <th>Metric</th>
-                <th>Python</th>
-                <th>GTM G5</th>
+                <th>Gradient Boosting</th>
+                <th>Inception-v1</th>
               </tr>
             </thead>
 
@@ -1915,6 +1903,24 @@ function ModelInfo() {
                   {MODEL_METRICS.pythonF1}
                 </td>
                 <td>{MODEL_METRICS.gtmF1}</td>
+              </tr>
+
+              <tr>
+                <td>Precision</td>
+                <td>99.13%</td>
+                <td>83.28%</td>
+              </tr>
+
+              <tr>
+                <td>Recall</td>
+                <td>99.11%</td>
+                <td>81.33%</td>
+              </tr>
+
+              <tr>
+                <td>AUC-ROC</td>
+                <td>—</td>
+                <td>—</td>
               </tr>
 
               <tr>
@@ -1991,7 +1997,7 @@ function MLPipelinePage({ page, onNavigate }) {
   const steps = [
     ['ml-audit', '01', 'Audit', 'Raw data quality'],
     ['ml-preprocessing', '02', 'Preprocessing', 'Clean & split'],
-    ['ml-text', '03', 'Text models', 'CV + tuning'],
+    ['ml-text', '03', 'Tuning models', 'CV + tuning'],
     ['ml-image', '04', 'Image model', 'Google Net'],
     ['ml-compare', '05', 'Compare', 'Deploy winner'],
   ]
@@ -2008,12 +2014,12 @@ function MLPipelinePage({ page, onNavigate }) {
       <div className="panel-heading"><div><p className="eyebrow">{active[1]} · {active[3]}</p><h2>{active[2]}</h2></div><span className="pipeline-status">● Production pipeline synced</span></div>
       {page === 'ml-audit' && <>
         <p className="section-lead">Kiểm tra dataset ban đầu trước khi đưa vào xử lý: cấu trúc, chất lượng và mức độ cân bằng nhãn.</p>
-        <div className="stats-grid">{metric('Rows', '1,125', 'Raw claim records')}{metric('Columns', '42', 'Original fields')}{metric('Missing values', '0.8%', '9 cells cần xử lý', 'warning')}{metric('Duplicates', '12', '1.1% records', 'warning')}{metric('Data types', '28 / 14', 'Numeric / categorical')}</div>
+        <div className="stats-grid">{metric('Rows', '1,500', 'Raw claim records')}{metric('Columns', '42', 'Original fields')}{metric('Missing values', '0.8%', '9 cells cần xử lý', 'warning')}{metric('Duplicates', '12', '0.8% records', 'warning')}{metric('Data types', '28 / 14', 'Numeric / categorical')}</div>
         <div className="two-column"><div><h3>Data quality checklist</h3><div className="check-list"><div>✓ Schema & kiểu dữ liệu <b>Passed</b></div><div>✓ Missing value scan <b>Passed</b></div><div>⚠ Duplicate records <b className="warn">12 found</b></div><div>✓ Class distribution <b>Passed</b></div></div></div><div><h3>Class distribution</h3><div className="bar-chart"><div><span>Valid Claim</span><b style={{width:'70%'}}>70%</b></div><div><span>Manual Review</span><b style={{width:'20%'}}>20%</b></div><div><span>Invalid Claim</span><b style={{width:'10%'}}>10%</b></div></div></div></div>
       </>}
       {page === 'ml-preprocessing' && <>
         <p className="section-lead">Làm sạch, loại bỏ nhiễu/đa cộng tuyến, mã hóa và chuẩn hóa dữ liệu trước khi chia tập.</p>
-        <div className="stats-grid">{metric('Input columns', '42', 'Before filtering')}{metric('Removed noise', '7', 'IDs, timestamps, leakage')}{metric('Removed collinear', '5', 'Correlation > 0.85')}{metric('Final features', '30', 'Ready for training', 'success')}</div>
+        <div className="stats-grid">{metric('Input columns', '94', 'Engineered dataset')}{metric('Removed structural', '11', '94 → 83')}{metric('Selected out', '67', '81 → 14')}{metric('Final features', '14', 'v3 production model', 'success')}</div>
         <div className="two-column"><div><h3>Preprocessing flow</h3><div className="flow-list"><span>01 · Deduplicate & impute</span><span>02 · Drop noisy / leakage fields</span><span>03 · Correlation filter & VIF</span><span>04 · One-hot encode categories</span><span>05 · StandardScaler numeric values</span><span>06 · Train 70% · Val 15% · Test 15%</span></div></div><div><h3>Correlation matrix</h3><div className="correlation-grid">{[.92,.18,.34,.11,.76,.21,.09,.64,.27,.13,.18,.88,.16,.32,.12,.22].map((v,i)=><span key={i} style={{opacity:.25+v*.75,background:v>.8?'#ef6a5b':'#2f8f83'}} title={`r = ${v}`}>{v.toFixed(2)}</span>)}</div><small className="muted">Highlighted pairs vượt ngưỡng tương quan 0.85 được loại bỏ.</small></div></div>
       </>}
       {page === 'ml-text' && <>
@@ -2023,14 +2029,14 @@ function MLPipelinePage({ page, onNavigate }) {
         <div className="feature-importance"><h3>Feature importance · final dataset</h3>{['purchase_age','fault_category','claim_amount','warranty_days_left','product_category'].map((x,i)=><div key={x}><span>{x}</span><b style={{width:`${92-i*14}%`}}></b><em>{(0.28-i*.04).toFixed(2)}</em></div>)}</div>
       </>}
       {page === 'ml-image' && <>
-        <p className="section-lead">Đánh giá hình ảnh bằng Google model (GTM / Google Net) với cùng quy trình split, 5-fold validation, tuning và feature review.</p>
-        <div className="stats-grid">{metric('Image samples', '2,480', 'Labeled claim images')}{metric('Model', 'Google Net G5', 'Transfer learning')}{metric('CV Macro F1', '81.29%', '5-fold validation')}{metric('Test accuracy', '81.33%', 'Locked test set')}</div>
-        <div className="two-column"><div><h3>Image pipeline</h3><div className="flow-list"><span>01 · Resize 224 × 224</span><span>02 · Normalize & augment</span><span>03 · Train / validation / test split</span><span>04 · Fine-tune Google Net G5</span><span>05 · Evaluate per-class metrics</span></div></div><div><h3>Confusion overview</h3><div className="image-class-grid"><div><strong>Valid</strong><span>88%</span></div><div><strong>Review</strong><span>79%</span></div><div><strong>Invalid</strong><span>77%</span></div></div></div></div>
+        <p className="section-lead">Đánh giá hình ảnh bằng Inception-v1 với cùng quy trình split, 5-fold validation, tuning và feature review.</p>
+        <div className="stats-grid">{metric('Image samples', '2,480', 'Labeled claim images')}{metric('Model', 'Inception-v1', 'Transfer learning')}{metric('CV Macro F1', '81.29%', '5-fold validation')}{metric('Test accuracy', '81.33%', 'Locked test set')}</div>
+        <div className="two-column"><div><h3>Image pipeline</h3><div className="flow-list"><span>01 · Resize 224 × 224</span><span>02 · Normalize & augment</span><span>03 · Train / validation / test split</span><span>04 · Fine-tune Inception-v1</span><span>05 · Evaluate per-class metrics</span></div></div><div><h3>Per-class Recall — Inception-v1</h3><div className="image-class-grid"><div><strong>Valid Claim</strong><span>94.67%</span></div><div><strong>Manual Review</strong><span>66.67%</span></div><div><strong>Invalid Claim</strong><span>82.67%</span></div></div></div></div>
       </>}
       {page === 'ml-compare' && <>
         <p className="section-lead">So sánh model text và image trên cùng tiêu chí, chọn model production và đóng vòng phản hồi để retrain version mới.</p>
-        <div className="compare-hero"><div><span>Production winner</span><h3>Python Gradient Boosting</h3><p>Được chọn làm model chính cho claim decision engine.</p></div><strong>95.59%<small>Macro F1</small></strong></div>
-        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Metric</th><th>Text · Gradient Boosting</th><th>Image · Google Net G5</th><th>Winner</th></tr></thead><tbody><tr><td>Accuracy</td><td>95.56%</td><td>81.33%</td><td>Text</td></tr><tr><td>Macro F1</td><td>95.59%</td><td>81.29%</td><td>Text</td></tr><tr><td>Inference</td><td>Fast · 24 features</td><td>Medium · image upload</td><td>Text</td></tr></tbody></table></div>
+        <div className="compare-hero"><div><span>Production winner</span><h3>Gradient Boosting</h3><p>Được chọn làm model chính cho claim decision engine.</p></div><strong>95.59%<small>Macro F1</small></strong></div>
+        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Image · Inception-v1</th><th>Winner</th></tr></thead><tbody><tr><td>Accuracy</td><td>95.56%</td><td>81.33%</td><td>Tuning</td></tr><tr><td>Macro F1</td><td>95.59%</td><td>81.29%</td><td>Tuning</td></tr><tr><td>Inference</td><td>Fast · 30 features</td><td>Medium · image upload</td><td>Tuning</td></tr></tbody></table></div>
         <div className="retrain-card"><div><h3>Feedback loop</h3><p>Customer claim → model prediction → reviewer decision → verified label → retrain model vNext.</p></div><button className="button primary">Start retraining review →</button></div>
       </>}
     </section>
@@ -5275,6 +5281,15 @@ function ReviewerWorkspace({ onLogout, email }) {
   </div>
 }
 
+function AdminMLConsole() {
+  const [retrainRequested, setRetrainRequested] = useState(false)
+  const [version, setVersion] = useState(() => localStorage.getItem('assurex_model_version') || 'v1')
+  const datasetFields = ['RepairAuthorized','SerialNumberMatch','ProductModelConsistent','DuplicateClaimIndicator','ContradictionIndicator','OCRConfidence','ClaimReportingDelayDays','WarrantyRemainingDays','ClaimReportingWithinPeriod','FaultCovered','RequiredDocumentsComplete','MissingDocumentCount','ProductIdentityMatch','OCRQualityBand']
+  const topFeatures = [['FaultCovered', 0.30], ['RequiredDocumentsComplete', 0.13], ['WarrantyRemainingDays', 0.11], ['WarrantyStatus', 0.10], ['SerialNumberMatch', 0.07]]
+  function requestRetrain() { const next = `v${Number(version.replace('v','')) + 1}`; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
+  return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Inception-v1</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','81.33%','Tuning'],['F1-Score','99.11%','81.29%','Tuning'],['Precision','99.13%','83.28%','Tuning'],['Recall','99.11%','81.33%','Tuning'],['AUC-ROC','—','—','—'],['Latency','18 ms','74 ms','Tuning']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.31*100}%`}}></b><em>{value.toFixed(2)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">14 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
+}
+
 function AdminReports({ refreshKey }) {
   const [claims, setClaims] = useState([])
   const [status, setStatus] = useState('All')
@@ -5408,22 +5423,20 @@ function App({ onLogout, role, email }) {
   const allAdminNavigation = [
     ['dashboard', 'Dashboard'],
     ['customer-claims', 'Customer Claims'],
-    ['products', 'Products'],
     ['warranties', 'Warranties'],
-    ['notifications', `Notifications${notificationCount ? ` (${notificationCount})` : ''}`],
     ['classify', 'New Classification'],
     ['history', 'ML History'],
     ['model', 'Model Intelligence'],
     ['ai-ml', 'AI & ML'],
-    ['ml-audit', 'ML · Audit'], ['ml-preprocessing', 'ML · Preprocessing'], ['ml-text', 'ML · Text models'], ['ml-image', 'ML · Image model'], ['ml-compare', 'ML · Compare'],
+    ['ml-audit', 'ML · Audit'], ['ml-preprocessing', 'ML · Preprocessing'], ['ml-text', 'ML · Tuning models'], ['ml-image', 'ML · Image model'], ['ml-compare', 'ML · Compare'],
     ['reports', 'Reports & Export'],
     ['settings', 'Rules & Alerts'],
     ...(role === 'ADMIN' ? [['users', 'Users'], ['audit', 'Audit Logs']] : []),
   ]
 
   const adminNavigation = role === 'SERVICE_CENTER'
-    ? allAdminNavigation.filter(([key]) => ['dashboard', 'products', 'warranties', 'notifications', 'profile', 'classify', 'history', 'model'].includes(key))
-    : allAdminNavigation.filter(([key]) => ['dashboard', 'products', 'warranties', 'notifications', 'profile', 'model', 'ai-ml', 'ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare', 'reports', 'settings', 'users', 'audit'].includes(key))
+    ? allAdminNavigation.filter(([key]) => ['dashboard', 'warranties', 'profile', 'classify', 'history', 'model'].includes(key))
+    : allAdminNavigation.filter(([key]) => ['dashboard', 'warranties', 'profile', 'model', 'ai-ml', 'ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare', 'reports', 'settings', 'users', 'audit'].includes(key))
 
   return (
     <div className="app-shell">
@@ -5517,7 +5530,7 @@ function App({ onLogout, role, email }) {
         )}
 
         {adminPage === 'ai-ml' && (
-          <AdminAIML />
+          <AdminMLConsole />
         )}
 
         {['ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare'].includes(adminPage) && (
