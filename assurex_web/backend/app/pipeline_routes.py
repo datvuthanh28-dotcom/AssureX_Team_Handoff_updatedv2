@@ -26,7 +26,8 @@ def document(path):
 @router.get("")
 def pipeline():
     raw = pd.read_csv(ROOT / "data/raw/assurex_v3_raw.csv", keep_default_na=False, na_values=[""])
-    profile = [{"Column": col, "Type": str(raw[col].dtype), "Missing": int(raw[col].isna().sum()), "Missing %": round(float(raw[col].isna().mean() * 100), 2), "Unique": int(raw[col].nunique())} for col in raw.columns]
+    clean = pd.read_csv(ROOT / "data/cleaned/assurex_v3_clean.csv", keep_default_na=False, na_values=[""])
+    profile = [{"Column": col, "Type": str(clean[col].dtype), "Missing": int(clean[col].isna().sum()), "Missing %": round(float(clean[col].isna().mean() * 100), 2), "Unique": int(clean[col].nunique())} for col in clean.columns]
     reports = {
         "cleaning": "data/audit/assurex_v3_cleaning_summary.csv",
         "missing": "data/audit/assurex_v3_cleaning_missing_before_after.csv",
@@ -45,7 +46,7 @@ def pipeline():
         "comparison": "comparison/assurex_v3_model_comparison_summary.csv",
     }
     return {
-        "audit": {"rows": len(raw), "columns": len(raw.columns), "duplicates": int(raw.duplicated().sum()), "missing": int(raw.isna().sum().sum()), "profile": profile},
+        "audit": {"rows": len(clean), "raw_rows": len(raw), "columns": len(clean.columns), "duplicates_removed": int(len(raw) - len(clean)), "duplicates": int(clean.duplicated().sum()), "missing": int(clean.isna().sum().sum()), "class_counts": clean["ClaimClass"].value_counts().to_dict(), "profile": profile},
         "reports": {key: table(path) for key, path in reports.items()},
         "active": document("model_tracking/active_models.json"),
         "split": document("data/audit/assurex_v3_split_manifest.json"),

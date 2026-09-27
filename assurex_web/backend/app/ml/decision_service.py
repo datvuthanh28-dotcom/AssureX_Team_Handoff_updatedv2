@@ -174,6 +174,30 @@ def apply_business_rules(
             "Required documents incomplete/unknown"
         )
 
+    policy_required_complete = _norm(
+        claim_data.get("PolicyRequiredEvidenceComplete")
+    )
+    policy_missing_evidence = claim_data.get("PolicyMissingEvidence") or []
+    if policy_required_complete in {"no", "unknown", ""}:
+        missing_label = ", ".join(str(item) for item in policy_missing_evidence)
+        manual.append(
+            "Category policy evidence missing"
+            + (f": {missing_label}" if missing_label else "")
+        )
+        missing_docs.append(
+            "Category policy evidence missing"
+            + (f": {missing_label}" if missing_label else "")
+        )
+
+    if _is_no(claim_data.get("ComponentWarrantyEligible")):
+        hard_fail.append("Component is not covered by the category policy")
+
+    if _is_yes(claim_data.get("PolicyInstallationRequired")) and _norm(
+        claim_data.get("InstallationEvidenceAvailable")
+    ) != "yes":
+        manual.append("Category policy requires installation evidence")
+        missing_docs.append("Installation evidence required by category policy")
+
     missing_count = _number(
         claim_data.get("MissingDocumentCount")
     )
