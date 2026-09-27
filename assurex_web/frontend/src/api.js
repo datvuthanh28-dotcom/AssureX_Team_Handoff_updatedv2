@@ -1,6 +1,15 @@
-const API_BASE = `http://${window.location.hostname}:8000`
 const CUSTOMER_TOKEN_KEY = 'assurex_customer_token'
 const ADMIN_TOKEN_KEY = 'assurex_admin_token'
+
+// Candidate ports to support Windows environments where port 8000 has WinError 10013
+const CANDIDATE_PORTS = [8000, 8001, 8080, 5000]
+let activeBaseUrl = (() => {
+  try {
+    return localStorage.getItem('assurex_active_api_base') || null
+  } catch {
+    return null
+  }
+})()
 
 
 export async function api(
@@ -31,31 +40,52 @@ export async function api(
       'application/json'
   }
 
-  let response
-  try {
-    response = await fetch(
-      `${API_BASE}${path}`,
-      {
+  // Build candidate server base URLs
+  const hostnames = [window.location.hostname]
+  if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    hostnames.push('localhost', '127.0.0.1')
+  }
+
+  const basesToTry = []
+  if (activeBaseUrl) {
+    basesToTry.push(activeBaseUrl)
+  }
+  for (const port of CANDIDATE_PORTS) {
+    for (const host of hostnames) {
+      const url = `http://${host}:${port}`
+      if (!basesToTry.includes(url)) {
+        basesToTry.push(url)
+      }
+    }
+  }
+
+  let response = null
+  let lastNetworkError = null
+
+  for (const base of basesToTry) {
+    try {
+      response = await fetch(`${base}${path}`, {
         ...options,
         headers,
-      }
-    )
-  } catch (networkError) {
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+      })
+      // Server responded (even if 4xx/5xx, server is running and reachable on this port)
+      activeBaseUrl = base
       try {
-        response = await fetch(
-          `http://localhost:8000${path}`,
-          {
-            ...options,
-            headers,
-          }
-        )
+        localStorage.setItem('assurex_active_api_base', base)
       } catch {
-        throw networkError
+        // ignore
       }
-    } else {
-      throw networkError
+      break
+    } catch (netErr) {
+      lastNetworkError = netErr
+      // Continue to next port
     }
+  }
+
+  if (!response) {
+    throw new Error(
+      `Unable to connect to Backend Server (Failed to fetch). Please ensure the backend is running on port 8000 or 8001 (command: uvicorn app.main:app --reload --host 127.0.0.1 --port 8001).`
+    )
   }
 
   let data = null
@@ -67,10 +97,14 @@ export async function api(
   }
 
   if (!response.ok) {
-    throw new Error(
+    const err = new Error(
+      data?.message ||
       data?.detail ||
       `Request failed: ${response.status}`
     )
+    err.data = data
+    err.errors = data?.errors
+    throw err
   }
 
   return data

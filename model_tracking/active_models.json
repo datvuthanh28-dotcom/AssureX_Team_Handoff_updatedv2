@@ -1,10 +1,12 @@
 {
   "python_model": {
-    "name": "Gradient Boosting",
-    "version": "python-gradientboosting-v1",
-    "artifact_path": "model/python/gradient_boosting/python-gradientboosting-v1.joblib",
+    "name": "Gradient Boosting (14 Features)",
+    "version": "v3-final-14feat",
+    "artifact_path": "model/assurex_v3_final_model.joblib",
+    "fallback_artifact_path": "frozen_v3/assurex_v3_final_model.joblib",
     "selected_using": "validation_macro_f1",
-    "runtime_status": "active"
+    "runtime_status": "active",
+    "features_count": 14
   },
   "google_model": {
     "name": "Google Teachable Machine G5",

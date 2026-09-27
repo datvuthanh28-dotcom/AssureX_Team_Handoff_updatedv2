@@ -1,0 +1,33 @@
+{
+  "model_type": "<class 'sklearn.pipeline.Pipeline'>",
+  "feature_names_in_": [
+    "WarrantyCardAvailable",
+    "RepairReportAvailable",
+    "PreviousRepair",
+    "RepairCount",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "PriorClaimCount",
+    "ClaimAmount",
+    "OCRConfidence",
+    "ClaimSubmissionChannel",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "WarrantyStatus",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "MissingDocumentCount",
+    "AvailableDocumentCount",
+    "RequiredDocumentsComplete",
+    "PurchaseProofAvailable",
+    "HasRepairHistory"
+  ],
+  "n_features_in_": 22,
+  "classes_": [
+    "Invalid Claim",
+    "Manual Review",
+    "Valid Claim"
+  ]
+}

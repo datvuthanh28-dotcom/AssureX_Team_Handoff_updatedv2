@@ -3,9 +3,9 @@ import './CustomerApp.css'
 import { api } from './api'
 import {
   CustomerHome,
-  CustomerSubmit,
   CustomerClaims,
 } from './App'
+import { CustomerWarrantyClaimForm } from './WarrantyClaimSystem'
 
 const SESSION_KEY = 'assurex_customer_session'
 const TOKEN_KEY = 'assurex_customer_token'
@@ -25,6 +25,7 @@ function getCustomerRouteFromPath(pathname) {
 
   const map = {
     home: 'home',
+    'warranty-ticket': 'submit',
     submit: 'submit',
     'my-claims': 'my-claims',
     products: 'products',
@@ -131,13 +132,12 @@ function CustomerNotifications() {
         <div>
           <p className="eyebrow">Customer Portal</p>
           <h1>Notifications</h1>
-          <p className="page-description">Claim receipts and status updates for your account.</p>
         </div>
       </header>
       {error && <div className="alert error">{error}</div>}
       <section className="panel">
         {loading ? <div className="state-card">Loading notifications...</div> : items.length === 0 ? (
-          <div className="empty-state"><h3>No notifications</h3><p>Claim updates will appear here.</p></div>
+          <div className="empty-state"><h3>No notifications</h3></div>
         ) : (
           <div className="notification-list">
             {items.map((item) => (
@@ -272,9 +272,6 @@ function CustomerProducts({ onNavigate }) {
         <div>
           <p className="eyebrow">Customer Portal</p>
           <h1>My Products</h1>
-          <p className="page-description">
-            Register your purchased equipment with serial number, purchase price, and retailer to unlock warranty coverage.
-          </p>
         </div>
       </header>
 
@@ -283,17 +280,14 @@ function CustomerProducts({ onNavigate }) {
         <div className="stat-card">
           <span>Registered Products</span>
           <strong>{totalRegistered}</strong>
-          <small>Equipment linked to your account</small>
         </div>
         <div className="stat-card">
           <span>Active Warranties</span>
           <strong>{activeWarranties}</strong>
-          <small>Products currently under coverage</small>
         </div>
         <div className="stat-card">
           <span>Total Protected Value</span>
           <strong>${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong>
-          <small>Cumulative purchase valuation</small>
         </div>
       </section>
 
@@ -303,9 +297,6 @@ function CustomerProducts({ onNavigate }) {
           <div>
             <p className="eyebrow">Product Onboarding</p>
             <h2>Register a New Product</h2>
-            <p className="section-helper">
-              Provide product details, purchase date, price, and retailer to activate warranty protection.
-            </p>
           </div>
         </div>
 
@@ -408,11 +399,6 @@ function CustomerProducts({ onNavigate }) {
         ) : filteredProducts.length === 0 ? (
           <div className="empty-state">
             <h3>No products found</h3>
-            <p>
-              {products.length === 0
-                ? 'Register your first product above to activate warranty coverage.'
-                : 'No registered products match your search filter.'}
-            </p>
           </div>
         ) : (
           <div className="table-wrapper">
@@ -553,9 +539,6 @@ function CustomerWarranties({ onNavigate }) {
         <div>
           <p className="eyebrow">Customer Portal</p>
           <h1>Warranties & Coverage</h1>
-          <p className="page-description">
-            Track active coverage policies, approaching expiry dates, authorized service centers, and policy terms.
-          </p>
         </div>
       </header>
 
@@ -564,22 +547,18 @@ function CustomerWarranties({ onNavigate }) {
         <div className="stat-card">
           <span>Total Warranties</span>
           <strong>{warranties.length}</strong>
-          <small>All registered policies</small>
         </div>
         <div className="stat-card">
           <span>Active Coverage</span>
           <strong style={{ color: 'var(--ax-success)' }}>{countActive}</strong>
-          <small>Fully covered under warranty</small>
         </div>
         <div className="stat-card">
           <span>Approaching Expiry</span>
           <strong style={{ color: 'var(--ax-warning)' }}>{countExpiring}</strong>
-          <small>Expiring within 30 days</small>
         </div>
         <div className="stat-card">
           <span>Expired Policies</span>
           <strong style={{ color: 'var(--ax-danger)' }}>{countExpired}</strong>
-          <small>Coverage lapsed</small>
         </div>
       </section>
 
@@ -628,11 +607,6 @@ function CustomerWarranties({ onNavigate }) {
         ) : filtered.length === 0 ? (
           <div className="empty-state">
             <h3>No warranties found</h3>
-            <p>
-              {warranties.length === 0
-                ? 'Register a product to create its warranty policy record.'
-                : 'No warranties match the selected filter.'}
-            </p>
           </div>
         ) : (
           <div className="table-wrapper">
@@ -1033,9 +1007,6 @@ function CustomerProfile({ session, onUpdateSession }) {
         <div>
           <p className="eyebrow">Account Management</p>
           <h1>My Profile</h1>
-          <p className="page-description">
-            Manage your unique User ID, contact details, and account security.
-          </p>
         </div>
       </header>
 
@@ -1076,9 +1047,6 @@ function CustomerProfile({ session, onUpdateSession }) {
           <div>
             <p className="eyebrow">Contact Details</p>
             <h2>Personal & Contact Information</h2>
-            <p className="section-helper">
-              Provide your details so service centers can reach you regarding warranty repairs and claim updates.
-            </p>
           </div>
         </div>
 
@@ -1145,9 +1113,6 @@ function CustomerProfile({ session, onUpdateSession }) {
           <div>
             <p className="eyebrow">Security</p>
             <h2>Change Password</h2>
-            <p className="section-helper">
-              Ensure your account uses a secure password of at least 8 characters.
-            </p>
           </div>
         </div>
 
@@ -1443,16 +1408,12 @@ function CustomerApp() {
           />
         )}
 
-        {customerPage === 'submit' && (
-          <CustomerSubmit
-            email={session?.email || guestEmail}
-            customerName={session?.full_name || ''}
-            setEmail={setGuestEmail}
-            onSubmitted={() => {
+        {(customerPage === 'submit' || customerPage === 'warranty-ticket') && (
+          <CustomerWarrantyClaimForm
+            onCreated={() => {
               refresh()
-              navigateCustomer('my-claims')
             }}
-            onNavigate={navigateCustomer}
+            onCancel={() => navigateCustomer('home')}
           />
         )}
 
