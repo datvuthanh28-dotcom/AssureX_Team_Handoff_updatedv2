@@ -413,6 +413,7 @@ function AdminCustomerClaims({
   refreshKey,
   onChanged,
   canReview,
+  resolvedOnly = false,
 }) {
   const [claims, setClaims] = useState([])
   const [selected, setSelected] = useState(null)
@@ -484,9 +485,9 @@ function AdminCustomerClaims({
             .includes(term)
         )
 
-      const matchesStatus =
-        statusFilter === 'All' ||
-        claim.status === statusFilter
+      const matchesStatus = resolvedOnly
+        ? ['Approved', 'Rejected', 'Closed'].includes(claim.status)
+        : statusFilter === 'All' || claim.status === statusFilter
 
       return matchesSearch && matchesStatus
     })
@@ -567,8 +568,8 @@ function AdminCustomerClaims({
     <>
       <PageHeader
         eyebrow="Review Queue & Operations"
-        title="Customer Claims"
-        description="Review customer warranty requests, examine attached evidence with SHA-256 hashes, evaluate dual-model ML inference, and log approval decisions."
+        title={resolvedOnly ? 'Resolved Claims' : 'Claim Queue'}
+        description={resolvedOnly ? 'Review completed decisions and the audit trail used for retraining feedback.' : 'Review claims, attached evidence, policy validation and decision history.'}
         action={
           <button className="button secondary" onClick={exportClaims} disabled={filtered.length === 0}>
             Export CSV ({filtered.length})
@@ -576,7 +577,7 @@ function AdminCustomerClaims({
         }
       />
 
-      <section className="panel">
+      <section className="panel" style={selected ? { display: 'none' } : undefined}>
         <div className="toolbar" style={{ flexWrap: 'wrap', gap: '12px' }}>
           <div className="search-box" style={{ flex: '1 1 280px' }}>
             <span>⌕</span>
@@ -618,16 +619,16 @@ function AdminCustomerClaims({
             description="Try changing the search or status filter tab."
           />
         ) : (
-          <div className="table-wrapper">
-            <table className="data-table">
+          <div className="table-wrapper claim-queue-table-wrapper">
+            <table className="data-table claim-queue-table">
               <thead>
                 <tr>
                   <th>Claim ID</th>
                   <th>Customer</th>
                   <th>Product</th>
-                  <th>Amount</th>
                   <th>Status</th>
                   <th>Submitted</th>
+                  <th>Detail</th>
                 </tr>
               </thead>
 
@@ -670,11 +671,6 @@ function AdminCustomerClaims({
                       <small className="mono" style={{ opacity: 0.7 }}>{claim.serial_number}</small>
                     </td>
                     <td>
-                      {formatNumber(
-                        claim.claim_amount
-                      )}
-                    </td>
-                    <td>
                       <StatusBadge
                         value={claim.status}
                       />
@@ -683,6 +679,21 @@ function AdminCustomerClaims({
                       {formatDate(
                         claim.created_at
                       )}
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        className="button secondary claim-detail-button"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setSelected(claim)
+                          setReviewerComment('')
+                          setReviewError('')
+                          setActionSuccess('')
+                        }}
+                      >
+                        Detail
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -693,16 +704,22 @@ function AdminCustomerClaims({
       </section>
 
       {selected && (
-        <section className="panel detail-panel">
+        <section className="panel detail-panel claim-detail-page">
           <div className="panel-heading">
             <div>
               <p className="eyebrow">
-                Claim Review & Assessment
+                Claim Detail
               </p>
               <h2>{selected.claim_id}</h2>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button
+                className="button secondary"
+                onClick={() => setSelected(null)}
+              >
+                Back to queue
+              </button>
               <StatusBadge value={selected.status} />
               <button
                 className="button secondary"
@@ -717,7 +734,12 @@ function AdminCustomerClaims({
             </div>
           </div>
 
-          <div className="detail-grid">
+          <div className="detail-grid claim-summary-grid">
+            <div>
+              <span>Claim ID</span>
+              <strong className="mono">{selected.claim_id}</strong>
+            </div>
+
             <div>
               <span>Customer</span>
               <strong>{selected.customer_name}</strong>
@@ -726,6 +748,11 @@ function AdminCustomerClaims({
             <div>
               <span>Email</span>
               <strong>{selected.email}</strong>
+            </div>
+
+            <div>
+              <span>Product Category</span>
+              <strong>{selected.product_category || selected.raw_input?.product_category || '—'}</strong>
             </div>
 
             <div>
@@ -739,6 +766,11 @@ function AdminCustomerClaims({
             </div>
 
             <div>
+              <span>Claim Date</span>
+              <strong>{formatDate(selected.created_at)}</strong>
+            </div>
+
+            <div>
               <span>Purchase Date</span>
               <strong>{selected.purchase_date}</strong>
             </div>
@@ -747,6 +779,32 @@ function AdminCustomerClaims({
               <span>Claim Amount</span>
               <strong>{formatNumber(selected.claim_amount)}</strong>
             </div>
+
+            <div>
+              <span>Fault Type</span>
+              <strong>{selected.fault_type || selected.raw_input?.fault_type || '—'}</strong>
+            </div>
+
+            <div>
+              <span>Damage Type</span>
+              <strong>{selected.damage_type || selected.raw_input?.damage_type || '—'}</strong>
+            </div>
+
+            <div>
+              <span>Warranty Status</span>
+              <strong>{selected.decision?.derived_data?.WarrantyStatus || selected.raw_input?.warranty_status || '—'}</strong>
+            </div>
+
+            <div>
+              <span>Model Result</span>
+              <strong>{selected.decision?.final_decision || selected.predicted_class || '—'}</strong>
+            </div>
+
+            <div>
+              <span>Reviewer Status</span>
+              <strong>{selected.status || 'Pending'}</strong>
+            </div>
+
           </div>
 
           <div className="description-box">
@@ -754,6 +812,7 @@ function AdminCustomerClaims({
             <p>{selected.fault_description}</p>
           </div>
 
+          {false && <>
           {/* Dual-Model Comparison Card */}
           {selected.decision && (
             <div className="claim-analysis" style={{ marginTop: '20px' }}>
@@ -881,7 +940,7 @@ function AdminCustomerClaims({
               )}
 
               <details className="analysis-inputs" style={{ marginTop: '14px' }}>
-                <summary>Rule inputs and derived warranty values</summary>
+                <summary>Warranty Policy Validation & Rule Inputs</summary>
                 <div className="feature-grid">
                   {Object.entries({
                     ...selected.decision.derived_data,
@@ -1017,6 +1076,8 @@ function AdminCustomerClaims({
             </div>
           </div>
 
+          </>}
+
           {/* Prior Service & Repair History Panel */}
           {(selected.repair_center_name || selected.previous_repair_date || selected.replaced_parts || selected.repair_cost) && (
             <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
@@ -1056,7 +1117,7 @@ function AdminCustomerClaims({
             <div className="decision-actions" style={{ marginTop: '24px' }}>
               <label className="review-note">
                 <span style={{ fontWeight: 600, display: 'block', marginBottom: '4px' }}>
-                  Reviewer Rationale & Audit Note
+                  Reviewer Decision, Override & Audit Note
                 </span>
                 <p style={{ margin: '0 0 6px', fontSize: '12px', opacity: 0.75 }}>
                   Click a preset rationale to quickly fill, or write a custom audit reason.
@@ -1084,13 +1145,13 @@ function AdminCustomerClaims({
               {actionSuccess && <div className="alert success" style={{ marginBottom: '12px' }}>{actionSuccess}</div>}
               {reviewError && <div className="alert error" style={{ marginBottom: '12px' }}>{reviewError}</div>}
 
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              <div className="reviewer-action-buttons">
                 <button
                   className="button success"
                   disabled={updating}
                   onClick={() => updateStatus('Approved')}
                 >
-                  {updating ? 'Updating...' : '✓ Approve Claim'}
+                  {updating ? 'Saving...' : 'Approve'}
                 </button>
 
                 <button
@@ -1098,7 +1159,7 @@ function AdminCustomerClaims({
                   disabled={updating}
                   onClick={() => updateStatus('Rejected')}
                 >
-                  {updating ? 'Updating...' : '✕ Reject Claim'}
+                  {updating ? 'Saving...' : 'Reject'}
                 </button>
 
                 <button
@@ -1106,16 +1167,16 @@ function AdminCustomerClaims({
                   disabled={updating}
                   onClick={() => updateStatus('Under Review')}
                 >
-                  {updating ? 'Updating...' : 'Mark Under Review'}
+                  {updating ? 'Saving...' : 'Review'}
                 </button>
 
                 <button
-                  className="button warning"
+                  className="button secondary"
                   disabled={updating || !reviewerComment.trim()}
                   title={!reviewerComment.trim() ? 'Please provide a reviewer note explaining what info is needed' : ''}
                   onClick={() => updateStatus('Additional Information Required')}
                 >
-                  {updating ? 'Updating...' : 'Request More Information'}
+                  {updating ? 'Saving...' : 'More info'}
                 </button>
               </div>
             </div>
@@ -5220,13 +5281,67 @@ function CustomerClaims({
 }
 
 
+function ReviewerAppeals({ onChanged }) {
+  const [appeals, setAppeals] = useState([])
+  const [comments, setComments] = useState({})
+  const [status, setStatus] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  function loadAppeals() {
+    setLoading(true)
+    api('/api/appeals')
+      .then(setAppeals)
+      .catch((requestError) => setError(requestError.message))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => { loadAppeals() }, [])
+
+  async function resolveAppeal(appeal) {
+    const decision = status[appeal.id] || 'Rejected'
+    const comment = (comments[appeal.id] || '').trim()
+    if (comment.length < 5) {
+      setError('Please add a reviewer explanation before resolving the appeal.')
+      return
+    }
+    setError('')
+    try {
+      await api(`/api/appeals/${appeal.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: decision, reviewer_comment: comment }),
+      })
+      setAppeals((current) => current.map((item) => item.id === appeal.id ? { ...item, status: decision, reviewer_comment: comment } : item))
+      onChanged()
+    } catch (requestError) {
+      setError(requestError.message)
+    }
+  }
+
+  const pending = appeals.filter((appeal) => appeal.status === 'Pending')
+  return <>
+    <PageHeader eyebrow="Reviewer workspace" title="Appeals" description="Resolve rejected claim appeals while preserving the original decision and complete audit history." />
+    {error && <div className="alert error">{error}</div>}
+    {loading ? <LoadingState /> : pending.length === 0 ? <EmptyState title="No pending appeals" description="New customer appeals will appear here." /> : <div className="panel-grid">
+      {pending.map((appeal) => <section className="panel" key={appeal.id}>
+        <div className="panel-heading"><div><p className="eyebrow">Appeal #{appeal.id}</p><h2>{appeal.claim_id}</h2></div><StatusBadge value={appeal.status} /></div>
+        <div className="description-box"><span>Customer appeal reason</span><p>{appeal.reason}</p></div>
+        <div className="detail-grid"><div><span>Submitted</span><strong>{formatDate(appeal.created_at)}</strong></div><div><span>Original claim</span><strong>{appeal.claim_id}</strong></div></div>
+        <label className="review-note" style={{ display: 'block', marginTop: '14px' }}><span>Reviewer response</span><textarea rows="3" value={comments[appeal.id] || ''} onChange={(event) => setComments((current) => ({ ...current, [appeal.id]: event.target.value }))} placeholder="Explain why the original decision is upheld or changed..." /></label>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '10px', flexWrap: 'wrap' }}><select value={status[appeal.id] || 'Rejected'} onChange={(event) => setStatus((current) => ({ ...current, [appeal.id]: event.target.value }))}><option value="Rejected">Uphold rejection</option><option value="Approved">Approve after appeal</option></select><button className="button primary" onClick={() => resolveAppeal(appeal)}>Resolve appeal</button></div>
+      </section>)}
+    </div>}
+    {appeals.some((appeal) => appeal.status !== 'Pending') && <section className="panel" style={{ marginTop: '16px' }}><div className="panel-heading"><div><p className="eyebrow">History</p><h2>Resolved appeals</h2></div></div><div className="compact-list">{appeals.filter((appeal) => appeal.status !== 'Pending').map((appeal) => <div className="compact-row" key={appeal.id}><strong>{appeal.claim_id}</strong><StatusBadge value={appeal.status} /><span>{appeal.reviewer_comment || 'Resolved'}</span></div>)}</div></section>}
+  </>
+}
+
 function ReviewerWorkspace({ onLogout, email }) {
   const [page, setPage] = useState('overview')
   const [refreshKey, setRefreshKey] = useState(0)
-  const nav = [['overview', 'Review overview'], ['queue', 'Claim queue'], ['appeals', 'Appeals'], ['profile', 'My profile']]
+  const nav = [['overview', 'Review overview'], ['queue', 'Claim queue'], ['resolved', 'Resolved claims'], ['appeals', 'Appeals'], ['profile', 'My profile']]
   return <div className="app-shell reviewer-shell">
     <aside className="sidebar reviewer-sidebar"><div className="brand"><div className="brand-mark">AX</div><div><h2>AssureX</h2><p>Reviewer Desk</p></div></div><div className="sidebar-section-label">My workspace</div><nav className="nav-menu">{nav.map(([key,label]) => <button key={key} className={`nav-item ${page===key?'active':''}`} onClick={()=>setPage(key)}>{label}</button>)}</nav><div className="reviewer-rail-note"><strong>Reviewer mode</strong><span>Decision queue & customer appeals</span></div><button className="admin-logout-button" onClick={onLogout}>Log out</button></aside>
-    <main className="main-content">{page==='overview' && <><PageHeader eyebrow="Reviewer workspace" title="Good afternoon" description="Resolve claims with model evidence, policy checks and a clear audit trail." action={<button className="button primary" onClick={()=>setPage('queue')}>Open review queue →</button>} /><div className="stats-grid"><StatCard label="Pending review" value="12" hint="Claims waiting for decision" tone="warning"/><StatCard label="High confidence" value="8" hint="Model confidence above 85%" tone="success"/><StatCard label="Appeals" value="3" hint="Need your response" tone="danger"/><StatCard label="Reviewed today" value="24" hint="Across all categories"/></div><section className="reviewer-focus"><div><p className="eyebrow">Next best action</p><h2>Prioritize the 3 appealed claims</h2><p>Customers are waiting for a human explanation. Review evidence and publish a final response.</p></div><button className="button secondary" onClick={()=>setPage('appeals')}>View appeals</button></section><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Today</p><h2>Queue health</h2></div></div><div className="review-progress"><span style={{width:'68%'}}></span></div><p className="muted">68% of today’s assigned claims have been resolved.</p></section></>}{page==='queue' && <AdminCustomerClaims refreshKey={refreshKey} onChanged={()=>setRefreshKey(x=>x+1)} canReview />}{page==='appeals' && <><PageHeader eyebrow="Customer care" title="Appeals" description="Review rejected claims, the customer’s explanation and attached evidence."/><div className="panel"><div className="appeal-row"><div><strong>CLM-1042 · Warranty eligibility</strong><span>Customer requested a second review · 2 hours ago</span></div><button className="button primary" onClick={()=>setPage('queue')}>Open case</button></div><div className="appeal-row"><div><strong>CLM-1036 · Product damage</strong><span>Additional receipt uploaded · Yesterday</span></div><button className="button secondary" onClick={()=>setPage('queue')}>Open case</button></div></div></>}{page==='profile' && <WorkspaceProfile email={email} role="REVIEWER"/>}</main>
+    <main className="main-content">{page==='overview' && <><PageHeader eyebrow="Reviewer workspace" title="Review overview" description="Prioritize claim decisions, appeals and verified feedback for future retraining." action={<button className="button primary" onClick={()=>setPage('queue')}>Open claim queue →</button>} /><div className="stats-grid"><StatCard label="Pending review" value="12" hint="Claims waiting for decision" tone="warning"/><StatCard label="High confidence" value="8" hint="Model confidence above 85%" tone="success"/><StatCard label="Appeals" value="3" hint="Need your response" tone="danger"/><StatCard label="Reviewed today" value="24" hint="Across all categories"/></div><section className="reviewer-focus"><div><p className="eyebrow">Next best action</p><h2>Prioritize pending reviews and appeals</h2><p>Review claim evidence, apply policy validation and record a final decision.</p></div><button className="button secondary" onClick={()=>setPage('appeals')}>View appeals</button></section><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Today</p><h2>Review workload</h2></div></div><div className="review-progress"><span style={{width:'68%'}}></span></div><p className="muted">68% of today’s assigned claims have been resolved.</p></section></>}{page==='queue' && <AdminCustomerClaims refreshKey={refreshKey} onChanged={()=>setRefreshKey(x=>x+1)} canReview />}{page==='resolved' && <AdminCustomerClaims refreshKey={refreshKey} onChanged={()=>setRefreshKey(x=>x+1)} canReview={false} resolvedOnly />}{page==='appeals' && <ReviewerAppeals onChanged={()=>setRefreshKey(x=>x+1)} />}{page==='profile' && <WorkspaceProfile email={email} role="REVIEWER"/>}</main>
   </div>
 }
 
