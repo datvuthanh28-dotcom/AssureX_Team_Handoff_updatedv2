@@ -93,7 +93,7 @@ function RootComponent() {
   const path = currentPath.startsWith(APP_BASE_PATH)
     ? currentPath.slice(APP_BASE_PATH.length) || '/'
     : currentPath
-  const isAdminRoute = path === '/admin' || path.endsWith('/admin')
+  const isAdminRoute = path === '/admin' || path.startsWith('/admin/') || path.endsWith('/admin')
   const [adminAuthenticated, setAdminAuthenticated] = useState(
     () => Boolean(localStorage.getItem(ADMIN_SESSION_KEY))
   )

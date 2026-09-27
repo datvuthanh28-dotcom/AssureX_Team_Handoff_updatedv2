@@ -13,9 +13,8 @@ export async function api(
   const headers = {
     ...(options.headers || {}),
   }
-  const isAdminRoute = window.location.pathname
-    .replace(/\/+$/, '')
-    .endsWith('/admin')
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/'
+  const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/') || pathname.endsWith('/admin')
   const token = localStorage.getItem(
     isAdminRoute ? ADMIN_TOKEN_KEY : CUSTOMER_TOKEN_KEY
   )

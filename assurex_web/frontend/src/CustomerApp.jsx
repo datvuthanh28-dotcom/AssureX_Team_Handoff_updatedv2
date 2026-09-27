@@ -11,6 +11,31 @@ const SESSION_KEY = 'assurex_customer_session'
 const TOKEN_KEY = 'assurex_customer_token'
 const ADMIN_PATH = `${import.meta.env.BASE_URL}admin`
 
+function getCustomerRouteFromPath(pathname) {
+  const cleaned = pathname.replace(/\/+$/, '') || '/'
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, '') || ''
+  const relative = cleaned.startsWith(base)
+    ? cleaned.slice(base.length) || '/'
+    : cleaned
+  const segments = relative.split('/').filter(Boolean)
+
+  if (segments[0] === 'claims' && segments[1]) {
+    return { page: 'claims', claimId: decodeURIComponent(segments[1]) }
+  }
+
+  const map = {
+    home: 'home',
+    submit: 'submit',
+    'my-claims': 'my-claims',
+    products: 'products',
+    warranties: 'warranties',
+    notifications: 'notifications',
+    profile: 'profile',
+  }
+
+  return { page: map[segments[0]] || 'home', claimId: null }
+}
+
 const customerNavigation = [
   ['home', 'Home', 'home'],
   ['submit', 'Submit Claim', 'submit'],
@@ -90,6 +115,11 @@ function CustomerNotifications() {
       setItems((current) => current.map((entry) =>
         entry.id === item.id ? { ...entry, is_read: true } : entry
       ))
+      if (item.resource_id) {
+        const nextPath = `${import.meta.env.BASE_URL}claims/${encodeURIComponent(item.resource_id)}`
+        window.history.pushState({}, '', nextPath)
+        window.dispatchEvent(new PopStateEvent('popstate'))
+      }
     } catch (requestError) {
       setError(requestError.message)
     }
@@ -381,13 +411,37 @@ function CustomerApp() {
     () => loadSession()
   )
 
+  const initialRoute = getCustomerRouteFromPath(window.location.pathname)
   const [customerPage, setCustomerPage] =
-    useState('home')
+    useState(initialRoute.page)
+  const [selectedClaimId, setSelectedClaimId] = useState(initialRoute.claimId || '')
 
   const [authMode, setAuthMode] = useState(null)
 
   const [refreshKey, setRefreshKey] = useState(0)
   const [guestEmail, setGuestEmail] = useState('')
+  const [notificationCount, setNotificationCount] = useState(0)
+
+  useEffect(() => {
+    if (!session?.token) {
+      setNotificationCount(0)
+      return undefined
+    }
+
+    let active = true
+    api('/api/notifications')
+      .then((items) => {
+        if (!active) return
+        setNotificationCount(items.filter((item) => !item.is_read).length)
+      })
+      .catch(() => {
+        if (active) setNotificationCount(0)
+      })
+
+    return () => {
+      active = false
+    }
+  }, [session?.token, refreshKey])
 
   useEffect(() => {
     document.body.classList.add('customer-light')
@@ -454,12 +508,31 @@ function CustomerApp() {
     setRefreshKey((value) => value + 1)
   }
 
-  function navigateCustomer(page) {
+  useEffect(() => {
+    const syncRoute = () => {
+      const route = getCustomerRouteFromPath(window.location.pathname)
+      setCustomerPage(route.page)
+      setSelectedClaimId(route.claimId || '')
+    }
+
+    window.addEventListener('popstate', syncRoute)
+    return () => window.removeEventListener('popstate', syncRoute)
+  }, [])
+
+  function navigateCustomer(page, claimId = null) {
     if (!session && page !== 'home') {
       setAuthMode('login')
       return
     }
+
     setCustomerPage(page)
+    setSelectedClaimId(claimId || '')
+
+    const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '')
+    const normalized = page === 'home' ? `${basePath}/` : page === 'notifications' ? `${basePath}/notifications` : page === 'submit' ? `${basePath}/submit` : page === 'products' ? `${basePath}/products` : page === 'warranties' ? `${basePath}/warranties` : page === 'profile' ? `${basePath}/profile` : page === 'my-claims' ? `${basePath}/my-claims` : `${basePath}/`
+
+    const targetUrl = claimId ? `${basePath}/claims/${encodeURIComponent(claimId)}` : normalized
+    window.history.pushState({}, '', targetUrl)
   }
 
   if (authMode) {
@@ -495,20 +568,26 @@ function CustomerApp() {
 
         <nav className="nav-menu">
           {customerNavigation.map(
-            ([key, label, icon]) => (
-              <button
-                key={key}
-                className={`nav-item ${
-                  customerPage === key
-                    ? 'active'
-                    : ''
-                }`}
-                onClick={() => navigateCustomer(key)}
-              >
-                <NavIcon name={icon} />
-                {label}
-              </button>
-            )
+            ([key, label, icon]) => {
+              const finalLabel = key === 'notifications' && notificationCount > 0
+                ? `${label} (${notificationCount})`
+                : label
+
+              return (
+                <button
+                  key={key}
+                  className={`nav-item ${
+                    customerPage === key
+                      ? 'active'
+                      : ''
+                  }`}
+                  onClick={() => navigateCustomer(key)}
+                >
+                  <NavIcon name={icon} />
+                  {finalLabel}
+                </button>
+              )
+            }
           )}
         </nav>
 
@@ -570,6 +649,21 @@ function CustomerApp() {
             setEmail={setGuestEmail}
             hideIdentity
             refreshKey={refreshKey}
+            selectedClaimId={selectedClaimId}
+            onSelectClaim={(claimId) => navigateCustomer('my-claims', claimId)}
+            onOpenClaim={(claimId) => navigateCustomer('my-claims', claimId)}
+          />
+        )}
+
+        {customerPage === 'claims' && (
+          <CustomerClaims
+            email={session?.email || guestEmail}
+            setEmail={setGuestEmail}
+            hideIdentity
+            refreshKey={refreshKey}
+            selectedClaimId={selectedClaimId}
+            onSelectClaim={(claimId) => navigateCustomer('my-claims', claimId)}
+            onOpenClaim={(claimId) => navigateCustomer('my-claims', claimId)}
           />
         )}
 

@@ -248,12 +248,17 @@ button:disabled {
   min-height: 100vh;
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
+  align-items: start;
 }
 
 .sidebar {
   position: sticky;
   top: 0;
   height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
   padding: 24px 18px;
   background:
     linear-gradient(
@@ -265,6 +270,15 @@ button:disabled {
   display: flex;
   flex-direction: column;
   z-index: 20;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 999px;
 }
 
 .brand {
