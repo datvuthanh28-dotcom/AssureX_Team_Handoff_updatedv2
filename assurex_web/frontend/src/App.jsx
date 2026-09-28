@@ -8,9 +8,11 @@ import { ReviewerWarrantyDesk, WarrantyRetrainingDataset, CustomerWarrantyClaimF
 const MODEL_METRICS = {
   pythonAccuracy: '99.11%',
   pythonF1: '99.11%',
+  pythonAuc: '99.96%',
   pythonConfidence: '93.93%',
   gtmAccuracy: '86.22%',
   gtmF1: '86.10%',
+  gtmAuc: '92.48%',
   gtmConfidence: '87.67%',
 }
 
@@ -362,6 +364,7 @@ function AdminDashboard({
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '8px' }}>
                     <span>Accuracy: <strong>{MODEL_METRICS.pythonAccuracy}</strong></span>
                     <span>Macro F1: <strong>{MODEL_METRICS.pythonF1}</strong></span>
+                    <span>AUC-ROC: <strong>{MODEL_METRICS.pythonAuc}</strong></span>
                   </div>
                 </div>
 
@@ -378,6 +381,7 @@ function AdminDashboard({
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginTop: '8px' }}>
                     <span>Accuracy: <strong>{MODEL_METRICS.gtmAccuracy}</strong></span>
                     <span>Macro F1: <strong>{MODEL_METRICS.gtmF1}</strong></span>
+                    <span>AUC-ROC: <strong>{MODEL_METRICS.gtmAuc}</strong></span>
                   </div>
                 </div>
               </div>
@@ -1930,8 +1934,8 @@ function ModelInfo() {
 
               <tr>
                 <td>AUC-ROC</td>
-                <td>—</td>
-                <td>—</td>
+                <td>{MODEL_METRICS.pythonAuc}</td>
+                <td>{MODEL_METRICS.gtmAuc}</td>
               </tr>
 
               <tr>
@@ -1950,16 +1954,6 @@ function ModelInfo() {
                 <td>Total Errors</td>
                 <td>2</td>
                 <td>31</td>
-              </tr>
-
-              <tr>
-                <td>SRS ≥ 85%</td>
-                <td>
-                  <StatusBadge value="PASS" />
-                </td>
-                <td>
-                  <StatusBadge value="FAIL" />
-                </td>
               </tr>
 
               <tr>
@@ -2045,7 +2039,7 @@ function MLPipelinePage({ page, onNavigate }) {
       {page === 'ml-compare' && <>
         <p className="section-lead">So sánh model text và image trên cùng tiêu chí, chọn model production và đóng vòng phản hồi để retrain version mới.</p>
         <div className="compare-hero"><div><span>Production winner</span><h3>Gradient Boosting</h3><p>Được chọn làm model chính cho claim decision engine.</p></div><strong>99.11%<small>Macro F1</small></strong></div>
-        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Image · Inception-v1</th><th>Winner</th></tr></thead><tbody><tr><td>Accuracy</td><td>99.11%</td><td>86.22%</td><td>Tuning</td></tr><tr><td>F1-Score</td><td>99.11%</td><td>86.10%</td><td>Tuning</td></tr><tr><td>Precision</td><td>99.13%</td><td>87.52%</td><td>Tuning</td></tr><tr><td>Recall</td><td>99.11%</td><td>86.22%</td><td>Tuning</td></tr><tr><td>AUC-ROC</td><td>—</td><td>—</td><td>Not reported</td></tr><tr><td>Latency</td><td>Not reported</td><td>Not reported</td><td>—</td></tr></tbody></table></div>
+        <div className="table-wrapper"><table className="data-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Image · Inception-v1</th><th>Winner</th></tr></thead><tbody><tr><td>Accuracy</td><td>99.11%</td><td>86.22%</td><td>Tuning</td></tr><tr><td>F1-Score</td><td>99.11%</td><td>86.10%</td><td>Tuning</td></tr><tr><td>Precision</td><td>99.13%</td><td>87.52%</td><td>Tuning</td></tr><tr><td>Recall</td><td>99.11%</td><td>86.22%</td><td>Tuning</td></tr><tr><td>AUC-ROC</td><td>{MODEL_METRICS.pythonAuc}</td><td>{MODEL_METRICS.gtmAuc}</td><td>Tuning</td></tr><tr><td>Latency</td><td>Not reported</td><td>Not reported</td><td>—</td></tr></tbody></table></div>
         <div className="retrain-card"><div><h3>Feedback loop</h3><p>Customer claim → model prediction → reviewer decision → verified label → retrain model vNext.</p></div><button className="button primary">Start retraining review →</button></div>
       </>}
     </section>
@@ -5351,7 +5345,7 @@ function AdminMLConsole() {
   const datasetFields = ['RepairAuthorized','SerialNumberMatch','ProductModelConsistent','DuplicateClaimIndicator','ContradictionIndicator','OCRConfidence','ClaimReportingDelayDays','WarrantyRemainingDays','ClaimReportingWithinPeriod','FaultCovered','RequiredDocumentsComplete','MissingDocumentCount','ProductIdentityMatch','OCRQualityBand']
   const topFeatures = [['FaultCovered', 0.2916], ['WarrantyRemainingDays', 0.1721], ['RequiredDocumentsComplete', 0.1188], ['MissingDocumentCount', 0.0859], ['ProductIdentityMatch', 0.0509]]
   function requestRetrain() { const match = version.match(/^G(\d+)_V(\d+)$/); const next = match ? `G${match[1]}_V${Number(match[2]) + 1}` : 'G2_V4'; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
-  return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Inception-v1</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','86.22%','Tuning'],['F1-Score','99.11%','86.10%','Tuning'],['Precision','99.13%','87.52%','Tuning'],['Recall','99.11%','86.22%','Tuning'],['AUC-ROC','—','—','Not reported'],['Latency','Not reported','Not reported','—']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.2916*100}%`}}></b><em>{value.toFixed(4)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">14 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
+  return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Inception-v1</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','86.22%','Tuning'],['F1-Score','99.11%','86.10%','Tuning'],['Precision','99.13%','87.52%','Tuning'],['Recall','99.11%','86.22%','Tuning'],['AUC-ROC',MODEL_METRICS.pythonAuc,MODEL_METRICS.gtmAuc,'Tuning'],['Latency','Not reported','Not reported','—']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.2916*100}%`}}></b><em>{value.toFixed(4)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">14 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
 }
 
 function AdminReports({ refreshKey }) {

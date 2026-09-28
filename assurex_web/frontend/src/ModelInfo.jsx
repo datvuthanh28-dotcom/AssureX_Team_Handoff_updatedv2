@@ -13,33 +13,33 @@ function ModelInfo() {
 
         <div className="metric-highlight">
           <span>Test Accuracy</span>
-          <strong>95.56%</strong>
+          <strong>99.11%</strong>
         </div>
       </section>
 
       <section className="stats-grid model-stats">
         <div className="stat-card">
           <span>Macro F1</span>
-          <strong>95.59%</strong>
+          <strong>99.11%</strong>
           <small>Python Gradient Boosting</small>
         </div>
 
         <div className="stat-card">
           <span>Mean Confidence</span>
-          <strong>93.20%</strong>
+          <strong>93.93%</strong>
           <small>Python Gradient Boosting</small>
         </div>
 
         <div className="stat-card">
           <span>Test Errors</span>
-          <strong>10</strong>
-          <small>10 / 225 claims</small>
+          <strong>2</strong>
+          <small>2 / 225 claims</small>
         </div>
 
         <div className="stat-card">
-          <span>SRS ≥ 85%</span>
-          <strong>PASS</strong>
-          <small>Accuracy requirement</small>
+          <span>AUC-ROC</span>
+          <strong>99.96%</strong>
+          <small>Python Gradient Boosting</small>
         </div>
       </section>
 
@@ -62,32 +62,38 @@ function ModelInfo() {
             <tbody>
               <tr>
                 <td>Accuracy</td>
-                <td>95.56%</td>
-                <td>81.33%</td>
+                <td>99.11%</td>
+                <td>86.22%</td>
               </tr>
 
               <tr>
                 <td>Macro Precision</td>
-                <td>95.82%</td>
-                <td>83.28%</td>
+                <td>99.13%</td>
+                <td>87.52%</td>
               </tr>
 
               <tr>
                 <td>Macro Recall</td>
-                <td>95.56%</td>
-                <td>81.33%</td>
+                <td>99.11%</td>
+                <td>86.22%</td>
               </tr>
 
               <tr>
                 <td>Macro F1</td>
-                <td>95.59%</td>
-                <td>81.29%</td>
+                <td>99.11%</td>
+                <td>86.10%</td>
               </tr>
 
               <tr>
                 <td>Mean Confidence</td>
-                <td>93.20%</td>
-                <td>87.74%</td>
+                <td>93.93%</td>
+                <td>87.67%</td>
+              </tr>
+
+              <tr>
+                <td>AUC-ROC</td>
+                <td>99.96%</td>
+                <td>92.48%</td>
               </tr>
 
               <tr>
