@@ -97,9 +97,23 @@ export async function api(
   }
 
   if (!response.ok) {
+    const detail = data?.detail
+    const detailMessage = Array.isArray(detail)
+      ? detail
+          .map((item) => {
+            const location = Array.isArray(item?.loc) ? item.loc.join('.') : ''
+            return [location, item?.msg].filter(Boolean).join(': ')
+          })
+          .filter(Boolean)
+          .join('; ')
+      : typeof detail === 'string'
+        ? detail
+        : detail
+          ? JSON.stringify(detail)
+          : null
     const err = new Error(
       data?.message ||
-      data?.detail ||
+      detailMessage ||
       `Request failed: ${response.status}`
     )
     err.data = data

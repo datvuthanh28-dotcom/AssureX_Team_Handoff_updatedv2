@@ -269,7 +269,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         fault_description: faultDescription.trim(),
         previous_repair: previousRepair,
         repair_centre: repairCentre?.trim() || '',
-        repair_date: repairDate || '',
+        repair_date: repairDate || null,
         evidence,
       }
       const response = await api('/api/claims/v3/ticket', {
