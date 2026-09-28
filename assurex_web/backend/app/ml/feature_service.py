@@ -1,8 +1,30 @@
 from __future__ import annotations
 
 from datetime import date
+import json
+from pathlib import Path
 import numpy as np
 import pandas as pd
+
+
+WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
+POLICY_PATH = WORKSPACE_ROOT / "config" / "warranty_policies.json"
+try:
+    WARRANTY_POLICY = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
+except (OSError, json.JSONDecodeError):
+    WARRANTY_POLICY = {"policy_version": "unknown", "common": {}, "categories": {}}
+
+
+def get_category_policy(category):
+    categories = WARRANTY_POLICY.get("categories", {})
+    value = str(category or "").strip()
+    if value in categories:
+        return categories[value]
+    normalized_category = value.casefold()
+    return next(
+        (policy for name, policy in categories.items() if name.casefold() == normalized_category),
+        {},
+    )
 
 
 DOCUMENT_FIELDS = [
@@ -95,16 +117,27 @@ def build_claim_features(
         raw.get("fault_date")
     )
 
+    category = str(raw.get("product_category") or "").strip()
+    policy = get_category_policy(category)
+    common_policy = WARRANTY_POLICY.get("common", {})
+    claimed_component = str(raw.get("claimed_component") or "Main Unit").strip()
+    component_policy = policy.get("components", {}).get(claimed_component, {})
+
     # -------------------------------------------------
     # WARRANTY
     # -------------------------------------------------
 
     try:
-        warranty_months = int(
-            raw.get("warranty_duration_months")
-        )
+        warranty_months = int(raw.get("warranty_duration_months"))
     except (TypeError, ValueError):
-        warranty_months = None
+        warranty_months = policy.get("standard_warranty_months")
+
+    if component_policy:
+        warranty_months = component_policy.get("warranty_months", warranty_months)
+    component_warranty_eligible = component_policy.get(
+        "warranty_eligible",
+        True if policy else None,
+    )
 
     extended_warranty = yes_no(
         raw.get("extended_warranty")
@@ -156,11 +189,8 @@ def build_claim_features(
             (claim_date - fault_date).days
         )
 
-        reporting_within_period = (
-            "Yes"
-            if reporting_delay <= 30
-            else "No"
-        )
+        reporting_deadline = policy.get("reporting_deadline_days", 30)
+        reporting_within_period = "Yes" if reporting_delay <= reporting_deadline else "No"
 
     # -------------------------------------------------
     # DAMAGE / COVERAGE
@@ -170,7 +200,15 @@ def build_claim_features(
         raw.get("damage_type") or ""
     ).strip()
 
-    if damage_type in COVERED_DAMAGE_TYPES:
+    fault_type = str(raw.get("fault_type") or "").strip()
+    policy_covered_faults = set(policy.get("potentially_covered_faults", []))
+    policy_excluded_causes = set(common_policy.get("common_excluded_causes", [])) | set(policy.get("additional_excluded_causes", []))
+
+    if damage_type in policy_excluded_causes or fault_type in policy_excluded_causes:
+        fault_covered = "No"
+    elif fault_type in policy_covered_faults:
+        fault_covered = "Yes"
+    elif damage_type in COVERED_DAMAGE_TYPES:
         fault_covered = "Yes"
     elif damage_type in EXCLUDED_DAMAGE_TYPES:
         fault_covered = "No"
@@ -185,6 +223,26 @@ def build_claim_features(
         field: yes_no(raw.get(field))
         for field in DOCUMENT_FIELDS
     }
+
+    evidence_aliases = {
+        "warranty_proof": ["receipt_available", "warranty_card_available", "electronic_warranty_available"],
+        "identity_evidence": ["serial_evidence_available", "product_image_available"],
+        "fault_evidence": ["fault_evidence_available"],
+        "installation_evidence": ["installation_evidence_available"],
+        "repair_report": ["repair_report_available"],
+        "battery_diagnostic": ["battery_diagnostic_available"],
+        "screen_fault_image": ["screen_fault_image_available"],
+        "service_diagnostic": ["service_diagnostic_available"],
+        "component_identity_evidence": ["component_identity_evidence_available"],
+        "usage_meter_evidence": ["usage_meter_evidence_available"],
+    }
+    policy_missing_evidence = []
+    for required_evidence in policy.get("required_evidence", []):
+        aliases = evidence_aliases.get(required_evidence, [required_evidence])
+        if not any(yes_no(raw.get(alias)) == "Yes" for alias in aliases):
+            policy_missing_evidence.append(required_evidence)
+
+    policy_required_complete = "Yes" if not policy_missing_evidence else "No"
 
     observed_documents = [
         value
@@ -361,85 +419,73 @@ def build_claim_features(
         claim_amount = np.nan
 
     # -------------------------------------------------
-    # EXACT 22 PRODUCTION MODEL FEATURES
+    # ASSUREX V3 - EXACT 14 FROZEN PYTHON FEATURES
     # -------------------------------------------------
 
+    repair_authorized = yes_no(
+        raw.get("repair_authorized")
+    )
+
+    product_identity_match = serial_number_match
+
+    try:
+        ocr_value = float(ocr_confidence)
+        if np.isnan(ocr_value):
+            ocr_quality_band = "Unknown"
+        elif ocr_value < 0.70:
+            ocr_quality_band = "Low"
+        elif ocr_value < 0.85:
+            ocr_quality_band = "Medium"
+        else:
+            ocr_quality_band = "High"
+    except (TypeError, ValueError):
+        ocr_quality_band = "Unknown"
+
     model_features = {
-        "WarrantyCardAvailable":
-            documents["warranty_card_available"],
-
-        "RepairReportAvailable":
-            repair_report_available,
-
-        "PreviousRepair":
-            previous_repair,
-
-        "RepairCount":
-            repair_count,
-
-        "SerialNumberMatch":
-            serial_number_match,
-
-        "ProductModelConsistent":
-            product_model_consistent,
-
-        "DuplicateClaimIndicator":
-            duplicate_indicator,
-
-        "ContradictionIndicator":
-            contradiction_indicator,
-
-        "PriorClaimCount":
-            int(prior_claim_count),
-
-        "ClaimAmount":
-            claim_amount,
-
-        "OCRConfidence":
-            ocr_confidence,
-
-        "ClaimSubmissionChannel":
-            "Web",
-
-        "ClaimReportingDelayDays":
-            reporting_delay,
-
-        "WarrantyRemainingDays":
-            warranty_remaining_days,
-
-        "WarrantyStatus":
-            warranty_status,
-
-        "ClaimReportingWithinPeriod":
-            reporting_within_period,
-
-        "FaultCovered":
-            fault_covered,
-
-        "MissingDocumentCount":
-            missing_document_count,
-
-        "AvailableDocumentCount":
-            available_document_count,
-
-        "RequiredDocumentsComplete":
-            required_documents_complete,
-
-        "PurchaseProofAvailable":
-            purchase_proof_available,
-
-        "HasRepairHistory":
-            has_repair_history,
+        "RepairAuthorized": repair_authorized,
+        "SerialNumberMatch": serial_number_match,
+        "ProductModelConsistent": product_model_consistent,
+        "DuplicateClaimIndicator": duplicate_indicator,
+        "ContradictionIndicator": contradiction_indicator,
+        "OCRConfidence": ocr_confidence,
+        "ClaimReportingDelayDays": reporting_delay,
+        "WarrantyRemainingDays": warranty_remaining_days,
+        "ClaimReportingWithinPeriod": reporting_within_period,
+        "FaultCovered": fault_covered,
+        "RequiredDocumentsComplete": required_documents_complete,
+        "MissingDocumentCount": missing_document_count,
+        "ProductIdentityMatch": product_identity_match,
+        "OCRQualityBand": ocr_quality_band,
     }
 
     # Additional raw values used by Decision Engine.
     rule_data = {
         **model_features,
 
+        "PolicyVersion": WARRANTY_POLICY.get("policy_version"),
+        "PolicyCategory": category,
+        "PolicyComponent": claimed_component,
+        "PolicyReportingDeadlineDays": policy.get("reporting_deadline_days", 30),
+        "PolicyComponentWarrantyEligible": component_warranty_eligible,
+        "PolicyRequiredEvidence": policy.get("required_evidence", []),
+        "PolicyConditionalEvidence": policy.get("conditional_evidence", {}),
+        "PolicyRequiredEvidenceComplete": policy_required_complete,
+        "PolicyMissingEvidence": policy_missing_evidence,
+        "PolicyCoveredFaults": sorted(policy.get("potentially_covered_faults", [])),
+        "PolicyExcludedCauses": sorted(
+            set(common_policy.get("common_excluded_causes", []))
+            | set(policy.get("additional_excluded_causes", []))
+        ),
+        "PolicyInstallationRequired": policy.get("installation_required", False),
+        "PolicyUsageLimit": policy.get("usage_limit"),
+        "ComponentWarrantyEligible": (
+            "Yes" if component_warranty_eligible is True
+            else "No" if component_warranty_eligible is False
+            else "Unknown"
+        ),
+
         "RepairAuthorized":
-            yes_no(
-                raw.get("repair_authorized")
-            ),
+            repair_authorized,
 
         "DocumentDuplicateIndicator":
             yes_no(
@@ -447,6 +493,9 @@ def build_claim_features(
                     "document_duplicate_indicator"
                 )
             ),
+        "InstallationEvidenceAvailable": yes_no(
+            raw.get("installation_evidence_available")
+        ),
     }
 
     return {
@@ -468,5 +517,16 @@ def build_claim_features(
                 warranty_remaining_days,
             "claim_reporting_delay_days":
                 reporting_delay,
+            "policy_version": WARRANTY_POLICY.get("policy_version"),
+            "policy_category": category,
+            "policy_component": claimed_component,
+            "policy_reporting_deadline_days": policy.get("reporting_deadline_days", 30),
+            "policy_required_evidence": policy.get("required_evidence", []),
+            "policy_conditional_evidence": policy.get("conditional_evidence", {}),
+            "policy_covered_faults": sorted(policy.get("potentially_covered_faults", [])),
+            "policy_excluded_causes": sorted(
+                set(common_policy.get("common_excluded_causes", []))
+                | set(policy.get("additional_excluded_causes", []))
+            ),
         },
     }

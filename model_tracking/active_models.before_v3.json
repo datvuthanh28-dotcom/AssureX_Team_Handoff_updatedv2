@@ -1,0 +1,25 @@
+{
+  "python_model": {
+    "name": "Gradient Boosting",
+    "version": "python-gradientboosting-v1",
+    "artifact_path": "model/python/gradient_boosting/python-gradientboosting-v1.joblib",
+    "selected_using": "validation_macro_f1",
+    "runtime_status": "active"
+  },
+  "google_model": {
+    "name": "Google Teachable Machine G5",
+    "version": "google-g5-existing-20260925",
+    "artifact_path": "submission_final/gtm_model",
+    "selected_using": "historical_validation_macro_f1",
+    "inference_status": "not_connected",
+    "current_card_dataset_version": "G5-v2",
+    "current_card_evaluation_status": "validation_probe_not_selection_eligible",
+    "validation_evaluation_path": "evaluation/google/g5_v2_validation.json"
+  },
+  "decision_configuration": {
+    "consistency_thresholds": "not_configured_pending_common_validation_predictions",
+    "manual_review_on_model_disagreement": true,
+    "manual_review_on_low_confidence": true,
+    "business_rules_remain_independent": true
+  }
+}

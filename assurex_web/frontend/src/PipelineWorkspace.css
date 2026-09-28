@@ -1,0 +1,13 @@
+.pipeline-workspace { max-width: 1500px; margin: auto; }
+.pipeline-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 26px 0; }
+.pipeline-steps button { padding: 16px 12px; border: 1px solid #dce5e5; background: #fff; color: #526568; text-align: left; border-radius: 10px; cursor: pointer; font: inherit; }
+.pipeline-steps button span { display: block; font-size: 12px; margin-bottom: 8px; opacity: .7; }
+.pipeline-steps button.active { background: #153f3c; color: #fff; border-color: #153f3c; }
+.pipeline-version { padding: 10px 16px; background: #e6f0ed; border-radius: 30px; color: #286657; font-size: 12px; letter-spacing: 1px; white-space: nowrap; }
+.pipeline-note { padding: 20px 24px; background: #edf4f2; border-left: 3px solid #468e7c; margin: 20px 0; border-radius: 0 10px 10px 0; }
+.pipeline-note strong { color: #244d46; }.pipeline-note p { line-height: 1.8; color: #536764; margin: 8px 0 0; }
+.pipeline-report { margin: 20px 0; min-width: 0; }.pipeline-report h2 { font-size: 18px; }.pipeline-report .data-table td { max-width: 400px; overflow-wrap: anywhere; }.pipeline-report .data-table { font-size: 12px; }
+.pipeline-source { color: #7b8888; font: 11px monospace; overflow-wrap: anywhere; }.pipeline-count { font-size: 12px; color: #788; }.pipeline-report .table-wrapper { max-height: 520px; overflow: auto; }.pipeline-report th { position: sticky; top: 0; background: #edf3f1; z-index: 1; }
+.pipeline-split { display: flex; border-radius: 12px; overflow: hidden; margin-top: 20px; }.pipeline-split div { background: #dcece5; flex: 1; display: grid; gap: 8px; padding: 22px; }.pipeline-split div:first-child { flex: 3; background: #244f47; color: #fff; }.pipeline-split div:last-child { background: #efe7d8; }
+.pipeline-two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }.pipeline-footer { display: flex; align-items: center; justify-content: space-between; padding: 25px 0; color: #7b8888; }.pipeline-notice { color: #8a6a39; }
+@media(max-width: 900px) { .pipeline-steps { grid-template-columns: 1fr 1fr; }.pipeline-two { grid-template-columns: 1fr; }.pipeline-version { display: none; } }

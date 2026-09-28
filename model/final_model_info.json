@@ -1,45 +1,26 @@
 {
   "model": "Gradient Boosting",
-  "random_seed": 20260925,
-  "feature_count": 22,
+  "version": "python-gradientboosting-v3-final",
+  "feature_count": 14,
   "selected_features": [
-    "WarrantyCardAvailable",
-    "RepairReportAvailable",
-    "PreviousRepair",
-    "RepairCount",
+    "RepairAuthorized",
     "SerialNumberMatch",
     "ProductModelConsistent",
     "DuplicateClaimIndicator",
     "ContradictionIndicator",
-    "PriorClaimCount",
-    "ClaimAmount",
     "OCRConfidence",
-    "ClaimSubmissionChannel",
     "ClaimReportingDelayDays",
     "WarrantyRemainingDays",
-    "WarrantyStatus",
     "ClaimReportingWithinPeriod",
     "FaultCovered",
-    "MissingDocumentCount",
-    "AvailableDocumentCount",
     "RequiredDocumentsComplete",
-    "PurchaseProofAvailable",
-    "HasRepairHistory"
+    "MissingDocumentCount",
+    "ProductIdentityMatch",
+    "OCRQualityBand"
   ],
-  "training_rows": 1275,
-  "test_rows": 225,
-  "test_metrics": {
-    "accuracy": 0.9555555555555556,
-    "precision_macro": 0.9582204155374887,
-    "recall_macro": 0.9555555555555556,
-    "macro_f1": 0.9558862837808828
-  },
-  "efficiency": {
-    "fit_seconds": 0.7571205840067705,
-    "test_prediction_seconds": 0.0052790840054512955,
-    "average_prediction_ms_per_claim": 0.023462595579783536,
-    "serialized_model_size_mb": 0.5718975067138672
-  },
-  "model_file": "/Users/htmt1810/Desktop/TECHWIZ ML/model/assurex_final_model.joblib",
-  "test_predictions_file": "/Users/htmt1810/Desktop/TECHWIZ ML/model/final_test_predictions.csv"
+  "selection_basis": "validation_macro_f1",
+  "model_file": "model/assurex_v3_final_model.joblib",
+  "feature_definition_file": "model/assurex_v3_final_features.csv",
+  "runtime_status": "active",
+  "legacy_22_feature_model_status": "superseded"
 }

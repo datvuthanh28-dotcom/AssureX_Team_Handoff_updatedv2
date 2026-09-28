@@ -33,13 +33,19 @@ body.customer-light {
 body.customer-light .app-shell {
   background: var(--ax-bg);
   grid-template-columns: 272px minmax(0, 1fr);
+  min-height: 100vh;
 }
 
 /* ---------- Sidebar ---------- */
 
 body.customer-light .sidebar {
-  position: static;
-  height: auto;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  align-self: start;
+  overflow-y: auto;
   background: var(--ax-surface);
   border-right: 1px solid var(--ax-border);
   box-shadow: none;
@@ -47,6 +53,8 @@ body.customer-light .sidebar {
   flex-direction: column;
   gap: 4px;
   padding: 28px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #cfd6e5 transparent;
 }
 
 body.customer-light .brand {
@@ -1080,6 +1088,9 @@ body.customer-light .login-aside {
   body.customer-light .sidebar {
     position: static;
     height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
     border-right: none;
     border-bottom: 1px solid var(--ax-border);
     display: grid;

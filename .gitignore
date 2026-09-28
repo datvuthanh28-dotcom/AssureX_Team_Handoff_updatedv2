@@ -35,3 +35,11 @@ backups/
 # Temporary files
 *.tmp
 *.temp
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Vite cache
+.vite/
+assurex_web/.vite/

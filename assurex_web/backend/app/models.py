@@ -285,6 +285,16 @@ class CustomerClaimDecision(Base):
         nullable=True,
     )
 
+    customer_confirmation: Mapped[str | None] = mapped_column(
+        String(30),
+        nullable=True,
+    )
+
+    customer_confirmed_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,
@@ -577,6 +587,16 @@ class Warranty(Base):
         nullable=False,
     )
 
+
+class ClaimAppeal(Base):
+    __tablename__ = "claim_appeals"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    claim_id: Mapped[str] = mapped_column(String(50), unique=True, index=True)
+    reason: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(30), default="Pending")
+    reviewer_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 class WarrantyTicket(Base):
     __tablename__ = "warranty_tickets"

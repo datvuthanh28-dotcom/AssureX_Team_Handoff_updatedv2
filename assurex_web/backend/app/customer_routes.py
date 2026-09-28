@@ -21,6 +21,7 @@ from app.notification_routes import add_notification
 from app.ml.model_service import predict_claim
 from app.ml.feature_service import build_claim_features
 from app.ml.decision_service import apply_business_rules
+from app.ml.gtm_service import predict_gtm_claim
 from app.ml.document_compare_service import compare_warranty_data
 from app.ocr.ocr_service import extract_warranty_image
 
@@ -119,6 +120,11 @@ class CustomerClaimStatusUpdate(BaseModel):
     ]
 
     reviewer_comment: str | None = None
+
+
+class CustomerClaimConfirmation(BaseModel):
+    result: Literal["Valid", "Invalid"]
+    comment: str | None = Field(default=None, max_length=2000)
 
 
 def json_safe(value: Any):
@@ -334,6 +340,24 @@ def serialize_claim(
 
         "reviewed_at":
             decision.reviewed_at,
+
+        "customer_confirmation":
+            decision.customer_confirmation,
+
+        "customer_confirmed_at":
+            decision.customer_confirmed_at,
+
+        "customer_action_required": (
+            "Confirm Invalid or submit an appeal"
+            if decision.final_decision == "Invalid Claim"
+            and decision.customer_confirmation is None
+            else (
+                "Reviewer confirmation required"
+                if decision.final_decision == "Valid Claim"
+                and decision.reviewer_decision is None
+                else None
+            )
+        ),
     }
 
     return result
@@ -578,37 +602,35 @@ def submit_customer_claim(
     # DECISION ENGINE
     # ---------------------------------------------
 
+    gtm_result = predict_gtm_claim(
+        raw_input=raw_input,
+        model_features=model_features,
+        rule_data=feature_result["rule_data"],
+        derived=feature_result["derived"],
+    )
+    # Keep one normalized Google/GTM result object for the decision record,
+    # audit trail, and customer-facing claim summary.
+    google_model = gtm_result
+
     decision_result = apply_business_rules(
-        rule_data,
+        feature_result["rule_data"],
         prediction["predicted_class"],
         prediction["confidence"],
+        gtm_prediction=gtm_result.get("predicted_class"),
+        gtm_confidence=gtm_result.get("confidence"),
+        python_probabilities=prediction.get("probabilities"),
+        gtm_probabilities=gtm_result.get("probabilities"),
     )
-
-    google_model = prediction["google_model"]
-    if google_model["inference_status"] != "connected":
-        reason = "Google model inference is not connected"
-        if reason not in decision_result["decision_reasons"]:
-            decision_result["decision_reasons"].append(reason)
-        if decision_result["final_decision"] != "Invalid Claim":
-            decision_result["final_decision"] = "Manual Review"
-            decision_result["customer_status"] = "Under Review"
-            decision_result["requires_admin_review"] = True
 
     # ---------------------------------------------
     # CUSTOMER STATUS
     #
-    # Valid  -> Approved
-    # Invalid -> Rejected
-    # Manual -> Under Review
+    # Valid    -> Reviewer confirmation required
+    # Invalid  -> Customer confirmation or appeal
+    # Manual   -> Reviewer review
     # ---------------------------------------------
 
-    customer_status = (
-        "Rejected"
-        if decision_result["final_decision"] == "Invalid Claim"
-        else "Manual Review"
-        if decision_result["requires_admin_review"]
-        else decision_result["customer_status"]
-    )
+    customer_status = decision_result["customer_status"]
 
     claim = CustomerClaim(
         claim_id=claim_id,
@@ -723,7 +745,7 @@ def submit_customer_claim(
         python_model_version=
             prediction["model_version"],
 
-        gtm_model_version=None,
+        gtm_model_version=gtm_result.get("model_version"),
 
         google_model_name=
             google_model["model_name"],
@@ -731,20 +753,15 @@ def submit_customer_claim(
         google_model_version=
             google_model["model_version"],
 
-        google_inference_status=
-            google_model["inference_status"],
+        google_inference_status=gtm_result.get("inference_status"),
 
-        google_prediction=None,
+        google_prediction=gtm_result.get("predicted_class"),
 
-        google_confidence=None,
+        google_confidence=gtm_result.get("confidence"),
 
-        confidence_difference=None,
+        confidence_difference=decision_result.get("confidence_difference"),
 
-        model_consistency_status=(
-            "Uncertain Result"
-            if google_model["inference_status"] != "connected"
-            else None
-        ),
+        model_consistency_status=decision_result.get("model_consistency_status"),
     )
 
     db.add(decision_record)
@@ -1032,6 +1049,68 @@ def get_customer_claim_history(
         }
         for entry in entries
     ]
+
+
+@router.patch("/{claim_id}/confirmation")
+def confirm_customer_claim_result(
+    claim_id: str,
+    payload: CustomerClaimConfirmation,
+    account: CustomerAccount = Depends(require_roles("CUSTOMER")),
+    db: Session = Depends(get_db),
+):
+    claim = db.scalar(
+        select(CustomerClaim).where(
+            CustomerClaim.claim_id == claim_id,
+            CustomerClaim.email == account.email,
+        )
+    )
+    if claim is None:
+        raise HTTPException(status_code=404, detail="Claim not found.")
+
+    decision = get_decision(db, claim_id)
+    if decision is None:
+        raise HTTPException(status_code=409, detail="This claim has no model result to confirm.")
+
+    # Customer confirmation is intentionally limited to the Invalid path.
+    # Valid and Manual Review results must be handled by a reviewer.
+    expected = {
+        "Invalid Claim": "Invalid",
+    }.get(decision.final_decision)
+    if expected is None:
+        raise HTTPException(
+            status_code=409,
+            detail="Manual Review results must be handled by a reviewer.",
+        )
+    if payload.result != expected:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Customer confirmation must match the model result: {expected}.",
+        )
+    if decision.customer_confirmation is not None:
+        raise HTTPException(status_code=409, detail="This claim has already been confirmed.")
+
+    now = datetime.utcnow()
+    final_status = "Approved" if payload.result == "Valid" else "Rejected"
+    decision.customer_confirmation = payload.result
+    decision.customer_confirmed_at = now
+    claim.status = final_status
+
+    record_audit(
+        db,
+        account=account,
+        action="CUSTOMER_RESULT_CONFIRMED",
+        resource_type="CLAIM",
+        resource_id=claim_id,
+        details={
+            "source": "customer_confirmation",
+            "result": payload.result,
+            "status": final_status,
+            "comment": payload.comment,
+        },
+    )
+    db.commit()
+    db.refresh(claim)
+    return serialize_claim(claim, db)
 
 
 @router.patch("/{claim_id}/status")
