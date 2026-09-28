@@ -8,7 +8,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
@@ -70,6 +70,13 @@ class WarrantyClaimCreatePayload(BaseModel):
     repair_centre: str | None = Field(default=None, max_length=150)
     repair_date: date | None = None
     evidence: dict[str, EvidenceReference] = Field(default_factory=dict)
+
+    @field_validator("repair_date", mode="before")
+    @classmethod
+    def blank_repair_date_as_none(cls, value):
+        if value == "":
+            return None
+        return value
 
 
 class ModelPredictRequest(BaseModel):
