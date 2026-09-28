@@ -9,14 +9,16 @@
     "features_count": 14
   },
   "google_model": {
-    "name": "Google Teachable Machine G5",
-    "version": "google-g5-existing-20260925",
-    "artifact_path": "submission_final/gtm_model",
-    "selected_using": "historical_validation_macro_f1",
-    "inference_status": "not_connected",
-    "current_card_dataset_version": "G5-v2",
-    "current_card_evaluation_status": "validation_probe_not_selection_eligible",
-    "validation_evaluation_path": "evaluation/google/g5_v2_validation.json"
+    "name": "Google Teachable Machine G2 V3",
+    "version": "gtm-g2-v3-final",
+    "artifact_path": "gtm/frozen_G2_V3",
+    "selected_using": "validation_macro_f1",
+    "runtime_status": "active",
+    "inference_status": "connected",
+    "current_card_dataset_version": "G2_V3",
+    "current_card_evaluation_status": "frozen_and_tested",
+    "validation_evaluation_path": "gtm/evaluation/evaluate_g2_v3_validation.html",
+    "test_evaluation_path": "gtm/evaluation/evaluate_g2_v3_final_test.html"
   },
   "decision_configuration": {
     "consistency_thresholds": "not_configured_pending_common_validation_predictions",
