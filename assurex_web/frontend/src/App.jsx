@@ -63,6 +63,30 @@ function StatusBadge({ value }) {
 }
 
 
+
+function modelPredictionSummary(claim) {
+  const prediction = claim?.decision?.ml_prediction || claim?.decision?.final_decision || null
+  if (prediction === 'Valid Claim') {
+    return { code: 'WARRANTY', label: 'Warranty eligible', detail: 'Python Model V3 predicted Valid Claim', tone: 'approved' }
+  }
+  if (prediction === 'Invalid Claim') {
+    return { code: 'NOT_WARRANTY', label: 'Not warranty eligible', detail: 'Python Model V3 predicted Invalid Claim', tone: 'rejected' }
+  }
+  if (prediction === 'Manual Review') {
+    return { code: 'REVIEW_REQUIRED', label: 'Manual review required', detail: 'Python Model V3 predicted Manual Review', tone: 'review' }
+  }
+  return { code: 'PENDING_MODEL', label: 'Awaiting model result', detail: 'No model prediction recorded yet', tone: 'review' }
+}
+
+function PredictionBadge({ claim, compact = false }) {
+  const summary = modelPredictionSummary(claim)
+  return (
+    <span className={`status-badge status-${summary.tone}`} title={summary.detail}>
+      {compact ? summary.code : `${summary.code} · ${summary.label}`}
+    </span>
+  )
+}
+
 function LoadingState() {
   return (
     <div className="state-card">
@@ -672,6 +696,9 @@ function AdminCustomerClaims({
                     <td>
                       <div>{claim.product_name}</div>
                       <small className="mono" style={{ opacity: 0.7 }}>{claim.serial_number}</small>
+                    </td>
+                    <td>
+                      <PredictionBadge claim={claim} compact />
                     </td>
                     <td>
                       <StatusBadge
@@ -4946,7 +4973,8 @@ function CustomerClaims({
                   <th>Claim ID</th>
                   <th>Product</th>
                   <th>Amount</th>
-                  <th>Status</th>
+                  <th>Model Prediction</th>
+                  <th>Claim Status</th>
                   <th>Submitted</th>
                 </tr>
               </thead>
@@ -4972,6 +5000,9 @@ function CustomerClaims({
                       {formatNumber(
                         claim.claim_amount
                       )}
+                    </td>
+                    <td>
+                      <PredictionBadge claim={claim} compact />
                     </td>
                     <td>
                       <StatusBadge
@@ -5002,6 +5033,24 @@ function CustomerClaims({
             </div>
 
             <StatusBadge value={selected.status} />
+          </div>
+
+          <div className="stats-grid" style={{ marginBottom: '16px' }}>
+            <div className="stat-card">
+              <span>Model Prediction</span>
+              <strong>{modelPredictionSummary(selected).code}</strong>
+              <small>{modelPredictionSummary(selected).label}</small>
+            </div>
+            <div className="stat-card">
+              <span>Claim Processing Status</span>
+              <strong>{selected.status}</strong>
+              <small>Reviewer/business workflow status</small>
+            </div>
+            <div className="stat-card">
+              <span>Model Confidence</span>
+              <strong>{selected.decision?.ml_confidence != null ? `${(selected.decision.ml_confidence * 100).toFixed(2)}%` : '—'}</strong>
+              <small>{selected.decision?.python_model_version || 'Python Model V3'}</small>
+            </div>
           </div>
 
           <ClaimTimeline claimId={selected.claim_id} status={selected.status} />
@@ -5137,7 +5186,7 @@ function CustomerClaims({
                 </div>
                 <div>
                   <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
-                    Final Decision Engine Result
+                    Decision Engine / Review Routing
                   </span>
                   <div style={{ fontWeight: 700, fontSize: '15px', marginTop: '4px' }}>
                     {selected.decision.final_decision}
