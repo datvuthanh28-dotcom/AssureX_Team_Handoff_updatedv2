@@ -935,21 +935,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                 <span>No AssureX repair or claim history found for this registered product.</span>
               )}
             </div>
-          ) : (
-            <div
-              style={{
-                background: '#fffbeb',
-                border: '1px solid #fde68a',
-                borderRadius: '8px',
-                padding: '12px 14px',
-                marginBottom: '14px',
-                fontSize: '12.5px',
-                color: '#92400e',
-              }}
-            >
-              Verify a registered product first so the system can check AssureX repair records.
-            </div>
-          )}
+          ) : null}
 
           <div style={{ marginBottom: '14px' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>

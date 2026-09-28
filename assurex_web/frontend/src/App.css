@@ -4419,3 +4419,265 @@ body.admin-light .pipeline-status,
   }
 }
 
+/* Screenshot QA fixes: reviewer contrast, ML overlap, claim queue table readability */
+.reviewer-shell .sidebar,
+.reviewer-shell .reviewer-sidebar,
+body.admin-light .reviewer-sidebar {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.reviewer-shell .reviewer-sidebar .brand h2,
+body.admin-light .reviewer-sidebar .brand h2 {
+  color: #2563eb;
+}
+
+.reviewer-shell .reviewer-sidebar .brand p,
+.reviewer-shell .reviewer-sidebar .sidebar-section-label,
+body.admin-light .reviewer-sidebar .brand p,
+body.admin-light .reviewer-sidebar .sidebar-section-label {
+  color: #64748b;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item,
+body.admin-light .reviewer-sidebar .nav-item {
+  color: #334155;
+  opacity: 1;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item:hover,
+body.admin-light .reviewer-sidebar .nav-item:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item.active,
+body.admin-light .reviewer-sidebar .nav-item.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.reviewer-shell .reviewer-rail-note,
+body.admin-light .reviewer-rail-note {
+  background: #ffffff;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.reviewer-shell .reviewer-rail-note strong,
+body.admin-light .reviewer-rail-note strong {
+  color: #334155;
+}
+
+.reviewer-shell .reviewer-rail-note span,
+body.admin-light .reviewer-rail-note span {
+  color: #64748b;
+}
+
+.reviewer-shell .admin-logout-button,
+body.admin-light .reviewer-sidebar .admin-logout-button {
+  color: #334155;
+  border-color: #cbd5e1;
+  background: #ffffff;
+}
+
+.ml-page-panel .compare-hero,
+body.admin-light .ml-page-panel .compare-hero,
+.compare-hero {
+  background: #0f3d36;
+  color: #f8fafc;
+  border: 1px solid #2d6a60;
+}
+
+.ml-page-panel .compare-hero span,
+body.admin-light .ml-page-panel .compare-hero span,
+.compare-hero span {
+  color: #94a3b8;
+}
+
+.ml-page-panel .compare-hero h3,
+body.admin-light .ml-page-panel .compare-hero h3,
+.compare-hero h3,
+.ml-page-panel .compare-hero > strong,
+body.admin-light .ml-page-panel .compare-hero > strong,
+.compare-hero > strong {
+  color: #f8fafc;
+}
+
+.ml-page-panel .compare-hero p,
+body.admin-light .ml-page-panel .compare-hero p,
+.compare-hero p,
+.ml-page-panel .compare-hero small,
+body.admin-light .ml-page-panel .compare-hero small,
+.compare-hero small {
+  color: #cbd5e1;
+}
+
+.ml-page-panel .stat-card > strong,
+body.admin-light .ml-page-panel .stat-card > strong {
+  font-size: clamp(26px, 2.2vw, 34px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.ml-page-panel .feature-importance > div,
+body.admin-light .ml-page-panel .feature-importance > div {
+  grid-template-columns: minmax(190px, 240px) minmax(180px, 1fr) 58px;
+  gap: 14px;
+}
+
+.ml-page-panel .feature-importance > div > span,
+body.admin-light .ml-page-panel .feature-importance > div > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #334155;
+}
+
+.ml-page-panel .feature-importance b,
+body.admin-light .ml-page-panel .feature-importance b {
+  min-width: 16px;
+  max-width: 100%;
+}
+
+.claim-queue-table {
+  table-layout: fixed;
+}
+
+.claim-queue-table th,
+.claim-queue-table td {
+  vertical-align: middle;
+}
+
+.claim-queue-table th:nth-child(1),
+.claim-queue-table td:nth-child(1) { width: 16%; }
+.claim-queue-table th:nth-child(2),
+.claim-queue-table td:nth-child(2) { width: 25%; }
+.claim-queue-table th:nth-child(3),
+.claim-queue-table td:nth-child(3) { width: 20%; }
+.claim-queue-table th:nth-child(4),
+.claim-queue-table td:nth-child(4) { width: 18%; }
+.claim-queue-table th:nth-child(5),
+.claim-queue-table td:nth-child(5) { width: 14%; }
+.claim-queue-table th:nth-child(6),
+.claim-queue-table td:nth-child(6) { width: 7%; }
+
+.claim-queue-table td:nth-child(1),
+.claim-queue-table td:nth-child(2),
+.claim-queue-table td:nth-child(3) {
+  overflow-wrap: anywhere;
+}
+
+.claim-queue-table td:nth-child(4) .status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.claim-queue-table td:nth-child(5) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.claim-queue-table td:nth-child(6) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.claim-queue-table .claim-detail-button,
+.claim-queue-table td:nth-child(6) .button {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+
+@media (max-width: 1280px) {
+  .claim-queue-table {
+    min-width: 1080px;
+  }
+
+  .ml-page-panel .feature-importance > div,
+  body.admin-light .ml-page-panel .feature-importance > div {
+    grid-template-columns: minmax(170px, 220px) minmax(160px, 1fr) 58px;
+  }
+}
+
+/* Claim queue final column alignment fix */
+.claim-queue-table-wrapper,
+body.admin-light .claim-queue-table-wrapper,
+.reviewer-shell .claim-queue-table-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.claim-queue-table,
+body.admin-light .claim-queue-table,
+.reviewer-shell .claim-queue-table {
+  width: 100%;
+  min-width: 1180px;
+  table-layout: fixed;
+}
+
+.claim-queue-table col.claim-col-id { width: 13%; }
+.claim-queue-table col.claim-col-customer { width: 23%; }
+.claim-queue-table col.claim-col-product { width: 18%; }
+.claim-queue-table col.claim-col-prediction { width: 13%; }
+.claim-queue-table col.claim-col-status { width: 15%; }
+.claim-queue-table col.claim-col-submitted { width: 11%; }
+.claim-queue-table col.claim-col-detail { width: 7%; }
+
+.claim-queue-table th,
+.claim-queue-table td {
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: clip;
+  vertical-align: middle;
+}
+
+.claim-queue-table td:nth-child(1),
+.claim-queue-table td:nth-child(2),
+.claim-queue-table td:nth-child(3) {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.claim-queue-table td:nth-child(4),
+.claim-queue-table td:nth-child(5) {
+  white-space: normal;
+}
+
+.claim-queue-table td:nth-child(4) .status-badge,
+.claim-queue-table td:nth-child(5) .status-badge {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.claim-queue-table td:nth-child(6) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.claim-queue-table td:nth-child(7) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.claim-queue-table td:nth-child(7) .claim-detail-button {
+  width: auto;
+  min-width: 64px;
+  max-width: 100%;
+  padding: 6px 8px;
+  font-size: 11px;
+}
+

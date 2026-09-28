@@ -648,11 +648,21 @@ function AdminCustomerClaims({
         ) : (
           <div className="table-wrapper claim-queue-table-wrapper">
             <table className="data-table claim-queue-table">
+              <colgroup>
+                <col className="claim-col-id" />
+                <col className="claim-col-customer" />
+                <col className="claim-col-product" />
+                <col className="claim-col-prediction" />
+                <col className="claim-col-status" />
+                <col className="claim-col-submitted" />
+                <col className="claim-col-detail" />
+              </colgroup>
               <thead>
                 <tr>
                   <th>Claim ID</th>
                   <th>Customer</th>
                   <th>Product</th>
+                  <th>Prediction</th>
                   <th>Status</th>
                   <th>Submitted</th>
                   <th>Detail</th>
