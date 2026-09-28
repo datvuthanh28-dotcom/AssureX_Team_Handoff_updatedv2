@@ -1,0 +1,99 @@
+ASSUREX - SUBMIT CLAIM TEST DATA
+Generated for local testing on http://localhost:5173/submit
+
+CUSTOMER LOGIN
+Email: 123@gmail.com
+Password: use the password you created for this customer account
+
+HOW TO TEST
+1. Open: http://localhost:5173/submit
+2. Log in as 123@gmail.com.
+3. Paste one Registered Product Code below.
+4. Click Verify Registration.
+5. Fill Incident Date, Fault Description, and External Repair History.
+6. Evidence uploads are optional.
+7. Click Submit Warranty Claim.
+
+REGISTERED PRODUCTS AVAILABLE FOR 123@gmail.com
+
+1. Registered Product Code: REG-00003
+   Category: Smartphone
+   Product: AssureX One X
+   Model: AOX-2026
+   Serial Number: TEST-AOX-0001
+   Purchase Date: 2026-01-15
+   Warranty Expiry: 2027-01-15
+
+2. Registered Product Code: REG-00004
+   Category: Laptop
+   Product: NovaBook 14 Ultra
+   Model: NB14-2026
+   Serial Number: TEST-NB14-0004
+   Purchase Date: 2026-04-12
+   Warranty Expiry: 2028-04-12
+
+3. Registered Product Code: REG-00005
+   Category: Television
+   Product: VisionMax 55
+   Model: VM55-2026
+   Serial Number: TEST-VM55-0005
+   Purchase Date: 2026-05-18
+   Warranty Expiry: 2028-05-18
+
+4. Registered Product Code: REG-00006
+   Category: Refrigerator
+   Product: FrostGuard 500
+   Model: FG500-2026
+   Serial Number: TEST-FG500-0006
+   Purchase Date: 2026-03-22
+   Warranty Expiry: 2028-03-22
+
+5. Registered Product Code: REG-00007
+   Category: Printer
+   Product: PrintMate Office 300
+   Model: PMO300-2026
+   Serial Number: TEST-PMO300-0007
+   Purchase Date: 2026-07-05
+   Warranty Expiry: 2027-07-05
+
+CLAIM TEST CASES
+
+CASE 1 - NORMAL WARRANTY DEFECT
+Expected result: should submit successfully; likely WARRANTY or REVIEW_REQUIRED depending optional evidence.
+Registered Product Code: REG-00004
+Incident Date: 2026-09-28
+Fault Description: Screen flickers with horizontal lines during normal use. The laptop was not dropped and has no liquid damage.
+External Repair History: No - no external repair
+Evidence: optional, can leave blank
+
+CASE 2 - PHYSICAL DAMAGE / NOT WARRANTY
+Expected result: should submit successfully; model should mark FaultCovered = No and prediction likely NOT_WARRANTY.
+Registered Product Code: REG-00005
+Incident Date: 2026-09-28
+Fault Description: TV bị rơi vỡ, bể màn hình do va đập mạnh trong quá trình sử dụng.
+External Repair History: No - no external repair
+Evidence: optional, can leave blank
+
+CASE 3 - EXTERNAL REPAIR HISTORY
+Expected result: should submit successfully; may route to REVIEW_REQUIRED or NOT_WARRANTY depending policy signals.
+Registered Product Code: REG-00006
+Incident Date: 2026-09-27
+Fault Description: Refrigerator is not cooling properly and compressor noise is louder than usual after previous external service.
+External Repair History: Yes - repaired outside AssureX
+Repair Centre: Local Fix Home Appliance Shop
+Repair Date: 2026-08-15
+Evidence: external repair report is optional
+
+CASE 4 - PRINTER HARDWARE FAULT
+Expected result: should submit successfully; likely WARRANTY or REVIEW_REQUIRED depending optional evidence.
+Registered Product Code: REG-00007
+Incident Date: 2026-09-26
+Fault Description: Printer repeatedly jams paper and shows a feed roller error during normal office printing.
+External Repair History: No - no external repair
+Evidence: optional, can leave blank
+
+NOTES
+- Use Registered Product Code values like REG-00004, not Product ID or PRD catalog code.
+- The Product Name, Model, Serial Number, Purchase Date, and Warranty Expiry are derived by backend after Verify Registration.
+- Optional evidence can help reviewer verification but should not block submit.
+- If the page still shows [object Object], the backend is still running an old version. Restart backend on port 8001.

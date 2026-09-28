@@ -366,7 +366,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              AI Model V3 Assessment
+              AI Model V1 Assessment
             </span>
             <span
               style={{
@@ -1093,7 +1093,7 @@ export function ReviewerWarrantyDesk() {
                   <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
                     FEATURE ENGINEERING ENGINE
                   </p>
-                  <h4 style={{ margin: 0, fontSize: '15px' }}>14 Features Used by Model V3</h4>
+                  <h4 style={{ margin: 0, fontSize: '15px' }}>14 Features Used by Model V1</h4>
                 </div>
               </div>
 
@@ -1149,7 +1149,7 @@ export function ReviewerWarrantyDesk() {
               }}
             >
               <span style={{ fontSize: '11.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6' }}>
-                AI Model V3 Prediction
+                AI Model V1 Prediction
               </span>
 
               <div style={{ margin: '14px 0 6px' }}>
@@ -1394,7 +1394,7 @@ export function WarrantyRetrainingDataset() {
 
       <div className="panel" style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
         <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
-          This table feeds the continuous learning cycle for Python Model V3. Each ticket contains the 14 engineered features alongside the reviewer's official Ground Truth label.
+          This table feeds the continuous learning cycle for Python Model V1. Each ticket contains the 14 engineered features alongside the reviewer's official Ground Truth label.
         </p>
       </div>
 

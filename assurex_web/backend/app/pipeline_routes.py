@@ -52,7 +52,7 @@ def pipeline():
         "split": document("data/audit/assurex_v3_split_manifest.json"),
         "selection": document("data/audit/assurex_v3_feature_selection_manifest.json"),
         "freeze": document("data/audit/assurex_v3_model_freeze_manifest.json"),
-        "google": document("gtm/frozen_G2_V3/metadata.json"),
+        "google": document("gtm/frozen_G2_V1/metadata.json"),
         "cv": {"status": "not_recorded", "folds": 5},
         "tuning": {"status": "not_recorded"},
     }

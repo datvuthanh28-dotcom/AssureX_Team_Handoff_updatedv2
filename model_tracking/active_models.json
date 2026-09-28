@@ -1,7 +1,7 @@
 {
   "python_model": {
-    "name": "Gradient Boosting (14 Features)",
-    "version": "v3-final-14feat",
+    "name": "Gradient Boosting V1 (14 Features)",
+    "version": "v1-final-14feat",
     "artifact_path": "model/assurex_v3_final_model.joblib",
     "fallback_artifact_path": "frozen_v3/assurex_v3_final_model.joblib",
     "selected_using": "validation_macro_f1",
@@ -9,16 +9,16 @@
     "features_count": 14
   },
   "google_model": {
-    "name": "Google Teachable Machine G2 V3",
-    "version": "gtm-g2-v3-final",
-    "artifact_path": "gtm/frozen_G2_V3",
+    "name": "Google Teachable Machine G2 V1",
+    "version": "gtm-g2-v1-final",
+    "artifact_path": "gtm/frozen_G2_V1",
     "selected_using": "validation_macro_f1",
     "runtime_status": "active",
     "inference_status": "connected",
-    "current_card_dataset_version": "G2_V3",
+    "current_card_dataset_version": "G2_V1",
     "current_card_evaluation_status": "frozen_and_tested",
-    "validation_evaluation_path": "gtm/evaluation/evaluate_g2_v3_validation.html",
-    "test_evaluation_path": "gtm/evaluation/evaluate_g2_v3_final_test.html"
+    "validation_evaluation_path": "gtm/evaluation/evaluate_g2_v1_validation.html",
+    "test_evaluation_path": "gtm/evaluation/evaluate_g2_v1_final_test.html"
   },
   "decision_configuration": {
     "consistency_thresholds": "not_configured_pending_common_validation_predictions",

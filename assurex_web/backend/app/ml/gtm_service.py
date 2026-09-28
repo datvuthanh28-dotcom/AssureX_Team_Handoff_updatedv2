@@ -15,15 +15,15 @@ WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
 
 GENERATOR_PATH = WORKSPACE_ROOT / "gtm" / "generate_gtm_g2_v3.py"
 CONFIG_PATH = (
-    WORKSPACE_ROOT / "gtm" / "frozen_G2_V3"
-    / "g2_card_features_v3.json"
+    WORKSPACE_ROOT / "gtm" / "frozen_G2_V1"
+    / "g2_card_features_v1.json"
 )
 MODEL_PATH = (
-    WORKSPACE_ROOT / "gtm" / "frozen_G2_V3"
+    WORKSPACE_ROOT / "gtm" / "frozen_G2_V1"
     / "model.json"
 )
 METADATA_PATH = (
-    WORKSPACE_ROOT / "gtm" / "frozen_G2_V3"
+    WORKSPACE_ROOT / "gtm" / "frozen_G2_V1"
     / "metadata.json"
 )
 NODE_RUNNER = (
@@ -165,8 +165,8 @@ def predict_gtm_claim(
                 "predicted_class": None,
                 "confidence": None,
                 "probabilities": {},
-                "model_name": "Google Teachable Machine G2 V3",
-                "model_version": "gtm-g2-v3-final",
+                "model_name": "Google Teachable Machine G2 V1",
+                "model_version": "gtm-g2-v1-final",
                 "inference_status": "error",
                 "error": proc.stderr.strip(),
                 "missing_card_fields": missing_card_fields,
@@ -176,8 +176,8 @@ def predict_gtm_claim(
 
     return {
         **result,
-        "model_name": "Google Teachable Machine G2 V3",
-        "model_version": "gtm-g2-v3-final",
+        "model_name": "Google Teachable Machine G2 V1",
+        "model_version": "gtm-g2-v1-final",
         "inference_status": "connected",
         "missing_card_fields": missing_card_fields,
     }

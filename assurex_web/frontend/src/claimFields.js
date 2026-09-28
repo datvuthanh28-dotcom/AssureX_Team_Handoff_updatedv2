@@ -1,4 +1,4 @@
-// ASSUREX CLAIM ENGINE - MODEL V3 DEFINITIONS & FEATURE ENGINEERING HANDOFF
+// ASSUREX CLAIM ENGINE - MODEL V1 DEFINITIONS & FEATURE ENGINEERING HANDOFF
 // Matching Submit Claim form, user/product database, and 14 final ML features
 
 export const MODEL_14_FEATURES = [
@@ -330,8 +330,8 @@ export function derive14Features(input, product) {
 }
 
 // ------------------------------------------------------------------------------
-// 3. PYTHON MODEL V3 PREDICTION LOGIC
-// Gradient Boosting V3 decision boundary evaluation on the 14 features
+// 3. PYTHON MODEL V1 PREDICTION LOGIC
+// Gradient Boosting V1 decision boundary evaluation on the 14 features
 // ------------------------------------------------------------------------------
 export function predictModelV3(features) {
   // Reject / Ineligible under warranty policy

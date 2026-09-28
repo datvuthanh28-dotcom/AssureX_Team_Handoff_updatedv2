@@ -112,7 +112,7 @@ class ReviewerDecisionPayload(BaseModel):
 
 
 # ==============================================================================
-# AI MODEL PREDICTION ENGINE (14 FINAL FEATURES)
+# AI MODEL PREDICTION ENGINE (V1 / 14 FINAL FEATURES)
 # ==============================================================================
 
 def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
@@ -140,7 +140,7 @@ def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
         "predicted_class": raw_class,
         "probabilities": prediction_result.get("probabilities", {}),
         "model_name": prediction_result.get("model_name", "Gradient Boosting (14 Features)"),
-        "model_version": prediction_result.get("model_version", "v3-final-14feat"),
+        "model_version": prediction_result.get("model_version", "v1-final-14feat"),
     }
 
 
@@ -391,7 +391,7 @@ def lookup_claim_product(
 @router.post(
     "/claims/v3/ticket",
     status_code=status.HTTP_201_CREATED,
-    summary="Customer: submit raw claim facts; backend derives Model V3 features",
+    summary="Customer: submit raw claim facts; backend derives Model V1 features",
 )
 def create_warranty_claim(
     payload: WarrantyClaimCreatePayload,
@@ -474,7 +474,7 @@ def create_warranty_claim(
             raw_input=raw_input,
             model_features=features_14,
             derived_data={"ocr_extracted_data": ocr_data, "evidence": ticket.evidence},
-            model_name=ticket.model_name or "Gradient Boosting V3",
+            model_name=ticket.model_name or "Gradient Boosting V1",
             python_model_name=ticket.model_name,
             python_model_version=ticket.model_version,
         ))
@@ -509,7 +509,7 @@ def create_warranty_claim(
             "model_features": features_14,
             "ai_prediction": ticket.ai_prediction,
             "ai_confidence": ticket.ai_confidence,
-            "ai_reason": "Backend-derived Model V3 assessment",
+            "ai_reason": "Backend-derived Model V1 assessment",
             "model_name": ticket.model_name,
             "model_version": ticket.model_version,
             "ocr_extracted_data": ocr_data,

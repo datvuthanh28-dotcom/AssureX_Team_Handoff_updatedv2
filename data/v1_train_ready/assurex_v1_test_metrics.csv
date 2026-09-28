@@ -1,0 +1,7 @@
+Metric,Value
+TestAccuracy,0.9911111111111112
+TestMacroPrecision,0.9913419913419913
+TestMacroRecall,0.9911111111111112
+TestMacroF1,0.9911095305832148
+MeanConfidence,0.9393259618692097
+Errors,2.0

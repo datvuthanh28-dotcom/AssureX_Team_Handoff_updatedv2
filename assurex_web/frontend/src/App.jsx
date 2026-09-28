@@ -1643,7 +1643,7 @@ function AdminAIML() {
             accuracy: valueFor(textMetrics, 'TestAccuracy'),
             macro_f1: valueFor(textMetrics, 'TestMacroF1'),
           } },
-          gtm: { accuracy: valueFor(imageMetrics, 'Accuracy'), macro_f1: valueFor(imageMetrics, 'MacroF1'), correct: valueFor(imageMetrics, 'Correct'), incorrect: valueFor(imageMetrics, 'Incorrect'), status: pipeline.active?.google_model?.version || 'G2_V3' },
+          gtm: { accuracy: valueFor(imageMetrics, 'Accuracy'), macro_f1: valueFor(imageMetrics, 'MacroF1'), correct: valueFor(imageMetrics, 'Correct'), incorrect: valueFor(imageMetrics, 'Incorrect'), status: pipeline.active?.google_model?.version || 'G2_V1' },
           googleValidation: null,
         })
       })
@@ -1753,7 +1753,7 @@ function AdminAIML() {
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">04 · Google ML</p>
-                <h2>Google GTM G2 V3 evidence</h2>
+                <h2>Google GTM G2 V1 evidence</h2>
               </div>
             </div>
 
@@ -1829,7 +1829,7 @@ function ModelInfo() {
       <PageHeader
         eyebrow="Model intelligence"
         title="Model Performance"
-        description="Final locked-test comparison between the structured model and GTM G2 V3."
+        description="Final locked-test comparison between the structured model and GTM G2 V1."
       />
 
       <section className="hero-card">
@@ -1972,7 +1972,7 @@ function ModelInfo() {
             <p className="eyebrow">
               GTM Feature Selection
             </p>
-            <h2>G2 V3 Evaluation Summary</h2>
+            <h2>G2 V1 Evaluation Summary</h2>
           </div>
         </div>
 
@@ -1980,7 +1980,7 @@ function ModelInfo() {
           <div>
             <span>Removed</span>
             <strong>
-              Frozen model: G2_V3
+              Frozen model: G2_V1
             </strong>
           </div>
 
@@ -2022,7 +2022,7 @@ function MLPipelinePage({ page, onNavigate }) {
       </>}
       {page === 'ml-preprocessing' && <>
         <p className="section-lead">Làm sạch, loại bỏ nhiễu/đa cộng tuyến, mã hóa và chuẩn hóa dữ liệu trước khi chia tập.</p>
-        <div className="stats-grid">{metric('Input columns', '94', 'Engineered dataset')}{metric('Removed structural', '11', '94 → 83')}{metric('Selected out', '67', '81 → 14')}{metric('Final features', '14', 'v3 production model', 'success')}</div>
+        <div className="stats-grid">{metric('Input columns', '94', 'Engineered dataset')}{metric('Removed structural', '11', '94 → 83')}{metric('Selected out', '67', '81 → 14')}{metric('Final features', '14', 'v1 production model', 'success')}</div>
         <div className="two-column"><div><h3>Preprocessing flow</h3><div className="flow-list"><span>01 · Deduplicate & impute</span><span>02 · Drop noisy / leakage fields</span><span>03 · Correlation filter & VIF</span><span>04 · One-hot encode categories</span><span>05 · StandardScaler numeric values</span><span>06 · Train 70% · Val 15% · Test 15%</span></div></div><div><h3>Correlation matrix</h3><div className="correlation-grid">{[.92,.18,.34,.11,.76,.21,.09,.64,.27,.13,.18,.88,.16,.32,.12,.22].map((v,i)=><span key={i} style={{opacity:.25+v*.75,background:v>.8?'#ef6a5b':'#2f8f83'}} title={`r = ${v}`}>{v.toFixed(2)}</span>)}</div><small className="muted">Highlighted pairs vượt ngưỡng tương quan 0.85 được loại bỏ.</small></div></div>
       </>}
       {page === 'ml-text' && <>
@@ -2033,7 +2033,7 @@ function MLPipelinePage({ page, onNavigate }) {
       </>}
       {page === 'ml-image' && <>
         <p className="section-lead">Đánh giá hình ảnh bằng Inception-v1 với cùng quy trình split, 5-fold validation, tuning và feature review.</p>
-        <div className="stats-grid">{metric('Test claims', '225', 'Locked G2 V3 test set')}{metric('Model', 'Inception-v1', 'GTM frozen artifact')}{metric('Macro F1', '86.10%', 'Final test set')}{metric('Test accuracy', '86.22%', '194 / 225 correct')}</div>
+        <div className="stats-grid">{metric('Test claims', '225', 'Locked G2 V1 test set')}{metric('Model', 'Inception-v1', 'GTM frozen artifact')}{metric('Macro F1', '86.10%', 'Final test set')}{metric('Test accuracy', '86.22%', '194 / 225 correct')}</div>
         <div className="two-column"><div><h3>Image pipeline</h3><div className="flow-list"><span>01 · Resize 224 × 224</span><span>02 · Normalize & augment</span><span>03 · Train / validation / test split</span><span>04 · Fine-tune Inception-v1</span><span>05 · Evaluate per-class metrics</span></div></div><div><h3>Per-class Recall — Inception-v1</h3><div className="image-class-grid"><div><strong>Valid Claim</strong><span>94.67%</span></div><div><strong>Manual Review</strong><span>66.67%</span></div><div><strong>Invalid Claim</strong><span>82.67%</span></div></div></div></div>
       </>}
       {page === 'ml-compare' && <>
@@ -5423,10 +5423,10 @@ function ReviewerWorkspace({ onLogout, email }) {
 
 function AdminMLConsole() {
   const [retrainRequested, setRetrainRequested] = useState(false)
-  const [version, setVersion] = useState(() => { const saved = localStorage.getItem('assurex_model_version'); return saved?.startsWith('G') ? saved : 'G2_V3' })
+  const [version, setVersion] = useState(() => { const saved = localStorage.getItem('assurex_model_version'); return saved?.startsWith('G') ? saved : 'G2_V1' })
   const datasetFields = ['RepairAuthorized','SerialNumberMatch','ProductModelConsistent','DuplicateClaimIndicator','ContradictionIndicator','OCRConfidence','ClaimReportingDelayDays','WarrantyRemainingDays','ClaimReportingWithinPeriod','FaultCovered','RequiredDocumentsComplete','MissingDocumentCount','ProductIdentityMatch','OCRQualityBand']
   const topFeatures = [['FaultCovered', 0.2916], ['WarrantyRemainingDays', 0.1721], ['RequiredDocumentsComplete', 0.1188], ['MissingDocumentCount', 0.0859], ['ProductIdentityMatch', 0.0509]]
-  function requestRetrain() { const match = version.match(/^G(\d+)_V(\d+)$/); const next = match ? `G${match[1]}_V${Number(match[2]) + 1}` : 'G2_V4'; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
+  function requestRetrain() { const match = version.match(/^G(\d+)_V(\d+)$/); const next = match ? `G${match[1]}_V${Number(match[2]) + 1}` : 'G2_V2'; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
   return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Inception-v1</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','86.22%','Tuning'],['F1-Score','99.11%','86.10%','Tuning'],['Precision','99.13%','87.52%','Tuning'],['Recall','99.11%','86.22%','Tuning'],['AUC-ROC',MODEL_METRICS.pythonAuc,MODEL_METRICS.gtmAuc,'Tuning'],['Latency','Not reported','Not reported','—']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.2916*100}%`}}></b><em>{value.toFixed(4)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">14 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
 }
 

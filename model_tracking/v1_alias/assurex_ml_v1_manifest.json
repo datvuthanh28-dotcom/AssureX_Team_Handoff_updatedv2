@@ -1,0 +1,41 @@
+{
+  "version": "assurex-ml-v1-final",
+  "purpose": "Canonical V1 naming for the active AssureX 14-feature warranty model.",
+  "behavior_source": "Same trained artifact and labels previously used by the active runtime; renamed to V1 for project consistency.",
+  "python_model": {
+    "name": "Gradient Boosting V1 (14 Features)",
+    "version": "v1-final-14feat",
+    "artifact_path": "model/assurex_v3_final_model.joblib",
+    "feature_set": "data/v1_train_ready/assurex_v1_final_features.csv",
+    "train_dataset": "data/v1_train_ready/assurex_v1_train.csv",
+    "validation_dataset": "data/v1_train_ready/assurex_v1_validation.csv",
+    "test_dataset": "data/v1_train_ready/assurex_v1_test.csv",
+    "test_metrics": "data/v1_train_ready/assurex_v1_test_metrics.csv",
+    "test_predictions": "data/v1_train_ready/assurex_v1_test_predictions.csv"
+  },
+  "google_model": {
+    "name": "Google Teachable Machine G2 V1",
+    "version": "gtm-g2-v1-final",
+    "artifact_path": "gtm/frozen_G2_V1",
+    "behavior_note": "G2 V1 is a compatibility alias of the active GTM artifact, preserving the same behavior under V1 naming."
+  },
+  "feature_contract": {
+    "feature_count": 14,
+    "features": [
+      "RepairAuthorized",
+      "SerialNumberMatch",
+      "ProductModelConsistent",
+      "DuplicateClaimIndicator",
+      "ContradictionIndicator",
+      "OCRConfidence",
+      "ClaimReportingDelayDays",
+      "WarrantyRemainingDays",
+      "ClaimReportingWithinPeriod",
+      "FaultCovered",
+      "RequiredDocumentsComplete",
+      "MissingDocumentCount",
+      "ProductIdentityMatch",
+      "OCRQualityBand"
+    ]
+  }
+}

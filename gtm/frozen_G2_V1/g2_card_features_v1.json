@@ -1,0 +1,121 @@
+{
+  "feature_set": "G2",
+  "description": "AssureX V1 visual ablation G2. Removes additional contextual and redundant visual fields while preserving direct warranty, evidence, repair, identity, anomaly and OCR signals.",
+  "image_width": 1200,
+  "image_height": 1350,
+  "train_variants": 2,
+  "validation_variants": 1,
+  "test_variants": 1,
+  "groups": [
+    {
+      "name": "Product Context",
+      "fields": [
+        {
+          "column": "ProductCategory",
+          "label": "Product category"
+        }
+      ]
+    },
+    {
+      "name": "Warranty",
+      "fields": [
+        {
+          "column": "WarrantyRemainingDays",
+          "label": "Remaining days"
+        },
+        {
+          "column": "ComponentWarrantyEligible",
+          "label": "Component eligible"
+        }
+      ]
+    },
+    {
+      "name": "Coverage & Timing",
+      "fields": [
+        {
+          "column": "FaultCovered",
+          "label": "Fault covered"
+        },
+        {
+          "column": "ClaimReportingDelayDays",
+          "label": "Reporting delay"
+        },
+        {
+          "column": "ClaimReportingWithinPeriod",
+          "label": "Within deadline"
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "fields": [
+        {
+          "column": "WarrantyProofAvailable",
+          "label": "Warranty proof"
+        },
+        {
+          "column": "MissingDocumentCount",
+          "label": "Missing docs"
+        },
+        {
+          "column": "RequiredDocumentsComplete",
+          "label": "Required docs"
+        },
+        {
+          "column": "CriticalDocumentMissing",
+          "label": "Critical doc missing"
+        }
+      ]
+    },
+    {
+      "name": "Repair History",
+      "fields": [
+        {
+          "column": "PreviousRepair",
+          "label": "Previous repair"
+        },
+        {
+          "column": "RepairAuthorized",
+          "label": "Repair authorized"
+        },
+        {
+          "column": "RepairReportAvailable",
+          "label": "Repair report"
+        }
+      ]
+    },
+    {
+      "name": "Verification & Evidence",
+      "fields": [
+        {
+          "column": "SerialNumberMatch",
+          "label": "Serial match"
+        },
+        {
+          "column": "ProductIdentityMatch",
+          "label": "Identity match"
+        },
+        {
+          "column": "ProductModelConsistent",
+          "label": "Model consistent"
+        },
+        {
+          "column": "DuplicateClaimIndicator",
+          "label": "Duplicate claim"
+        },
+        {
+          "column": "DocumentDuplicateIndicator",
+          "label": "Duplicate document"
+        },
+        {
+          "column": "ContradictionIndicator",
+          "label": "Contradiction"
+        },
+        {
+          "column": "OCRConfidence",
+          "label": "OCR confidence"
+        }
+      ]
+    }
+  ]
+}

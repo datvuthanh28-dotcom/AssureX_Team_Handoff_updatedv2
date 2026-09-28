@@ -25,7 +25,8 @@ else:
 PYTHON_MODEL_CONFIG = ACTIVE_MODELS.get("python_model", {})
 GOOGLE_MODEL_CONFIG = ACTIVE_MODELS.get("google_model", {})
 
-# Candidates for 14-feature finalized model
+# Candidates for the active 14-feature finalized model.
+# Physical artifact names are legacy; runtime metadata exposes this as V1.
 V3_MODEL_PATH = WORKSPACE_ROOT / "model" / "assurex_v3_final_model.joblib"
 FROZEN_V3_MODEL_PATH = WORKSPACE_ROOT / "frozen_v3" / "assurex_v3_final_model.joblib"
 CONFIG_MODEL_PATH = (
@@ -41,7 +42,7 @@ for candidate in [V3_MODEL_PATH, FROZEN_V3_MODEL_PATH, CONFIG_MODEL_PATH, LEGACY
         MODEL_PATH = candidate
         break
 
-# The 14 Features finalized during model training (V3 Gradient Boosting)
+# The 14 features finalized during V1 model training.
 MODEL_14_FEATURES = [
     "RepairAuthorized",
     "SerialNumberMatch",
@@ -98,8 +99,8 @@ if MODEL_PATH and MODEL_PATH.is_file():
 else:
     ARTIFACT_HASH = "mock-model"
 
-MODEL_VERSION = PYTHON_MODEL_CONFIG.get("version", "v3-final-14feat")
-MODEL_NAME = PYTHON_MODEL_CONFIG.get("name", "Gradient Boosting (14 Features)")
+MODEL_VERSION = PYTHON_MODEL_CONFIG.get("version", "v1-final-14feat")
+MODEL_NAME = PYTHON_MODEL_CONFIG.get("name", "Gradient Boosting V1 (14 Features)")
 GOOGLE_INFERENCE_STATUS = GOOGLE_MODEL_CONFIG.get(
     "inference_status",
     "not_configured",
@@ -180,11 +181,11 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
 def predict_claim(input_data: dict) -> dict:
     """
     Predict warranty claim using the 14 finalized features.
-    Accepts only the finalized V3 14-feature contract.
+    Accepts only the finalized V1 14-feature contract.
     """
     missing_features = [feature for feature in MODEL_14_FEATURES if feature not in input_data]
     if missing_features:
-        raise ValueError(f"Missing required V3 features: {missing_features}")
+        raise ValueError(f"Missing required V1 features: {missing_features}")
 
     # The active model always receives the frozen 14-feature contract.
     has_14_features = True

@@ -1,18 +1,25 @@
 {
-  "version": "assurex-ml-v3-final",
+  "version": "assurex-ml-v1-final",
   "scope": "ML, GTM, model comparison, decision logic, warranty policy configuration",
   "application_layer_owned_by_teammate": true,
   "python": {
     "algorithm": "Gradient Boosting",
     "artifact": "model/assurex_v3_final_model.joblib",
-    "features": "model/assurex_v3_final_features.csv",
+    "runtime_name": "Gradient Boosting V1 (14 Features)",
+    "runtime_version": "v1-final-14feat",
+    "features": "data/v1_train_ready/assurex_v1_final_features.csv",
+    "train_dataset": "data/v1_train_ready/assurex_v1_train.csv",
+    "validation_dataset": "data/v1_train_ready/assurex_v1_validation.csv",
+    "test_dataset": "data/v1_train_ready/assurex_v1_test.csv",
     "test_records": 225,
     "test_accuracy": 0.991111,
     "test_macro_f1": 0.99111
   },
   "gtm": {
-    "iteration": "G2_V3",
-    "artifact_directory": "gtm/frozen_G2_V3",
+    "iteration": "G2_V1",
+    "artifact_directory": "gtm/frozen_G2_V1",
+    "runtime_name": "Google Teachable Machine G2 V1",
+    "runtime_version": "gtm-g2-v1-final",
     "test_records": 225,
     "test_accuracy": 0.862222,
     "test_macro_f1": 0.861017
@@ -25,7 +32,6 @@
     "mean_top_confidence_difference": 0.08849965376578806
   },
   "decision_engine": {
-    "script": "comparison/decision_engine_v3.py",
     "likely_valid": 69,
     "likely_invalid": 22,
     "manual_review_required": 134,
@@ -38,6 +44,5 @@
     "directory": "config/warranty_policies",
     "minimum_files_required": 3
   },
-  "integration_contract": "docs/ML_INTEGRATION_CONTRACT_V3.md",
-  "validation_script": "tests_ml/validate_ml_v3.py"
+  "validation_note": "V1 naming preserves the active model behavior and metrics while exposing the project baseline as Version 1."
 }

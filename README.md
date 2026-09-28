@@ -1,8 +1,8 @@
 # AssureX Claim Engine – Team Handoff Architecture
-> Customer Input → Product Lookup → Feature Engineering (14 Features) → Python Model V3
+> Customer Input → Product Lookup → Feature Engineering (14 Features) → Python Model V1
 
 ## Runtime setup
-After cloning the repository, install the frontend and GTM G2 V3 runtime dependencies:
+After cloning the repository, install the frontend and GTM G2 V1 runtime dependencies:
 
 ```bash
 npm install
@@ -72,5 +72,5 @@ WHERE sp.product_code = ?;
 2. **Product Code Lookup**: Enter `AX26-00001` → System retrieves NovaBook 14, active warranty, serial number `NB142026-00001`.
 3. **Incident & Evidence**: Enter defect description, incident date, repair history, and upload documents.
 4. **Feature Engineering**: Backend derives the 14 features in real-time.
-5. **Python Model V3**: Gradient Boosting classifier evaluates the 14 features (`WARRANTY`, `REVIEW_REQUIRED`, `NOT_WARRANTY`).
+5. **Python Model V1**: Gradient Boosting classifier evaluates the 14 features (`WARRANTY`, `REVIEW_REQUIRED`, `NOT_WARRANTY`).
 6. **Reviewer Ground Truth**: Reviewer inspects inputs, evidence, and 14 features, then records official Ground Truth (`Valid Claim` / `Invalid Claim`).
