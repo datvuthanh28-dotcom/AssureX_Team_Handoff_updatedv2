@@ -181,7 +181,9 @@ def run():
     request("GET", f"/api/customer/claims/{ticket_id}", token=other_customer_token, expected=(404,))
     own_claim = request("GET", f"/api/customer/claims/{ticket_id}", token=customer_token)
     assert own_claim["claim_id"] == ticket_id
-    ok("customer claim isolation")
+    assert own_claim["decision"]["ml_prediction"] == "Valid Claim", own_claim
+    assert own_claim["status"] == "Waiting to proceed", own_claim
+    ok("customer claim isolation", "WARRANTY prediction shows Waiting to proceed")
 
     queue = request("GET", "/api/warranty/reviewer/tickets?status_filter=WAITING_REVIEW", token=reviewer_token)
     assert any(row["ticket_id"] == ticket_id for row in queue["tickets"]), queue
