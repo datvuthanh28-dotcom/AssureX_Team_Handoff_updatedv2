@@ -609,6 +609,65 @@ body.customer-light .warranty-upload-box:hover {
   border-color: var(--ax-primary);
 }
 
+body.customer-light .policy-summary-card {
+  border: 1px solid var(--ax-primary);
+  border-radius: 12px;
+  padding: 16px 18px;
+  background: var(--ax-primary-soft);
+}
+
+body.customer-light .policy-summary-heading,
+body.customer-light .policy-summary-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+body.customer-light .policy-summary-heading h3 {
+  margin: 4px 0 0;
+  color: var(--ax-text);
+  font-size: 16px;
+}
+
+body.customer-light .policy-version {
+  color: var(--ax-text-faint);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+body.customer-light .policy-summary-grid {
+  margin-top: 14px;
+}
+
+body.customer-light .policy-summary-grid > div {
+  flex: 1;
+}
+
+body.customer-light .policy-summary-grid strong {
+  color: var(--ax-text-soft);
+  font-size: 12px;
+}
+
+body.customer-light .policy-summary-card p {
+  margin: 5px 0 0;
+  color: var(--ax-text-soft);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+body.customer-light .policy-summary-note {
+  border-top: 1px solid var(--ax-border);
+  margin-top: 14px !important;
+  padding-top: 10px;
+}
+
+@media (max-width: 720px) {
+  body.customer-light .policy-summary-heading,
+  body.customer-light .policy-summary-grid {
+    flex-direction: column;
+  }
+}
+
 body.customer-light .ocr-success {
   color: var(--ax-success);
 }
@@ -1461,4 +1520,3 @@ body.customer-light .consistency-box {
     grid-template-columns: 1fr;
   }
 }
-

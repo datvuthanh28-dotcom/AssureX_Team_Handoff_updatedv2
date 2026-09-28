@@ -16,6 +16,7 @@ from app.models import (
     RegisteredProduct,
     Warranty,
 )
+from app.ml.feature_service import WARRANTY_POLICY
 
 
 router = APIRouter(tags=["Products and Warranties"])
@@ -95,6 +96,27 @@ def list_products(
         statement = statement.where(Product.is_active.is_(True))
     products = db.scalars(statement.order_by(Product.name.asc())).all()
     return [serialize_product(product, db) for product in products]
+
+
+@router.get("/api/warranty-policies")
+def list_warranty_policies(
+    _: CustomerAccount = Depends(require_roles("admin", "reviewer", "customer")),
+):
+    """Return customer-facing summaries from the same policy source as the decision engine."""
+    common = WARRANTY_POLICY.get("common", {})
+    common_exclusions = common.get("common_excluded_causes", [])
+    summaries = {}
+    for category, policy in WARRANTY_POLICY.get("categories", {}).items():
+        summaries[category] = {
+            "category": category,
+            "policy_version": WARRANTY_POLICY.get("policy_version"),
+            "warranty_months": policy.get("standard_warranty_months"),
+            "covered_faults": policy.get("potentially_covered_faults", []),
+            "excluded_causes": common_exclusions + policy.get("additional_excluded_causes", []),
+            "required_evidence": policy.get("required_evidence", []),
+            "installation_required": policy.get("installation_required", False),
+        }
+    return summaries
 
 
 @router.post("/api/products", status_code=201)

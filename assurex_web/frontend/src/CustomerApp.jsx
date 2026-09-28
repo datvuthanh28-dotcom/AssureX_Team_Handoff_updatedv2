@@ -165,7 +165,9 @@ function formatNotificationDate(value) {
 
 function CustomerProducts({ onNavigate }) {
   const [catalog, setCatalog] = useState([])
+  const [policies, setPolicies] = useState({})
   const [products, setProducts] = useState([])
+  const [productCategory, setProductCategory] = useState('')
   const [productId, setProductId] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
   const [purchaseDate, setPurchaseDate] = useState('')
@@ -181,16 +183,18 @@ function CustomerProducts({ onNavigate }) {
     return Promise.all([
       api('/api/products'),
       api('/api/products/registered'),
+      api('/api/warranty-policies'),
     ])
   }
 
   useEffect(() => {
     let active = true
     fetchProducts()
-      .then(([available, registered]) => {
+      .then(([available, registered, policySummaries]) => {
         if (!active) return
         setCatalog(available)
         setProducts(registered)
+        setPolicies(policySummaries || {})
       })
       .catch((requestError) => {
         if (active) setError(requestError.message)
@@ -206,9 +210,10 @@ function CustomerProducts({ onNavigate }) {
 
   async function loadProducts() {
     try {
-      const [available, registered] = await fetchProducts()
+      const [available, registered, policySummaries] = await fetchProducts()
       setCatalog(available)
       setProducts(registered)
+      setPolicies(policySummaries || {})
     } catch (requestError) {
       setError(requestError.message)
     }
@@ -231,6 +236,7 @@ function CustomerProducts({ onNavigate }) {
         }),
       })
       setSuccess(`Product registered successfully! Assigned Registration ID: ${result.registration_code || 'REG-' + result.id}`)
+      setProductCategory('')
       setProductId('')
       setSerialNumber('')
       setPurchaseDate('')
@@ -242,6 +248,14 @@ function CustomerProducts({ onNavigate }) {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const categories = [...new Set(catalog.map((product) => product.category).filter(Boolean))].sort()
+  const categoryProducts = catalog.filter((product) => product.category === productCategory)
+  const selectedPolicy = policies[productCategory]
+
+  function formatPolicyItem(value) {
+    return String(value || '').replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase())
   }
 
   const filteredProducts = products.filter((p) => {
@@ -302,14 +316,62 @@ function CustomerProducts({ onNavigate }) {
 
         <div className="form-grid">
           <label className="form-field full-width">
+            <span>Product Category <span style={{ color: 'var(--ax-danger)' }}>*</span></span>
+            <select
+              value={productCategory}
+              onChange={(event) => {
+                setProductCategory(event.target.value)
+                setProductId('')
+              }}
+              required
+            >
+              <option value="">Select a product category...</option>
+              {categories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </label>
+
+          {selectedPolicy && (
+            <div className="form-field full-width" style={{ marginTop: '-4px' }}>
+              <div className="policy-summary-card">
+                <div className="policy-summary-heading">
+                  <div>
+                    <span className="eyebrow">Warranty Policy Summary</span>
+                    <h3>{productCategory} · {selectedPolicy.warranty_months} months standard warranty</h3>
+                  </div>
+                  <span className="policy-version">Policy v{selectedPolicy.policy_version}</span>
+                </div>
+                <div className="policy-summary-grid">
+                  <div>
+                    <strong>Usually covered</strong>
+                    <p>{selectedPolicy.covered_faults.map(formatPolicyItem).join(', ') || 'Eligible product faults under normal use.'}</p>
+                  </div>
+                  <div>
+                    <strong>Usually excluded</strong>
+                    <p>{selectedPolicy.excluded_causes.map(formatPolicyItem).join(', ') || 'Accidental or misuse-related damage.'}</p>
+                  </div>
+                </div>
+                <p className="policy-summary-note">
+                  Prepare: {selectedPolicy.required_evidence.map(formatPolicyItem).join(', ')}.
+                  {selectedPolicy.installation_required ? ' Installation evidence is also required for this category.' : ''}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <label className="form-field full-width">
             <span>Product Model <span style={{ color: 'var(--ax-danger)' }}>*</span></span>
             <select
               value={productId}
               onChange={(event) => setProductId(event.target.value)}
               required
+              disabled={!productCategory}
             >
-              <option value="">Select a product from catalog...</option>
-              {catalog.map((product) => (
+              <option value="">
+                {productCategory ? 'Select a product model...' : 'Select a category first...'}
+              </option>
+              {categoryProducts.map((product) => (
                 <option key={product.id} value={product.id}>
                   {product.name} · {product.brand} ({product.model}) — {product.warranty_months} Months Standard Warranty
                 </option>
