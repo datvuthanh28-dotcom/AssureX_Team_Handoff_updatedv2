@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { api } from './api'
 import {
   MODEL_14_FEATURES,
@@ -210,13 +210,18 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     [currentFaultCategories, problemCategory]
   )
 
+  const isOtherFaultCategory = problemCategory === 'Other'
+
   // Section 4: Repair History
   const [previousRepair, setPreviousRepair] = useState('No')
   const [repairCentre, setRepairCentre] = useState('')
   const [repairDate, setRepairDate] = useState('')
-  const [evidence, setEvidence] = useState({})
-  const [uploading, setUploading] = useState('')
-  const evidenceInputRefs = useRef({})
+  const [evidenceAnswers, setEvidenceAnswers] = useState({
+    purchase_invoice_available: 'No',
+    serial_image_available: 'No',
+    fault_evidence_available: 'No',
+    repair_report_available: 'No',
+  })
 
   // Active Preset & State
   const [submitting, setSubmitting] = useState(false)
@@ -238,7 +243,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       setProductCodeInput(found.product_code)
       const faultCats = getFaultCategoriesForProduct(found.category)
       if (faultCats && faultCats.length > 0) {
-        setProblemCategory(faultCats[0].value)
+        setProblemCategory(faultCats.find((cat) => cat.value !== 'Other')?.value || 'Other')
       }
       if (found.repair_history?.has_external_repair_on_record) {
         setPreviousRepair('Yes')
@@ -261,31 +266,14 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     }
   }
 
-  async function uploadEvidence(kind, file) {
-    if (!file) return
-    setUploading(kind)
-    setSubmitError('')
-    try {
-      const body = new FormData()
-      body.append('file', file)
-      body.append('document_type', kind)
-      const uploaded = await api('/api/customer/evidence/upload', { method: 'POST', body })
-      setEvidence((current) => ({ ...current, [kind]: uploaded }))
-    } catch (error) {
-      setSubmitError(friendlyErrorMessage(error, 'Unable to upload file.'))
-    } finally {
-      setUploading('')
-    }
-  }
-
   // Validation
   function validate() {
     const errs = {}
     if (!productRecord) errs.product_code = 'Verify a Registered Product Code that belongs to your account.'
     if (!incidentDate) errs.incident_date = 'Please select the date the incident/defect occurred.'
     if (!problemCategory) errs.problem_category = 'Please select a fault category for your product.'
-    if (!faultDescription?.trim() || faultDescription.trim().length < 10)
-      errs.fault_description = 'Please describe the fault or symptom (minimum 10 characters).'
+    if (problemCategory === 'Other' && (!faultDescription?.trim() || faultDescription.trim().length < 10))
+      errs.fault_description = 'Please describe the fault or symptom when category is Other (minimum 10 characters).'
 
     if (previousRepair === 'Yes') {
       if (!repairCentre?.trim()) errs.repair_centre = 'Please state the repair centre name.'
@@ -314,11 +302,11 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         product_code: productRecord.product_code,
         incident_date: incidentDate,
         problem_category: problemCategory,
-        fault_description: faultDescription.trim(),
+        fault_description: isOtherFaultCategory ? faultDescription.trim() : '',
         previous_repair: previousRepair,
         repair_centre: repairCentre?.trim() || '',
         repair_date: repairDate || null,
-        evidence,
+        ...evidenceAnswers,
       }
       const response = await api('/api/claims/v3/ticket', {
         method: 'POST',
@@ -347,7 +335,12 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     setPreviousRepair('No')
     setRepairCentre('')
     setRepairDate('')
-    setEvidence({})
+    setEvidenceAnswers({
+      purchase_invoice_available: 'No',
+      serial_image_available: 'No',
+      fault_evidence_available: 'No',
+      repair_report_available: 'No',
+    })
     setErrors({})
   }
 
@@ -763,7 +756,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                 <label style={{ margin: 0, fontSize: '13px', fontWeight: 600 }}>
-                  Fault Category (Phân loại sự cố) <span style={{ color: '#ef4444' }}>*</span>
+                  Fault Category <span style={{ color: '#ef4444' }}>*</span>
                 </label>
                 {productRecord?.category && (
                   <span style={{ fontSize: '11.5px', color: '#2563eb', fontWeight: 600, background: '#eff6ff', padding: '2px 8px', borderRadius: '4px' }}>
@@ -788,7 +781,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                   cursor: 'pointer',
                 }}
               >
-                <option value="">-- Chọn phân loại lỗi phù hợp --</option>
+                <option value="">-- Select a fault category --</option>
                 {currentFaultCategories.map((cat) => (
                   <option key={cat.value} value={cat.value}>
                     {cat.label}
@@ -836,7 +829,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
               <div style={{ flex: 1, fontSize: '12.5px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
                   <strong style={{ color: selectedCategoryInfo.isCovered ? '#166534' : '#991b1b', fontSize: '13px' }}>
-                    {selectedCategoryInfo.isCovered ? 'Phù hợp bảo hành (Covered Defect)' : 'Thuộc diện loại trừ (Excluded from Warranty)'}
+                    {selectedCategoryInfo.isCovered ? 'Covered defect' : 'Excluded from warranty'}
                   </strong>
                   <span
                     style={{
@@ -852,41 +845,47 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                   </span>
                 </div>
                 <p style={{ margin: '0 0 4px', color: '#334155', lineHeight: 1.4 }}>
-                  <strong>Dấu hiệu & Triệu chứng:</strong> {selectedCategoryInfo.description}
+                  <strong>Typical symptoms:</strong> {selectedCategoryInfo.description}
                 </p>
                 <span style={{ fontSize: '11.5px', color: selectedCategoryInfo.isCovered ? '#15803d' : '#b91c1c', fontStyle: 'italic' }}>
                   {selectedCategoryInfo.isCovered
-                    ? 'Chính sách bảo hành AssureX cam kết sửa chữa / thay thế linh kiện chính hãng cho lỗi kỹ thuật từ nhà sản xuất.'
-                    : 'Cảnh báo chính sách: Lỗi phát sinh do tác động ngoại lực, rơi vỡ hoặc tiếp xúc chất lỏng sẽ bị mô hình AI và Reviewer từ chối bảo hành.'}
+                    ? 'AssureX warranty policy normally covers manufacturing or component defects under normal use.'
+                    : 'Policy warning: accidental, physical, liquid, pest, misuse, or external power damage is normally rejected.'}
                 </span>
               </div>
             </div>
           )}
 
-          <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-              Fault Description <span style={{ color: '#ef4444' }}>*</span>
-            </label>
-            <textarea
-              rows="3"
-              placeholder="Describe the hardware defect, error symptoms, and when the issue occurs..."
-              value={faultDescription}
-              onChange={(e) => {
-                setFaultDescription(e.target.value)
-                setErrors({ ...errors, fault_description: '' })
-              }}
-              style={{
-                width: '100%',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                border: `1px solid ${errors.fault_description ? '#ef4444' : '#cbd5e1'}`,
-                fontSize: '13px',
-                fontFamily: 'inherit',
-                lineHeight: 1.5,
-              }}
-            />
-            {errors.fault_description && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.fault_description}</p>}
-          </div>
+          {isOtherFaultCategory ? (
+            <div>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
+                Fault Description <span style={{ color: '#ef4444' }}>*</span>
+              </label>
+              <textarea
+                rows="3"
+                placeholder="Describe the issue because you selected Other..."
+                value={faultDescription}
+                onChange={(e) => {
+                  setFaultDescription(e.target.value)
+                  setErrors({ ...errors, fault_description: '' })
+                }}
+                style={{
+                  width: '100%',
+                  padding: '10px 12px',
+                  borderRadius: '8px',
+                  border: `1px solid ${errors.fault_description ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                  fontFamily: 'inherit',
+                  lineHeight: 1.5,
+                }}
+              />
+              {errors.fault_description && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.fault_description}</p>}
+            </div>
+          ) : (
+            <div style={{ padding: '12px 14px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '12.5px', color: '#475569' }}>
+              No written description is required for a predefined category. Choose <strong>Other</strong> if the category list does not match your issue.
+            </div>
+          )}
         </section>
 
         {/* GROUP 4: REPAIR HISTORY */}
@@ -1036,86 +1035,43 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           )}
         </section>
 
-        {/* GROUP 5: EVIDENCE */}
+        {/* GROUP 5: EVIDENCE QUESTIONS */}
         <section className="panel" style={{ marginBottom: '20px', padding: '22px', borderRadius: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>5</span>
             <div>
-              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>Claim Evidence</h3>
-              <small>Optional documents can help the system and reviewer verify your claim faster.</small>
+              <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>Evidence Availability</h3>
+              <small>Answer Yes/No. You do not need to upload photos or documents in this simplified claim flow.</small>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
             {[
-              ['purchase_invoice', 'Purchase invoice / receipt', '.pdf,image/*', 'Invoice, receipt, or purchase proof'],
-              ['serial_image', 'Serial or equipment tag image', 'image/*', 'Photo of serial number or asset tag'],
-              ['fault_evidence', 'Fault evidence', 'image/*,video/mp4,.pdf', 'Photo, video, or document showing the issue'],
-              ['repair_report', 'External repair report', '.pdf,image/*', 'Report from an outside repair shop'],
-            ].map(([kind, label, accept, helper]) => {
-              const uploaded = evidence[kind]
-              const isUploading = uploading === kind
-              return (
-                <div
-                  key={kind}
-                  style={{
-                    border: `1px solid ${uploaded ? '#86efac' : '#cbd5e1'}`,
-                    borderRadius: '10px',
-                    padding: '14px',
-                    background: uploaded ? '#f0fdf4' : '#ffffff',
-                    minHeight: '150px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    gap: '12px',
-                  }}
-                >
-                  <div>
-                    <strong style={{ display: 'block', fontSize: '13px', marginBottom: '4px' }}>
-                      {label} <span style={{ color: '#64748b', fontWeight: 400 }}>(Optional)</span>
-                    </strong>
-                    <small style={{ color: '#64748b', lineHeight: 1.4 }}>{helper}</small>
-                  </div>
-
-                  <input
-                    ref={(element) => {
-                      if (element) evidenceInputRefs.current[kind] = element
-                    }}
-                    type="file"
-                    accept={accept}
-                    disabled={isUploading}
-                    onChange={(event) => uploadEvidence(kind, event.target.files?.[0])}
-                    style={{ display: 'none' }}
-                  />
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                    <button
-                      type="button"
-                      className="button secondary"
-                      disabled={isUploading}
-                      onClick={() => evidenceInputRefs.current[kind]?.click()}
-                      style={{ padding: '8px 12px', fontSize: '12.5px', minHeight: '36px' }}
-                    >
-                      {uploaded ? 'Replace file' : 'Choose file'}
-                    </button>
-                    <small
-                      style={{
-                        color: uploaded ? '#15803d' : '#64748b',
-                        fontWeight: uploaded ? 700 : 500,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                        maxWidth: '180px',
-                      }}
-                      title={uploaded?.filename || 'No file uploaded'}
-                    >
-                      {isUploading ? 'Uploading...' : uploaded ? `Uploaded: ${uploaded.filename}` : 'No file uploaded'}
-                    </small>
+              ['purchase_invoice_available', 'Do you have purchase proof, invoice, or receipt?'],
+              ['serial_image_available', 'Do you have proof of the serial number or product identity?'],
+              ['fault_evidence_available', 'Do you have evidence that shows the fault or symptom?'],
+              ['repair_report_available', 'Do you have an external repair report?', previousRepair === 'Yes'],
+            ]
+              .filter(([, , visible = true]) => visible)
+              .map(([field, label]) => (
+                <div key={field} style={{ border: '1px solid #cbd5e1', borderRadius: '10px', padding: '14px', background: '#ffffff' }}>
+                  <strong style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>{label}</strong>
+                  <div style={{ display: 'flex', gap: '14px' }}>
+                    {['Yes', 'No'].map((choice) => (
+                      <label key={choice} style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>
+                        <input
+                          type="radio"
+                          name={field}
+                          value={choice}
+                          checked={evidenceAnswers[field] === choice}
+                          onChange={() => setEvidenceAnswers((current) => ({ ...current, [field]: choice }))}
+                        />
+                        {choice}
+                      </label>
+                    ))}
                   </div>
                 </div>
-              )
-            })}
+              ))}
           </div>
-          {errors.evidence && <p style={{ color: '#ef4444', fontSize: '12px' }}>{errors.evidence}</p>}
         </section>
 
         {/* FORM ACTIONS */}
@@ -1137,7 +1093,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           <button
             type="submit"
             className="button primary"
-            disabled={submitting || Boolean(uploading)}
+            disabled={submitting}
             style={{ minWidth: '240px', padding: '12px 24px', fontSize: '14px', fontWeight: 700 }}
           >
             {submitting ? 'Evaluating AI Model...' : 'Submit Warranty Claim →'}

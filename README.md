@@ -56,9 +56,10 @@ python3 tests_ml/smoke_gtm_g2_runtime.py
 - **Database Lookup**: Backend verifies ownership and queries `sold_products` + `product_catalog` + `users`. The product and warranty details are displayed read-only on the frontend.
 - **Customer Claim Information**: Customer only fills in:
   1. `IncidentDate`: When defect occurred.
-  2. `FaultDescription`: Detailed symptoms.
-  3. `PreviousRepair`: Yes/No (`RepairCentre` and `RepairDate` if Yes).
-  4. Evidence Uploads: `PurchaseInvoice`, `SerialImage`, `FaultEvidence` (and `RepairReport` if repaired).
+  2. `ProblemCategory`: selected fault category, including `Other`.
+  3. `FaultDescription`: required only when `ProblemCategory = Other`.
+  4. `PreviousRepair`: Yes/No (`RepairCentre` and `RepairDate` if Yes).
+  5. Evidence availability questions: Yes/No for purchase proof, serial/product identity proof, fault evidence, and repair report if repaired.
 - **Core Principle**: **Customers NEVER manually enter technical ML features** (e.g. `RepairAuthorized`, `FaultCovered`, `WarrantyRemainingDays`, etc.). The backend derives and validates the active 14-feature V3 contract automatically.
 
 ---
@@ -110,7 +111,7 @@ WHERE sp.product_code = ?;
 ## 4. End-to-End Runtime Flow
 1. **Customer Identification**: Enter email or customer code (e.g. `ngoc.mai07@example.com`).
 2. **Product Code Lookup**: Enter `AX26-00001` → System retrieves NovaBook 14, active warranty, serial number `NB142026-00001`.
-3. **Incident & Evidence**: Enter defect description, incident date, repair history, and upload documents.
+3. **Incident & Evidence**: Enter incident date, choose a fault category, answer evidence availability Yes/No questions, and provide a description only when category is Other.
 4. **Feature Engineering**: Backend derives the active 14 V3 features in real-time.
 5. **Python Model V3**: Gradient Boosting classifier evaluates the 14 features (`Valid Claim`, `Invalid Claim`, `Manual Review`) while GTM G2 V3 evaluates the rendered claim-card image.
 6. **Reviewer Ground Truth**: Reviewer inspects inputs, evidence, and model features, then records official Ground Truth (`Valid Claim` / `Invalid Claim`).

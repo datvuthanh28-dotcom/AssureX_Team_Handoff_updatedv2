@@ -2096,14 +2096,14 @@ function AdminUsers({ refreshKey }) {
 
   return (
     <>
-      <PageHeader eyebrow="Access control" title="Users" description="Manage workspace accounts and roles." />
+      <PageHeader eyebrow="Access control" title="Reviewers" description="Create and manage reviewer accounts only." />
       <form className="panel admin-user-form" onSubmit={createUser}>
-        <div className="panel-heading"><h2>Create user</h2></div>
+        <div className="panel-heading"><h2>Create reviewer account</h2></div>
         <div className="form-grid">
           <label className="form-field"><span>Username</span><input value={form.username} onChange={(event) => setForm({ ...form, username: event.target.value })} required minLength="3" /></label>
           <label className="form-field"><span>Email</span><input type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} required /></label>
           <label className="form-field"><span>Temporary password</span><input type="password" value={form.password} onChange={(event) => setForm({ ...form, password: event.target.value })} required minLength="8" /></label>
-          <label className="form-field"><span>Role</span><select value={form.role} onChange={(event) => setForm({ ...form, role: event.target.value })}><option value="CUSTOMER">CUSTOMER</option><option value="SERVICE_CENTER">SERVICE CENTER / STAFF</option><option value="REVIEWER">REVIEWER</option><option value="ADMIN">ADMIN</option></select></label>
+          <label className="form-field"><span>Role</span><input value="REVIEWER" readOnly /></label>
         </div>
         {error && <div className="alert error">{error}</div>}
         <div className="form-actions"><button className="button primary">Create account</button></div>
@@ -5445,7 +5445,7 @@ function AdminReports({ refreshKey }) {
 
 function AdminSRSReadiness() {
   const groups = [
-    ['Core Web Application', 'Complete', 'success', ['FastAPI backend and React frontend', 'Role-based workspaces', 'Claim submission, evidence upload, reviewer queue', 'Notifications, audit logs, appeals, and CSV export']],
+    ['Core Web Application', 'Complete', 'success', ['FastAPI backend and React frontend', 'Role-based workspaces', 'Claim submission, Yes/No evidence questions, reviewer queue', 'Notifications, audit logs, appeals, and CSV export']],
     ['Python ML Pipeline', 'Complete', 'success', ['1,500-record structured dataset', '70/15/15 split with balanced classes', 'Gradient Boosting V3 with 14 frozen features', 'Locked-test Accuracy 99.11% and Macro F1 99.11%']],
     ['GTM Image Model', 'Partial', 'warning', ['GTM G2 V3 export is active', 'Locked-test Accuracy 86.22% and Macro F1 86.10%', 'Claim-card renderer is present', 'Full 2,100+ training-image deliverable still needs final attachment']],
     ['Decision Engine', 'Complete', 'success', ['Compares Python and GTM predictions', 'Calculates confidence difference', 'Applies model consistency thresholds', 'Applies warranty, document, duplicate, contradiction, serial, and repair rules']],

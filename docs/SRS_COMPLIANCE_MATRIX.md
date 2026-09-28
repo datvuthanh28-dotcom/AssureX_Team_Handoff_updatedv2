@@ -37,10 +37,10 @@ This matrix maps the official AssureX Claim Engine SRS requirements to the curre
 | ix | Warranty expiry alerts | Partial | Notification/settings UI exists; scheduled expiry-alert automation should be validated. |
 | x | Claim registration | Complete | Customer claims and warranty tickets create unique IDs. |
 | xi | Claim information collection | Complete | Claim, fault, repair, warranty, and evidence fields are collected. |
-| xii | Fault and evidence upload | Complete | Product image, fault evidence, serial image, invoice, and repair report are supported. |
+| xii | Fault and evidence collection | Complete | The primary customer flow records evidence availability through Yes/No questions; the legacy upload endpoint remains available for optional file evidence. |
 | xiii | Repair history management | Complete | Previous repair data and authorization signals are tracked. |
 | xiv | Document organization | Partial | Documents are linked to claims; replace/remove/download evidence should be tested. |
-| xv | Data validation | Complete | Backend schemas, date checks, duplicate checks, file evidence checks, and UI readiness checks exist. |
+| xv | Data validation | Complete | Backend schemas, date checks, duplicate checks, Yes/No evidence completeness checks, Other-category description validation, and UI readiness checks exist. |
 | xvi | Data preprocessing | Complete | Python preprocessing, feature engineering, imputation, encoding, and scaling exist. |
 | xvii | Common warranty claim dataset | Complete for CSV, partial for images | CSV split is complete; full image dataset deliverable must be added or generated. |
 | xviii | Python classification model | Complete | Gradient Boosting V3 selected after candidate comparison. |

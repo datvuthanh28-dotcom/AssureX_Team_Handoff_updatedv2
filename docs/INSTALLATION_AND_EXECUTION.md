@@ -97,7 +97,7 @@ npm --prefix ./assurex_web/frontend run build
 
 1. Log in as customer.
 2. Select or register a product.
-3. Enter incident date, fault description, repair history, and evidence.
+3. Enter incident date, choose a fault category, answer Yes/No evidence questions, and enter a fault description only when category is Other.
 4. Submit claim.
 5. Review Python prediction, GTM prediction, consistency status, confidence difference, and decision reasons.
 6. Log in as reviewer.

@@ -46,7 +46,7 @@ class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=100)
     email: str = Field(min_length=3, max_length=150)
     password: str = Field(min_length=8, max_length=128)
-    role: Literal["CUSTOMER", "SERVICE_CENTER", "REVIEWER", "ADMIN"]
+    role: Literal["REVIEWER"] = "REVIEWER"
 
     @field_validator("email")
     @classmethod
@@ -478,6 +478,9 @@ def create_user(
     )
     if existing is not None:
         raise HTTPException(status_code=409, detail="Email or username is already in use.")
+
+    if payload.role != "REVIEWER":
+        raise HTTPException(status_code=422, detail="Admins can only create reviewer accounts from this screen.")
 
     salt = secrets.token_hex(16)
     user = CustomerAccount(

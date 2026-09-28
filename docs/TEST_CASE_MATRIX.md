@@ -25,7 +25,7 @@ npm run install:gtm
 |---|---|---|---|
 | TC-F01 | Admin/reviewer/service login | Role-specific workspace opens | Automated API role-flow + manual UI |
 | TC-F02 | Customer registers product and creates warranty ticket | Ticket ID created, 14 features derived, status enters reviewer queue | Automated API role-flow |
-| TC-F03 | Customer uploads invoice/product/fault evidence | Evidence stored under claim | Manual UI/API test |
+| TC-F03 | Customer answers evidence Yes/No questions | Evidence completeness features are derived without requiring file upload | Automated API role-flow + manual UI |
 | TC-F04 | Reviewer approves claim | Status becomes Approved, audit entry recorded, retraining export includes ground truth | Automated API role-flow |
 | TC-F05 | Reviewer rejects claim | Status becomes Rejected, customer can appeal | Manual UI/API test |
 | TC-F06 | Customer submits appeal | Appeal enters reviewer queue | Manual UI/API test |
@@ -50,7 +50,7 @@ npm run install:gtm
 | TC-B01 | Claim on warranty expiry date | Reporting/warranty rule handles boundary correctly | Add API test |
 | TC-B02 | Fault date before purchase date | ContradictionIndicator = Yes | Existing feature logic, add API test |
 | TC-B03 | Claim date before purchase date | Contradiction warning and manual review | Existing logic, add API test |
-| TC-B04 | Missing purchase receipt | MissingDocumentCount > 0, manual review | Existing logic, add API test |
+| TC-B04 | Missing purchase proof question = No | MissingDocumentCount > 0, manual review signal | Existing logic, add API test |
 | TC-B05 | Unsupported upload type | Upload rejected with safe error | Add API test |
 | TC-B06 | Duplicate document hash | Duplicate warning or manual review | Partial implementation, add API test |
 | TC-B07 | Duplicate product/claim | DuplicateClaimIndicator = Yes | Existing logic, add API test |
@@ -64,7 +64,7 @@ npm run install:gtm
 |---|---|---|---|
 | TC-S01 | Unauthenticated retraining/admin data access | Request rejected | Automated API role-flow |
 | TC-S02 | Reviewer accesses admin-only users | Request rejected | Automated API role-flow |
-| TC-S03 | Service-center accesses reviewer queue/decision endpoint | Request rejected | Automated API role-flow |
+| TC-S03 | Admin attempts to create non-reviewer workspace user | Request rejected | Automated API role-flow |
 | TC-S04 | Invalid JWT/session token | Request rejected safely | Add API test |
 | TC-S05 | Oversized file upload | Rejected with understandable error | Add API test |
 

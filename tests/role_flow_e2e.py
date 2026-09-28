@@ -107,8 +107,23 @@ def run():
 
     admin_token = login_workspace("admin", "123")
     reviewer_token = login_workspace("reviewer", "reviewer123")
-    service_token = ensure_workspace_user(admin_token, "service_e2e", "service.e2e@assurex.local", "SERVICE_CENTER")
-    ok("workspace logins", "ADMIN, REVIEWER, SERVICE_CENTER")
+    reviewer_stamp = int(time.time())
+    created_reviewer = request(
+        "POST",
+        "/api/auth/users",
+        token=admin_token,
+        data={"username": f"reviewer_e2e_{reviewer_stamp}", "email": f"reviewer.e2e.{reviewer_stamp}@assurex.local", "password": PASSWORD, "role": "REVIEWER"},
+        expected=(201,),
+    )
+    assert created_reviewer["role"] == "REVIEWER"
+    request(
+        "POST",
+        "/api/auth/users",
+        token=admin_token,
+        data={"username": "service_e2e_blocked", "email": "service.e2e.blocked@assurex.local", "password": PASSWORD, "role": "SERVICE_CENTER"},
+        expected=(422,),
+    )
+    ok("workspace logins", "ADMIN, REVIEWER; admin creation is limited to REVIEWER")
 
     stamp = int(time.time())
     customer_email = f"customer.e2e.{stamp}@assurex.local"
@@ -118,8 +133,7 @@ def run():
 
     request("GET", "/api/auth/users", token=reviewer_token, expected=(403,))
     request("GET", "/api/retraining/dataset", expected=(401, 403))
-    request("GET", "/api/warranty/reviewer/tickets", token=service_token, expected=(403,))
-    ok("negative authorization", "reviewer/admin-only, public retraining, service/reviewer queue")
+    ok("negative authorization", "reviewer/admin-only, public retraining, non-reviewer creation blocked")
 
     product = first_product(customer_token)
     registered = register_product(customer_token, product["id"])
@@ -128,13 +142,35 @@ def run():
     assert looked_up["registration_code"] == product_code
     ok("customer product registration", product_code)
 
+    request(
+        "POST",
+        "/api/claims/v3/ticket",
+        token=customer_token,
+        data={
+            "product_code": product_code,
+            "incident_date": (date.today() - timedelta(days=1)).isoformat(),
+            "problem_category": "Other",
+            "fault_description": "",
+            "previous_repair": "No",
+            "purchase_invoice_available": "Yes",
+            "serial_image_available": "Yes",
+            "fault_evidence_available": "Yes",
+            "repair_report_available": "No",
+        },
+        expected=(422,),
+    )
+    ok("other category validation", "description required only for Other")
+
     ticket_payload = {
         "product_code": product_code,
         "incident_date": (date.today() - timedelta(days=2)).isoformat(),
-        "problem_category": "Hardware Defect",
-        "fault_description": "Device stopped powering on after normal indoor use.",
+        "problem_category": "Power Failure",
+        "fault_description": "",
         "previous_repair": "No",
-        "evidence": {},
+        "purchase_invoice_available": "Yes",
+        "serial_image_available": "Yes",
+        "fault_evidence_available": "Yes",
+        "repair_report_available": "No",
     }
     ticket_result = request("POST", "/api/claims/v3/ticket", token=customer_token, data=ticket_payload, expected=(201,))
     ticket = ticket_result["ticket"]
@@ -153,7 +189,7 @@ def run():
     assert detail["ticket"]["ticket_id"] == ticket_id
     ok("reviewer queue/detail")
 
-    request("POST", f"/api/warranty/reviewer/tickets/{ticket_id}/decision", token=service_token, data={"decision": "APPROVE"}, expected=(403,))
+    request("POST", f"/api/warranty/reviewer/tickets/{ticket_id}/decision", token=customer_token, data={"decision": "APPROVE"}, expected=(403,))
     reviewed = request(
         "POST",
         f"/api/warranty/reviewer/tickets/{ticket_id}/decision",

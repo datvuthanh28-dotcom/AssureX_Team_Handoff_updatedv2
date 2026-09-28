@@ -8,7 +8,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import JSONResponse, StreamingResponse
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
@@ -66,10 +66,15 @@ class WarrantyClaimCreatePayload(BaseModel):
     product_code: str = Field(min_length=1, max_length=30)
     incident_date: date
     problem_category: str = Field(default="Hardware Defect", min_length=2, max_length=150)
-    fault_description: str = Field(min_length=10, max_length=5000)
+    fault_description: str | None = Field(default=None, max_length=5000)
     previous_repair: Literal["Yes", "No"]
     repair_centre: str | None = Field(default=None, max_length=150)
     repair_date: date | None = None
+    purchase_invoice_available: Literal["Yes", "No"] = "No"
+    serial_image_available: Literal["Yes", "No"] = "No"
+    fault_evidence_available: Literal["Yes", "No"] = "No"
+    repair_report_available: Literal["Yes", "No"] = "No"
+    # Backward compatible: older UI/API callers may still pass uploaded evidence references.
     evidence: dict[str, EvidenceReference] = Field(default_factory=dict)
 
     @field_validator("repair_date", mode="before")
@@ -78,6 +83,14 @@ class WarrantyClaimCreatePayload(BaseModel):
         if value == "":
             return None
         return value
+
+    @model_validator(mode="after")
+    def validate_other_description(self):
+        category = (self.problem_category or "").strip().casefold()
+        description = (self.fault_description or "").strip()
+        if category == "other" and len(description) < 10:
+            raise ValueError("Fault description is required when the fault category is Other.")
+        return self
 
 
 class ModelPredictRequest(BaseModel):
@@ -298,6 +311,21 @@ def db_repair_history_for_registered_product(registered_product_id: int) -> dict
     }
 
 
+def _is_yes(value: Any) -> bool:
+    return str(value or "").strip().casefold() == "yes"
+
+
+def _evidence_available(payload, key: str, field_name: str) -> bool:
+    return key in (payload.evidence or {}) or _is_yes(getattr(payload, field_name, "No"))
+
+
+def _customer_fault_description(payload) -> str:
+    description = (payload.fault_description or "").strip()
+    if description:
+        return description
+    return (payload.problem_category or "Hardware Defect").strip()
+
+
 def _ocr_evidence(evidence: dict[str, EvidenceReference]):
     candidates = []
     extracted = {}
@@ -328,8 +356,13 @@ def _derive_features(db, account, registered, product, warranty, payload):
     expected_serial = registered.serial_number.strip().casefold()
     expected_model = product.model.strip().casefold()
 
+    serial_proof_available_initial = _evidence_available(payload, "serial_image", "serial_image_available")
     serial_match = "Unknown" if not ocr_serial else ("Yes" if ocr_serial == expected_serial else "No")
     model_match = "Unknown" if not ocr_model else ("Yes" if ocr_model == expected_model else "No")
+    if not ocr_serial and serial_proof_available_initial:
+        serial_match = "Yes"
+    if not ocr_model and serial_proof_available_initial:
+        model_match = "Yes"
     product_identity = (
         "Yes" if serial_match == "Yes" and model_match in {"Yes", "Unknown"}
         else "No" if "No" in {serial_match, model_match}
@@ -346,20 +379,26 @@ def _derive_features(db, account, registered, product, warranty, payload):
     expiry = date.fromisoformat(warranty.end_date) if warranty else None
     remaining = (expiry - today).days if expiry else 0
     category_text = (getattr(payload, "problem_category", "") or "").casefold()
-    description = payload.fault_description.casefold()
+    description = _customer_fault_description(payload).casefold()
     is_excluded = (
         any(term in category_text for term in EXCLUDED_FAULT_TERMS)
         or any(term in description for term in EXCLUDED_FAULT_TERMS)
     )
     fault_covered = "No" if is_excluded else "Yes"
 
-    # A claim can be submitted without uploads. Missing optional evidence is
-    # retained as a model signal and can route the ticket to manual review.
+    # Evidence is collected as customer Yes/No answers in the current UI.
+    # Uploaded file references remain supported for backward compatibility.
+    purchase_proof_available = _evidence_available(payload, "purchase_invoice", "purchase_invoice_available")
+    serial_proof_available = _evidence_available(payload, "serial_image", "serial_image_available")
+    fault_evidence_available = _evidence_available(payload, "fault_evidence", "fault_evidence_available")
+    repair_report_available = _evidence_available(payload, "repair_report", "repair_report_available")
+
     missing_count = sum(
-        1 for name in ("purchase_invoice", "serial_image", "fault_evidence")
-        if name not in evidence
+        1
+        for available in (purchase_proof_available, serial_proof_available, fault_evidence_available)
+        if not available
     )
-    if payload.previous_repair == "Yes" and "repair_report" not in evidence:
+    if payload.previous_repair == "Yes" and not repair_report_available:
         missing_count += 1
 
     recorded_repair = db.scalar(
@@ -372,7 +411,7 @@ def _derive_features(db, account, registered, product, warranty, payload):
 
     if not has_repair_history:
         repair_authorized = "Not Applicable"
-    elif "repair_report" not in evidence:
+    elif not repair_report_available:
         repair_authorized = "Unknown"
     else:
         centre = (payload.repair_centre or "").casefold()
@@ -384,6 +423,7 @@ def _derive_features(db, account, registered, product, warranty, payload):
         bool(payload.repair_date and payload.repair_date > today),
         bool(payload.repair_date and payload.repair_date < date.fromisoformat(registered.purchase_date)),
     ))
+    ocr_confidence = ocr_confidence or (0.90 if purchase_proof_available and serial_proof_available else 0.0)
     quality = "High" if ocr_confidence >= .85 else "Medium" if ocr_confidence >= .65 else "Low" if ocr_confidence > 0 else "Missing"
 
     active_features = {
@@ -440,6 +480,7 @@ def create_warranty_claim(
         db, account, registered, product, warranty, payload
     )
     ticket_id = f"TCK-{uuid.uuid4().hex[:8].upper()}"
+    claim_description = _customer_fault_description(payload)
     raw_input = payload.model_dump(mode="json", exclude={"evidence"})
     raw_input["customer_email"] = account.email
     raw_input["submitted_at"] = datetime.utcnow().isoformat()
@@ -451,7 +492,7 @@ def create_warranty_claim(
         purchase_date=registered.purchase_date,
         usage_duration=max(0, (date.today() - date.fromisoformat(registered.purchase_date)).days // 30),
         problem_category=payload.problem_category or "Hardware Defect",
-        problem_description=payload.fault_description,
+        problem_description=claim_description,
         status="PENDING_AI",
         customer_account_id=account.id,
         registered_product_id=registered.id,
@@ -480,7 +521,7 @@ def create_warranty_claim(
         purchase_date=registered.purchase_date,
         claim_amount=0.0,
         problem_category=payload.problem_category or "Hardware Defect",
-        fault_description=payload.fault_description,
+        fault_description=claim_description,
         status="Under Review" if ticket.status != "AI_ERROR" else "Manual Review",
         receipt_url=(ticket.evidence.get("purchase_invoice") or {}).get("file_url"),
         evidence_photo_url=(ticket.evidence.get("fault_evidence") or {}).get("file_url"),
@@ -544,7 +585,7 @@ def create_warranty_claim(
             "customer_name": account.full_name or account.email,
             "customer_email": account.email,
             "problem_category": ticket.problem_category,
-            "fault_description": payload.fault_description,
+            "fault_description": claim_description,
             "evidence": ticket.evidence,
             "model_features": active_features,
             "ai_prediction": ticket.ai_prediction,

@@ -35,7 +35,7 @@
     "max_depth": 3,
     "random_state": 20260926
   },
-  "model_path": "/Users/htmt1810/Desktop/TECHWIZ ML/model/assurex_v3_final_model.joblib",
+  "model_path": "/Users/htmt1810/Documents/GitHub/AssureX_Team_Handoff_updatedv2/model/assurex_v3_final_model.joblib",
   "model_sha256": "f86a22a7f78c824ab373dac0f2449ddd26dd842f6fe1213ea59d3c462371a2da",
   "test_loaded": true,
   "test_used": true,
