@@ -17,7 +17,7 @@ from app.ml.model_service import (
     MODEL_VERSION,
     predict_claim,
 )
-from app.models import AuditLog, Claim, CustomerAccount
+from app.models import AuditLog, Claim, CustomerAccount, WarrantyTicket
 from app.customer_routes import router as customer_router
 from app.auth_routes import (
     record_audit,
@@ -28,6 +28,7 @@ from app.auth_routes import (
 )
 from app.notification_routes import router as notification_router
 from app.catalog_routes import router as catalog_router
+from app.warranty_ticket_routes import router as warranty_ticket_router
 
 
 app = FastAPI(
@@ -36,12 +37,21 @@ app = FastAPI(
     description="Backend API for AssureX warranty claim classification.",
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r".*",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(customer_router)
 app.include_router(warranty_router)
 app.include_router(auth_router)
 app.include_router(notification_router)
 app.include_router(catalog_router)
+app.include_router(warranty_ticket_router)
 
 
 @app.on_event("startup")
@@ -184,30 +194,19 @@ def create_database_tables():
                 "warranty_type": "ALTER TABLE warranties ADD COLUMN warranty_type VARCHAR(50) DEFAULT 'Standard'",
                 "coverage_conditions": "ALTER TABLE warranties ADD COLUMN coverage_conditions TEXT",
                 "exclusions": "ALTER TABLE warranties ADD COLUMN exclusions TEXT",
-                "service_center_details": "ALTER TABLE warranties ADD COLUMN service_center_details VARCHAR(255)",
             }
             for col_name, stmt in w_migrations.items():
                 if col_name not in w_columns:
                     connection.execute(text(stmt))
 
+        if "warranty_tickets" in table_names:
+            wt_columns = {col["name"] for col in inspect(engine).get_columns("warranty_tickets")}
+            if "model_features" not in wt_columns:
+                connection.execute(text("ALTER TABLE warranty_tickets ADD COLUMN model_features JSON"))
+
     with SessionLocal() as db:
         seed_default_admin(db)
         seed_default_reviewer(db)
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
-    allow_origin_regex=(
-        r"http://(localhost|127\.0\.0\.1|192\.168\.1\.\d+):(5173|5174|5175)"
-    ),
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 
 class ClaimPredictRequest(BaseModel):

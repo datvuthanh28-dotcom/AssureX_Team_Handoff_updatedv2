@@ -1,0 +1,21 @@
+id,user_code,full_name,email,phone,address,created_at
+1,CUS0001,Bui Ngoc Mai,ngoc.mai07@example.com,0912345678,"123 Kim Ma, Ba Dinh, Hanoi",2026-01-10 08:30:00
+2,CUS0002,Nguyen Van An,an.nguyen@example.com,0987654321,"45 Le Duan, District 1, Ho Chi Minh City",2026-01-15 09:15:00
+3,CUS0003,Tran Thi Lan,lan.tran@example.com,0901234567,"78 Tran Phu, Hai Chau, Da Nang",2026-01-20 14:00:00
+4,CUS0004,Le Hoang Nam,nam.le@example.com,0934567890,"12 Nguyen Thi Minh Khai, Hue",2026-02-01 11:20:00
+5,CUS0005,Pham Minh Tu,tu.pham@example.com,0945678901,"89 Nguyen Trai, Thanh Xuan, Hanoi",2026-02-10 16:45:00
+6,CUS0006,Do Quoc Huy,huy.do@example.com,0956789012,"56 Quang Trung, Hai Ba Trung, Hanoi",2026-02-15 10:30:00
+7,CUS0007,Vu Thuy Linh,linh.vu@example.com,0967890123,"23 Phan Chu Trinh, Hoan Kiem, Hanoi",2026-02-18 13:10:00
+8,CUS0008,Hoang Gia Bao,bao.hoang@example.com,0978901234,"101 Vo Van Tan, District 3, HCMC",2026-02-25 15:40:00
+9,CUS0009,Ngo Thanh Dat,dat.ngo@example.com,0989012345,"14 Bach Dang, Tan Binh, HCMC",2026-03-01 09:00:00
+10,CUS0010,Dinh Phuong Thao,thao.dinh@example.com,0990123456,"67 Hung Vuong, Da Nang",2026-03-05 17:25:00
+11,CUS0011,Trinh Duc Minh,minh.trinh@example.com,0911223344,"88 Hoang Dieu, Hai Chau, Da Nang",2026-03-12 08:50:00
+12,CUS0012,Ly My Duyen,duyen.ly@example.com,0922334455,"32 Tran Hung Dao, Nha Trang",2026-03-15 12:00:00
+13,CUS0013,Cao Van Cuong,cuong.cao@example.com,0933445566,"55 Le Loi, Vung Tau",2026-03-20 14:15:00
+14,CUS0014,Mai Kim Ngan,ngan.mai@example.com,0944556677,"90 Nguyen Hue, Can Tho",2026-03-22 10:05:00
+15,CUS0015,Duong Van Tan,tan.duong@example.com,0955667788,"11 Hai Ba Trung, Dalat",2026-03-25 16:30:00
+16,CUS0016,Bui Thi Huong,huong.bui@example.com,0966778899,"44 Dien Bien Phu, Binh Thanh, HCMC",2026-03-28 11:45:00
+17,CUS0017,Phan Anh Tuan,tuan.phan@example.com,0977889900,"18 Nguyen Chi Thanh, Ba Dinh, Hanoi",2026-04-02 09:30:00
+18,CUS0018,Nguyen Thao My,my.nguyen@example.com,0988990011,"72 Cach Mang Thang 8, District 10, HCMC",2026-04-05 15:10:00
+19,CUS0019,Luu Tuan Kiet,kiet.luu@example.com,0999001122,"35 Ly Tu Trong, District 1, HCMC",2026-04-08 13:55:00
+20,CUS0020,Vo Thi Bich,bich.vo@example.com,0910111213,"29 Dong Khoi, District 1, HCMC",2026-04-10 10:20:00

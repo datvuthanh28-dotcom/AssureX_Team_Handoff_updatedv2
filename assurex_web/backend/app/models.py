@@ -587,3 +587,48 @@ class ClaimAppeal(Base):
     reviewer_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+class WarrantyTicket(Base):
+    __tablename__ = "warranty_tickets"
+
+    ticket_id: Mapped[str] = mapped_column(
+        String(50),
+        primary_key=True,
+        index=True,
+    )
+    product_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    product_model: Mapped[str] = mapped_column(String(100), nullable=False)
+    order_code: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    purchase_date: Mapped[str] = mapped_column(String(20), nullable=False)
+    usage_duration: Mapped[int] = mapped_column(Integer, nullable=False)
+    problem_category: Mapped[str] = mapped_column(String(100), nullable=False)
+    problem_description: Mapped[str] = mapped_column(Text, nullable=False)
+
+    # Status: PENDING_AI, WAITING_REVIEW, AI_ERROR, REVIEW_REQUIRED, REVIEWED
+    status: Mapped[str] = mapped_column(String(30), default="PENDING_AI", nullable=False)
+
+    # AI Prediction results
+    ai_prediction: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    ai_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    ai_error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # 14 Model Features dictionary
+    model_features: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
+    # Reviewer decision and Ground Truth
+    reviewer_decision: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    ground_truth: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    reviewer_note: Mapped[str | None] = mapped_column(Text, nullable=True)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False,
+    )

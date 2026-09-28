@@ -1,32 +1,27 @@
 {
   "python_model": {
-    "name": "Gradient Boosting",
-    "version": "python-gradientboosting-v3-final",
+    "name": "Gradient Boosting (14 Features)",
+    "version": "v3-final-14feat",
     "artifact_path": "model/assurex_v3_final_model.joblib",
-    "feature_definition_path": "model/assurex_v3_final_features.csv",
-    "selected_feature_count": 14,
+    "fallback_artifact_path": "frozen_v3/assurex_v3_final_model.joblib",
     "selected_using": "validation_macro_f1",
-    "runtime_status": "active"
+    "runtime_status": "active",
+    "features_count": 14
   },
   "google_model": {
-    "name": "Google Teachable Machine G2 V3",
-    "version": "gtm-g2-v3-final",
-    "artifact_path": "gtm/frozen_G2_V3",
-    "model_json": "gtm/frozen_G2_V3/model.json",
-    "weights": "gtm/frozen_G2_V3/weights.bin",
-    "metadata": "gtm/frozen_G2_V3/metadata.json",
-    "card_feature_config": "gtm/frozen_G2_V3/g2_card_features_v3.json",
-    "selected_using": "validation_macro_f1_visual_ablation",
+    "name": "Google Teachable Machine G5",
+    "version": "google-g5-existing-20260925",
+    "artifact_path": "submission_final/gtm_model",
+    "selected_using": "historical_validation_macro_f1",
     "inference_status": "not_connected",
-    "artifact_status": "frozen_final"
+    "current_card_dataset_version": "G5-v2",
+    "current_card_evaluation_status": "validation_probe_not_selection_eligible",
+    "validation_evaluation_path": "evaluation/google/g5_v2_validation.json"
   },
   "decision_configuration": {
-    "version": "decision-engine-v3",
-    "threshold_config": "config/decision_thresholds.json",
+    "consistency_thresholds": "not_configured_pending_common_validation_predictions",
     "manual_review_on_model_disagreement": true,
     "manual_review_on_low_confidence": true,
-    "manual_review_on_missing_evidence": true,
-    "manual_review_on_large_confidence_difference": true,
     "business_rules_remain_independent": true
   }
 }

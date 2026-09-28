@@ -1,0 +1,11 @@
+product_code,serial_number,purchase_date,warranty_start_date,warranty_expiry_date,user_code,full_name,email,phone,product_name,category,brand,model_number,standard_warranty_months
+AX26-00001,NB142026-00001,2026-07-17,2026-07-17,2028-07-16,CUS0001,Bui Ngoc Mai,ngoc.mai07@example.com,0912345678,NovaBook 14 Ultra,Laptop,NovaTech,NB14-2026,24
+AX26-00002,PF4X9812,2025-11-10,2025-11-10,2027-11-09,CUS0002,Nguyen Van An,an.nguyen@example.com,0987654321,ThinkPad T14 Gen 4,Laptop,Lenovo,21HD0001US,24
+AX26-00003,R5CW109K,2024-03-01,2024-03-01,2025-02-28,CUS0003,Tran Thi Lan,lan.tran@example.com,0901234567,Galaxy S24 Ultra,Smartphone,Samsung,SM-S928B,12
+AX26-00004,CN-0M27D-128,2026-01-15,2026-01-15,2029-01-14,CUS0001,Bui Ngoc Mai,ngoc.mai07@example.com,0912345678,UltraSharp 27 4K Monitor,Monitor,Dell,U2724D,36
+AX26-00005,VNB3K9821,2025-06-20,2025-06-20,2026-06-19,CUS0002,Nguyen Van An,an.nguyen@example.com,0987654321,LaserJet Pro MFP 4103fdw,Printer,HP,4103fdw,12
+AX26-00006,FK2N89A120,2025-12-01,2025-12-01,2026-11-30,CUS0004,Le Hoang Nam,nam.le@example.com,0934567890,iPhone 16 Pro Max,Smartphone,Apple,A3297,12
+AX26-00007,C02G899KLM,2025-08-15,2025-08-15,2026-08-14,CUS0005,Pham Minh Tu,tu.pham@example.com,0945678901,MacBook Pro 16 M3 Max,Laptop,Apple,A2991,12
+AX26-00008,8H7J92XPS,2026-02-10,2026-02-10,2028-02-09,CUS0006,Do Quoc Huy,huy.do@example.com,0956789012,Dell XPS 15 9530,Laptop,Dell,XPS9530,24
+AX26-00009,DLXN4091M4,2025-09-05,2025-09-05,2026-09-04,CUS0007,Vu Thuy Linh,linh.vu@example.com,0967890123,iPad Pro 11-inch M4,Tablet,Apple,A2836,12
+AX26-00010,R52X801TAB,2025-10-18,2025-10-18,2026-10-17,CUS0008,Hoang Gia Bao,bao.hoang@example.com,0978901234,Galaxy Tab S9 Ultra,Tablet,Samsung,SM-X910,12

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import { api } from './api'
 import { claimFieldGroups } from './claimFields'
+import { ReviewerWarrantyDesk, WarrantyRetrainingDataset, CustomerWarrantyClaimForm } from './WarrantyClaimSystem'
 
 
 const MODEL_METRICS = {
@@ -75,7 +76,7 @@ function EmptyState({ title, description }) {
     <div className="empty-state">
       <div className="empty-icon">◇</div>
       <h3>{title}</h3>
-      <p>{description}</p>
+      {description ? <p>{description}</p> : null}
     </div>
   )
 }
@@ -84,13 +85,12 @@ function EmptyState({ title, description }) {
 function PageHeader({
   eyebrow,
   title,
-  description,
   action,
 }) {
   return (
     <header className="page-header">
       <div>
-        <p className="eyebrow">{eyebrow}</p>
+        {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1>{title}</h1>
       </div>
 
@@ -103,7 +103,6 @@ function PageHeader({
 function StatCard({
   label,
   value,
-  hint,
   tone = 'default',
 }) {
   return (
@@ -3025,7 +3024,6 @@ function CustomerHome({
       <PageHeader
         eyebrow="AssureX Customer Portal"
         title="Warranty Claims"
-        description="Submit warranty claims and track their progress."
       />
 
       {!hideIdentity && (
@@ -3043,11 +3041,6 @@ function CustomerHome({
           <h2>
             Everything about your claim in one place.
           </h2>
-          <p>
-            Submit a warranty request, receive a claim ID,
-            and follow the review status from submission to
-            final decision.
-          </p>
         </div>
 
         <button
@@ -3164,6 +3157,16 @@ function CustomerSubmit({
   onSubmitted,
   onNavigate,
 }) {
+  return (
+    <CustomerWarrantyClaimForm
+      onCreated={() => {
+        if (onSubmitted) onSubmitted()
+      }}
+      onCancel={() => {
+        if (onNavigate) onNavigate('home')
+      }}
+    />
+  )
   const [form, setForm] = useState({
     customer_name: customerName || '',
     email: email || '',
@@ -4870,7 +4873,6 @@ function CustomerClaims({
       <PageHeader
         eyebrow="Customer Portal"
         title="My Claims"
-        description="Track your submitted warranty claims and review their current status."
       />
 
       {!hideIdentity && (
@@ -4886,12 +4888,10 @@ function CustomerClaims({
         ) : !email ? (
           <EmptyState
             title="Enter your email"
-            description="Enter the email used when submitting your warranty claim."
           />
         ) : claims.length === 0 ? (
           <EmptyState
             title="No claims found"
-            description="There are no warranty claims associated with this email."
           />
         ) : (
           <div className="table-wrapper">
@@ -5336,7 +5336,7 @@ function ReviewerAppeals({ onChanged }) {
 }
 
 function ReviewerWorkspace({ onLogout, email }) {
-  const [page, setPage] = useState('overview')
+  const [page, setPage] = useState('warranty-desk')
   const [refreshKey, setRefreshKey] = useState(0)
   const nav = [['overview', 'Review overview'], ['queue', 'Claim queue'], ['resolved', 'Resolved claims'], ['appeals', 'Appeals'], ['profile', 'My profile']]
   return <div className="app-shell reviewer-shell">
@@ -5366,7 +5366,7 @@ function AdminReports({ refreshKey }) {
     const csv = [columns.join(','), ...filtered.map((claim) => columns.map((column) => csvValue(claim[column])).join(','))].join('\n')
     downloadFile('assurex-claims-report.csv', csv, 'text/csv;charset=utf-8')
   }
-  return <><PageHeader eyebrow="Admin · Analytics & Reporting" title="Claims Reports" description="Theo dõi kết quả claim, rủi ro vận hành và xuất dữ liệu phục vụ phân tích." action={<button className="button primary" onClick={exportCsv}>Download CSV ↓</button>} /><div className="stats-grid"><StatCard label="Total claims" value={claims.length} hint="All submitted claims"/><StatCard label="Approved" value={count('Approved')} hint="Final positive decisions" tone="success"/><StatCard label="Manual review" value={count('Manual Review') + count('Under Review')} hint="Needs human action" tone="warning"/><StatCard label="Rejected" value={count('Rejected')} hint="Final negative decisions" tone="danger"/></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Operational report</p><h2>Claim records</h2></div><div className="report-filters"><input placeholder="Search claim, product, serial..." value={query} onChange={(event) => setQuery(event.target.value)} /><select value={status} onChange={(event) => setStatus(event.target.value)}><option>All</option><option>Approved</option><option>Rejected</option><option>Under Review</option><option>Manual Review</option><option>Closed</option></select></div></div><div className="table-wrapper"><table className="data-table"><thead><tr><th>Claim ID</th><th>Product</th><th>Status</th><th>Amount</th><th>Model consistency</th><th>Created</th></tr></thead><tbody>{filtered.map((claim) => <tr key={claim.id || claim.claim_id}><td className="mono">{claim.claim_id}</td><td>{claim.product_name || '—'}<small className="table-subline">{claim.serial_number || 'No serial'}</small></td><td><StatusBadge value={claim.status}/></td><td>{formatNumber(claim.claim_amount)}</td><td>{claim.decision?.model_consistency_status || '—'}</td><td>{formatDate(claim.created_at)}</td></tr>)}{filtered.length === 0 && <tr><td colSpan="6">No claims match the selected filters.</td></tr>}</tbody></table></div></section></>
+  return <><PageHeader eyebrow="Admin · Analytics & Reporting" title="Claims Reports" action={<button className="button primary" onClick={exportCsv}>Download CSV ↓</button>} /><div className="stats-grid"><StatCard label="Total claims" value={claims.length} hint="All submitted claims"/><StatCard label="Approved" value={count('Approved')} hint="Final positive decisions" tone="success"/><StatCard label="Manual review" value={count('Manual Review') + count('Under Review')} hint="Needs human action" tone="warning"/><StatCard label="Rejected" value={count('Rejected')} hint="Final negative decisions" tone="danger"/></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Operational report</p><h2>Claim records</h2></div><div className="report-filters"><input placeholder="Search claim, product, serial..." value={query} onChange={(event) => setQuery(event.target.value)} /><select value={status} onChange={(event) => setStatus(event.target.value)}><option>All</option><option>Approved</option><option>Rejected</option><option>Under Review</option><option>Manual Review</option><option>Closed</option></select></div></div><div className="table-wrapper"><table className="data-table"><thead><tr><th>Claim ID</th><th>Product</th><th>Status</th><th>Amount</th><th>Model consistency</th><th>Created</th></tr></thead><tbody>{filtered.map((claim) => <tr key={claim.id || claim.claim_id}><td className="mono">{claim.claim_id}</td><td>{claim.product_name || '—'}<small className="table-subline">{claim.serial_number || 'No serial'}</small></td><td><StatusBadge value={claim.status}/></td><td>{formatNumber(claim.claim_amount)}</td><td>{claim.decision?.model_consistency_status || '—'}</td><td>{formatDate(claim.created_at)}</td></tr>)}{filtered.length === 0 && <tr><td colSpan="6">No claims match the selected filters.</td></tr>}</tbody></table></div></section></>
 }
 
 function AdminSettings() {
@@ -5376,7 +5376,7 @@ function AdminSettings() {
   })
   function update(name, value) { setSaved(false); setSettings((current) => ({ ...current, [name]: value })) }
   function save() { localStorage.setItem('assurex_admin_settings', JSON.stringify(settings)); setSaved(true) }
-  return <><PageHeader eyebrow="Admin · System configuration" title="Rules & Alerts" description="Cấu hình các ngưỡng nghiệp vụ được sử dụng để cảnh báo và đưa claim vào manual review." action={<button className="button primary" onClick={save}>Save configuration</button>} />{saved && <div className="alert success">Configuration saved successfully.</div>}<div className="settings-grid"><section className="panel"><p className="eyebrow">Warranty expiry alerts</p><h2>Notification rules</h2><label className="setting-row"><span>Alert before expiry (days)</span><input type="number" min="1" max="365" value={settings.expiryDays} onChange={(event)=>update('expiryDays', Number(event.target.value))}/></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredReceipt} onChange={(event)=>update('requiredReceipt', event.target.checked)}/><span>Require purchase receipt for submission</span></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredProductPhoto} onChange={(event)=>update('requiredProductPhoto', event.target.checked)}/><span>Require product photo for submission</span></label></section><section className="panel"><p className="eyebrow">Decision engine</p><h2>Model and business thresholds</h2><label className="setting-row"><span>Minimum model confidence (%)</span><input type="number" min="0" max="100" value={settings.minConfidence} onChange={(event)=>update('minConfidence', Number(event.target.value))}/></label><label className="setting-row"><span>Acceptable model difference (%)</span><input type="number" min="0" max="100" value={settings.acceptableDifference} onChange={(event)=>update('acceptableDifference', Number(event.target.value))}/></label><label className="setting-row"><span>Claim reporting deadline (days)</span><input type="number" min="1" max="365" value={settings.reportingDays} onChange={(event)=>update('reportingDays', Number(event.target.value))}/></label></section></div><section className="panel"><p className="eyebrow">Active policy preview</p><h2>Applied rules</h2><div className="settings-summary"><span>Expiry alerts <strong>{settings.expiryDays} days before</strong></span><span>Manual review below <strong>{settings.minConfidence}% confidence</strong></span><span>Model match tolerance <strong>{settings.acceptableDifference}%</strong></span><span>Reporting period <strong>{settings.reportingDays} days</strong></span></div></section></>
+  return <><PageHeader eyebrow="Admin · System configuration" title="Rules & Alerts" action={<button className="button primary" onClick={save}>Save configuration</button>} />{saved && <div className="alert success">Configuration saved successfully.</div>}<div className="settings-grid"><section className="panel"><p className="eyebrow">Warranty expiry alerts</p><h2>Notification rules</h2><label className="setting-row"><span>Alert before expiry (days)</span><input type="number" min="1" max="365" value={settings.expiryDays} onChange={(event)=>update('expiryDays', Number(event.target.value))}/></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredReceipt} onChange={(event)=>update('requiredReceipt', event.target.checked)}/><span>Require purchase receipt for submission</span></label><label className="setting-row checkbox-row"><input type="checkbox" checked={settings.requiredProductPhoto} onChange={(event)=>update('requiredProductPhoto', event.target.checked)}/><span>Require product photo for submission</span></label></section><section className="panel"><p className="eyebrow">Decision engine</p><h2>Model and business thresholds</h2><label className="setting-row"><span>Minimum model confidence (%)</span><input type="number" min="0" max="100" value={settings.minConfidence} onChange={(event)=>update('minConfidence', Number(event.target.value))}/></label><label className="setting-row"><span>Acceptable model difference (%)</span><input type="number" min="0" max="100" value={settings.acceptableDifference} onChange={(event)=>update('acceptableDifference', Number(event.target.value))}/></label><label className="setting-row"><span>Claim reporting deadline (days)</span><input type="number" min="1" max="365" value={settings.reportingDays} onChange={(event)=>update('reportingDays', Number(event.target.value))}/></label></section></div><section className="panel"><p className="eyebrow">Active policy preview</p><h2>Applied rules</h2><div className="settings-summary"><span>Expiry alerts <strong>{settings.expiryDays} days before</strong></span><span>Manual review below <strong>{settings.minConfidence}% confidence</strong></span><span>Model match tolerance <strong>{settings.acceptableDifference}%</strong></span><span>Reporting period <strong>{settings.reportingDays} days</strong></span></div></section></>
 }
 
 function App({ onLogout, role, email }) {
@@ -5391,6 +5391,8 @@ function App({ onLogout, role, email }) {
       const suffix = match[1]
       if (!suffix) return 'ai-ml'
       const pageMap = {
+        'warranty-desk': 'warranty-desk',
+        'retraining': 'retraining',
         'customer-claims': 'customer-claims',
         'products': 'products',
         'notifications': 'notifications',
@@ -5446,6 +5448,8 @@ function App({ onLogout, role, email }) {
         const suffix = match[1]
         if (!suffix) return 'ai-ml'
         const map = {
+          'warranty-desk': 'warranty-desk',
+          'retraining': 'retraining',
           'customer-claims': 'customer-claims',
           'products': 'products',
           'notifications': 'notifications',
