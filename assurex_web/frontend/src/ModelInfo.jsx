@@ -46,7 +46,7 @@ function ModelInfo() {
       <section className="form-section">
         <div className="form-section-header">
           <p className="eyebrow">Model Comparison</p>
-          <h2>Python vs GTM G2 V1</h2>
+          <h2>Python V3 vs GTM G2 V3</h2>
         </div>
 
         <div className="history-table-wrapper">
@@ -55,7 +55,7 @@ function ModelInfo() {
               <tr>
                 <th>Metric</th>
                 <th>Python</th>
-                <th>GTM G2 V1</th>
+                <th>GTM G2 V3</th>
               </tr>
             </thead>
 

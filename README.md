@@ -1,8 +1,18 @@
 # AssureX Claim Engine – Team Handoff Architecture
-> Customer Input → Product Lookup → Feature Engineering (8 Features) → Python Model V1
+> Customer Input → Product Lookup → Feature Engineering (14 Features) → Python Model V3 + GTM G2 V3 → Decision Engine
 
-## Runtime setup
-After cloning the repository, install the frontend and GTM G2 V1 runtime dependencies:
+## Current Production Models
+
+| Component | Active Version | Locked-Test Accuracy | Macro F1 |
+|---|---|---:|---:|
+| Python structured model | Gradient Boosting V3, 14 features | 99.11% | 99.11% |
+| Google Teachable Machine | G2 V3 image model | 86.22% | 86.10% |
+| Decision Engine | V3 deterministic rules | N/A | N/A |
+
+The active runtime registry is `model_tracking/active_models.json`.
+
+## Runtime Setup
+After cloning the repository, install the frontend and GTM G2 V3 runtime dependencies:
 
 ```bash
 npm install
@@ -10,6 +20,36 @@ npm run install:gtm
 ```
 
 The second command installs the local Teachable Machine runtime used by the backend for image inference. Without it, GTM claims are routed to Manual Review because image inference is unavailable.
+
+Full installation and execution instructions are in `docs/INSTALLATION_AND_EXECUTION.md`.
+
+## SRS Readiness Documents
+
+| Document | Purpose |
+|---|---|
+| `docs/SRS_COMPLIANCE_MATRIX.md` | Requirement-by-requirement status against the official SRS |
+| `docs/TEST_CASE_MATRIX.md` | Functional, ML, boundary, negative, and security test matrix |
+| `reports/SRS_COMPLIANCE_REPORT.md` | Submission-readiness summary |
+| `documentation/PROJECT_REPORT.md` | Project report draft |
+| `AI_USAGE.md` | Required AI tool usage declaration |
+| `docs/DEMO_AND_BLOG_PLACEHOLDERS.md` | Deployment, video, and blog links to fill before final submission |
+
+## Validation Commands
+
+```bash
+python3 tests_ml/validate_ml_v3.py
+python3 tests_ml/validate_srs_deliverables.py
+python3 tests/role_flow_e2e.py
+npm --prefix ./assurex_web/frontend run build
+python3 -m py_compile assurex_web/backend/app/ml/model_service.py assurex_web/backend/app/ml/gtm_service.py assurex_web/backend/app/ml/decision_service.py assurex_web/backend/app/customer_routes.py assurex_web/backend/app/warranty_ticket_routes.py
+```
+
+GTM runtime smoke test:
+
+```bash
+npm run install:gtm
+python3 tests_ml/smoke_gtm_g2_runtime.py
+```
 
 ## 1. Design Principles & Scope
 - **UX Goal**: Minimize manual customer inputs. Customer provides basic identity and enters **Product Code**.
@@ -19,7 +59,7 @@ The second command installs the local Teachable Machine runtime used by the back
   2. `FaultDescription`: Detailed symptoms.
   3. `PreviousRepair`: Yes/No (`RepairCentre` and `RepairDate` if Yes).
   4. Evidence Uploads: `PurchaseInvoice`, `SerialImage`, `FaultEvidence` (and `RepairReport` if repaired).
-- **Core Principle**: **Customers NEVER manually enter technical ML features** (e.g. `RepairAuthorized`, `FaultCovered`, `WarrantyRemainingDays`, etc.). The backend derives and validates the active 8-feature V1 contract automatically.
+- **Core Principle**: **Customers NEVER manually enter technical ML features** (e.g. `RepairAuthorized`, `FaultCovered`, `WarrantyRemainingDays`, etc.). The backend derives and validates the active 14-feature V3 contract automatically.
 
 ---
 
@@ -71,6 +111,6 @@ WHERE sp.product_code = ?;
 1. **Customer Identification**: Enter email or customer code (e.g. `ngoc.mai07@example.com`).
 2. **Product Code Lookup**: Enter `AX26-00001` → System retrieves NovaBook 14, active warranty, serial number `NB142026-00001`.
 3. **Incident & Evidence**: Enter defect description, incident date, repair history, and upload documents.
-4. **Feature Engineering**: Backend derives the active 8 V1 features in real-time.
-5. **Python Model V1**: Gradient Boosting classifier evaluates the 8 features (`WARRANTY`, `REVIEW_REQUIRED`, `NOT_WARRANTY`).
+4. **Feature Engineering**: Backend derives the active 14 V3 features in real-time.
+5. **Python Model V3**: Gradient Boosting classifier evaluates the 14 features (`Valid Claim`, `Invalid Claim`, `Manual Review`) while GTM G2 V3 evaluates the rendered claim-card image.
 6. **Reviewer Ground Truth**: Reviewer inspects inputs, evidence, and model features, then records official Ground Truth (`Valid Claim` / `Invalid Claim`).

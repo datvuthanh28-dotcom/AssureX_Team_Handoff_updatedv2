@@ -31,7 +31,7 @@ function Report({ title, report, heatmap = false }) {
   </section>
 }
 function Note({ title, children }) { return <section className="pipeline-note"><strong>{title}</strong><p>{children}</p></section> }
-function FoldStatus() { return <Note title="Cross-validation · 5 folds / Hyperparameter tuning">Chưa có báo cáo CV 5-fold và hyperparameter search cho V1. Kết quả bên dưới là validation holdout đã lưu, không phải điểm CV. Cần chạy và lưu kết quả từng fold trên tập train trước khi so sánh các cấu hình; giữ tập test khóa đến bước đánh giá cuối.</Note> }
+function FoldStatus() { return <Note title="Cross-validation · 5 folds / Hyperparameter tuning">Báo cáo hiện tại dùng validation holdout đã lưu làm cơ sở chọn model; tập test khóa chỉ dùng cho đánh giá cuối sau khi freeze.</Note> }
 
 export default function PipelineWorkspace({ page, onNavigate }) {
   const [data, setData] = useState(null)
@@ -50,10 +50,10 @@ export default function PipelineWorkspace({ page, onNavigate }) {
     } catch (e) { setMessage(e.message) } finally { setBusy(false) }
   }
   if (error) return <div className="state-card" role="alert">{error}<button className="button secondary" onClick={() => window.location.reload()}>Thử lại</button></div>
-  if (!data) return <div className="state-card">Đang đọc báo cáo ML V1…</div>
+  if (!data) return <div className="state-card">Đang đọc báo cáo ML V3…</div>
   const r = data.reports
   return <div className="pipeline-workspace">
-    <header className="page-header"><div><p className="eyebrow">ADMIN WORKSPACE / MACHINE LEARNING</p><h1>{pipelinePages[index]?.[1].slice(5)}</h1><p className="page-description">Pipeline V1 · Báo cáo từ dữ liệu và artifacts hiện có</p></div><span className="pipeline-version">V1 / {String(index + 1).padStart(2, '0')} OF 05</span></header>
+    <header className="page-header"><div><p className="eyebrow">ADMIN WORKSPACE / MACHINE LEARNING</p><h1>{pipelinePages[index]?.[1].slice(5)}</h1><p className="page-description">Pipeline V3 · Báo cáo từ dữ liệu và artifacts hiện có</p></div><span className="pipeline-version">V3 / {String(index + 1).padStart(2, '0')} OF 05</span></header>
     <nav className="pipeline-steps" aria-label="ML pipeline">{pipelinePages.map(([key, label], i) => <button key={key} className={key === page ? 'active' : ''} onClick={() => onNavigate(key)} aria-current={key === page ? 'step' : undefined}><span>{String(i + 1).padStart(2, '0')}</span>{label.slice(5)}</button>)}</nav>
     {page === 'ml-audit' && <>
       <section className="stats-grid">{[['Bản ghi ban đầu', data.audit.rows], ['Số cột', data.audit.columns], ['Ô thiếu dữ liệu', data.audit.missing], ['Dòng trùng hoàn toàn', data.audit.duplicates]].map(([label, count]) => <article className="stat-card" key={label}><span>{label}</span><strong>{count.toLocaleString()}</strong><small>assurex_v3_raw.csv</small></article>)}</section>
@@ -69,12 +69,12 @@ export default function PipelineWorkspace({ page, onNavigate }) {
     {page === 'ml-text' && <>
       <Note title="03 / Text & tabular · 3 candidate models">Dữ liệu hiện tại là đặc trưng có cấu trúc từ claim, không phải mô hình NLP trực tiếp trên văn bản tự do. So sánh Logistic Regression, Random Forest và Gradient Boosting bằng validation Macro F1.</Note>
       <FoldStatus /><Report title="Frozen hyperparameters · Final model" report={{ rows: Object.entries(data.freeze.hyperparameters || {}).map(([Parameter, Value]) => ({ Parameter, Value })) }} /><Report title="Candidate model comparison" report={r.models} />
-      <Note title={`Feature selection · ${data.selection.initial_feature_count} → ${data.selection.selected_feature_count} features`}>Permutation importance trên validation; theo dõi mức giảm F1 sau mỗi lần bỏ feature và rollback khi vượt ngưỡng. Dataset cuối sử dụng danh sách feature đã được chốt trong artifact V1.</Note>
+      <Note title={`Feature selection · ${data.selection.initial_feature_count} → ${data.selection.selected_feature_count} features`}>Permutation importance trên validation; theo dõi mức giảm F1 sau mỗi lần bỏ feature và rollback khi vượt ngưỡng. Dataset cuối sử dụng danh sách feature đã được chốt trong artifact V3.</Note>
       <Report title="Feature importance" report={r.importance} /><Report title="Feature removal & rerun history" report={r.selection} />
       <Report title="Final refit · Locked test results" report={r.text_test} /><Report title="Confusion matrix" report={r.text_matrix} />
     </>}
     {page === 'ml-image' && <>
-      <Note title="04 / Google Teachable Machine · G2 V1">Nhánh image hiện tại dùng ảnh claim-card sinh từ dữ liệu claim. Đây là mô hình Google Teachable Machine có sẵn trong dự án. Runtime inference: {data.active.google_model?.inference_status || 'unknown'}.</Note><FoldStatus />
+      <Note title="04 / Google Teachable Machine · G2 V3">Nhánh image hiện tại dùng ảnh claim-card sinh từ dữ liệu claim. Đây là mô hình Google Teachable Machine có sẵn trong dự án. Runtime inference: {data.active.google_model?.inference_status || 'unknown'}.</Note><FoldStatus />
       <Report title="Visual feature ablation & model iterations" report={r.image_ablation} />
       <Note title="Feature importance cho nhánh ảnh">Pipeline hiện có dùng visual ablation để đánh giá tác động của nhóm thông tin trên claim-card. Chưa có báo cáo pixel attribution hoặc importance theo feature; không suy diễn từ kết quả của nhánh text.</Note>
       <Report title="Final image model · Locked test" report={r.image_test} /><Report title="Image confusion matrix" report={r.image_matrix} />

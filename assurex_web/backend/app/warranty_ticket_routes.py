@@ -47,7 +47,7 @@ ALLOWED_PRODUCT_TYPES = {
 }
 
 # ==============================================================================
-# PYDANTIC SCHEMAS - MODEL V1 CLAIM FLOW
+# PYDANTIC SCHEMAS - MODEL V3 CLAIM FLOW
 # ==============================================================================
 
 class EvidenceReference(BaseModel):
@@ -83,13 +83,19 @@ class WarrantyClaimCreatePayload(BaseModel):
 class ModelPredictRequest(BaseModel):
     ticket_id: str | None = None
     RepairAuthorized: str = "Not Applicable"
+    SerialNumberMatch: str = "Unknown"
+    ProductModelConsistent: str = "Unknown"
     DuplicateClaimIndicator: str = "No"
     ContradictionIndicator: str = "No"
+    OCRConfidence: float = 0.0
     ClaimReportingDelayDays: float = 5.0
     WarrantyRemainingDays: float = 180.0
     ClaimReportingWithinPeriod: str = "Yes"
     FaultCovered: str = "Yes"
+    RequiredDocumentsComplete: str = "Unknown"
+    MissingDocumentCount: float = 0.0
     ProductIdentityMatch: str = "Yes"
+    OCRQualityBand: str = "Unknown"
 
 
 class ModelPredictResponse(BaseModel):
@@ -107,12 +113,12 @@ class ReviewerDecisionPayload(BaseModel):
 
 
 # ==============================================================================
-# AI MODEL PREDICTION ENGINE (V1 / 8 FINAL FEATURES)
+# AI MODEL PREDICTION ENGINE (V3 / 14 FINAL FEATURES)
 # ==============================================================================
 
 def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
     """
-    Evaluates claim using the finalized V1 features and trained ML model.
+    Evaluates claim using the finalized V3 features and trained ML model.
     Maps:
       - 'Valid Claim'    -> 'WARRANTY' (confidence)
       - 'Invalid Claim'  -> 'NOT_WARRANTY' (confidence)
@@ -134,19 +140,19 @@ def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
         "confidence": round(conf, 4),
         "predicted_class": raw_class,
         "probabilities": prediction_result.get("probabilities", {}),
-        "model_name": prediction_result.get("model_name", "Gradient Boosting V1 (8 Features)"),
-        "model_version": prediction_result.get("model_version", "v1-final-8feat"),
+        "model_name": prediction_result.get("model_name", "Gradient Boosting V3 (14 Features)"),
+        "model_version": prediction_result.get("model_version", "python-gradientboosting-v3-final"),
     }
 
 
 def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, Any]:
-    """Extract and validate the active V1 feature contract."""
+    """Extract and validate the active V3 feature contract."""
     if isinstance(data, WarrantyClaimCreatePayload):
         raw = data.model_dump()
     else:
         raw = dict(data)
 
-    # Defaults and type conversions for active V1 features.
+    # Defaults and type conversions for active V3 features.
     try:
         delay = float(raw.get("ClaimReportingDelayDays", 0.0))
     except (ValueError, TypeError):
@@ -156,6 +162,14 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
         remaining_days = float(raw.get("WarrantyRemainingDays", 0.0))
     except (ValueError, TypeError):
         remaining_days = 0.0
+    try:
+        ocr_confidence = float(raw.get("OCRConfidence", 0.0))
+    except (ValueError, TypeError):
+        ocr_confidence = 0.0
+    try:
+        missing_count = float(raw.get("MissingDocumentCount", 0.0))
+    except (ValueError, TypeError):
+        missing_count = 0.0
 
     # Auto sync Reporting Within Period if not explicitly set
     rep_period = str(raw.get("ClaimReportingWithinPeriod", "")).strip()
@@ -164,13 +178,19 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
 
     return {
         "RepairAuthorized": str(raw.get("RepairAuthorized") or "Not Applicable").strip(),
+        "SerialNumberMatch": str(raw.get("SerialNumberMatch") or "Unknown").strip(),
+        "ProductModelConsistent": str(raw.get("ProductModelConsistent") or "Unknown").strip(),
         "DuplicateClaimIndicator": str(raw.get("DuplicateClaimIndicator") or "No").strip(),
         "ContradictionIndicator": str(raw.get("ContradictionIndicator") or "No").strip(),
+        "OCRConfidence": ocr_confidence,
         "ClaimReportingDelayDays": delay,
         "WarrantyRemainingDays": remaining_days,
         "ClaimReportingWithinPeriod": rep_period,
         "FaultCovered": str(raw.get("FaultCovered") or "Yes").strip(),
+        "RequiredDocumentsComplete": str(raw.get("RequiredDocumentsComplete") or "Unknown").strip(),
+        "MissingDocumentCount": missing_count,
         "ProductIdentityMatch": str(raw.get("ProductIdentityMatch") or "Yes").strip(),
+        "OCRQualityBand": str(raw.get("OCRQualityBand") or "Unknown").strip(),
     }
 
 
@@ -224,9 +244,15 @@ def _owned_product(db: Session, account: CustomerAccount, product_code: str):
 def _serialize_owned_product(registered, product, warranty):
     expiry = warranty.end_date if warranty else None
     repair_claims = db_repair_history_for_registered_product(registered.id)
+    registration_code = f"REG-{registered.id:05d}"
     return {
         "registered_product_id": registered.id,
-        "product_code": f"REG-{registered.id:05d}",
+        # `product_code` is kept for the existing frontend form contract.
+        # The explicit names below remove ambiguity between a registered
+        # customer unit and the catalog SKU.
+        "product_code": registration_code,
+        "registration_code": registration_code,
+        "catalog_product_code": f"PRD-{product.id:04d}",
         "product_name": product.name,
         "category": product.category,
         "brand": product.brand,
@@ -362,13 +388,19 @@ def _derive_features(db, account, registered, product, warranty, payload):
 
     active_features = {
         "RepairAuthorized": repair_authorized,
+        "SerialNumberMatch": serial_match,
+        "ProductModelConsistent": model_match,
         "DuplicateClaimIndicator": "Yes" if duplicate else "No",
         "ContradictionIndicator": "Yes" if contradiction else "No",
+        "OCRConfidence": round(ocr_confidence, 4),
         "ClaimReportingDelayDays": float(delay),
         "WarrantyRemainingDays": float(remaining),
         "ClaimReportingWithinPeriod": "Yes" if delay <= 30 else "No",
         "FaultCovered": fault_covered,
+        "RequiredDocumentsComplete": "Yes" if missing_count == 0 else "No",
+        "MissingDocumentCount": float(missing_count),
         "ProductIdentityMatch": product_identity,
+        "OCRQualityBand": quality,
     }
     diagnostic_features = {
         "SerialNumberMatch": serial_match,
@@ -393,7 +425,7 @@ def lookup_claim_product(
 @router.post(
     "/claims/v3/ticket",
     status_code=status.HTTP_201_CREATED,
-    summary="Customer: submit raw claim facts; backend derives Model V1 features",
+    summary="Customer: submit raw claim facts; backend derives Model V3 features",
 )
 def create_warranty_claim(
     payload: WarrantyClaimCreatePayload,
@@ -481,7 +513,7 @@ def create_warranty_claim(
                 "ocr_extracted_data": ocr_data,
                 "evidence": ticket.evidence,
             },
-            model_name=ticket.model_name or "Gradient Boosting V1 (8 Features)",
+            model_name=ticket.model_name or "Gradient Boosting V3 (14 Features)",
             python_model_name=ticket.model_name,
             python_model_version=ticket.model_version,
         ))
@@ -517,7 +549,7 @@ def create_warranty_claim(
             "model_features": active_features,
             "ai_prediction": ticket.ai_prediction,
             "ai_confidence": ticket.ai_confidence,
-            "ai_reason": "Backend-derived Model V1 assessment",
+            "ai_reason": "Backend-derived Model V3 assessment",
             "model_name": ticket.model_name,
             "model_version": ticket.model_version,
             "diagnostic_features": diagnostic_features,
@@ -531,11 +563,11 @@ def create_warranty_claim(
 @router.post(
     "/model/predict",
     response_model=ModelPredictResponse,
-    summary="Direct AI Model Prediction with active V1 features",
+    summary="Direct AI Model Prediction with active V3 features",
 )
 def predict_model_endpoint(request: ModelPredictRequest):
     """
-    Direct endpoint for predicting a claim using the active V1 features.
+    Direct endpoint for predicting a claim using the active V3 features.
     """
     features_dict = request.model_dump()
     active_features = extract_14_features(features_dict)
@@ -742,7 +774,7 @@ def submit_reviewer_decision(
 
 @router.get(
     "/warranty/reviewer/export/retraining-dataset",
-    summary="Reviewer: Export Retraining Dataset (V1 Features + Ground Truth)",
+    summary="Reviewer: Export Retraining Dataset (V3 Features + Ground Truth)",
 )
 def export_retraining_dataset(
     format: str = Query("csv", description="Format: csv or json"),
@@ -751,7 +783,7 @@ def export_retraining_dataset(
 ):
     """
     Exports reviewed claims dataset for ML retraining.
-    Contains the active V1 features plus 'ClaimClass' ground truth.
+    Contains the active V3 features plus 'ClaimClass' ground truth.
     """
     stmt = (
         select(WarrantyTicket)
@@ -792,7 +824,7 @@ def export_retraining_dataset(
         writer.writeheader()
 
     output.seek(0)
-    filename = f"warranty_retraining_dataset_8features_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
+    filename = f"warranty_retraining_dataset_14features_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
     return StreamingResponse(
         io.BytesIO(output.getvalue().encode("utf-8")),
         media_type="text/csv",
@@ -804,7 +836,10 @@ def export_retraining_dataset(
     "/retraining/dataset",
     summary="Get Retraining Records (JSON endpoint)",
 )
-def get_retraining_dataset_json(db: Session = Depends(get_db)):
+def get_retraining_dataset_json(
+    _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
+    db: Session = Depends(get_db),
+):
     stmt = (
         select(WarrantyTicket)
         .where(WarrantyTicket.ground_truth.is_not(None))

@@ -1,15 +1,21 @@
-// ASSUREX CLAIM ENGINE - MODEL V1 DEFINITIONS & FEATURE ENGINEERING HANDOFF
-// Matching Submit Claim form, user/product database, and 8 active Model V1 features
+// ASSUREX CLAIM ENGINE - MODEL V3 DEFINITIONS & FEATURE ENGINEERING HANDOFF
+// Matching Submit Claim form, user/product database, and 14 active Model V3 features
 
 export const MODEL_14_FEATURES = [
   'RepairAuthorized',
+  'SerialNumberMatch',
+  'ProductModelConsistent',
   'DuplicateClaimIndicator',
   'ContradictionIndicator',
+  'OCRConfidence',
   'ClaimReportingDelayDays',
   'WarrantyRemainingDays',
   'ClaimReportingWithinPeriod',
   'FaultCovered',
+  'RequiredDocumentsComplete',
+  'MissingDocumentCount',
   'ProductIdentityMatch',
+  'OCRQualityBand',
 ]
 
 export const MODEL_8_FEATURES = MODEL_14_FEATURES
@@ -790,8 +796,8 @@ export function derive14Features(input, product) {
 }
 
 // ------------------------------------------------------------------------------
-// 3. PYTHON MODEL V1 PREDICTION LOGIC
-// Gradient Boosting V1 decision boundary evaluation on the active 8 features
+// 3. PYTHON MODEL V3 PREDICTION LOGIC
+// Client-side policy preview for the active 14 engineered features
 // ------------------------------------------------------------------------------
 export function predictModelV3(features) {
   // Reject / Ineligible under warranty policy
@@ -991,7 +997,7 @@ export const CLAIM_PRESETS = [
     name: 'Valid Claim (Standard OEM)',
     tone: 'success',
     description:
-      'NovaBook 14, active warranty, screen flicker defect, complete evidence. Derives active V1 features -> Predicts WARRANTY.',
+      'NovaBook 14, active warranty, screen flicker defect, complete evidence. Derives active V3 features -> Predicts WARRANTY.',
     customer: {
       customer_name: 'Bui Ngoc Mai',
       email: 'ngoc.mai07@example.com',

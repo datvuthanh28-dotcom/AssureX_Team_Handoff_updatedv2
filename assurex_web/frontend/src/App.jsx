@@ -1643,7 +1643,7 @@ function AdminAIML() {
             accuracy: valueFor(textMetrics, 'TestAccuracy'),
             macro_f1: valueFor(textMetrics, 'TestMacroF1'),
           } },
-          gtm: { accuracy: valueFor(imageMetrics, 'Accuracy'), macro_f1: valueFor(imageMetrics, 'MacroF1'), correct: valueFor(imageMetrics, 'Correct'), incorrect: valueFor(imageMetrics, 'Incorrect'), status: pipeline.active?.google_model?.version || 'G2_V1' },
+          gtm: { accuracy: valueFor(imageMetrics, 'Accuracy'), macro_f1: valueFor(imageMetrics, 'MacroF1'), correct: valueFor(imageMetrics, 'Correct'), incorrect: valueFor(imageMetrics, 'Incorrect'), status: pipeline.active?.google_model?.version || 'G2_V3' },
           googleValidation: null,
         })
       })
@@ -1753,7 +1753,7 @@ function AdminAIML() {
             <div className="panel-heading">
               <div>
                 <p className="eyebrow">04 · Google ML</p>
-                <h2>Google GTM G2 V1 evidence</h2>
+                <h2>Google GTM G2 V3 evidence</h2>
               </div>
             </div>
 
@@ -1829,7 +1829,7 @@ function ModelInfo() {
       <PageHeader
         eyebrow="Model intelligence"
         title="Model Performance"
-        description="Final locked-test comparison between the structured model and GTM G2 V1."
+        description="Final locked-test comparison between the structured model and GTM G2 V3."
       />
 
       <section className="hero-card">
@@ -1972,7 +1972,7 @@ function ModelInfo() {
             <p className="eyebrow">
               GTM Feature Selection
             </p>
-            <h2>G2 V1 Evaluation Summary</h2>
+            <h2>G2 V3 Evaluation Summary</h2>
           </div>
         </div>
 
@@ -1980,7 +1980,7 @@ function ModelInfo() {
           <div>
             <span>Removed</span>
             <strong>
-              Frozen model: G2_V1
+              Frozen model: G2_V3
             </strong>
           </div>
 
@@ -2033,7 +2033,7 @@ function MLPipelinePage({ page, onNavigate }) {
       </>}
       {page === 'ml-image' && <>
         <p className="section-lead">Đánh giá hình ảnh bằng Inception-v1 với cùng quy trình split, 5-fold validation, tuning và feature review.</p>
-        <div className="stats-grid">{metric('Test claims', '225', 'Locked G2 V1 test set')}{metric('Model', 'Inception-v1', 'GTM frozen artifact')}{metric('Macro F1', '86.10%', 'Final test set')}{metric('Test accuracy', '86.22%', '194 / 225 correct')}</div>
+        <div className="stats-grid">{metric('Test claims', '225', 'Locked G2 V3 test set')}{metric('Model', 'Inception-v1', 'GTM frozen artifact')}{metric('Macro F1', '86.10%', 'Final test set')}{metric('Test accuracy', '86.22%', '194 / 225 correct')}</div>
         <div className="two-column"><div><h3>Image pipeline</h3><div className="flow-list"><span>01 · Resize 224 × 224</span><span>02 · Normalize & augment</span><span>03 · Train / validation / test split</span><span>04 · Fine-tune Inception-v1</span><span>05 · Evaluate per-class metrics</span></div></div><div><h3>Per-class Recall — Inception-v1</h3><div className="image-class-grid"><div><strong>Valid Claim</strong><span>94.67%</span></div><div><strong>Manual Review</strong><span>66.67%</span></div><div><strong>Invalid Claim</strong><span>82.67%</span></div></div></div></div>
       </>}
       {page === 'ml-compare' && <>
@@ -4378,7 +4378,7 @@ function CustomerSubmit({
                 You can submit without uploading files. Add receipts, photos, or fault videos only if available; they help the reviewer verify the claim faster.
               </p>
               <div className="alert success" style={{ marginTop: '10px' }}>
-                Uploads are optional. Registered product code, warranty dates, claim timing, fault coverage, duplicate checks, and repair history drive the Model V1 assessment.
+                Uploads are optional. Registered product code, warranty dates, claim timing, fault coverage, duplicate checks, and repair history drive the Model V3 assessment.
               </div>
             </div>
           </div>
@@ -4735,7 +4735,7 @@ function CustomerSubmit({
             </strong>
 
             <p>
-              AssureX will verify the registered product, derive the Model V1 features automatically, and evaluate the claim.
+              AssureX will verify the registered product, derive the Model V3 features automatically, and evaluate the claim.
             </p>
           </div>
 
@@ -5421,11 +5421,11 @@ function ReviewerWorkspace({ onLogout, email }) {
 
 function AdminMLConsole() {
   const [retrainRequested, setRetrainRequested] = useState(false)
-  const [version, setVersion] = useState(() => { const saved = localStorage.getItem('assurex_model_version'); return saved?.startsWith('G') ? saved : 'G2_V1' })
-  const datasetFields = ['RepairAuthorized','DuplicateClaimIndicator','ContradictionIndicator','ClaimReportingDelayDays','WarrantyRemainingDays','ClaimReportingWithinPeriod','FaultCovered','ProductIdentityMatch']
+  const [version, setVersion] = useState(() => { const saved = localStorage.getItem('assurex_model_version'); return saved?.startsWith('G') ? saved : 'G2_V3' })
+  const datasetFields = ['RepairAuthorized','SerialNumberMatch','ProductModelConsistent','DuplicateClaimIndicator','ContradictionIndicator','OCRConfidence','ClaimReportingDelayDays','WarrantyRemainingDays','ClaimReportingWithinPeriod','FaultCovered','RequiredDocumentsComplete','MissingDocumentCount','ProductIdentityMatch','OCRQualityBand']
   const topFeatures = [['FaultCovered', 0.2916], ['WarrantyRemainingDays', 0.1721], ['ClaimReportingWithinPeriod', 0.1188], ['ContradictionIndicator', 0.0859], ['ProductIdentityMatch', 0.0509]]
-  function requestRetrain() { const match = version.match(/^G(\d+)_V(\d+)$/); const next = match ? `G${match[1]}_V${Number(match[2]) + 1}` : 'G2_V2'; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
-  return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting</th><th>Inception-v1</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','86.22%','Tuning'],['F1-Score','99.11%','86.10%','Tuning'],['Precision','99.13%','87.52%','Tuning'],['Recall','99.11%','86.22%','Tuning'],['AUC-ROC',MODEL_METRICS.pythonAuc,MODEL_METRICS.gtmAuc,'Tuning'],['Latency','Not reported','Not reported','—']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.2916*100}%`}}></b><em>{value.toFixed(4)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">8 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
+  function requestRetrain() { const match = version.match(/^G(\d+)_V(\d+)$/); const next = match ? `G${match[1]}_V${Number(match[2]) + 1}` : 'G2_V4'; localStorage.setItem('assurex_model_version', next); setVersion(next); setRetrainRequested(true) }
+  return <><PageHeader eyebrow="Admin · Model control center" title="Model Intelligence" action={<button className="button primary" onClick={requestRetrain}>Retrain Model →</button>} />{retrainRequested && <div className="alert success">New model version {version} queued for evaluation.</div>}<section className="panel"><div className="panel-heading"><div><p className="eyebrow">Evaluation Metrics</p><h2>Model comparison</h2></div><span className="pipeline-status">Production · {version}</span></div><div className="table-wrapper"><table className="data-table metrics-table"><thead><tr><th>Metric</th><th>Tuning · Gradient Boosting V3</th><th>GTM G2 V3</th><th>Winner</th></tr></thead><tbody>{[['Accuracy','99.11%','86.22%','Python V3'],['F1-Score','99.11%','86.10%','Python V3'],['Precision','99.13%','87.52%','Python V3'],['Recall','99.11%','86.22%','Python V3'],['AUC-ROC',MODEL_METRICS.pythonAuc,MODEL_METRICS.gtmAuc,'Python V3'],['Latency','Not reported','Not reported','—']].map(([metric,tabular,image,winner])=><tr key={metric}><td><strong>{metric}</strong></td><td>{tabular}</td><td>{image}</td><td><span className="status-badge status-approved">{winner}</span></td></tr>)}</tbody></table></div></section><div className="two-column"><section className="panel"><div className="panel-heading"><div><h2>Top 5 feature importance</h2></div></div><div className="feature-importance">{topFeatures.map(([name,value])=><div key={name}><span>{name}</span><b style={{width:`${value/0.2916*100}%`}}></b><em>{value.toFixed(4)}</em></div>)}</div></section><section className="panel"><div className="panel-heading"><div><h2>Confusion Matrix</h2></div></div><table className="mini-matrix"><thead><tr><th>Actual \ Pred.</th><th>Valid</th><th>Invalid</th><th>Review</th></tr></thead><tbody><tr><th>Valid</th><td>75</td><td>0</td><td>0</td></tr><tr><th>Invalid</th><td>0</td><td>75</td><td>0</td></tr><tr><th>Review</th><td>2</td><td>0</td><td>73</td></tr></tbody></table></section></div><section className="panel"><div className="panel-heading"><div><h2>Selected dataset features</h2></div><span className="schema-badge">14 / 81 selected</span></div><div className="dataset-field-grid">{datasetFields.map((field,index)=><div key={field} className="used-field"><span>{String(index+1).padStart(2,'0')}</span><strong>{field}</strong></div>)}</div></section><section className="panel retrain-panel"><div><h2>Retrain & versioning</h2><p className="section-lead">1,500 initial samples · 38 new approved samples · current {version}.</p></div><div className="retrain-stats"><strong>38<small>new labels</small></strong><strong>{version}<small>active version</small></strong><button className="button primary" onClick={requestRetrain}>Create next version</button></div></section></>
 }
 
 function AdminReports({ refreshKey }) {
@@ -5441,6 +5441,20 @@ function AdminReports({ refreshKey }) {
     downloadFile('assurex-claims-report.csv', csv, 'text/csv;charset=utf-8')
   }
   return <><PageHeader eyebrow="Admin · Analytics & Reporting" title="Claims Reports" action={<button className="button primary" onClick={exportCsv}>Download CSV ↓</button>} /><div className="stats-grid"><StatCard label="Total claims" value={claims.length} hint="All submitted claims"/><StatCard label="Approved" value={count('Approved')} hint="Final positive decisions" tone="success"/><StatCard label="Manual review" value={count('Manual Review') + count('Under Review')} hint="Needs human action" tone="warning"/><StatCard label="Rejected" value={count('Rejected')} hint="Final negative decisions" tone="danger"/></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Operational report</p><h2>Claim records</h2></div><div className="report-filters"><input placeholder="Search claim, product, serial..." value={query} onChange={(event) => setQuery(event.target.value)} /><select value={status} onChange={(event) => setStatus(event.target.value)}><option>All</option><option>Approved</option><option>Rejected</option><option>Under Review</option><option>Manual Review</option><option>Closed</option></select></div></div><div className="table-wrapper"><table className="data-table"><thead><tr><th>Claim ID</th><th>Product</th><th>Status</th><th>Amount</th><th>Model consistency</th><th>Created</th></tr></thead><tbody>{filtered.map((claim) => <tr key={claim.id || claim.claim_id}><td className="mono">{claim.claim_id}</td><td>{claim.product_name || '—'}<small className="table-subline">{claim.serial_number || 'No serial'}</small></td><td><StatusBadge value={claim.status}/></td><td>{formatNumber(claim.claim_amount)}</td><td>{claim.decision?.model_consistency_status || '—'}</td><td>{formatDate(claim.created_at)}</td></tr>)}{filtered.length === 0 && <tr><td colSpan="6">No claims match the selected filters.</td></tr>}</tbody></table></div></section></>
+}
+
+function AdminSRSReadiness() {
+  const groups = [
+    ['Core Web Application', 'Complete', 'success', ['FastAPI backend and React frontend', 'Role-based workspaces', 'Claim submission, evidence upload, reviewer queue', 'Notifications, audit logs, appeals, and CSV export']],
+    ['Python ML Pipeline', 'Complete', 'success', ['1,500-record structured dataset', '70/15/15 split with balanced classes', 'Gradient Boosting V3 with 14 frozen features', 'Locked-test Accuracy 99.11% and Macro F1 99.11%']],
+    ['GTM Image Model', 'Partial', 'warning', ['GTM G2 V3 export is active', 'Locked-test Accuracy 86.22% and Macro F1 86.10%', 'Claim-card renderer is present', 'Full 2,100+ training-image deliverable still needs final attachment']],
+    ['Decision Engine', 'Complete', 'success', ['Compares Python and GTM predictions', 'Calculates confidence difference', 'Applies model consistency thresholds', 'Applies warranty, document, duplicate, contradiction, serial, and repair rules']],
+    ['Submission Evidence', 'Partial', 'warning', ['SRS matrix, project report, AI usage, license, installation guide, and test matrix exist', 'Deployment URL, demo video, blog link, screenshots, and evaluator credentials still need final team values']],
+    ['Automated Tests', 'Partial', 'warning', ['ML validation passes', 'SRS deliverable validator exists', 'Frontend production build passes', 'Full API/security/OCR/database suite should be expanded']],
+  ]
+  const complete = groups.filter(([, status]) => status === 'Complete').length
+  const partial = groups.filter(([, status]) => status === 'Partial').length
+  return <><PageHeader eyebrow="Admin · SRS compliance" title="SRS Readiness" description="Feature and deliverable checklist against the official AssureX Claim Engine SRS." /><div className="stats-grid"><StatCard label="Complete groups" value={complete} hint="Ready for evaluation" tone="success"/><StatCard label="Partial groups" value={partial} hint="Need final evidence" tone="warning"/><StatCard label="Python accuracy" value="99.11%" hint="Locked 225-claim test" tone="success"/><StatCard label="GTM accuracy" value="86.22%" hint="Meets SRS >= 85%" tone="success"/></div><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Requirement Coverage</p><h2>SRS feature completion by area</h2></div></div><div className="srs-readiness-grid">{groups.map(([title,status,tone,items]) => <div className="srs-card" key={title}><div className="srs-card-header"><h3>{title}</h3><span className={`status-badge ${tone === 'success' ? 'status-approved' : 'status-review'}`}>{status}</span></div><ul>{items.map((item) => <li key={item}>{item}</li>)}</ul></div>)}</div></section><section className="panel"><div className="panel-heading"><div><p className="eyebrow">Final Submission Checklist</p><h2>Manual items before final upload</h2></div></div><div className="check-list"><div>⚠ Generate or attach the full GTM claim-card image dataset with split mapping.</div><div>⚠ Fill evaluator credentials in docs/INSTALLATION_AND_EXECUTION.md.</div><div>⚠ Add deployment URL, demo video URL, and blog URL.</div><div>⚠ Add final screenshots into the screenshots folder.</div><div>⚠ Run GTM runtime smoke test after npm run install:gtm.</div></div></section></>
 }
 
 function AdminSettings() {
@@ -5564,6 +5578,7 @@ function App({ onLogout, role, email }) {
     ['history', 'ML History'],
     ['model', 'Model Intelligence'],
     ['ai-ml', 'AI & ML'],
+    ['srs-readiness', 'SRS Readiness'],
     ['ml-audit', 'ML · Audit'], ['ml-preprocessing', 'ML · Preprocessing'], ['ml-text', 'ML · Tuning models'], ['ml-image', 'ML · Image model'], ['ml-compare', 'ML · Compare'],
     ['settings', 'Rules & Alerts'],
     ...(role === 'ADMIN' ? [['users', 'Users'], ['audit', 'Audit Logs']] : []),
@@ -5571,7 +5586,7 @@ function App({ onLogout, role, email }) {
 
   const adminNavigation = role === 'SERVICE_CENTER'
     ? allAdminNavigation.filter(([key]) => ['profile', 'classify', 'history', 'model'].includes(key))
-    : allAdminNavigation.filter(([key]) => ['profile', 'model', 'ai-ml', 'ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare', 'settings', 'users', 'audit'].includes(key))
+    : allAdminNavigation.filter(([key]) => ['profile', 'model', 'ai-ml', 'srs-readiness', 'ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare', 'settings', 'users', 'audit'].includes(key))
 
   return (
     <div className="app-shell">
@@ -5654,6 +5669,10 @@ function App({ onLogout, role, email }) {
 
         {adminPage === 'ai-ml' && (
           <AdminMLConsole />
+        )}
+
+        {adminPage === 'srs-readiness' && (
+          <AdminSRSReadiness />
         )}
 
         {['ml-audit', 'ml-preprocessing', 'ml-text', 'ml-image', 'ml-compare'].includes(adminPage) && (

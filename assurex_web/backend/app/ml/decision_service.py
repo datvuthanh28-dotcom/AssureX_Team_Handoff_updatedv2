@@ -124,7 +124,7 @@ def apply_business_rules(
     missing_docs = []
 
     if not gtm_available:
-        manual.append("GTM G2 V1 inference unavailable")
+        manual.append("GTM G2 V3 inference unavailable")
     else:
         if not prediction_match:
             manual.append("Python and GTM predictions disagree")

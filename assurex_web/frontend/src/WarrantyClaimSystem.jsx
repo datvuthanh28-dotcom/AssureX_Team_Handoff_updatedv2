@@ -417,7 +417,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <span style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              AI Model V1 Assessment
+              AI Model V3 Assessment
             </span>
             <span
               style={{
@@ -459,14 +459,14 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
 
           <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', fontSize: '12.5px', color: 'var(--ax-text-soft, #475569)' }}>
-            <strong>Analysis: </strong>{createdTicket.ai_reason || `${createdTicket.model_name || 'Model V1'} assessment` }
+            <strong>Analysis: </strong>{createdTicket.ai_reason || `${createdTicket.model_name || 'Model V3'} assessment` }
           </div>
         </div>
 
-        {/* Active V1 Features Summary */}
+        {/* Active V3 Features Summary */}
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
-            8 Automated Features Used by Model V1:
+            14 Automated Features Used by Model V3:
           </h4>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', fontSize: '12px' }}>
             {MODEL_14_FEATURES.map((feat) => {
@@ -1357,14 +1357,14 @@ export function ReviewerWarrantyDesk() {
               )}
             </div>
 
-            {/* Active V1 Features Grid */}
+            {/* Active V3 Features Grid */}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
                   <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
                     FEATURE ENGINEERING ENGINE
                   </p>
-                  <h4 style={{ margin: 0, fontSize: '15px' }}>8 Features Used by Model V1</h4>
+                  <h4 style={{ margin: 0, fontSize: '15px' }}>14 Features Used by Model V3</h4>
                 </div>
               </div>
 
@@ -1420,7 +1420,7 @@ export function ReviewerWarrantyDesk() {
               }}
             >
               <span style={{ fontSize: '11.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#3b82f6' }}>
-                AI Model V1 Prediction
+                AI Model V3 Prediction
               </span>
 
               <div style={{ margin: '14px 0 6px' }}>
@@ -1677,13 +1677,13 @@ export function WarrantyRetrainingDataset() {
       <header className="page-header" style={{ marginBottom: '16px' }}>
         <div>
           <p className="eyebrow">ML Retraining Pipeline</p>
-          <h1>Retraining Dataset (8 Features + Ground Truth)</h1>
+          <h1>Retraining Dataset (14 Features + Ground Truth)</h1>
         </div>
       </header>
 
       <div className="panel" style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
         <p style={{ margin: 0, fontSize: '13px', color: '#475569' }}>
-          This table feeds the continuous learning cycle for Python Model V1. Each ticket contains the 14 engineered features alongside the reviewer's official Ground Truth label.
+          This table feeds the continuous learning cycle for Python Model V3. Each ticket contains the 14 engineered features alongside the reviewer's official Ground Truth label.
         </p>
       </div>
 

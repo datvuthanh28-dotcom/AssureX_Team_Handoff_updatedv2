@@ -25,9 +25,6 @@ else:
 PYTHON_MODEL_CONFIG = ACTIVE_MODELS.get("python_model", {})
 GOOGLE_MODEL_CONFIG = ACTIVE_MODELS.get("google_model", {})
 
-# Candidates for the active V1 finalized model.
-# Physical artifact names are legacy; runtime metadata exposes this as V1.
-V1_MODEL_PATH = WORKSPACE_ROOT / "model" / "assurex_v1_final_model.joblib"
 V3_MODEL_PATH = WORKSPACE_ROOT / "model" / "assurex_v3_final_model.joblib"
 FROZEN_V3_MODEL_PATH = WORKSPACE_ROOT / "frozen_v3" / "assurex_v3_final_model.joblib"
 CONFIG_MODEL_PATH = (
@@ -38,22 +35,35 @@ CONFIG_MODEL_PATH = (
 LEGACY_MODEL_PATH = Path(__file__).resolve().parent / "assurex_final_model.joblib"
 
 MODEL_PATH = None
-for candidate in [CONFIG_MODEL_PATH, V1_MODEL_PATH, V3_MODEL_PATH, FROZEN_V3_MODEL_PATH, LEGACY_MODEL_PATH]:
+for candidate in [CONFIG_MODEL_PATH, V3_MODEL_PATH, FROZEN_V3_MODEL_PATH, LEGACY_MODEL_PATH]:
     if candidate and candidate.is_file():
         MODEL_PATH = candidate
         break
 
-# The 8 features finalized during V1 model training.
+# The 14 features finalized during V3 model training.
 MODEL_14_FEATURES = [
     "RepairAuthorized",
+    "SerialNumberMatch",
+    "ProductModelConsistent",
     "DuplicateClaimIndicator",
     "ContradictionIndicator",
+    "OCRConfidence",
     "ClaimReportingDelayDays",
     "WarrantyRemainingDays",
     "ClaimReportingWithinPeriod",
     "FaultCovered",
+    "RequiredDocumentsComplete",
+    "MissingDocumentCount",
     "ProductIdentityMatch",
+    "OCRQualityBand",
 ]
+
+NUMERIC_MODEL_FEATURES = {
+    "OCRConfidence",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "MissingDocumentCount",
+}
 
 # Legacy 22 features for backward compatibility
 MODEL_FEATURES = [
@@ -82,7 +92,7 @@ MODEL_FEATURES = [
 ]
 
 model = None
-model_feature_count = 8
+model_feature_count = 14
 if MODEL_PATH and MODEL_PATH.is_file():
     try:
         model = joblib.load(MODEL_PATH)
@@ -94,8 +104,8 @@ if MODEL_PATH and MODEL_PATH.is_file():
 else:
     ARTIFACT_HASH = "mock-model"
 
-MODEL_VERSION = PYTHON_MODEL_CONFIG.get("version", "v1-final-8feat")
-MODEL_NAME = PYTHON_MODEL_CONFIG.get("name", "Gradient Boosting V1 (8 Features)")
+MODEL_VERSION = PYTHON_MODEL_CONFIG.get("version", "python-gradientboosting-v3-final")
+MODEL_NAME = PYTHON_MODEL_CONFIG.get("name", "Gradient Boosting V3 (14 Features)")
 GOOGLE_INFERENCE_STATUS = GOOGLE_MODEL_CONFIG.get(
     "inference_status",
     "not_configured",
@@ -104,7 +114,7 @@ GOOGLE_INFERENCE_STATUS = GOOGLE_MODEL_CONFIG.get(
 
 def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
     """
-    Deterministic rule-based evaluation based on the active V1 features
+    Deterministic rule-based evaluation based on the active V3 features
     when the serialized scikit-learn model is unavailable.
     Accurately maps to ['Valid Claim', 'Invalid Claim', 'Manual Review'].
     """
@@ -157,25 +167,25 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
 
 def predict_claim(input_data: dict) -> dict:
     """
-    Predict warranty claim using the finalized V1 8-feature contract.
+    Predict warranty claim using the finalized V3 14-feature contract.
     """
     missing_features = [feature for feature in MODEL_14_FEATURES if feature not in input_data]
     if missing_features:
-        raise ValueError(f"Missing required V1 features: {missing_features}")
+        raise ValueError(f"Missing required V3 features: {missing_features}")
 
-    # The active model always receives the frozen V1 feature contract.
+    # The active model always receives the frozen V3 feature contract.
     has_active_features = True
 
     if has_active_features:
-        # Prepare V1 feature DataFrame
+        # Prepare V3 feature DataFrame.
         row_data = {}
         for feat in MODEL_14_FEATURES:
             val = input_data.get(feat)
-            if feat in {"ClaimReportingDelayDays", "WarrantyRemainingDays"}:
+            if feat in NUMERIC_MODEL_FEATURES:
                 try:
-                    row_data[feat] = float(val) if val is not None else 0.0
+                    row_data[feat] = float(val) if val is not None else None
                 except (ValueError, TypeError):
-                    row_data[feat] = 0.0
+                    row_data[feat] = None
             else:
                 row_data[feat] = str(val if val is not None else "Unknown")
 
@@ -206,7 +216,7 @@ def predict_claim(input_data: dict) -> dict:
                     },
                 }
             except Exception as exc:
-                logger.warning(f"Inference error on model: {exc}. Using V1 rule fallback.")
+                logger.warning(f"Inference error on model: {exc}. Using V3 rule fallback.")
 
         # Fallback to deterministic policy evaluation
         fallback = evaluate_14_features_rule_fallback(row_data)
