@@ -244,12 +244,6 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     if (previousRepair === 'Yes') {
       if (!repairCentre?.trim()) errs.repair_centre = 'Please state the repair centre name.'
     }
-    const required = ['purchase_invoice', 'serial_image', 'fault_evidence']
-    if (previousRepair === 'Yes') required.push('repair_report')
-    if (required.some((name) => !evidence[name])) {
-      errs.evidence = 'Upload the required evidence before submitting the claim.'
-    }
-
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
@@ -638,7 +632,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </div>
           ) : (
             <div style={{ padding: '16px', background: '#fffbeb', borderRadius: '8px', border: '1px solid #fef3c7', fontSize: '12.5px', color: '#92400e' }}>
-              Enter the registration code shown in My Products. The backend will only return a product owned by the signed-in account.
+              Enter the registration code shown in My Products. The system will only return a product owned by the signed-in account.
             </div>
           )}
         </section>
@@ -687,7 +681,6 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </div>
 
             <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '12.5px', alignSelf: 'end' }}>
-              Reporting delay and warranty dates are calculated by the backend when the claim is submitted.
             </div>
           </div>
 
@@ -739,7 +732,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
 
           <div style={{ marginBottom: '14px' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-              Has this product been repaired previously? <span style={{ color: '#ef4444' }}>*</span>
+              Has this product been repaired outside AssureX?
             </label>
             <div style={{ display: 'flex', gap: '16px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>
@@ -827,21 +820,21 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>5</span>
             <div>
               <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>Claim Evidence</h3>
-              <small>The backend uses these files for document completeness and OCR verification.</small>
+              <small>Optional documents can help the system and reviewer verify your claim faster.</small>
             </div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
             {[
-              ['purchase_invoice', 'Purchase invoice / receipt', true, '.pdf,image/*'],
-              ['serial_image', 'Serial or equipment tag image', true, 'image/*'],
-              ['fault_evidence', 'Fault evidence', true, 'image/*,video/mp4,.pdf'],
-              ['repair_report', 'Previous repair report', previousRepair === 'Yes', '.pdf,image/*'],
-            ].filter(([, , required]) => required).map(([kind, label]) => (
+              ['purchase_invoice', 'Purchase invoice / receipt', '.pdf,image/*'],
+              ['serial_image', 'Serial or equipment tag image', 'image/*'],
+              ['fault_evidence', 'Fault evidence', 'image/*,video/mp4,.pdf'],
+              ['repair_report', 'External repair report', '.pdf,image/*'],
+            ].map(([kind, label, accept]) => (
               <label key={kind} style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px', cursor: 'pointer' }}>
-                <strong style={{ display: 'block', fontSize: '13px', marginBottom: '6px' }}>{label} *</strong>
+                <strong style={{ display: 'block', fontSize: '13px', marginBottom: '6px' }}>{label} <span style={{ color: '#64748b', fontWeight: 400 }}>(Optional)</span></strong>
                 <input
                   type="file"
-                  accept={kind === 'fault_evidence' ? 'image/*,video/mp4,.pdf' : kind === 'serial_image' ? 'image/*' : '.pdf,image/*'}
+                  accept={accept}
                   disabled={uploading === kind}
                   onChange={(event) => uploadEvidence(kind, event.target.files?.[0])}
                 />

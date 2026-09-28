@@ -312,12 +312,24 @@ def _derive_features(db, account, registered, product, warranty, payload):
     description = payload.fault_description.casefold()
     fault_covered = "No" if any(term in description for term in EXCLUDED_FAULT_TERMS) else "Yes"
 
-    required = ["purchase_invoice", "serial_image", "fault_evidence"]
-    if payload.previous_repair == "Yes":
-        required.append("repair_report")
-    missing_count = sum(1 for name in required if name not in evidence)
+    # A claim can be submitted without uploads. Missing optional evidence is
+    # retained as a model signal and can route the ticket to manual review.
+    missing_count = sum(
+        1 for name in ("purchase_invoice", "serial_image", "fault_evidence")
+        if name not in evidence
+    )
+    if payload.previous_repair == "Yes" and "repair_report" not in evidence:
+        missing_count += 1
 
-    if payload.previous_repair == "No":
+    recorded_repair = db.scalar(
+        select(func.count()).select_from(WarrantyTicket).where(
+            WarrantyTicket.registered_product_id == registered.id,
+            WarrantyTicket.raw_input["previous_repair"].as_string() == "Yes",
+        )
+    ) or 0
+    has_repair_history = payload.previous_repair == "Yes" or bool(recorded_repair)
+
+    if not has_repair_history:
         repair_authorized = "Not Applicable"
     elif "repair_report" not in evidence:
         repair_authorized = "Unknown"
