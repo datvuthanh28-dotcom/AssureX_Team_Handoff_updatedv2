@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "npm --prefix ./assurex_web/frontend run dev",
     "build": "npm --prefix ./assurex_web/frontend run build",
-    "install": "npm --prefix ./assurex_web/frontend install"
+    "install": "npm --prefix ./assurex_web/frontend install",
+    "install:gtm": "npm --prefix ./assurex_web/backend/gtm_runtime install"
   }
 }
