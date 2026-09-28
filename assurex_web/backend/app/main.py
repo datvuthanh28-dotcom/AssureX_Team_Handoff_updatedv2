@@ -17,7 +17,7 @@ from app.ml.model_service import (
     MODEL_VERSION,
     predict_claim,
 )
-from app.models import AuditLog, Claim, CustomerAccount, WarrantyTicket
+from app.models import AuditLog, Claim, CustomerAccount, Product, WarrantyTicket
 from app.customer_routes import router as customer_router
 from app.auth_routes import (
     record_audit,
@@ -52,6 +52,33 @@ app.include_router(auth_router)
 app.include_router(notification_router)
 app.include_router(catalog_router)
 app.include_router(warranty_ticket_router)
+
+
+def seed_product_catalog(db: Session) -> None:
+    """Ensure every configured warranty category is available to customers."""
+    catalog = [
+        ("NovaBook 14 Ultra", "Laptop", "AssureX", "NB14-2026", 24),
+        ("AssureX Pro 16", "Laptop", "AssureX", "AP16-2026", 24),
+        ("AssureX One X", "Smartphone", "AssureX", "AOX-2026", 12),
+        ("AssureX One Lite", "Smartphone", "AssureX", "AOL-2026", 12),
+        ("VisionMax 55", "Television", "AssureX", "VM55-2026", 24),
+        ("VisionMax 65 OLED", "Television", "AssureX", "VM65-OLED-2026", 24),
+        ("FrostGuard 500", "Refrigerator", "AssureX", "FG500-2026", 24),
+        ("FrostGuard 700", "Refrigerator", "AssureX", "FG700-2026", 24),
+        ("WashPro 8", "Washing Machine", "AssureX", "WP8-2026", 24),
+        ("WashPro 10 Inverter", "Washing Machine", "AssureX", "WP10-I-2026", 24),
+        ("CoolBreeze 12K", "Air Conditioner", "AssureX", "CB12K-2026", 24),
+        ("CoolBreeze 18K Inverter", "Air Conditioner", "AssureX", "CB18K-I-2026", 24),
+        ("PixelPro X1", "Camera", "AssureX", "PPX1-2026", 24),
+        ("PixelPro Mirror 5", "Camera", "AssureX", "PPM5-2026", 24),
+        ("PrintMate Office 300", "Printer", "AssureX", "PMO300-2026", 12),
+        ("PrintMate Color 500", "Printer", "AssureX", "PMC500-2026", 12),
+    ]
+    for name, category, brand, model, warranty_months in catalog:
+        exists = db.scalar(select(Product).where(Product.model == model))
+        if exists is None:
+            db.add(Product(name=name, category=category, brand=brand, model=model, warranty_months=warranty_months))
+    db.commit()
 
 
 @app.on_event("startup")
@@ -223,6 +250,7 @@ def create_database_tables():
                     connection.execute(text(stmt))
 
     with SessionLocal() as db:
+        seed_product_catalog(db)
         seed_default_admin(db)
         seed_default_reviewer(db)
 

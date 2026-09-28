@@ -955,6 +955,10 @@ export function ReviewerWarrantyDesk() {
     const isWarranty = selectedTicket.ai_prediction === 'WARRANTY'
     const isNotWarranty = selectedTicket.ai_prediction === 'NOT_WARRANTY'
     const feats = selectedTicket.model_features || {}
+    const derived = selectedTicket.derived_data || selectedTicket.derived || {}
+    const policy = selectedTicket.policy || derived.policy || {}
+    const policyMissingEvidence = policy.missing_evidence || derived.policy_missing_evidence || []
+    const policyEvidenceComplete = policy.required_evidence_complete ?? derived.policy_required_evidence_complete
 
     return (
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
@@ -1104,6 +1108,30 @@ export function ReviewerWarrantyDesk() {
                   )
                 })}
               </div>
+            </div>
+
+            {/* Category policy reference for reviewer decisions */}
+            <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#eff6ff', border: '1px solid #bfdbfe' }}>
+              <p className="eyebrow" style={{ color: '#1d4ed8', fontWeight: 800, fontSize: '11px' }}>
+                POLICY REFERENCE
+              </p>
+              <h4 style={{ margin: '4px 0 12px', fontSize: '15px' }}>Category warranty rules</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', fontSize: '12px' }}>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Product category</span><strong>{policy.category || selectedTicket.product_category || derived.policy_category || '—'}</strong></div>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Component</span><strong>{policy.component || derived.policy_component || selectedTicket.claimed_component || 'Main Unit'}</strong></div>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Policy version</span><strong>{policy.version || derived.policy_version || '—'}</strong></div>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Fault coverage</span><strong style={{ color: feats.FaultCovered === 'No' ? '#dc2626' : '#15803d' }}>{feats.FaultCovered || 'Unknown'}</strong></div>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Reporting window</span><strong>{feats.ClaimReportingWithinPeriod || 'Unknown'}</strong></div>
+                <div><span style={{ color: '#64748b', display: 'block', fontSize: '11px' }}>Required evidence</span><strong>{policyEvidenceComplete || feats.RequiredDocumentsComplete || 'Unknown'}</strong></div>
+              </div>
+              {(policy.excluded_causes || policy.covered_faults || policyMissingEvidence.length > 0) && (
+                <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #bfdbfe', fontSize: '12px' }}>
+                  {policy.covered_faults?.length > 0 && <p style={{ margin: '4px 0' }}><strong>Covered faults:</strong> {policy.covered_faults.join(', ')}</p>}
+                  {policy.excluded_causes?.length > 0 && <p style={{ margin: '4px 0', color: '#b91c1c' }}><strong>Excluded causes:</strong> {policy.excluded_causes.join(', ')}</p>}
+                  {policyMissingEvidence.length > 0 && <p style={{ margin: '4px 0', color: '#b45309' }}><strong>Missing policy evidence:</strong> {policyMissingEvidence.join(', ')}</p>}
+                </div>
+              )}
+              <p style={{ margin: '12px 0 0', fontSize: '11px', color: '#475569' }}>Use this policy summary with the evidence and AI result before recording the official decision.</p>
             </div>
           </div>
 
