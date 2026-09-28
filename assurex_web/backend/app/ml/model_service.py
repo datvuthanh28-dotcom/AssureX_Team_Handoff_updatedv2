@@ -180,19 +180,14 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
 def predict_claim(input_data: dict) -> dict:
     """
     Predict warranty claim using the 14 finalized features.
-    Accepts both direct 14 features and legacy payloads.
+    Accepts only the finalized V3 14-feature contract.
     """
-    # Detect if input contains the 14 features
-    has_14_features = any(
-        k in input_data
-        for k in [
-            "RepairAuthorized",
-            "ProductIdentityMatch",
-            "OCRQualityBand",
-            "FaultCovered",
-            "RequiredDocumentsComplete",
-        ]
-    )
+    missing_features = [feature for feature in MODEL_14_FEATURES if feature not in input_data]
+    if missing_features:
+        raise ValueError(f"Missing required V3 features: {missing_features}")
+
+    # The active model always receives the frozen 14-feature contract.
+    has_14_features = True
 
     if has_14_features:
         # Prepare 14-feature DataFrame
