@@ -2536,3 +2536,181 @@ body.customer-light .login-screen {
   }
 }
 
+/* Final customer gutter and list readability guard */
+body.customer-light .app-shell > .main-content,
+body.customer-light main.main-content {
+  padding-left: 48px;
+  padding-right: 40px;
+  padding-top: 32px;
+  padding-bottom: 40px;
+}
+
+body.customer-light .main-content > .page-header,
+body.customer-light .main-content > .panel,
+body.customer-light .main-content > .stats-grid,
+body.customer-light .main-content > .customer-hero,
+body.customer-light .main-content > .hero-card,
+body.customer-light .main-content > .detail-panel {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+body.customer-light .main-content > .panel,
+body.customer-light .notification-list,
+body.customer-light .table-wrapper {
+  box-sizing: border-box;
+}
+
+body.customer-light .main-content > .panel {
+  padding: 24px 28px;
+}
+
+body.customer-light .data-table th,
+body.customer-light .data-table td {
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+body.customer-light .notification-list {
+  gap: 12px;
+}
+
+body.customer-light .notification-item {
+  padding: 20px 24px;
+}
+
+body.customer-light .notification-item.unread {
+  padding-left: 24px;
+}
+
+@media (max-width: 900px) {
+  body.customer-light .app-shell > .main-content,
+  body.customer-light main.main-content {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  body.customer-light .main-content > .panel {
+    padding: 20px;
+  }
+}
+
+/* Customer sidebar refinement: compact product navigation */
+body.customer-light .sidebar {
+  width: 260px;
+  flex-basis: 260px;
+  padding: 20px 16px 18px;
+}
+
+body.customer-light .brand {
+  gap: 12px;
+  padding: 0 8px 18px;
+  margin-bottom: 18px;
+}
+
+body.customer-light .brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+body.customer-light .brand h2 {
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+body.customer-light .brand p {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+body.customer-light .sidebar-section-label {
+  padding: 8px 12px 10px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+body.customer-light .nav-menu {
+  gap: 2px;
+}
+
+body.customer-light .nav-item {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+  color: #334155;
+}
+
+body.customer-light .nav-icon {
+  width: 17px;
+  height: 17px;
+  opacity: 0.86;
+}
+
+body.customer-light .nav-item:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+body.customer-light .nav-item.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  box-shadow: inset 3px 0 0 #2563eb;
+}
+
+body.customer-light .account-card {
+  margin-top: auto;
+  padding: 12px;
+  border-radius: 10px;
+  gap: 10px;
+}
+
+body.customer-light .account-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}
+
+body.customer-light .account-details span {
+  font-size: 11px;
+}
+
+body.customer-light .account-details strong {
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+body.customer-light .logout-button,
+body.customer-light .customer-admin-link,
+body.customer-light .guest-actions .button,
+body.customer-light .guest-actions .logout-button {
+  min-height: 38px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+body.customer-light .guest-actions {
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  body.customer-light .sidebar {
+    width: 100%;
+    flex-basis: auto;
+  }
+}
+

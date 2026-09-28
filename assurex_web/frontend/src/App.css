@@ -4681,3 +4681,134 @@ body.admin-light .claim-queue-table,
   font-size: 11px;
 }
 
+/* Final page gutter guard for admin/reviewer workspaces */
+body.admin-light .app-shell > .main-content,
+body.admin-light main.main-content,
+.reviewer-shell > .main-content,
+.reviewer-shell main.main-content {
+  padding-left: 48px;
+  padding-right: 40px;
+  padding-top: 32px;
+  padding-bottom: 40px;
+}
+
+body.admin-light .app-shell > .main-content > .page-header,
+body.admin-light main.main-content > .page-header,
+.reviewer-shell > .main-content > .page-header,
+.reviewer-shell main.main-content > .page-header,
+body.admin-light .app-shell > .main-content > .panel,
+body.admin-light main.main-content > .panel,
+.reviewer-shell > .main-content > .panel,
+.reviewer-shell main.main-content > .panel,
+body.admin-light .app-shell > .main-content > .stats-grid,
+body.admin-light main.main-content > .stats-grid,
+.reviewer-shell > .main-content > .stats-grid,
+.reviewer-shell main.main-content > .stats-grid,
+body.admin-light .app-shell > .main-content > .two-column,
+body.admin-light main.main-content > .two-column,
+.reviewer-shell > .main-content > .two-column,
+.reviewer-shell main.main-content > .two-column {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+@media (max-width: 900px) {
+  body.admin-light .app-shell > .main-content,
+  body.admin-light main.main-content,
+  .reviewer-shell > .main-content,
+  .reviewer-shell main.main-content {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* Admin sidebar refinement: compact operational navigation */
+body.admin-light .sidebar:not(.reviewer-sidebar) {
+  padding: 20px 16px 18px;
+  width: 260px;
+  flex-basis: 260px;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .brand {
+  gap: 12px;
+  padding: 0 8px 18px;
+  margin-bottom: 18px;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .brand h2 {
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .brand p {
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #64748b;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .sidebar-section-label {
+  padding: 8px 12px 10px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-menu {
+  gap: 2px;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-item {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+  color: #334155;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-item:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-item.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  box-shadow: inset 3px 0 0 #2563eb;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-item:nth-of-type(4),
+body.admin-light .sidebar:not(.reviewer-sidebar) .nav-item:nth-of-type(9) {
+  margin-top: 10px;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .backend-status {
+  margin-top: auto;
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #475569;
+}
+
+body.admin-light .sidebar:not(.reviewer-sidebar) .admin-customer-link,
+body.admin-light .sidebar:not(.reviewer-sidebar) .admin-logout-button {
+  min-height: 38px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
