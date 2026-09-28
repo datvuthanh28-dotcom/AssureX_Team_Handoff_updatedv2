@@ -159,6 +159,22 @@ function loadStoredTickets() {
   ]
 }
 
+function friendlyErrorMessage(error, fallback = 'Unable to complete the request.') {
+  if (!error) return fallback
+  if (typeof error === 'string') return error
+  if (error.message && error.message !== '[object Object]') return error.message
+  const detail = error.data?.detail || error.detail
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => [Array.isArray(item?.loc) ? item.loc.join('.') : '', item?.msg].filter(Boolean).join(': '))
+      .filter(Boolean)
+      .join('; ') || fallback
+  }
+  if (typeof detail === 'string') return detail
+  if (detail && typeof detail === 'object') return JSON.stringify(detail)
+  return fallback
+}
+
 // ==============================================================================
 // 1. CUSTOMER - WARRANTY CLAIM FORM (CLEAN CUSTOMER INPUTS → FEATURE ENGINE)
 // ==============================================================================
@@ -219,7 +235,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       setProductRecord(null)
       setErrors((prev) => ({
         ...prev,
-        product_code: error.message || 'Registered Product Code was not found for this account.',
+        product_code: friendlyErrorMessage(error, 'Registered Product Code was not found for this account.'),
       }))
     } finally {
       setLookingUp(false)
@@ -237,7 +253,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       const uploaded = await api('/api/customer/evidence/upload', { method: 'POST', body })
       setEvidence((current) => ({ ...current, [kind]: uploaded }))
     } catch (error) {
-      setSubmitError(error.message)
+      setSubmitError(friendlyErrorMessage(error, 'Unable to upload file.'))
     } finally {
       setUploading('')
     }
@@ -264,6 +280,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
   // Submit Claim
   async function handleSubmit(e) {
     e.preventDefault()
+    if (submitting) return
     setSubmitError('')
 
     if (!validate()) {
@@ -288,10 +305,12 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       })
       const created = response.ticket
 
+      setErrors({})
       setCreatedTicket(created)
+      window.requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
       if (onCreated) onCreated(created)
     } catch (err) {
-      setSubmitError(err.message || 'Unable to submit claim.')
+      setSubmitError(friendlyErrorMessage(err, 'Unable to submit claim.'))
     } finally {
       setSubmitting(false)
     }
@@ -351,7 +370,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           >
             {isWarranty ? '✓' : isNotWarranty ? '✕' : '⏳'}
           </div>
-          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>
+          <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 800, color: '#0f172a' }}>
             {isWarranty
               ? 'Warranty Ticket Created · AI Eligible'
               : isNotWarranty
@@ -409,16 +428,16 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </div>
             <div>
               <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Queue Status:</span>
-              <span className="days-left-badge active">WAITING_REVIEW</span>
+              <span className="days-left-badge active">{createdTicket.status || 'WAITING_REVIEW'}</span>
             </div>
           </div>
 
           <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', fontSize: '12.5px', color: 'var(--ax-text-soft, #475569)' }}>
-            <strong>Analysis: </strong>{createdTicket.ai_reason}
+            <strong>Analysis: </strong>{createdTicket.ai_reason || `${createdTicket.model_name || 'Model V1'} assessment` }
           </div>
         </div>
 
-        {/* 14 Derived Features Summary */}
+        {/* Active V1 Features Summary */}
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
             8 Automated Features Used by Model V1:
@@ -438,13 +457,31 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
         </div>
 
+        {createdTicket.diagnostic_features && Object.keys(createdTicket.diagnostic_features).length > 0 && (
+          <div style={{ marginBottom: '24px' }}>
+            <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: '#334155' }}>
+              Backend verification signals:
+            </h4>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', fontSize: '12px' }}>
+              {Object.entries(createdTicket.diagnostic_features).map(([feat, val]) => (
+                <div key={feat} style={{ background: '#fff7ed', padding: '6px 10px', borderRadius: '6px', border: '1px solid #fed7aa' }}>
+                  <span style={{ fontSize: '11px', color: '#9a3412', display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {feat}
+                  </span>
+                  <strong style={{ color: '#7c2d12' }}>{String(val ?? '—')}</strong>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-          <button className="button primary" onClick={resetForm}>
+          <button type="button" className="button primary" onClick={resetForm}>
             Submit Another Claim
           </button>
           {onCancel && (
-            <button className="button secondary" onClick={onCancel}>
+            <button type="button" className="button secondary" onClick={onCancel}>
               Return to Home
             </button>
           )}
@@ -471,7 +508,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         </div>
       )}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} noValidate>
         {/* GROUP 1: CUSTOMER INFORMATION */}
         <section
           className="panel"
@@ -1188,7 +1225,7 @@ export function ReviewerWarrantyDesk() {
               )}
             </div>
 
-            {/* 14 Derived Features Grid */}
+            {/* Active V1 Features Grid */}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>

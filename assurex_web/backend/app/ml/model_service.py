@@ -82,7 +82,7 @@ MODEL_FEATURES = [
 ]
 
 model = None
-model_feature_count = 14
+model_feature_count = 8
 if MODEL_PATH and MODEL_PATH.is_file():
     try:
         model = joblib.load(MODEL_PATH)
@@ -111,9 +111,6 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
     dup = str(input_data.get("DuplicateClaimIndicator", "No")).strip().lower()
     contra = str(input_data.get("ContradictionIndicator", "No")).strip().lower()
     fault_cov = str(input_data.get("FaultCovered", "Yes")).strip().lower()
-    docs_comp = str(input_data.get("RequiredDocumentsComplete", "Yes")).strip().lower()
-    sn_match = str(input_data.get("SerialNumberMatch", "Yes")).strip().lower()
-    model_match = str(input_data.get("ProductModelConsistent", "Yes")).strip().lower()
     id_match = str(input_data.get("ProductIdentityMatch", "Yes")).strip().lower()
     rep_auth = str(input_data.get("RepairAuthorized", "Not Applicable")).strip().lower()
 
@@ -127,16 +124,6 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
     except Exception:
         delay = 5.0
 
-    try:
-        ocr_conf = float(input_data.get("OCRConfidence", 0.9))
-    except Exception:
-        ocr_conf = 0.9
-
-    try:
-        missing_docs = float(input_data.get("MissingDocumentCount", 0))
-    except Exception:
-        missing_docs = 0.0
-
     # 1. Hard Invalidation Conditions
     if dup == "yes" or contra == "yes" or w_days < 0 or fault_cov == "no":
         probs = {"Invalid Claim": 0.94, "Manual Review": 0.05, "Valid Claim": 0.01}
@@ -148,14 +135,9 @@ def evaluate_14_features_rule_fallback(input_data: dict) -> dict:
 
     # 2. Manual Review Conditions
     if (
-        missing_docs > 0
-        or docs_comp in {"no", "unknown"}
-        or sn_match in {"no", "unknown"}
-        or model_match == "no"
-        or id_match == "no"
+        id_match == "no"
         or rep_auth == "no"
         or delay > 30
-        or ocr_conf < 0.65
     ):
         probs = {"Invalid Claim": 0.10, "Manual Review": 0.88, "Valid Claim": 0.02}
         return {
@@ -182,9 +164,9 @@ def predict_claim(input_data: dict) -> dict:
         raise ValueError(f"Missing required V1 features: {missing_features}")
 
     # The active model always receives the frozen V1 feature contract.
-    has_14_features = True
+    has_active_features = True
 
-    if has_14_features:
+    if has_active_features:
         # Prepare V1 feature DataFrame
         row_data = {}
         for feat in MODEL_14_FEATURES:

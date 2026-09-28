@@ -1,5 +1,5 @@
 // ASSUREX CLAIM ENGINE - MODEL V1 DEFINITIONS & FEATURE ENGINEERING HANDOFF
-// Matching Submit Claim form, user/product database, and 14 final ML features
+// Matching Submit Claim form, user/product database, and 8 active Model V1 features
 
 export const MODEL_14_FEATURES = [
   'RepairAuthorized',
