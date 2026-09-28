@@ -196,7 +196,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
   async function handleProductLookup(code) {
     const targetCode = code !== undefined ? code : productCodeInput
     if (!targetCode.trim()) {
-      setErrors((prev) => ({ ...prev, product_code: 'Enter the REG-xxxxx code from My Products.' }))
+      setErrors((prev) => ({ ...prev, product_code: 'Enter the Registered Product Code shown in My Products (REG-xxxxx).' }))
       return
     }
     setLookingUp(true)
@@ -209,7 +209,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       setProductRecord(null)
       setErrors((prev) => ({
         ...prev,
-        product_code: error.message || 'Product Code was not found for this account.',
+        product_code: error.message || 'Registered Product Code was not found for this account.',
       }))
     } finally {
       setLookingUp(false)
@@ -236,7 +236,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
   // Validation
   function validate() {
     const errs = {}
-    if (!productRecord) errs.product_code = 'Verify a Product Code that belongs to your account.'
+    if (!productRecord) errs.product_code = 'Verify a Registered Product Code that belongs to your account.'
     if (!incidentDate) errs.incident_date = 'Please select the date the incident/defect occurred.'
     if (!faultDescription?.trim() || faultDescription.trim().length < 10)
       errs.fault_description = 'Please describe the fault or symptom (minimum 10 characters).'
@@ -540,10 +540,10 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </h3>
           </div>
 
-          {/* Product Code Lookup Bar */}
+          {/* Registered Product Code Lookup Bar */}
           <div style={{ marginBottom: '16px', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '12.5px', fontWeight: 700, color: '#334155' }}>
-              Product Code / Equipment Tag:
+              Registered Product Code:
             </label>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
@@ -570,7 +570,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                 onClick={() => handleProductLookup(productCodeInput)}
                 style={{ padding: '8px 16px', fontSize: '13px' }}
               >
-                {lookingUp ? 'Checking…' : '⌕ Verify Code'}
+                {lookingUp ? 'Checking…' : '⌕ Verify Registration'}
               </button>
             </div>
             {errors.product_code && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '6px 0 0' }}>{errors.product_code}</p>}
@@ -590,6 +590,10 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                 fontSize: '12.5px',
               }}
             >
+              <div>
+                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Registered Product Code:</span>
+                <strong className="mono" style={{ color: '#2563eb' }}>{productRecord.product_code}</strong>
+              </div>
               <div>
                 <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px' }}>Product Name:</span>
                 <strong>{productRecord.product_name}</strong>
@@ -632,7 +636,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </div>
           ) : (
             <div style={{ padding: '16px', background: '#fffbeb', borderRadius: '8px', border: '1px solid #fef3c7', fontSize: '12.5px', color: '#92400e' }}>
-              Enter the registration code shown in My Products. The system will only return a product owned by the signed-in account.
+              Enter the Registered Product Code shown in My Products, for example REG-00003. The system will only return a product owned by the signed-in account.
             </div>
           )}
         </section>
