@@ -285,6 +285,16 @@ class CustomerClaimDecision(Base):
         nullable=True,
     )
 
+    customer_confirmation: Mapped[str | None] = mapped_column(
+        String(30),
+        nullable=True,
+    )
+
+    customer_confirmed_at: Mapped[datetime | None] = mapped_column(
+        DateTime,
+        nullable=True,
+    )
+
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow,

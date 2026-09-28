@@ -69,9 +69,9 @@ def export_feedback(account=Depends(require_roles("ADMIN")), db: Session = Depen
     # Human adjudications only. Predictions are never treated as ground truth.
     rows = []
     for claim in db.scalars(select(CustomerClaim).where(CustomerClaim.status.in_(["Approved", "Rejected"]))).all():
-        latest = db.scalar(select(AuditLog).where(AuditLog.resource_id == claim.claim_id, AuditLog.resource_type == "CLAIM", AuditLog.action == "REVIEWER_ACTION").order_by(AuditLog.created_at.desc(), AuditLog.id.desc()))
+        latest = db.scalar(select(AuditLog).where(AuditLog.resource_id == claim.claim_id, AuditLog.resource_type == "CLAIM", AuditLog.action.in_(("REVIEWER_ACTION", "CUSTOMER_RESULT_CONFIRMED"))).order_by(AuditLog.created_at.desc(), AuditLog.id.desc()))
         pending = db.scalar(select(ClaimAppeal).where(ClaimAppeal.claim_id == claim.claim_id, ClaimAppeal.status == "Pending"))
         if latest is None or pending or latest.details.get("status") != claim.status:
             continue
-        rows.append({"claim_id": claim.claim_id, "reviewed_at": latest.created_at.isoformat(), "label": "Valid Claim" if claim.status == "Approved" else "Invalid Claim", "input": {column.name: getattr(claim, column.name) for column in CustomerClaim.__table__.columns if column.name not in ("email", "customer_name")}})
+        rows.append({"claim_id": claim.claim_id, "reviewed_at": latest.created_at.isoformat(), "label": "Valid Claim" if claim.status == "Approved" else "Invalid Claim", "label_source": "Customer" if latest.action == "CUSTOMER_RESULT_CONFIRMED" else "Reviewer", "input": {column.name: getattr(claim, column.name) for column in CustomerClaim.__table__.columns if column.name not in ("email", "customer_name")}})
     return {"created_at": datetime.utcnow().isoformat(), "status": "reviewed_feedback_export", "training_started": False, "records": rows}

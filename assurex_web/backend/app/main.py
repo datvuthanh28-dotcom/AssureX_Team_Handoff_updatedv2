@@ -153,6 +153,14 @@ def create_database_tables():
                 "ALTER TABLE customer_claim_decisions "
                 "ADD COLUMN model_consistency_status VARCHAR(50)"
             ),
+            "customer_confirmation": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN customer_confirmation VARCHAR(30)"
+            ),
+            "customer_confirmed_at": (
+                "ALTER TABLE customer_claim_decisions "
+                "ADD COLUMN customer_confirmed_at DATETIME"
+            ),
         }
         for column_name, statement in decision_migrations.items():
             if column_name not in decision_columns:

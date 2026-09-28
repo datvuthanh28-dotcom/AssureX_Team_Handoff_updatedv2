@@ -122,6 +122,11 @@ class CustomerClaimStatusUpdate(BaseModel):
     reviewer_comment: str | None = None
 
 
+class CustomerClaimConfirmation(BaseModel):
+    result: Literal["Valid", "Invalid"]
+    comment: str | None = Field(default=None, max_length=2000)
+
+
 def json_safe(value: Any):
     if isinstance(value, dict):
         return {
@@ -335,6 +340,12 @@ def serialize_claim(
 
         "reviewed_at":
             decision.reviewed_at,
+
+        "customer_confirmation":
+            decision.customer_confirmation,
+
+        "customer_confirmed_at":
+            decision.customer_confirmed_at,
     }
 
     return result
@@ -585,6 +596,9 @@ def submit_customer_claim(
         rule_data=feature_result["rule_data"],
         derived=feature_result["derived"],
     )
+    # Keep one normalized Google/GTM result object for the decision record,
+    # audit trail, and customer-facing claim summary.
+    google_model = gtm_result
 
     decision_result = apply_business_rules(
         feature_result["rule_data"],
@@ -1023,6 +1037,67 @@ def get_customer_claim_history(
         }
         for entry in entries
     ]
+
+
+@router.patch("/{claim_id}/confirmation")
+def confirm_customer_claim_result(
+    claim_id: str,
+    payload: CustomerClaimConfirmation,
+    account: CustomerAccount = Depends(require_roles("CUSTOMER")),
+    db: Session = Depends(get_db),
+):
+    claim = db.scalar(
+        select(CustomerClaim).where(
+            CustomerClaim.claim_id == claim_id,
+            CustomerClaim.email == account.email,
+        )
+    )
+    if claim is None:
+        raise HTTPException(status_code=404, detail="Claim not found.")
+
+    decision = get_decision(db, claim_id)
+    if decision is None:
+        raise HTTPException(status_code=409, detail="This claim has no model result to confirm.")
+
+    expected = {
+        "Valid Claim": "Valid",
+        "Invalid Claim": "Invalid",
+    }.get(decision.final_decision)
+    if expected is None:
+        raise HTTPException(
+            status_code=409,
+            detail="Manual Review results must be handled by a reviewer.",
+        )
+    if payload.result != expected:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Customer confirmation must match the model result: {expected}.",
+        )
+    if decision.customer_confirmation is not None:
+        raise HTTPException(status_code=409, detail="This claim has already been confirmed.")
+
+    now = datetime.utcnow()
+    final_status = "Approved" if payload.result == "Valid" else "Rejected"
+    decision.customer_confirmation = payload.result
+    decision.customer_confirmed_at = now
+    claim.status = final_status
+
+    record_audit(
+        db,
+        account=account,
+        action="CUSTOMER_RESULT_CONFIRMED",
+        resource_type="CLAIM",
+        resource_id=claim_id,
+        details={
+            "source": "customer_confirmation",
+            "result": payload.result,
+            "status": final_status,
+            "comment": payload.comment,
+        },
+    )
+    db.commit()
+    db.refresh(claim)
+    return serialize_claim(claim, db)
 
 
 @router.patch("/{claim_id}/status")
