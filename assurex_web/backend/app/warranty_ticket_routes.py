@@ -33,11 +33,16 @@ router = APIRouter(
 
 # Allowed Product Types according to SRS / Specification
 ALLOWED_PRODUCT_TYPES = {
+    "Air Conditioner",
+    "Camera",
     "Laptop",
+    "Printer",
+    "Refrigerator",
     "Smartphone",
+    "Television",
+    "Washing Machine",
     "Tablet",
     "Monitor",
-    "Printer",
     "Other",
 }
 
@@ -202,6 +207,10 @@ EVIDENCE_DIR = Path("app/uploads/evidence")
 EXCLUDED_FAULT_TERMS = {
     "water", "liquid", "dropped", "falling", "shattered", "physical impact",
     "spilled", "tampered", "cracked glass", "misuse", "accident",
+    "roi", "rơi", "vo", "vỡ", "be", "bể", "be man hinh", "bể màn hình",
+    "roi vo", "rơi vỡ", "va dap", "va đập", "rot nuoc", "rớt nước",
+    "vao nuoc", "vào nước", "ngam nuoc", "ngấm nước", "do nuoc", "đổ nước",
+    "tray xuoc", "trầy xước", "nut", "nứt", "tamper", "tu sua", "tự sửa",
 }
 AUTHORIZED_REPAIR_TERMS = {
     "assurex", "official", "authorized", "authorised", "premier",
@@ -477,13 +486,15 @@ def create_warranty_claim(
     )
     db.commit()
     db.refresh(ticket)
+    owned_product = _serialize_owned_product(registered, product, warranty)
     return {
         "success": True,
         "message": "Claim stored and evaluated from backend-derived features.",
         "ticket": {
+            **owned_product,
             "ticket_id": ticket.ticket_id,
             "status": ticket.status,
-            **_serialize_owned_product(registered, product, warranty),
+            "warranty_status": owned_product["status"],
             "customer_name": account.full_name or account.email,
             "customer_email": account.email,
             "fault_description": payload.fault_description,
