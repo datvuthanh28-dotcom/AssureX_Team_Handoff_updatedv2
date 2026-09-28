@@ -205,6 +205,15 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       const found = await api(`/api/claims/v3/product/${encodeURIComponent(targetCode.trim())}`)
       setProductRecord(found)
       setProductCodeInput(found.product_code)
+      if (found.repair_history?.has_external_repair_on_record) {
+        setPreviousRepair('Yes')
+        setRepairCentre(found.repair_history.latest_external_repair_centre || '')
+        setRepairDate(found.repair_history.latest_external_repair_date || '')
+      } else {
+        setPreviousRepair('No')
+        setRepairCentre('')
+        setRepairDate('')
+      }
       setErrors((prev) => ({ ...prev, product_code: '' }))
     } catch (error) {
       setProductRecord(null)
@@ -738,9 +747,52 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </h3>
           </div>
 
+          {productRecord ? (
+            <div
+              style={{
+                background: productRecord.repair_history?.has_assurex_records ? '#f8fafc' : '#f0fdf4',
+                border: `1px solid ${productRecord.repair_history?.has_assurex_records ? '#cbd5e1' : '#bbf7d0'}`,
+                borderRadius: '8px',
+                padding: '12px 14px',
+                marginBottom: '14px',
+                fontSize: '12.5px',
+                color: '#334155',
+              }}
+            >
+              <strong style={{ display: 'block', marginBottom: '4px', color: '#0f172a' }}>
+                AssureX service records
+              </strong>
+              {productRecord.repair_history?.has_assurex_records ? (
+                <span>
+                  Backend found {productRecord.repair_history.assurex_claim_count} prior claim/service record(s)
+                  for this registered product.
+                  {productRecord.repair_history.has_external_repair_on_record
+                    ? ` Latest external repair on record: ${productRecord.repair_history.latest_external_repair_centre || 'Unknown centre'}${productRecord.repair_history.latest_external_repair_date ? ` on ${productRecord.repair_history.latest_external_repair_date}` : ''}.`
+                    : ' No external repair declaration is recorded in AssureX history.'}
+                </span>
+              ) : (
+                <span>No AssureX repair or claim history found for this registered product.</span>
+              )}
+            </div>
+          ) : (
+            <div
+              style={{
+                background: '#fffbeb',
+                border: '1px solid #fde68a',
+                borderRadius: '8px',
+                padding: '12px 14px',
+                marginBottom: '14px',
+                fontSize: '12.5px',
+                color: '#92400e',
+              }}
+            >
+              Verify a registered product first so the system can check AssureX repair records.
+            </div>
+          )}
+
           <div style={{ marginBottom: '14px' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
-              Has this product been repaired outside AssureX?
+              Has this product been repaired outside AssureX beyond the records shown above?
             </label>
             <div style={{ display: 'flex', gap: '16px' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>

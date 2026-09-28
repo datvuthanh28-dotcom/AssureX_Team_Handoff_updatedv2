@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
+from app.database import SessionLocal, get_db
 from app.auth_routes import record_audit, require_roles
 from app.models import (
     CustomerAccount,
@@ -255,6 +255,7 @@ def _owned_product(db: Session, account: CustomerAccount, product_code: str):
 
 def _serialize_owned_product(registered, product, warranty):
     expiry = warranty.end_date if warranty else None
+    repair_claims = db_repair_history_for_registered_product(registered.id)
     return {
         "registered_product_id": registered.id,
         "product_code": f"REG-{registered.id:05d}",
@@ -275,6 +276,31 @@ def _serialize_owned_product(registered, product, warranty):
             if expiry and date.fromisoformat(expiry) < date.today()
             else "active"
         ),
+        "repair_history": repair_claims,
+    }
+
+
+def db_repair_history_for_registered_product(registered_product_id: int) -> dict[str, Any]:
+    with SessionLocal() as db:
+        tickets = db.scalars(
+            select(WarrantyTicket)
+            .where(WarrantyTicket.registered_product_id == registered_product_id)
+            .order_by(WarrantyTicket.created_at.desc())
+        ).all()
+    external_records = [
+        ticket
+        for ticket in tickets
+        if (ticket.raw_input or {}).get("previous_repair") == "Yes"
+    ]
+    latest_external = external_records[0] if external_records else None
+    latest_input = latest_external.raw_input if latest_external else {}
+    return {
+        "assurex_claim_count": len(tickets),
+        "external_repair_declared_count": len(external_records),
+        "has_assurex_records": len(tickets) > 0,
+        "has_external_repair_on_record": len(external_records) > 0,
+        "latest_external_repair_centre": latest_input.get("repair_centre") if latest_input else None,
+        "latest_external_repair_date": latest_input.get("repair_date") if latest_input else None,
     }
 
 
