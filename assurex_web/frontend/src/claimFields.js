@@ -12,6 +12,472 @@ export const MODEL_14_FEATURES = [
   'ProductIdentityMatch',
 ]
 
+export const MODEL_8_FEATURES = MODEL_14_FEATURES
+export const MODEL_9_FEATURES = MODEL_14_FEATURES
+
+// ------------------------------------------------------------------------------
+// FAULT CATEGORIES CUSTOMIZED BY REGISTERED PRODUCT CATEGORY
+// ------------------------------------------------------------------------------
+export const FAULT_CATEGORIES_BY_PRODUCT_CATEGORY = {
+  Laptop: [
+    {
+      value: 'Display Failure',
+      label: 'Màn hình & Hiển thị (Display Failure)',
+      isCovered: true,
+      description: 'Sọc màn hình, đốm sáng, chớp nháy, tối đen không lên hình (kính không nứt vỡ).',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Bo mạch chính (Power / Motherboard Failure)',
+      isCovered: true,
+      description: 'Không lên nguồn, máy tự sập nguồn đột ngột, chập chờn khi cắm nguồn sạc.',
+    },
+    {
+      value: 'Battery Problem',
+      label: 'Pin & Hệ thống sạc (Battery & Charging Issue)',
+      isCovered: true,
+      description: 'Chai pin nhanh bất thường, báo lỗi không nhận sạc, phồng pin.',
+    },
+    {
+      value: 'Keyboard & Trackpad Failure',
+      label: 'Bàn phím & Touchpad (Keyboard & Touchpad Defect)',
+      isCovered: true,
+      description: 'Liệt phím, kẹt phím, touchpad loạn cảm ứng hoặc không nhận chuột.',
+    },
+    {
+      value: 'Overheating',
+      label: 'Hệ thống tản nhiệt (Overheating / Fan Noise)',
+      isCovered: true,
+      description: 'Quạt tản nhiệt kêu to bất thường, quạt không quay, máy quá nhiệt tự ngắt.',
+    },
+    {
+      value: 'Connectivity Issue',
+      label: 'Cổng kết nối & Wi-Fi (Connectivity / Ports Issue)',
+      isCovered: true,
+      description: 'Mất kết nối Wi-Fi/Bluetooth, hỏng cổng Type-C, USB hoặc HDMI.',
+    },
+    {
+      value: 'Audio Failure',
+      label: 'Âm thanh & Loa (Audio & Speaker Failure)',
+      isCovered: true,
+      description: 'Loa rè, méo tiếng, mất âm thanh hoàn toàn.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Rơi vỡ / Va đập vật lý (Physical Impact / Screen Crack) [Không BH]',
+      isCovered: false,
+      description: 'Nứt vỡ màn hình, móp méo vỏ máy do ngoại lực hoặc rơi rớt.',
+    },
+    {
+      value: 'Liquid Damage',
+      label: 'Vào nước / Đổ chất lỏng (Liquid / Water Ingress) [Không BH]',
+      isCovered: false,
+      description: 'Đổ nước, ngấm chất lỏng vào bàn phím hoặc bo mạch máy.',
+    },
+  ],
+  Smartphone: [
+    {
+      value: 'Display Failure',
+      label: 'Màn hình & Cảm ứng (Display & Touchscreen Failure)',
+      isCovered: true,
+      description: 'Loạn cảm ứng, chết điểm cảm ứng, sọc màn hình, chảy mực màn trong (kính không nứt).',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Khởi động (Power & Bootloop Failure)',
+      isCovered: true,
+      description: 'Treo logo, sập nguồn liên tục, bật nguồn không rung/không khởi động.',
+    },
+    {
+      value: 'Battery Problem',
+      label: 'Pin & Cổng sạc (Battery & Charging Port)',
+      isCovered: true,
+      description: 'Sạc không vào điện, nóng máy bất thường khi sạc, sụt pin nhanh.',
+    },
+    {
+      value: 'Camera Failure',
+      label: 'Camera & Lấy nét (Camera / Lens Defect)',
+      isCovered: true,
+      description: 'Camera mờ, rung ống kính chống rung OIS, lỗi cảm biến camera.',
+    },
+    {
+      value: 'Connectivity Issue',
+      label: 'Sóng & Kết nối (Cellular / Wi-Fi / Bluetooth)',
+      isCovered: true,
+      description: 'Mất sóng di động, không nhận thẻ SIM, mất kết nối Wi-Fi hoặc Bluetooth.',
+    },
+    {
+      value: 'Audio Failure',
+      label: 'Loa & Microphone (Speaker & Mic Failure)',
+      isCovered: true,
+      description: 'Không nghe thấy người gọi, mic không thu âm, loa ngoài bị rè/mất tiếng.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Rơi vỡ nứt kính (Screen / Back Glass Crack) [Không BH]',
+      isCovered: false,
+      description: 'Nứt vỡ mặt kính trước hoặc kính lưng do rơi rớt va đập.',
+    },
+    {
+      value: 'Liquid Damage',
+      label: 'Ngấm nước / Ẩm chân sạc (Liquid Ingress / Moisture) [Không BH]',
+      isCovered: false,
+      description: 'Báo lỗi phát hiện độ ẩm cổng sạc, máy rơi nước.',
+    },
+  ],
+  Tablet: [
+    {
+      value: 'Display Failure',
+      label: 'Màn hình & Cảm ứng (Display & Touchscreen Failure)',
+      isCovered: true,
+      description: 'Loạn cảm ứng, đốm sáng, sọc hiển thị, không nhận bút cảm ứng.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Bo mạch (Power Failure)',
+      isCovered: true,
+      description: 'Không khởi động được, máy tự tắt nguồn.',
+    },
+    {
+      value: 'Battery Problem',
+      label: 'Pin & Cổng sạc (Battery & Charging Issue)',
+      isCovered: true,
+      description: 'Không nhận sạc, pin tụt nhanh, phồng pin.',
+    },
+    {
+      value: 'Connectivity Issue',
+      label: 'Kết nối Wi-Fi & Bluetooth (Connectivity Issue)',
+      isCovered: true,
+      description: 'Không dò được mạng Wi-Fi, mất kết nối thiết bị ngoại vi.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Rơi vỡ nứt màn hình (Physical / Screen Crack) [Không BH]',
+      isCovered: false,
+      description: 'Màn hình bị nứt vỡ do va chạm vật lý.',
+    },
+    {
+      value: 'Liquid Damage',
+      label: 'Vào nước / Đổ chất lỏng (Liquid Damage) [Không BH]',
+      isCovered: false,
+      description: 'Thiết bị bị ngấm nước hoặc dung dịch lỏng.',
+    },
+  ],
+  Television: [
+    {
+      value: 'Display Failure',
+      label: 'Màn hình & Panel hiển thị (Panel & Display Defect)',
+      isCovered: true,
+      description: 'Kẻ sọc dọc/ngang panel, đốm đen, chớp nháy liên tục, mất đèn nền LED (có tiếng mất hình).',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Bo nguồn & Khởi động (Power Board Failure)',
+      isCovered: true,
+      description: 'Không có đèn báo nguồn, bật không lên, chớp đèn đỏ báo lỗi bo nguồn.',
+    },
+    {
+      value: 'Audio Failure',
+      label: 'Âm thanh & Loa (Audio & Speaker Failure)',
+      isCovered: true,
+      description: 'Loa rè, méo tiếng, mất tiếng hoàn toàn khi xem TV.',
+    },
+    {
+      value: 'Connectivity Issue',
+      label: 'Cổng tín hiệu & Kết nối (Signal & Port Issue)',
+      isCovered: true,
+      description: 'Không nhận cổng HDMI, không kết nối được mạng LAN hoặc Wi-Fi.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Nứt vỡ Panel do va đập (Panel Impact / Crack) [Không BH]',
+      isCovered: false,
+      description: 'Panel màn hình bị nứt vỡ do va đập ngoại lực.',
+    },
+    {
+      value: 'Electrical Surge',
+      label: 'Sét đánh / Sốc điện quá áp (Power Surge / Lightning) [Không BH]',
+      isCovered: false,
+      description: 'Cháy nổ bo mạch do xung sét đánh hoặc nguồn điện ngoài tăng áp đột ngột.',
+    },
+  ],
+  Monitor: [
+    {
+      value: 'Display Failure',
+      label: 'Panel & Hiển thị (Panel & Display Defect)',
+      isCovered: true,
+      description: 'Sọc màn hình, chết điểm ảnh, chớp nháy, mất tín hiệu hiển thị.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Adapter (Power Failure)',
+      isCovered: true,
+      description: 'Màn hình không sáng đèn nguồn, bật không lên.',
+    },
+    {
+      value: 'Connectivity Issue',
+      label: 'Cổng DisplayPort / HDMI (Port Defect)',
+      isCovered: true,
+      description: 'Không nhận tín hiệu từ máy tính qua cáp HDMI / DisplayPort.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Màn hình nứt vỡ do va đập (Screen Impact) [Không BH]',
+      isCovered: false,
+      description: 'Vỡ tấm nền do tác động ngoại lực.',
+    },
+  ],
+  Refrigerator: [
+    {
+      value: 'Cooling Failure',
+      label: 'Hệ thống làm lạnh (Cooling System Failure)',
+      isCovered: true,
+      description: 'Ngăn đông không đông đá, ngăn mát không đủ lạnh để bảo quản thực phẩm.',
+    },
+    {
+      value: 'Compressor Failure',
+      label: 'Máy nén / Block (Compressor Defect)',
+      isCovered: true,
+      description: 'Block máy nén không chạy, phát ra tiếng kêu gõ lớn bất thường.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Bảng điều khiển (Power & Control Board)',
+      isCovered: true,
+      description: 'Mất nguồn hoàn toàn, bảng điều khiển nhấp nháy báo lỗi cảm biến.',
+    },
+    {
+      value: 'Water Leakage',
+      label: 'Rò rỉ nước / Đóng tuyết bất thường (Water Leak / Frost)',
+      isCovered: true,
+      description: 'Đóng đá bít đường gió, rò rỉ nước ra đáy hoặc sàn tủ.',
+    },
+    {
+      value: 'Noise',
+      label: 'Tiếng ồn động cơ / Quạt gió (Excessive Noise)',
+      isCovered: true,
+      description: 'Quạt đối lưu kêu to, rung lắc mạnh khi vận hành.',
+    },
+    {
+      value: 'Improper Voltage',
+      label: 'Cháy do điện áp sai quy định (Improper Voltage Supply) [Không BH]',
+      isCovered: false,
+      description: 'Cháy nổ bo mạch hoặc block do cấp điện sai thông số kỹ thuật.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Thủng dàn / Móp méo ngoại lực (Physical Damage) [Không BH]',
+      isCovered: false,
+      description: 'Thủng dàn lạnh do vật nhọn cạy đá, móp méo do va chạm mạnh.',
+    },
+  ],
+  'Washing Machine': [
+    {
+      value: 'Motor Failure',
+      label: 'Động cơ & Chế độ vắt (Motor & Spin Failure)',
+      isCovered: true,
+      description: 'Lồng giặt không quay, không vắt khô được quần áo.',
+    },
+    {
+      value: 'Water Leakage',
+      label: 'Rò rỉ nước & Cấp xả (Water Leak / Valve Defect)',
+      isCovered: true,
+      description: 'Không cấp nước, không xả nước hoặc chảy nước dưới đáy máy.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Bảng mạch điều khiển (Main PCB Board Failure)',
+      isCovered: true,
+      description: 'Liệt phím bấm, máy không nhận lệnh giặt, báo mã lỗi bo mạch.',
+    },
+    {
+      value: 'Mechanical Failure',
+      label: 'Rung lắc & Ổ bi giảm sóc (Bearing & Suspension Defect)',
+      isCovered: true,
+      description: 'Kêu rít lớn khi vắt, rung lắc chồm máy bất thường do hỏng thụt/bi.',
+    },
+    {
+      value: 'Noise',
+      label: 'Tiếng ồn cơ khí bất thường (Abnormal Operating Noise)',
+      isCovered: true,
+      description: 'Tiếng kêu va chạm kim loại trong lồng giặt trong chu trình hoạt động.',
+    },
+    {
+      value: 'Foreign Object Damage',
+      label: 'Kẹt dị vật / Giặt quá tải trọng lượng (Foreign Object / Overloading) [Không BH]',
+      isCovered: false,
+      description: 'Dị vật nhọn làm rách gioăng cao su hoặc giặt quá tải gây gãy chảng ba lồng giặt.',
+    },
+    {
+      value: 'Pest Damage',
+      label: 'Côn trùng / Chuột cắn phá (Pest / Rodent Damage) [Không BH]',
+      isCovered: false,
+      description: 'Đứt dây điện, hỏng van do chuột hoặc côn trùng xâm nhập cắn phá.',
+    },
+  ],
+  'Air Conditioner': [
+    {
+      value: 'Cooling Failure',
+      label: 'Khả năng làm lạnh (Cooling Performance Failure)',
+      isCovered: true,
+      description: 'Có gió thổi nhưng không lạnh, làm lạnh rất yếu, dàn lạnh đóng tuyết.',
+    },
+    {
+      value: 'Compressor Failure',
+      label: 'Cục nóng & Máy nén (Outdoor Unit & Compressor Defect)',
+      isCovered: true,
+      description: 'Cục nóng không chạy, quạt dàn nóng không quay, máy nén gằn ngắt liên tục.',
+    },
+    {
+      value: 'Water Leakage',
+      label: 'Dàn lạnh chảy nước (Indoor Unit Water Leakage)',
+      isCovered: true,
+      description: 'Máng nước bị tắc nghẽn hoặc chảy nước tràn ra tường/sàn phòng.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Mạch điện & Cảm biến (PCB Board & Sensor Issue)',
+      isCovered: true,
+      description: 'Đèn timer nhấp nháy báo lỗi bo mạch, máy không nhận tín hiệu remote.',
+    },
+    {
+      value: 'Noise',
+      label: 'Tiếng ồn quạt lồng sóc / Cục nóng (Excessive Operating Noise)',
+      isCovered: true,
+      description: 'Quạt lồng sóc bị cọ kêu rít hoặc cục nóng rung lắc gây ồn.',
+    },
+    {
+      value: 'Improper Installation',
+      label: 'Lỗi rò rỉ gas do lắp đặt sai kỹ thuật (Improper Installation) [Cần kiểm tra]',
+      isCovered: false,
+      description: 'Xì gas tại đầu tán rắc co, gập ống đồng do thao tác lắp đặt của thợ ngoài.',
+    },
+    {
+      value: 'Power Surge',
+      label: 'Chập cháy do nguồn điện ngoài (External Power Surge) [Không BH]',
+      isCovered: false,
+      description: 'Cháy nổ tụ và bo mạch biến tần do xung sét hoặc nguồn điện không đạt chuẩn.',
+    },
+  ],
+  Camera: [
+    {
+      value: 'Lens Failure',
+      label: 'Ống kính & Hệ thống lấy nét (Lens & Autofocus Failure)',
+      isCovered: true,
+      description: 'Kẹt zoom, động cơ AF không lấy nét, báo lỗi khẩu độ Err01/Err99.',
+    },
+    {
+      value: 'Sensor Failure',
+      label: 'Cảm biến ảnh & Màn trập (Sensor & Shutter Defect)',
+      isCovered: true,
+      description: 'Kẹt màn trập, xuất hiện vệt sọc hoặc điểm chết cảm biến trên ảnh chụp.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Mainboard (Power & Circuit Failure)',
+      isCovered: true,
+      description: 'Không khởi động được, máy tự tắt khi chụp, quá nóng khi quay phim.',
+    },
+    {
+      value: 'Display Failure',
+      label: 'Màn hình LCD & Kính ngắm (Display & EVF Defect)',
+      isCovered: true,
+      description: 'Màn hình bị đen, sọc hiển thị hoặc mất tín hiệu kính ngắm điện tử.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Rơi vỡ va đập thấu kính (Lens Impact / Drop Damage) [Không BH]',
+      isCovered: false,
+      description: 'Nứt vỡ thấu kính, cong vênh ngàm hoặc móp thân máy do va chạm.',
+    },
+    {
+      value: 'Liquid Damage',
+      label: 'Ẩm mốc / Ngấm nước (Moisture / Fungus / Liquid) [Không BH]',
+      isCovered: false,
+      description: 'Cảm biến hoặc kính bị rễ tre nấm mốc do bảo quản ẩm, hoặc máy rơi nước.',
+    },
+  ],
+  Printer: [
+    {
+      value: 'Paper Feed Failure',
+      label: 'Kéo giấy & Khay nạp (Paper Feed & Roller Failure)',
+      isCovered: true,
+      description: 'Kẹt giấy liên tục, con lăn cao su không kéo giấy hoặc kéo nhiều tờ cùng lúc.',
+    },
+    {
+      value: 'Printhead Failure',
+      label: 'Đầu in & Chất lượng bản in (Printhead & Print Quality)',
+      isCovered: true,
+      description: 'Bản in bị sọc trắng, mất tia mực, mất màu (khi dùng mực in chính hãng).',
+    },
+    {
+      value: 'Mechanical Failure',
+      label: 'Cụm sấy & Cơ khí (Fuser & Mechanical Failure)',
+      isCovered: true,
+      description: 'Bản in bị sống mực, kẹt sấy, bánh răng hộp cơ kêu cạch cạch to bất thường.',
+    },
+    {
+      value: 'Power Failure',
+      label: 'Nguồn & Bo mạch kết nối (Power & Formatter Board)',
+      isCovered: true,
+      description: 'Không lên nguồn, máy tính không nhận diện cổng USB hoặc mạng LAN/Wi-Fi.',
+    },
+    {
+      value: 'Non-OEM Ink Damage',
+      label: 'Dùng mực không chính hãng / Tràn mực (Non-OEM Ink Damage) [Không BH]',
+      isCovered: false,
+      description: 'Tắc đầu in do mực ngoài, mực tràn làm chập bo nguồn hoặc đầu phun.',
+    },
+    {
+      value: 'Foreign Object Damage',
+      label: 'Dị vật rơi vào cụm cuốn (Foreign Object Obstruction) [Không BH]',
+      isCovered: false,
+      description: 'Ghim bấm, kẹp giấy rơi vào máy làm rách bao lụa cụm sấy.',
+    },
+  ],
+  Other: [
+    {
+      value: 'Power Failure',
+      label: 'Lỗi nguồn / Khởi động (Power / Startup Failure)',
+      isCovered: true,
+      description: 'Thiết bị không lên nguồn hoặc tự ngắt khi đang hoạt động.',
+    },
+    {
+      value: 'Operational Failure',
+      label: 'Lỗi chức năng hoạt động chính (Operational Failure)',
+      isCovered: true,
+      description: 'Thiết bị không thực hiện được tính năng thiết kế tiêu chuẩn.',
+    },
+    {
+      value: 'Internal Component Defect',
+      label: 'Lỗi bo mạch điện tử bên trong (Internal PCB Defect)',
+      isCovered: true,
+      description: 'Cháy hỏng linh kiện điện tử nguyên nhân do lỗi sản xuất linh kiện.',
+    },
+    {
+      value: 'Physical Damage',
+      label: 'Rơi vỡ / Va đập ngoại lực (Physical Impact Damage) [Không BH]',
+      isCovered: false,
+      description: 'Hỏng hóc, nứt vỡ do tác động ngoại lực.',
+    },
+    {
+      value: 'Liquid Damage',
+      label: 'Vào nước / Ẩm ướt (Liquid / Water Ingress) [Không BH]',
+      isCovered: false,
+      description: 'Chập hỏng do ngấm nước hoặc môi trường ẩm ướt.',
+    },
+  ],
+}
+
+export function getFaultCategoriesForProduct(category) {
+  if (!category) return FAULT_CATEGORIES_BY_PRODUCT_CATEGORY.Other
+  const normalized = category.trim()
+  return (
+    FAULT_CATEGORIES_BY_PRODUCT_CATEGORY[normalized] ||
+    FAULT_CATEGORIES_BY_PRODUCT_CATEGORY.Other
+  )
+}
+
 // ------------------------------------------------------------------------------
 // 1. DEMO DATABASE BUNDLE (Matching SRS & Section 4 of Spec)
 // ------------------------------------------------------------------------------
@@ -534,6 +1000,7 @@ export const CLAIM_PRESETS = [
     product_code: 'AX26-00001',
     claim: {
       incident_date: new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0],
+      problem_category: 'Display Failure',
       fault_description:
         'Screen displays horizontal flickering lines continuously upon boot. No physical drop, impact, or liquid exposure.',
       previous_repair: 'No',
@@ -562,6 +1029,7 @@ export const CLAIM_PRESETS = [
     product_code: 'AX26-00002',
     claim: {
       incident_date: new Date(Date.now() - 10 * 86400000).toISOString().split('T')[0],
+      problem_category: 'Keyboard & Trackpad Failure',
       fault_description:
         'Keyboard keys (E, R, T) intermittently stop responding during normal typing. Device previously serviced at local third-party shop.',
       previous_repair: 'Yes',
@@ -590,6 +1058,7 @@ export const CLAIM_PRESETS = [
     product_code: 'AX26-00003',
     claim: {
       incident_date: new Date(Date.now() - 45 * 86400000).toISOString().split('T')[0],
+      problem_category: 'Liquid Damage',
       fault_description:
         'Phone fell into water pool, screen shattered with liquid ingress behind display glass. Unit fails to power on.',
       previous_repair: 'No',

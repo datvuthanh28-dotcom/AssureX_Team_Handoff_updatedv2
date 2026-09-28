@@ -126,6 +126,11 @@ class CustomerClaim(Base):
         nullable=False,
     )
 
+    problem_category: Mapped[str | None] = mapped_column(
+        String(100),
+        nullable=True,
+    )
+
     status: Mapped[str] = mapped_column(
         String(50),
         default="Under Review",

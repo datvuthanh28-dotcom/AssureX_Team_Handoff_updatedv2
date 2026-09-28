@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { api } from './api'
 import {
   MODEL_14_FEATURES,
+  getFaultCategoriesForProduct,
+  FAULT_CATEGORIES_BY_PRODUCT_CATEGORY,
 } from './claimFields'
 
 // Shared mock storage to persist tickets across views within the session
@@ -29,6 +31,7 @@ function loadStoredTickets() {
       purchase_date: '2026-07-17',
       warranty_expiry: '2028-07-16',
       incident_date: '2026-09-24',
+      problem_category: 'Display Failure',
       fault_description: 'Screen displays horizontal flickering lines continuously upon boot. No physical impact.',
       previous_repair: 'No',
       repair_centre: '',
@@ -75,6 +78,7 @@ function loadStoredTickets() {
       purchase_date: '2025-11-10',
       warranty_expiry: '2027-11-09',
       incident_date: '2026-09-17',
+      problem_category: 'Keyboard & Trackpad Failure',
       fault_description: 'Keyboard keys intermittently stop responding during normal typing. Device previously serviced at local shop.',
       previous_repair: 'Yes',
       repair_centre: 'FastFix Independent Tech Shop',
@@ -121,6 +125,7 @@ function loadStoredTickets() {
       purchase_date: '2024-03-01',
       warranty_expiry: '2025-02-28',
       incident_date: '2026-08-15',
+      problem_category: 'Liquid Damage',
       fault_description: 'Phone fell into water pool, screen shattered with liquid ingress behind display glass.',
       previous_repair: 'No',
       repair_centre: '',
@@ -193,7 +198,17 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
 
   // Section 3: Claim Incident
   const [incidentDate, setIncidentDate] = useState('')
+  const [problemCategory, setProblemCategory] = useState('')
   const [faultDescription, setFaultDescription] = useState('')
+
+  const currentFaultCategories = useMemo(
+    () => getFaultCategoriesForProduct(productRecord?.category),
+    [productRecord?.category]
+  )
+  const selectedCategoryInfo = useMemo(
+    () => currentFaultCategories.find((c) => c.value === problemCategory),
+    [currentFaultCategories, problemCategory]
+  )
 
   // Section 4: Repair History
   const [previousRepair, setPreviousRepair] = useState('No')
@@ -221,6 +236,10 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       const found = await api(`/api/claims/v3/product/${encodeURIComponent(targetCode.trim())}`)
       setProductRecord(found)
       setProductCodeInput(found.product_code)
+      const faultCats = getFaultCategoriesForProduct(found.category)
+      if (faultCats && faultCats.length > 0) {
+        setProblemCategory(faultCats[0].value)
+      }
       if (found.repair_history?.has_external_repair_on_record) {
         setPreviousRepair('Yes')
         setRepairCentre(found.repair_history.latest_external_repair_centre || '')
@@ -230,7 +249,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         setRepairCentre('')
         setRepairDate('')
       }
-      setErrors((prev) => ({ ...prev, product_code: '' }))
+      setErrors((prev) => ({ ...prev, product_code: '', problem_category: '' }))
     } catch (error) {
       setProductRecord(null)
       setErrors((prev) => ({
@@ -264,6 +283,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     const errs = {}
     if (!productRecord) errs.product_code = 'Verify a Registered Product Code that belongs to your account.'
     if (!incidentDate) errs.incident_date = 'Please select the date the incident/defect occurred.'
+    if (!problemCategory) errs.problem_category = 'Please select a fault category for your product.'
     if (!faultDescription?.trim() || faultDescription.trim().length < 10)
       errs.fault_description = 'Please describe the fault or symptom (minimum 10 characters).'
 
@@ -293,6 +313,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       const payload = {
         product_code: productRecord.product_code,
         incident_date: incidentDate,
+        problem_category: problemCategory,
         fault_description: faultDescription.trim(),
         previous_repair: previousRepair,
         repair_centre: repairCentre?.trim() || '',
@@ -321,6 +342,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     setProductCodeInput('')
     setProductRecord(null)
     setIncidentDate('')
+    setProblemCategory('')
     setFaultDescription('')
     setPreviousRepair('No')
     setRepairCentre('')
@@ -419,6 +441,10 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             <div>
               <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Customer:</span>
               <strong>{createdTicket.customer_name} ({createdTicket.customer_email})</strong>
+            </div>
+            <div>
+              <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>Fault Category:</span>
+              <strong>{createdTicket.problem_category || problemCategory || 'Hardware Defect'}</strong>
             </div>
             <div>
               <span style={{ color: 'var(--ax-text-faint, #64748b)', display: 'block', fontSize: '11.5px' }}>AI Prediction:</span>
@@ -711,7 +737,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 280px) 1fr', gap: '16px', marginBottom: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(180px, 240px) 1fr', gap: '16px', marginBottom: '16px' }}>
             <div>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
                 Incident Date <span style={{ color: '#ef4444' }}>*</span>
@@ -734,9 +760,108 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
               {errors.incident_date && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.incident_date}</p>}
             </div>
 
-            <div style={{ padding: '9px 12px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', fontSize: '12.5px', alignSelf: 'end' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                <label style={{ margin: 0, fontSize: '13px', fontWeight: 600 }}>
+                  Fault Category (Phân loại sự cố) <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                {productRecord?.category && (
+                  <span style={{ fontSize: '11.5px', color: '#2563eb', fontWeight: 600, background: '#eff6ff', padding: '2px 8px', borderRadius: '4px' }}>
+                    Customized for {productRecord.category}
+                  </span>
+                )}
+              </div>
+              <select
+                value={problemCategory}
+                onChange={(e) => {
+                  setProblemCategory(e.target.value)
+                  setErrors({ ...errors, problem_category: '' })
+                }}
+                style={{
+                  width: '100%',
+                  padding: '9px 12px',
+                  borderRadius: '6px',
+                  border: `1px solid ${errors.problem_category ? '#ef4444' : '#cbd5e1'}`,
+                  fontSize: '13px',
+                  background: '#ffffff',
+                  fontWeight: 500,
+                  cursor: 'pointer',
+                }}
+              >
+                <option value="">-- Chọn phân loại lỗi phù hợp --</option>
+                {currentFaultCategories.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+              {errors.problem_category && (
+                <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '4px 0 0' }}>{errors.problem_category}</p>
+              )}
             </div>
           </div>
+
+          {/* Fault Category Policy & Symptom Helper Box */}
+          {selectedCategoryInfo && (
+            <div
+              style={{
+                marginBottom: '16px',
+                padding: '12px 14px',
+                borderRadius: '8px',
+                background: selectedCategoryInfo.isCovered ? '#f0fdf4' : '#fef2f2',
+                border: `1px solid ${selectedCategoryInfo.isCovered ? '#bbf7d0' : '#fecaca'}`,
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'flex-start',
+              }}
+            >
+              <div
+                style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: selectedCategoryInfo.isCovered ? '#dcfce7' : '#fee2e2',
+                  color: selectedCategoryInfo.isCovered ? '#15803d' : '#b91c1c',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800,
+                  fontSize: '12px',
+                  flexShrink: 0,
+                  marginTop: '1px',
+                }}
+              >
+                {selectedCategoryInfo.isCovered ? '✓' : '✕'}
+              </div>
+              <div style={{ flex: 1, fontSize: '12.5px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+                  <strong style={{ color: selectedCategoryInfo.isCovered ? '#166534' : '#991b1b', fontSize: '13px' }}>
+                    {selectedCategoryInfo.isCovered ? 'Phù hợp bảo hành (Covered Defect)' : 'Thuộc diện loại trừ (Excluded from Warranty)'}
+                  </strong>
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      padding: '1px 6px',
+                      borderRadius: '4px',
+                      background: selectedCategoryInfo.isCovered ? '#bbf7d0' : '#fca5a5',
+                      color: selectedCategoryInfo.isCovered ? '#14532d' : '#7f1d1d',
+                      fontWeight: 700,
+                    }}
+                  >
+                    FaultCovered: {selectedCategoryInfo.isCovered ? 'Yes' : 'No'}
+                  </span>
+                </div>
+                <p style={{ margin: '0 0 4px', color: '#334155', lineHeight: 1.4 }}>
+                  <strong>Dấu hiệu & Triệu chứng:</strong> {selectedCategoryInfo.description}
+                </p>
+                <span style={{ fontSize: '11.5px', color: selectedCategoryInfo.isCovered ? '#15803d' : '#b91c1c', fontStyle: 'italic' }}>
+                  {selectedCategoryInfo.isCovered
+                    ? 'Chính sách bảo hành AssureX cam kết sửa chữa / thay thế linh kiện chính hãng cho lỗi kỹ thuật từ nhà sản xuất.'
+                    : 'Cảnh báo chính sách: Lỗi phát sinh do tác động ngoại lực, rơi vỡ hoặc tiếp xúc chất lỏng sẽ bị mô hình AI và Reviewer từ chối bảo hành.'}
+                </span>
+              </div>
+            </div>
+          )}
 
           <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: 600 }}>
@@ -1193,9 +1318,16 @@ export function ReviewerWarrantyDesk() {
               </p>
 
               <div style={{ margin: '10px 0 0', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '13px' }}>
-                <span style={{ color: '#64748b', display: 'block', fontSize: '11.5px', marginBottom: '4px' }}>
-                  Incident Date: <strong>{selectedTicket.incident_date}</strong> · Previous Repair: <strong>{selectedTicket.previous_repair}</strong>
-                </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap', gap: '6px' }}>
+                  <span style={{ color: '#64748b', fontSize: '11.5px' }}>
+                    Incident Date: <strong>{selectedTicket.incident_date}</strong> · Previous Repair: <strong>{selectedTicket.previous_repair}</strong>
+                  </span>
+                  {selectedTicket.problem_category && (
+                    <span style={{ fontSize: '11.5px', fontWeight: 700, padding: '2px 8px', borderRadius: '4px', background: '#eff6ff', color: '#1d4ed8', border: '1px solid #bfdbfe' }}>
+                      Category: {selectedTicket.problem_category}
+                    </span>
+                  )}
+                </div>
                 <p style={{ margin: 0, color: '#1e293b', fontStyle: 'italic' }}>
                   "{selectedTicket.fault_description}"
                 </p>
@@ -1465,8 +1597,26 @@ export function ReviewerWarrantyDesk() {
                     <strong>{t.customer_name}</strong>
                     <div style={{ fontSize: '12px', color: '#64748b' }}>{t.product_name} · <span className="mono">{t.product_code}</span></div>
                   </td>
-                  <td style={{ padding: '12px 16px', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={t.fault_description}>
-                    {t.fault_description}
+                  <td style={{ padding: '12px 16px', maxWidth: '280px' }}>
+                    {t.problem_category && (
+                      <div style={{ marginBottom: '4px' }}>
+                        <span style={{
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          padding: '2px 7px',
+                          borderRadius: '4px',
+                          background: '#f1f5f9',
+                          color: '#1e293b',
+                          border: '1px solid #e2e8f0',
+                          display: 'inline-block',
+                        }}>
+                          {t.problem_category}
+                        </span>
+                      </div>
+                    )}
+                    <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '12.5px', color: '#475569' }} title={t.fault_description}>
+                      {t.fault_description}
+                    </div>
                   </td>
                   <td style={{ padding: '12px 16px' }}>
                     <span

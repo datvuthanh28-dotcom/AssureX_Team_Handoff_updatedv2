@@ -65,6 +65,7 @@ class WarrantyClaimCreatePayload(BaseModel):
 
     product_code: str = Field(min_length=1, max_length=30)
     incident_date: date
+    problem_category: str = Field(default="Hardware Defect", min_length=2, max_length=150)
     fault_description: str = Field(min_length=10, max_length=5000)
     previous_repair: Literal["Yes", "No"]
     repair_centre: str | None = Field(default=None, max_length=150)
@@ -318,8 +319,13 @@ def _derive_features(db, account, registered, product, warranty, payload):
     delay = max(0, (today - payload.incident_date).days)
     expiry = date.fromisoformat(warranty.end_date) if warranty else None
     remaining = (expiry - today).days if expiry else 0
+    category_text = (getattr(payload, "problem_category", "") or "").casefold()
     description = payload.fault_description.casefold()
-    fault_covered = "No" if any(term in description for term in EXCLUDED_FAULT_TERMS) else "Yes"
+    is_excluded = (
+        any(term in category_text for term in EXCLUDED_FAULT_TERMS)
+        or any(term in description for term in EXCLUDED_FAULT_TERMS)
+    )
+    fault_covered = "No" if is_excluded else "Yes"
 
     # A claim can be submitted without uploads. Missing optional evidence is
     # retained as a model signal and can route the ticket to manual review.
@@ -412,7 +418,7 @@ def create_warranty_claim(
         order_code=f"REG-{registered.id:05d}",
         purchase_date=registered.purchase_date,
         usage_duration=max(0, (date.today() - date.fromisoformat(registered.purchase_date)).days // 30),
-        problem_category="Warranty Claim",
+        problem_category=payload.problem_category or "Hardware Defect",
         problem_description=payload.fault_description,
         status="PENDING_AI",
         customer_account_id=account.id,
@@ -441,6 +447,7 @@ def create_warranty_claim(
         serial_number=registered.serial_number,
         purchase_date=registered.purchase_date,
         claim_amount=0.0,
+        problem_category=payload.problem_category or "Hardware Defect",
         fault_description=payload.fault_description,
         status="Under Review" if ticket.status != "AI_ERROR" else "Manual Review",
         receipt_url=(ticket.evidence.get("purchase_invoice") or {}).get("file_url"),
@@ -504,6 +511,7 @@ def create_warranty_claim(
             "warranty_status": owned_product["status"],
             "customer_name": account.full_name or account.email,
             "customer_email": account.email,
+            "problem_category": ticket.problem_category,
             "fault_description": payload.fault_description,
             "evidence": ticket.evidence,
             "model_features": active_features,

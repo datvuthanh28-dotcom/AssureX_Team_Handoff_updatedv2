@@ -207,9 +207,19 @@ def create_database_tables():
                 "replaced_parts": "ALTER TABLE customer_claims ADD COLUMN replaced_parts VARCHAR(255)",
                 "repair_outcome": "ALTER TABLE customer_claims ADD COLUMN repair_outcome VARCHAR(100)",
                 "repair_cost": "ALTER TABLE customer_claims ADD COLUMN repair_cost FLOAT",
+                "problem_category": "ALTER TABLE customer_claims ADD COLUMN problem_category VARCHAR(100)",
             }
             for col_name, stmt in cc_migrations.items():
                 if col_name not in cc_columns:
+                    connection.execute(text(stmt))
+
+        if "warranty_tickets" in table_names:
+            wt_columns = {col["name"] for col in inspect(engine).get_columns("warranty_tickets")}
+            wt_migrations = {
+                "problem_category": "ALTER TABLE warranty_tickets ADD COLUMN problem_category VARCHAR(100) DEFAULT 'Hardware Defect'",
+            }
+            for col_name, stmt in wt_migrations.items():
+                if col_name not in wt_columns:
                     connection.execute(text(stmt))
 
         if "registered_products" in table_names:

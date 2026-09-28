@@ -200,18 +200,37 @@ def build_claim_features(
         raw.get("damage_type") or ""
     ).strip()
 
-    fault_type = str(raw.get("fault_type") or "").strip()
+    fault_type = str(raw.get("fault_type") or raw.get("problem_category") or "").strip()
+    problem_category = str(raw.get("problem_category") or "").strip()
+    fault_desc = str(raw.get("fault_description") or "").lower()
     policy_covered_faults = set(policy.get("potentially_covered_faults", []))
     policy_excluded_causes = set(common_policy.get("common_excluded_causes", [])) | set(policy.get("additional_excluded_causes", []))
 
-    if damage_type in policy_excluded_causes or fault_type in policy_excluded_causes:
+    excluded_terms = {
+        "water", "liquid", "dropped", "falling", "shattered", "physical impact",
+        "spilled", "tampered", "cracked glass", "misuse", "accident",
+        "roi", "rơi", "vo", "vỡ", "be", "bể", "be man hinh", "bể màn hình",
+        "roi vo", "rơi vỡ", "va dap", "va đập", "rot nuoc", "rớt nước",
+        "vao nuoc", "vào nước", "ngam nuoc", "ngấm nước", "do nuoc", "đổ nước",
+        "physical damage", "liquid damage",
+    }
+
+    if (
+        damage_type in policy_excluded_causes
+        or fault_type in policy_excluded_causes
+        or problem_category in policy_excluded_causes
+        or any(t in problem_category.lower() for t in excluded_terms)
+        or any(t in fault_desc for t in excluded_terms)
+    ):
         fault_covered = "No"
-    elif fault_type in policy_covered_faults:
+    elif fault_type in policy_covered_faults or problem_category in policy_covered_faults:
         fault_covered = "Yes"
     elif damage_type in COVERED_DAMAGE_TYPES:
         fault_covered = "Yes"
     elif damage_type in EXCLUDED_DAMAGE_TYPES:
         fault_covered = "No"
+    elif problem_category:
+        fault_covered = "Yes"
     else:
         fault_covered = "Unknown"
 
