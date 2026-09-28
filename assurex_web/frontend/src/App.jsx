@@ -3360,14 +3360,14 @@ function CustomerSubmit({
     .filter(([, value]) => !String(value || '').trim())
     .map(([label]) => label)
 
-  const missingDocuments = [
-    !evidenceFiles.receipt && form.receipt_available !== 'Yes' ? 'Receipt' : null,
-    !warrantyDocument ? 'Warranty card' : null,
-    !evidenceFiles.product_image && form.product_image_available !== 'Yes' ? 'Product image' : null,
-    !ocrOriginal?.serial_number ? 'Serial evidence' : null,
-    !evidenceFiles.fault_evidence && form.fault_evidence_available !== 'Yes' ? 'Fault evidence' : null,
+  const optionalEvidenceNotAdded = [
+    !evidenceFiles.receipt && form.receipt_available !== 'Yes' ? 'receipt' : null,
+    !warrantyDocument ? 'warranty card' : null,
+    !evidenceFiles.product_image && form.product_image_available !== 'Yes' ? 'product photo' : null,
+    !ocrOriginal?.serial_number ? 'serial evidence' : null,
+    !evidenceFiles.fault_evidence && form.fault_evidence_available !== 'Yes' ? 'fault evidence' : null,
     form.previous_repair === 'Yes' && !evidenceFiles.repair_report && form.repair_report_available !== 'Yes'
-      ? 'Repair report'
+      ? 'repair report'
       : null,
   ].filter(Boolean)
 
@@ -3823,17 +3823,15 @@ function CustomerSubmit({
           <div className="panel-heading">
             <div>
               <p className="eyebrow">
-                Start here
+                Optional shortcut
               </p>
 
               <h2>
-                Upload Warranty Card
+                Warranty Card OCR <small style={{ fontSize: '13px', color: 'var(--ax-muted)' }}>(optional)</small>
               </h2>
 
               <p className="section-helper">
-                Upload a clear photo. AssureX
-                will read the warranty details
-                and fill the form automatically.
+                You can skip this upload. Select a registered product below or enter the details manually; the backend will verify ownership and warranty data.
               </p>
             </div>
           </div>
@@ -3849,11 +3847,11 @@ function CustomerSubmit({
             <strong>
               {ocrUploading
                 ? 'Reading warranty card...'
-                : 'Choose Warranty Card'}
+                : 'Add warranty card (optional)'}
             </strong>
 
             <span>
-              JPG, PNG or WEBP · Max 8 MB
+              Optional JPG, PNG or WEBP · Max 8 MB
             </span>
           </label>
 
@@ -4375,10 +4373,13 @@ function CustomerSubmit({
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Step 3</p>
-              <h2>Supporting Evidence & Documents</h2>
+              <h2>Optional Evidence</h2>
               <p className="section-helper">
-                Upload receipts, photos, or fault videos. Files are securely validated and cryptographically hashed with SHA-256 for integrity verification.
+                You can submit without uploading files. Add receipts, photos, or fault videos only if available; they help the reviewer verify the claim faster.
               </p>
+              <div className="alert success" style={{ marginTop: '10px' }}>
+                Uploads are optional. Registered product code, warranty dates, claim timing, fault coverage, duplicate checks, and repair history drive the Model V1 assessment.
+              </div>
             </div>
           </div>
 
@@ -4391,7 +4392,7 @@ function CustomerSubmit({
                 <span>📄</span> Purchase Receipt
                 {evidenceFiles.receipt && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
               </h4>
-              <p>Proof of purchase from retailer or store (PDF, JPG, PNG · Max 25 MB).</p>
+              <p>Optional proof of purchase from retailer or store.</p>
               {evidenceFiles.receipt ? (
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
@@ -4431,7 +4432,7 @@ function CustomerSubmit({
                     onChange={(e) => handleFileUpload(e, 'receipt')}
                     disabled={uploadingDoc === 'receipt'}
                   />
-                  {uploadingDoc === 'receipt' ? 'Uploading & Hashing...' : 'Upload Receipt'}
+                  {uploadingDoc === 'receipt' ? 'Uploading...' : 'Add receipt (optional)'}
                 </label>
               )}
             </div>
@@ -4442,7 +4443,7 @@ function CustomerSubmit({
                 <span>📷</span> Product Photo
                 {evidenceFiles.product_image && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
               </h4>
-              <p>Clear photo of your product showing the model and overall condition.</p>
+              <p>Optional photo of your product/model label.</p>
               {evidenceFiles.product_image ? (
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
@@ -4482,7 +4483,7 @@ function CustomerSubmit({
                     onChange={(e) => handleFileUpload(e, 'product_image')}
                     disabled={uploadingDoc === 'product_image'}
                   />
-                  {uploadingDoc === 'product_image' ? 'Uploading & Hashing...' : 'Upload Product Photo'}
+                  {uploadingDoc === 'product_image' ? 'Uploading...' : 'Add product photo (optional)'}
                 </label>
               )}
             </div>
@@ -4493,7 +4494,7 @@ function CustomerSubmit({
                 <span>⚠️</span> Fault / Damage Evidence
                 {evidenceFiles.fault_evidence && <span style={{ color: 'var(--ax-success)', fontSize: '12px' }}>✓ Verified</span>}
               </h4>
-              <p>Close-up photo of the defect, cracked part, or short video of malfunction (MP4/JPG/PNG).</p>
+              <p>Optional photo, video, or document showing the issue.</p>
               {evidenceFiles.fault_evidence ? (
                 <div>
                   <div style={{ fontWeight: 600, fontSize: '13px', wordBreak: 'break-all' }}>
@@ -4533,7 +4534,7 @@ function CustomerSubmit({
                     onChange={(e) => handleFileUpload(e, 'fault_evidence')}
                     disabled={uploadingDoc === 'fault_evidence'}
                   />
-                  {uploadingDoc === 'fault_evidence' ? 'Uploading & Hashing...' : 'Upload Fault Photo / Video'}
+                  {uploadingDoc === 'fault_evidence' ? 'Uploading...' : 'Add fault evidence (optional)'}
                 </label>
               )}
             </div>
@@ -4656,7 +4657,7 @@ function CustomerSubmit({
 
                 {/* Repair Report Upload */}
                 <div className="form-field full-width">
-                  <span>Upload Previous Diagnostic / Repair Report</span>
+                  <span>Previous Diagnostic / Repair Report (optional)</span>
                   <div className={`evidence-upload-card ${evidenceFiles.repair_report ? 'has-file' : ''}`} style={{ marginTop: '6px' }}>
                     {evidenceFiles.repair_report ? (
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -4695,7 +4696,7 @@ function CustomerSubmit({
                           onChange={(e) => handleFileUpload(e, 'repair_report')}
                           disabled={uploadingDoc === 'repair_report'}
                         />
-                        {uploadingDoc === 'repair_report' ? 'Uploading & Hashing...' : 'Upload Repair Report (PDF / Image)'}
+                        {uploadingDoc === 'repair_report' ? 'Uploading...' : 'Add repair report (optional)'}
                       </label>
                     )}
                   </div>
@@ -4718,12 +4719,12 @@ function CustomerSubmit({
             <p>Complete: {missingInformation.join(', ')}</p>
           )}
           <p>
-            {missingDocuments.length === 0
-              ? 'All listed evidence is marked available.'
-              : `Evidence to add or confirm: ${missingDocuments.join(', ')}`}
+            {optionalEvidenceNotAdded.length === 0
+              ? 'Optional evidence has been added for this claim.'
+              : `Optional evidence not added: ${optionalEvidenceNotAdded.join(', ')}`}
           </p>
           <small>
-            Missing evidence may require manual review; you can still submit without an optional document.
+            This does not block submission and does not automatically make the claim invalid.
           </small>
         </section>
 
@@ -4734,10 +4735,7 @@ function CustomerSubmit({
             </strong>
 
             <p>
-              AssureX will verify the
-              document data, derive the ML
-              features automatically and
-              evaluate the claim.
+              AssureX will verify the registered product, derive the Model V1 features automatically, and evaluate the claim.
             </p>
           </div>
 
