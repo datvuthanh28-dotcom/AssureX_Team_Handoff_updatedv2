@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import ClaimAppeal, CustomerClaim, CustomerAccount, AuditLog
 from app.auth_routes import require_roles, record_audit
-from app.customer_routes import CustomerClaimStatusUpdate, update_customer_claim_status
+from app.customer_routes import CustomerClaimStatusUpdate, get_decision, update_customer_claim_status
 
 router = APIRouter(prefix="/api/appeals", tags=["Appeals"])
 
@@ -35,8 +35,15 @@ def create_appeal(payload: AppealCreate, account=Depends(require_roles("CUSTOMER
     claim = db.scalar(select(CustomerClaim).where(CustomerClaim.claim_id == payload.claim_id, CustomerClaim.email == account.email))
     if claim is None:
         raise HTTPException(404, "Claim not found.")
-    if claim.status != "Rejected":
-        raise HTTPException(409, "Only rejected claims can be appealed.")
+    decision = get_decision(db, claim.claim_id)
+    invalid_awaiting_customer = (
+        claim.status == "Under Review"
+        and decision is not None
+        and decision.final_decision == "Invalid Claim"
+        and decision.customer_confirmation is None
+    )
+    if claim.status != "Rejected" and not invalid_awaiting_customer:
+        raise HTTPException(409, "Only rejected claims or unconfirmed invalid results can be appealed.")
     if len(payload.reason.strip()) < 10:
         raise HTTPException(422, "Please provide at least 10 characters explaining your appeal.")
     if db.scalar(select(ClaimAppeal).where(ClaimAppeal.claim_id == claim.claim_id)):

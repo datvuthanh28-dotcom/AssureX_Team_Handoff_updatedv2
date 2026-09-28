@@ -346,6 +346,18 @@ def serialize_claim(
 
         "customer_confirmed_at":
             decision.customer_confirmed_at,
+
+        "customer_action_required": (
+            "Confirm Invalid or submit an appeal"
+            if decision.final_decision == "Invalid Claim"
+            and decision.customer_confirmation is None
+            else (
+                "Reviewer confirmation required"
+                if decision.final_decision == "Valid Claim"
+                and decision.reviewer_decision is None
+                else None
+            )
+        ),
     }
 
     return result
@@ -613,9 +625,9 @@ def submit_customer_claim(
     # ---------------------------------------------
     # CUSTOMER STATUS
     #
-    # Valid  -> Approved
-    # Invalid -> Rejected
-    # Manual -> Under Review
+    # Valid    -> Reviewer confirmation required
+    # Invalid  -> Customer confirmation or appeal
+    # Manual   -> Reviewer review
     # ---------------------------------------------
 
     customer_status = decision_result["customer_status"]
@@ -1059,8 +1071,9 @@ def confirm_customer_claim_result(
     if decision is None:
         raise HTTPException(status_code=409, detail="This claim has no model result to confirm.")
 
+    # Customer confirmation is intentionally limited to the Invalid path.
+    # Valid and Manual Review results must be handled by a reviewer.
     expected = {
-        "Valid Claim": "Valid",
         "Invalid Claim": "Invalid",
     }.get(decision.final_decision)
     if expected is None:

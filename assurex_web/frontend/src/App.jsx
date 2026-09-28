@@ -3603,6 +3603,14 @@ function CustomerSubmit({
   function decisionMessage() {
     if (!result) return ''
 
+    if (result.decision?.final_decision === 'Valid Claim') {
+      return 'The model marked this claim as valid. A reviewer must confirm the result before it is approved.'
+    }
+
+    if (result.decision?.final_decision === 'Invalid Claim') {
+      return 'The model marked this claim as invalid. Confirm the result or submit an appeal for reviewer assessment.'
+    }
+
     if (result.status === 'Approved') {
       return (
         'Your claim passed the automated ' +
@@ -4735,11 +4743,11 @@ function CustomerSubmit({
 
           <div className="assessment-flow">
             <span>
-              Valid → Approved
+              Valid → Reviewer confirmation
             </span>
 
             <span>
-              Invalid → Rejected
+              Invalid → Customer confirmation
             </span>
 
             <span>
@@ -4842,6 +4850,10 @@ function CustomerClaims({
   const [claims, setClaims] = useState([])
   const [selected, setSelected] = useState(null)
   const [loading, setLoading] = useState(Boolean(email))
+  const [confirmationBusy, setConfirmationBusy] = useState(false)
+  const [confirmationMessage, setConfirmationMessage] = useState('')
+  const [appealOpen, setAppealOpen] = useState(false)
+  const [appealReason, setAppealReason] = useState('')
 
   useEffect(() => {
     if (!email) {
@@ -4861,6 +4873,47 @@ function CustomerClaims({
       .then(setClaims)
       .finally(() => setLoading(false))
   }, [email, refreshKey])
+
+  async function confirmInvalidResult() {
+    if (!selected) return
+    setConfirmationBusy(true)
+    setConfirmationMessage('')
+    try {
+      const updated = await api(`/api/customer/claims/${encodeURIComponent(selected.claim_id)}/confirmation`, {
+        method: 'PATCH',
+        body: JSON.stringify({ result: 'Invalid' }),
+      })
+      setSelected(updated)
+      setClaims((current) => current.map((claim) => claim.id === updated.id ? updated : claim))
+      setConfirmationMessage('Invalid result confirmed. The claim is now recorded for retraining.')
+    } catch (error) {
+      setConfirmationMessage(error.message)
+    } finally {
+      setConfirmationBusy(false)
+    }
+  }
+
+  async function submitInvalidAppeal() {
+    if (!selected || appealReason.trim().length < 10) {
+      setConfirmationMessage('Please explain your appeal in at least 10 characters.')
+      return
+    }
+    setConfirmationBusy(true)
+    setConfirmationMessage('')
+    try {
+      await api('/api/appeals', {
+        method: 'POST',
+        body: JSON.stringify({ claim_id: selected.claim_id, reason: appealReason.trim() }),
+      })
+      setAppealOpen(false)
+      setAppealReason('')
+      setConfirmationMessage('Appeal submitted. A reviewer will make the final decision.')
+    } catch (error) {
+      setConfirmationMessage(error.message)
+    } finally {
+      setConfirmationBusy(false)
+    }
+  }
 
   return (
     <>
@@ -4954,6 +5007,35 @@ function CustomerClaims({
           </div>
 
           <ClaimTimeline claimId={selected.claim_id} status={selected.status} />
+
+          {selected.decision?.customer_action_required === 'Confirm Invalid or submit an appeal' && (
+            <section className="panel customer-confirmation-panel">
+              <p className="eyebrow">Customer confirmation</p>
+              <h3>Model result: Invalid</h3>
+              <p>Confirm this result to close the claim and add the verified label to the retraining dataset. If you disagree, submit an appeal for reviewer assessment.</p>
+              <div className="button-row">
+                <button className="button danger" disabled={confirmationBusy} onClick={confirmInvalidResult}>
+                  {confirmationBusy ? 'Saving…' : 'Confirm invalid'}
+                </button>
+                <button className="button secondary" type="button" onClick={() => setAppealOpen((open) => !open)}>
+                  {appealOpen ? 'Cancel appeal' : 'Submit appeal'}
+                </button>
+              </div>
+              {appealOpen && (
+                <div className="appeal-form">
+                  <textarea value={appealReason} onChange={(event) => setAppealReason(event.target.value)} placeholder="Explain why you disagree with the invalid result..." rows="3" />
+                  <button className="button secondary" disabled={confirmationBusy} onClick={submitInvalidAppeal}>
+                    {confirmationBusy ? 'Submitting…' : 'Send appeal'}
+                  </button>
+                </div>
+              )}
+              {confirmationMessage && <p className="form-message">{confirmationMessage}</p>}
+            </section>
+          )}
+
+          {selected.decision?.customer_action_required === 'Reviewer confirmation required' && (
+            <div className="alert info">This valid result is waiting for reviewer confirmation.</div>
+          )}
 
           {selected.decision && (
             <div className="claim-analysis">
