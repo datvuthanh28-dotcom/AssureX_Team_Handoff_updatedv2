@@ -1,6 +1,16 @@
 # AssureX Claim Engine – Team Handoff Architecture
 > Customer Input → Product Lookup → Feature Engineering (14 Features) → Python Model V3
 
+## Runtime setup
+After cloning the repository, install the frontend and GTM G2 V3 runtime dependencies:
+
+```bash
+npm install
+npm run install:gtm
+```
+
+The second command installs the local Teachable Machine runtime used by the backend for image inference. Without it, GTM claims are routed to Manual Review because image inference is unavailable.
+
 ## 1. Design Principles & Scope
 - **UX Goal**: Minimize manual customer inputs. Customer provides basic identity and enters **Product Code**.
 - **Database Lookup**: Backend verifies ownership and queries `sold_products` + `product_catalog` + `users`. The product and warranty details are displayed read-only on the frontend.
