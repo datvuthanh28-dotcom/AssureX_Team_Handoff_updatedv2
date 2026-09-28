@@ -114,6 +114,7 @@ class CustomerClaimStatusUpdate(BaseModel):
         "Additional Information Required",
         "Manual Review",
         "Under Review",
+        "Waiting to proceed",
         "Approved",
         "Rejected",
         "Closed",
@@ -954,7 +955,7 @@ def get_customer_claim_stats(
         "total": len(serialized),
 
         "under_review": sum(
-            claim["status"] in {"Under Review", "Manual Review"}
+            claim["status"] in {"Under Review", "Manual Review", "Waiting to proceed"}
             for claim in serialized
         ),
 

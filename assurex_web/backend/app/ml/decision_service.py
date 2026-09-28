@@ -341,7 +341,7 @@ def apply_business_rules(
     # must be confirmed by a reviewer. Invalid predictions are shown to the
     # customer for confirmation; disagreement is handled as an appeal.
     customer_status = {
-        "Likely Valid": "Under Review",
+        "Likely Valid": "Waiting to proceed",
         "Likely Invalid": "Under Review",
         "Manual Review Required": "Under Review",
     }[final_application_decision]

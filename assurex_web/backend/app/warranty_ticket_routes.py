@@ -512,6 +512,14 @@ def create_warranty_claim(
     except Exception as exc:
         ticket.status = "AI_ERROR"
         ticket.ai_error_message = f"AI Prediction Failed: {str(exc)}"
+    customer_claim_status = (
+        "Waiting to proceed"
+        if ticket.ai_prediction == "WARRANTY"
+        else "Under Review"
+        if ticket.status != "AI_ERROR"
+        else "Manual Review"
+    )
+
     customer_claim = CustomerClaim(
         claim_id=ticket_id,
         customer_name=account.full_name or account.email,
@@ -522,7 +530,7 @@ def create_warranty_claim(
         claim_amount=0.0,
         problem_category=payload.problem_category or "Hardware Defect",
         fault_description=claim_description,
-        status="Under Review" if ticket.status != "AI_ERROR" else "Manual Review",
+        status=customer_claim_status,
         receipt_url=(ticket.evidence.get("purchase_invoice") or {}).get("file_url"),
         evidence_photo_url=(ticket.evidence.get("fault_evidence") or {}).get("file_url"),
         product_image_url=(ticket.evidence.get("serial_image") or {}).get("file_url"),
