@@ -98,25 +98,58 @@ function NavIcon({ name }) {
 }
 
 
-function CustomerNotifications() {
+function CustomerNotifications({ onNotificationsSeen }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    let active = true
+
     api('/api/notifications')
-      .then(setItems)
+      .then((notifications) => {
+        if (!active) return
+        setItems(notifications)
+        markVisibleNotificationsSeen(notifications)
+      })
       .catch((requestError) => setError(requestError.message))
-      .finally(() => setLoading(false))
+      .finally(() => {
+        if (active) setLoading(false)
+      })
+
+    return () => {
+      active = false
+    }
   }, [])
 
-  async function markRead(item) {
+  async function markVisibleNotificationsSeen(notifications) {
+    const unreadItems = notifications.filter((item) => !item.is_read)
+    if (unreadItems.length === 0) return
+
+    onNotificationsSeen?.()
+    setItems((current) => current.map((entry) => ({ ...entry, is_read: true })))
+
     try {
-      await api(`/api/notifications/${item.id}/read`, { method: 'POST' })
-      setItems((current) => current.map((entry) =>
-        entry.id === item.id ? { ...entry, is_read: true } : entry
+      await Promise.all(unreadItems.map((item) =>
+        api(`/api/notifications/${item.id}/read`, { method: 'POST' })
       ))
-      if (item.resource_id) {
+      onNotificationsSeen?.()
+    } catch (requestError) {
+      setError(requestError.message)
+    }
+  }
+
+  async function markRead(item, { openClaim = false } = {}) {
+    try {
+      if (!item.is_read) {
+        await api(`/api/notifications/${item.id}/read`, { method: 'POST' })
+        setItems((current) => current.map((entry) =>
+          entry.id === item.id ? { ...entry, is_read: true } : entry
+        ))
+        onNotificationsSeen?.()
+      }
+
+      if (openClaim && item.resource_id) {
         const nextPath = `${import.meta.env.BASE_URL}claims/${encodeURIComponent(item.resource_id)}`
         window.history.pushState({}, '', nextPath)
         window.dispatchEvent(new PopStateEvent('popstate'))
@@ -124,6 +157,10 @@ function CustomerNotifications() {
     } catch (requestError) {
       setError(requestError.message)
     }
+  }
+
+  function openNotification(item) {
+    markRead(item, { openClaim: true })
   }
 
   return (
@@ -141,13 +178,35 @@ function CustomerNotifications() {
         ) : (
           <div className="notification-list">
             {items.map((item) => (
-              <article className={`notification-item ${item.is_read ? 'read' : 'unread'}`} key={item.id}>
+              <article
+                className={`notification-item ${item.is_read ? 'read' : 'unread'}`}
+                key={item.id}
+                role={item.resource_id ? 'button' : undefined}
+                tabIndex={item.resource_id ? 0 : undefined}
+                onClick={() => openNotification(item)}
+                onKeyDown={(event) => {
+                  if ((event.key === 'Enter' || event.key === ' ') && item.resource_id) {
+                    event.preventDefault()
+                    openNotification(item)
+                  }
+                }}
+              >
                 <div>
                   <strong>{item.title}</strong>
                   <p>{item.message}</p>
                   <small>{formatNotificationDate(item.created_at)}</small>
                 </div>
-                {!item.is_read && <button className="text-button" onClick={() => markRead(item)}>Mark read</button>}
+                {!item.is_read && (
+                  <button
+                    className="text-button"
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      markRead(item)
+                    }}
+                  >
+                    Mark read
+                  </button>
+                )}
               </article>
             ))}
           </div>
@@ -1255,10 +1314,15 @@ function CustomerApp() {
       return undefined
     }
 
+    if (customerPage === 'notifications') {
+      setNotificationCount(0)
+      return undefined
+    }
+
     let active = true
     api('/api/notifications')
       .then((items) => {
-        if (!active) return
+        if (!active || customerPage === 'notifications') return
         setNotificationCount(items.filter((item) => !item.is_read).length)
       })
       .catch(() => {
@@ -1268,7 +1332,7 @@ function CustomerApp() {
     return () => {
       active = false
     }
-  }, [session?.token, refreshKey])
+  }, [session?.token, refreshKey, customerPage])
 
   useEffect(() => {
     document.body.classList.add('customer-light')
@@ -1348,6 +1412,9 @@ function CustomerApp() {
       const route = getCustomerRouteFromPath(window.location.pathname)
       setCustomerPage(route.page)
       setSelectedClaimId(route.claimId || '')
+      if (route.page === 'notifications') {
+        setNotificationCount(0)
+      }
     }
 
     window.addEventListener('popstate', syncRoute)
@@ -1362,6 +1429,9 @@ function CustomerApp() {
 
     setCustomerPage(page)
     setSelectedClaimId(claimId || '')
+    if (page === 'notifications') {
+      setNotificationCount(0)
+    }
 
     const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '')
     const normalized = page === 'home' ? `${basePath}/` : page === 'notifications' ? `${basePath}/notifications` : page === 'submit' ? `${basePath}/submit` : page === 'products' ? `${basePath}/products` : page === 'warranties' ? `${basePath}/warranties` : page === 'profile' ? `${basePath}/profile` : page === 'my-claims' ? `${basePath}/my-claims` : `${basePath}/`
@@ -1403,7 +1473,7 @@ function CustomerApp() {
         <nav className="nav-menu">
           {customerNavigation.map(
             ([key, label, icon]) => {
-              const finalLabel = key === 'notifications' && notificationCount > 0
+              const finalLabel = key === 'notifications' && customerPage !== 'notifications' && notificationCount > 0
                 ? `${label} (${notificationCount})`
                 : label
 
@@ -1505,7 +1575,7 @@ function CustomerApp() {
           />
         )}
 
-        {customerPage === 'notifications' && <CustomerNotifications />}
+        {customerPage === 'notifications' && <CustomerNotifications onNotificationsSeen={() => setNotificationCount(0)} />}
 
         {customerPage === 'products' && (
           <CustomerProducts onNavigate={navigateCustomer} />
