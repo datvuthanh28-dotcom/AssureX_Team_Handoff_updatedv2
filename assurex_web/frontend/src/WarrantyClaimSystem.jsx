@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { api } from './api'
 import {
   MODEL_14_FEATURES,
@@ -185,6 +185,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
   const [repairDate, setRepairDate] = useState('')
   const [evidence, setEvidence] = useState({})
   const [uploading, setUploading] = useState('')
+  const evidenceInputRefs = useRef({})
 
   // Active Preset & State
   const [submitting, setSubmitting] = useState(false)
@@ -830,26 +831,75 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
               <small>Optional documents can help the system and reviewer verify your claim faster.</small>
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '14px' }}>
             {[
-              ['purchase_invoice', 'Purchase invoice / receipt', '.pdf,image/*'],
-              ['serial_image', 'Serial or equipment tag image', 'image/*'],
-              ['fault_evidence', 'Fault evidence', 'image/*,video/mp4,.pdf'],
-              ['repair_report', 'External repair report', '.pdf,image/*'],
-            ].map(([kind, label, accept]) => (
-              <label key={kind} style={{ border: '1px solid #cbd5e1', borderRadius: '8px', padding: '14px', cursor: 'pointer' }}>
-                <strong style={{ display: 'block', fontSize: '13px', marginBottom: '6px' }}>{label} <span style={{ color: '#64748b', fontWeight: 400 }}>(Optional)</span></strong>
-                <input
-                  type="file"
-                  accept={accept}
-                  disabled={uploading === kind}
-                  onChange={(event) => uploadEvidence(kind, event.target.files?.[0])}
-                />
-                <small style={{ display: 'block', marginTop: '8px', color: evidence[kind] ? '#15803d' : '#64748b' }}>
-                  {uploading === kind ? 'Uploading…' : evidence[kind] ? `✓ ${evidence[kind].filename}` : 'Not uploaded'}
-                </small>
-              </label>
-            ))}
+              ['purchase_invoice', 'Purchase invoice / receipt', '.pdf,image/*', 'Invoice, receipt, or purchase proof'],
+              ['serial_image', 'Serial or equipment tag image', 'image/*', 'Photo of serial number or asset tag'],
+              ['fault_evidence', 'Fault evidence', 'image/*,video/mp4,.pdf', 'Photo, video, or document showing the issue'],
+              ['repair_report', 'External repair report', '.pdf,image/*', 'Report from an outside repair shop'],
+            ].map(([kind, label, accept, helper]) => {
+              const uploaded = evidence[kind]
+              const isUploading = uploading === kind
+              return (
+                <div
+                  key={kind}
+                  style={{
+                    border: `1px solid ${uploaded ? '#86efac' : '#cbd5e1'}`,
+                    borderRadius: '10px',
+                    padding: '14px',
+                    background: uploaded ? '#f0fdf4' : '#ffffff',
+                    minHeight: '150px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                  }}
+                >
+                  <div>
+                    <strong style={{ display: 'block', fontSize: '13px', marginBottom: '4px' }}>
+                      {label} <span style={{ color: '#64748b', fontWeight: 400 }}>(Optional)</span>
+                    </strong>
+                    <small style={{ color: '#64748b', lineHeight: 1.4 }}>{helper}</small>
+                  </div>
+
+                  <input
+                    ref={(element) => {
+                      if (element) evidenceInputRefs.current[kind] = element
+                    }}
+                    type="file"
+                    accept={accept}
+                    disabled={isUploading}
+                    onChange={(event) => uploadEvidence(kind, event.target.files?.[0])}
+                    style={{ display: 'none' }}
+                  />
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      className="button secondary"
+                      disabled={isUploading}
+                      onClick={() => evidenceInputRefs.current[kind]?.click()}
+                      style={{ padding: '8px 12px', fontSize: '12.5px', minHeight: '36px' }}
+                    >
+                      {uploaded ? 'Replace file' : 'Choose file'}
+                    </button>
+                    <small
+                      style={{
+                        color: uploaded ? '#15803d' : '#64748b',
+                        fontWeight: uploaded ? 700 : 500,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '180px',
+                      }}
+                      title={uploaded?.filename || 'No file uploaded'}
+                    >
+                      {isUploading ? 'Uploading...' : uploaded ? `Uploaded: ${uploaded.filename}` : 'No file uploaded'}
+                    </small>
+                  </div>
+                </div>
+              )
+            })}
           </div>
           {errors.evidence && <p style={{ color: '#ef4444', fontSize: '12px' }}>{errors.evidence}</p>}
         </section>

@@ -118,6 +118,36 @@ def list_warranty_policies(
             "required_evidence": policy.get("required_evidence", []),
             "installation_required": policy.get("installation_required", False),
         }
+    home_appliance_categories = ["Refrigerator", "Washing Machine", "Air Conditioner"]
+    home_appliance_policies = [
+        WARRANTY_POLICY.get("categories", {}).get(category, {})
+        for category in home_appliance_categories
+    ]
+    if home_appliance_policies:
+        summaries["Appliance"] = {
+            "category": "Appliance",
+            "policy_version": WARRANTY_POLICY.get("policy_version"),
+            "warranty_months": 24,
+            "covered_faults": sorted({
+                fault
+                for policy in home_appliance_policies
+                for fault in policy.get("potentially_covered_faults", [])
+            }),
+            "excluded_causes": sorted({
+                cause
+                for policy in home_appliance_policies
+                for cause in common_exclusions + policy.get("additional_excluded_causes", [])
+            }),
+            "required_evidence": sorted({
+                item
+                for policy in home_appliance_policies
+                for item in policy.get("required_evidence", [])
+            }),
+            "installation_required": any(
+                policy.get("installation_required", False)
+                for policy in home_appliance_policies
+            ),
+        }
     return summaries
 
 
