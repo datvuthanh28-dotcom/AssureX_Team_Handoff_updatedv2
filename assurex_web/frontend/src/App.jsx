@@ -4545,24 +4545,24 @@ function CustomerSubmit({
           <div className="panel-heading">
             <div>
               <p className="eyebrow">Step 4</p>
-              <h2>Repair & Maintenance History</h2>
+              <h2>External Repair History</h2>
               <p className="section-helper">
-                Record any previous servicing to help our engineering team assess recurring faults accurately.
+                Record only repairs completed outside AssureX so reviewers can assess policy eligibility accurately.
               </p>
             </div>
           </div>
 
           <div className="form-grid">
             <label className="form-field full-width">
-              <span>Has this product been repaired or serviced before?</span>
+              <span>Has this product been repaired outside AssureX?</span>
               <select
                 name="previous_repair"
                 value={form.previous_repair}
                 onChange={change}
                 required
               >
-                <option value="No">No — this is the first issue</option>
-                <option value="Yes">Yes — product has previous repair history</option>
+                <option value="No">No — no external repair</option>
+                <option value="Yes">Yes — repaired outside AssureX</option>
               </select>
             </label>
 

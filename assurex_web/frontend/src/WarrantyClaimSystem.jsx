@@ -726,7 +726,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
               4
             </span>
             <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 700 }}>
-              Previous Repair History
+              External Repair History
             </h3>
           </div>
 
@@ -743,7 +743,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                   checked={previousRepair === 'No'}
                   onChange={() => setPreviousRepair('No')}
                 />
-                No — Original Factory Condition
+                No — no external repair
               </label>
               <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13.5px' }}>
                 <input
@@ -753,7 +753,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
                   checked={previousRepair === 'Yes'}
                   onChange={() => setPreviousRepair('Yes')}
                 />
-                Yes — Previously Repaired
+                Yes — repaired outside AssureX
               </label>
             </div>
           </div>
