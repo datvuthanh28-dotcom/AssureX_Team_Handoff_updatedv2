@@ -100,7 +100,9 @@ def list_products(
 
 @router.get("/api/warranty-policies")
 def list_warranty_policies(
-    _: CustomerAccount = Depends(require_roles("admin", "reviewer", "customer")),
+    _: CustomerAccount = Depends(
+        require_roles("CUSTOMER", "SERVICE_CENTER", "REVIEWER", "ADMIN")
+    ),
 ):
     """Return customer-facing summaries from the same policy source as the decision engine."""
     common = WARRANTY_POLICY.get("common", {})
