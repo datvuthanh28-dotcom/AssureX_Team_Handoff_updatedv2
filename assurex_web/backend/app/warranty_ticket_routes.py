@@ -214,7 +214,7 @@ def _registration_id(product_code: str) -> int:
     if not match:
         raise HTTPException(
             status_code=422,
-            detail="Product Code must use the registration code shown in My Products (REG-xxxxx).",
+            detail="Registered Product Code must use the registration code shown in My Products (REG-xxxxx).",
         )
     return int(match.group(1))
 

@@ -245,6 +245,9 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       if (!repairCentre?.trim()) errs.repair_centre = 'Please state the repair centre name.'
     }
     setErrors(errs)
+    if (Object.keys(errs).length > 0) {
+      setSubmitError(Object.values(errs)[0])
+    }
     return Object.keys(errs).length === 0
   }
 
