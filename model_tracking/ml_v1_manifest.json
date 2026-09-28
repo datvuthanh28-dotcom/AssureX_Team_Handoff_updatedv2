@@ -4,16 +4,24 @@
   "application_layer_owned_by_teammate": true,
   "python": {
     "algorithm": "Gradient Boosting",
-    "artifact": "model/assurex_v3_final_model.joblib",
-    "runtime_name": "Gradient Boosting V1 (14 Features)",
-    "runtime_version": "v1-final-14feat",
+    "artifact": "model/assurex_v1_final_model.joblib",
+    "runtime_name": "Gradient Boosting V1 (8 Features)",
+    "runtime_version": "v1-final-8feat",
     "features": "data/v1_train_ready/assurex_v1_final_features.csv",
     "train_dataset": "data/v1_train_ready/assurex_v1_train.csv",
     "validation_dataset": "data/v1_train_ready/assurex_v1_validation.csv",
     "test_dataset": "data/v1_train_ready/assurex_v1_test.csv",
     "test_records": 225,
-    "test_accuracy": 0.991111,
-    "test_macro_f1": 0.99111
+    "test_accuracy": 0.7688888888888888,
+    "test_macro_f1": 0.7563718140929535,
+    "removed_features": [
+      "SerialNumberMatch",
+      "ProductModelConsistent",
+      "OCRConfidence",
+      "OCRQualityBand",
+      "MissingDocumentCount",
+      "RequiredDocumentsComplete"
+    ]
   },
   "gtm": {
     "iteration": "G2_V1",

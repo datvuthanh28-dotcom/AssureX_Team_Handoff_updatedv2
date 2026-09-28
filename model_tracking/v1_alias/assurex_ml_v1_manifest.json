@@ -1,11 +1,11 @@
 {
   "version": "assurex-ml-v1-final",
-  "purpose": "Canonical V1 naming for the active AssureX 14-feature warranty model.",
+  "purpose": "Canonical V1 naming for the active AssureX 8-feature warranty model.",
   "behavior_source": "Same trained artifact and labels previously used by the active runtime; renamed to V1 for project consistency.",
   "python_model": {
-    "name": "Gradient Boosting V1 (14 Features)",
-    "version": "v1-final-14feat",
-    "artifact_path": "model/assurex_v3_final_model.joblib",
+    "name": "Gradient Boosting V1 (8 Features)",
+    "version": "v1-final-8feat",
+    "artifact_path": "model/assurex_v1_final_model.joblib",
     "feature_set": "data/v1_train_ready/assurex_v1_final_features.csv",
     "train_dataset": "data/v1_train_ready/assurex_v1_train.csv",
     "validation_dataset": "data/v1_train_ready/assurex_v1_validation.csv",
@@ -20,22 +20,61 @@
     "behavior_note": "G2 V1 is a compatibility alias of the active GTM artifact, preserving the same behavior under V1 naming."
   },
   "feature_contract": {
-    "feature_count": 14,
+    "feature_count": 8,
     "features": [
       "RepairAuthorized",
-      "SerialNumberMatch",
-      "ProductModelConsistent",
       "DuplicateClaimIndicator",
       "ContradictionIndicator",
-      "OCRConfidence",
       "ClaimReportingDelayDays",
       "WarrantyRemainingDays",
       "ClaimReportingWithinPeriod",
       "FaultCovered",
-      "RequiredDocumentsComplete",
+      "ProductIdentityMatch"
+    ],
+    "removed_features": [
+      "SerialNumberMatch",
+      "ProductModelConsistent",
+      "OCRConfidence",
+      "OCRQualityBand",
       "MissingDocumentCount",
-      "ProductIdentityMatch",
-      "OCRQualityBand"
+      "RequiredDocumentsComplete"
     ]
+  },
+  "training_result": {
+    "version": "v1-final-8feat",
+    "selected_model": "Gradient Boosting",
+    "feature_count": 8,
+    "features": [
+      "RepairAuthorized",
+      "DuplicateClaimIndicator",
+      "ContradictionIndicator",
+      "ClaimReportingDelayDays",
+      "WarrantyRemainingDays",
+      "ClaimReportingWithinPeriod",
+      "FaultCovered",
+      "ProductIdentityMatch"
+    ],
+    "removed_features": [
+      "SerialNumberMatch",
+      "ProductModelConsistent",
+      "OCRConfidence",
+      "OCRQualityBand",
+      "MissingDocumentCount",
+      "RequiredDocumentsComplete"
+    ],
+    "train_rows": 1050,
+    "validation_rows": 225,
+    "test_rows": 225,
+    "metrics": {
+      "model_name": "Gradient Boosting",
+      "feature_count": 8,
+      "removed_features": "SerialNumberMatch;ProductModelConsistent;OCRConfidence;OCRQualityBand;MissingDocumentCount;RequiredDocumentsComplete",
+      "test_accuracy": 0.7688888888888888,
+      "test_precision": 0.7953307973446706,
+      "test_recall": 0.7688888888888888,
+      "test_f1": 0.7563718140929536,
+      "test_macro_f1": 0.7563718140929535
+    },
+    "artifact": "model/assurex_v1_final_model.joblib"
   }
 }

@@ -1,0 +1,2 @@
+model_name,feature_count,removed_features,test_accuracy,test_precision,test_recall,test_f1,test_macro_f1
+Gradient Boosting,8,SerialNumberMatch;ProductModelConsistent;OCRConfidence;OCRQualityBand;MissingDocumentCount;RequiredDocumentsComplete,0.7688888888888888,0.7953307973446706,0.7688888888888888,0.7563718140929536,0.7563718140929535

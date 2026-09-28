@@ -1,5 +1,5 @@
 # AssureX Claim Engine – Team Handoff Architecture
-> Customer Input → Product Lookup → Feature Engineering (14 Features) → Python Model V1
+> Customer Input → Product Lookup → Feature Engineering (8 Features) → Python Model V1
 
 ## Runtime setup
 After cloning the repository, install the frontend and GTM G2 V1 runtime dependencies:
@@ -19,7 +19,7 @@ The second command installs the local Teachable Machine runtime used by the back
   2. `FaultDescription`: Detailed symptoms.
   3. `PreviousRepair`: Yes/No (`RepairCentre` and `RepairDate` if Yes).
   4. Evidence Uploads: `PurchaseInvoice`, `SerialImage`, `FaultEvidence` (and `RepairReport` if repaired).
-- **Core Principle**: **Customers NEVER manually enter technical ML features** (e.g. `RepairAuthorized`, `FaultCovered`, `OCRConfidence`, `SerialNumberMatch`, etc.). The backend derives and validates these 14 features automatically.
+- **Core Principle**: **Customers NEVER manually enter technical ML features** (e.g. `RepairAuthorized`, `FaultCovered`, `WarrantyRemainingDays`, etc.). The backend derives and validates the active 8-feature V1 contract automatically.
 
 ---
 
@@ -71,6 +71,6 @@ WHERE sp.product_code = ?;
 1. **Customer Identification**: Enter email or customer code (e.g. `ngoc.mai07@example.com`).
 2. **Product Code Lookup**: Enter `AX26-00001` → System retrieves NovaBook 14, active warranty, serial number `NB142026-00001`.
 3. **Incident & Evidence**: Enter defect description, incident date, repair history, and upload documents.
-4. **Feature Engineering**: Backend derives the 14 features in real-time.
-5. **Python Model V1**: Gradient Boosting classifier evaluates the 14 features (`WARRANTY`, `REVIEW_REQUIRED`, `NOT_WARRANTY`).
-6. **Reviewer Ground Truth**: Reviewer inspects inputs, evidence, and 14 features, then records official Ground Truth (`Valid Claim` / `Invalid Claim`).
+4. **Feature Engineering**: Backend derives the active 8 V1 features in real-time.
+5. **Python Model V1**: Gradient Boosting classifier evaluates the 8 features (`WARRANTY`, `REVIEW_REQUIRED`, `NOT_WARRANTY`).
+6. **Reviewer Ground Truth**: Reviewer inspects inputs, evidence, and model features, then records official Ground Truth (`Valid Claim` / `Invalid Claim`).

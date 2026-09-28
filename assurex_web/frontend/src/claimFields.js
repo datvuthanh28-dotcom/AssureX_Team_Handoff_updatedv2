@@ -3,19 +3,13 @@
 
 export const MODEL_14_FEATURES = [
   'RepairAuthorized',
-  'SerialNumberMatch',
-  'ProductModelConsistent',
   'DuplicateClaimIndicator',
   'ContradictionIndicator',
-  'OCRConfidence',
   'ClaimReportingDelayDays',
   'WarrantyRemainingDays',
   'ClaimReportingWithinPeriod',
   'FaultCovered',
-  'RequiredDocumentsComplete',
-  'MissingDocumentCount',
   'ProductIdentityMatch',
-  'OCRQualityBand',
 ]
 
 // ------------------------------------------------------------------------------
@@ -331,7 +325,7 @@ export function derive14Features(input, product) {
 
 // ------------------------------------------------------------------------------
 // 3. PYTHON MODEL V1 PREDICTION LOGIC
-// Gradient Boosting V1 decision boundary evaluation on the 14 features
+// Gradient Boosting V1 decision boundary evaluation on the active 8 features
 // ------------------------------------------------------------------------------
 export function predictModelV3(features) {
   // Reject / Ineligible under warranty policy
@@ -531,7 +525,7 @@ export const CLAIM_PRESETS = [
     name: 'Valid Claim (Standard OEM)',
     tone: 'success',
     description:
-      'NovaBook 14, active warranty, screen flicker defect, complete evidence. Derives 14 features -> Predicts WARRANTY.',
+      'NovaBook 14, active warranty, screen flicker defect, complete evidence. Derives active V1 features -> Predicts WARRANTY.',
     customer: {
       customer_name: 'Bui Ngoc Mai',
       email: 'ngoc.mai07@example.com',

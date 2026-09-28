@@ -421,7 +421,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
         {/* 14 Derived Features Summary */}
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
-            14 Automated Features Derived by Backend:
+            8 Automated Features Used by Model V1:
           </h4>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '8px', fontSize: '12px' }}>
             {MODEL_14_FEATURES.map((feat) => {
@@ -1195,7 +1195,7 @@ export function ReviewerWarrantyDesk() {
                   <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
                     FEATURE ENGINEERING ENGINE
                   </p>
-                  <h4 style={{ margin: 0, fontSize: '15px' }}>14 Features Used by Model V1</h4>
+                  <h4 style={{ margin: 0, fontSize: '15px' }}>8 Features Used by Model V1</h4>
                 </div>
               </div>
 
@@ -1490,7 +1490,7 @@ export function WarrantyRetrainingDataset() {
       <header className="page-header" style={{ marginBottom: '16px' }}>
         <div>
           <p className="eyebrow">ML Retraining Pipeline</p>
-          <h1>Retraining Dataset (14 Features + Ground Truth)</h1>
+          <h1>Retraining Dataset (8 Features + Ground Truth)</h1>
         </div>
       </header>
 

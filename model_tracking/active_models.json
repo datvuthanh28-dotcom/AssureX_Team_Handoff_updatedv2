@@ -1,12 +1,12 @@
 {
   "python_model": {
-    "name": "Gradient Boosting V1 (14 Features)",
-    "version": "v1-final-14feat",
-    "artifact_path": "model/assurex_v3_final_model.joblib",
-    "fallback_artifact_path": "frozen_v3/assurex_v3_final_model.joblib",
+    "name": "Gradient Boosting V1 (8 Features)",
+    "version": "v1-final-8feat",
+    "artifact_path": "model/assurex_v1_final_model.joblib",
+    "fallback_artifact_path": "model/assurex_v1_8feature_model.joblib",
     "selected_using": "validation_macro_f1",
     "runtime_status": "active",
-    "features_count": 14
+    "features_count": 8
   },
   "google_model": {
     "name": "Google Teachable Machine G2 V1",

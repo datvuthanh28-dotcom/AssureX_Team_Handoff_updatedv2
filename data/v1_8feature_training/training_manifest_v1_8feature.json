@@ -1,0 +1,37 @@
+{
+  "version": "v1-final-8feat",
+  "selected_model": "Gradient Boosting",
+  "feature_count": 8,
+  "features": [
+    "RepairAuthorized",
+    "DuplicateClaimIndicator",
+    "ContradictionIndicator",
+    "ClaimReportingDelayDays",
+    "WarrantyRemainingDays",
+    "ClaimReportingWithinPeriod",
+    "FaultCovered",
+    "ProductIdentityMatch"
+  ],
+  "removed_features": [
+    "SerialNumberMatch",
+    "ProductModelConsistent",
+    "OCRConfidence",
+    "OCRQualityBand",
+    "MissingDocumentCount",
+    "RequiredDocumentsComplete"
+  ],
+  "train_rows": 1050,
+  "validation_rows": 225,
+  "test_rows": 225,
+  "metrics": {
+    "model_name": "Gradient Boosting",
+    "feature_count": 8,
+    "removed_features": "SerialNumberMatch;ProductModelConsistent;OCRConfidence;OCRQualityBand;MissingDocumentCount;RequiredDocumentsComplete",
+    "test_accuracy": 0.7688888888888888,
+    "test_precision": 0.7953307973446706,
+    "test_recall": 0.7688888888888888,
+    "test_f1": 0.7563718140929536,
+    "test_macro_f1": 0.7563718140929535
+  },
+  "artifact": "model/assurex_v1_final_model.joblib"
+}

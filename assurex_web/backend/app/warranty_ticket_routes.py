@@ -112,12 +112,12 @@ class ReviewerDecisionPayload(BaseModel):
 
 
 # ==============================================================================
-# AI MODEL PREDICTION ENGINE (V1 / 14 FINAL FEATURES)
+# AI MODEL PREDICTION ENGINE (V1 / 8 FINAL FEATURES)
 # ==============================================================================
 
 def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
     """
-    Evaluates claim using the 14 finalized features using the trained ML model.
+    Evaluates claim using the finalized V1 features and trained ML model.
     Maps:
       - 'Valid Claim'    -> 'WARRANTY' (confidence)
       - 'Invalid Claim'  -> 'NOT_WARRANTY' (confidence)
@@ -139,19 +139,19 @@ def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
         "confidence": round(conf, 4),
         "predicted_class": raw_class,
         "probabilities": prediction_result.get("probabilities", {}),
-        "model_name": prediction_result.get("model_name", "Gradient Boosting (14 Features)"),
-        "model_version": prediction_result.get("model_version", "v1-final-14feat"),
+        "model_name": prediction_result.get("model_name", "Gradient Boosting V1 (8 Features)"),
+        "model_version": prediction_result.get("model_version", "v1-final-8feat"),
     }
 
 
 def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, Any]:
-    """Extract and validate clean 14 features from payload."""
+    """Extract and validate clean derived features from payload."""
     if isinstance(data, WarrantyClaimCreatePayload):
         raw = data.model_dump()
     else:
         raw = dict(data)
 
-    # Defaults and type conversions for the 14 features
+    # Defaults and type conversions for derived features
     try:
         ocr_conf = float(raw.get("OCRConfidence", 0.90))
     except (ValueError, TypeError):
@@ -500,7 +500,7 @@ def create_warranty_claim(
             raw_input=raw_input,
             model_features=features_14,
             derived_data={"ocr_extracted_data": ocr_data, "evidence": ticket.evidence},
-            model_name=ticket.model_name or "Gradient Boosting V1",
+            model_name=ticket.model_name or "Gradient Boosting V1 (8 Features)",
             python_model_name=ticket.model_name,
             python_model_version=ticket.model_version,
         ))
@@ -548,11 +548,11 @@ def create_warranty_claim(
 @router.post(
     "/model/predict",
     response_model=ModelPredictResponse,
-    summary="Direct AI Model Prediction with 14 Features",
+    summary="Direct AI Model Prediction with active V1 features",
 )
 def predict_model_endpoint(request: ModelPredictRequest):
     """
-    Direct endpoint for predicting a claim using the 14 features.
+    Direct endpoint for predicting a claim using the active V1 features.
     """
     features_dict = request.model_dump()
     features_14 = extract_14_features(features_dict)
@@ -759,7 +759,7 @@ def submit_reviewer_decision(
 
 @router.get(
     "/warranty/reviewer/export/retraining-dataset",
-    summary="Reviewer: Export Retraining Dataset (14 Features + Ground Truth)",
+    summary="Reviewer: Export Retraining Dataset (V1 Features + Ground Truth)",
 )
 def export_retraining_dataset(
     format: str = Query("csv", description="Format: csv or json"),
@@ -768,7 +768,7 @@ def export_retraining_dataset(
 ):
     """
     Exports reviewed claims dataset for ML retraining.
-    Contains the 14 features plus 'ClaimClass' ground truth.
+    Contains the active V1 features plus 'ClaimClass' ground truth.
     """
     stmt = (
         select(WarrantyTicket)
@@ -782,20 +782,10 @@ def export_retraining_dataset(
         feats = t.model_features or {}
         row = {
             "ClaimID": t.ticket_id,
-            "RepairAuthorized": feats.get("RepairAuthorized", "Not Applicable"),
-            "SerialNumberMatch": feats.get("SerialNumberMatch", "Yes"),
-            "ProductModelConsistent": feats.get("ProductModelConsistent", "Yes"),
-            "DuplicateClaimIndicator": feats.get("DuplicateClaimIndicator", "No"),
-            "ContradictionIndicator": feats.get("ContradictionIndicator", "No"),
-            "OCRConfidence": feats.get("OCRConfidence", 0.90),
-            "ClaimReportingDelayDays": feats.get("ClaimReportingDelayDays", 0.0),
-            "WarrantyRemainingDays": feats.get("WarrantyRemainingDays", 180.0),
-            "ClaimReportingWithinPeriod": feats.get("ClaimReportingWithinPeriod", "Yes"),
-            "FaultCovered": feats.get("FaultCovered", "Yes"),
-            "RequiredDocumentsComplete": feats.get("RequiredDocumentsComplete", "Yes"),
-            "MissingDocumentCount": feats.get("MissingDocumentCount", 0.0),
-            "ProductIdentityMatch": feats.get("ProductIdentityMatch", "Yes"),
-            "OCRQualityBand": feats.get("OCRQualityBand", "High"),
+            **{
+                feature: feats.get(feature, "")
+                for feature in MODEL_14_FEATURES
+            },
             "ClaimClass": t.ground_truth,
             "ReviewerDecision": t.reviewer_decision,
             "ReviewerNote": t.reviewer_note or "",
