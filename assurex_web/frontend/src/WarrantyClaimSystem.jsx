@@ -6,7 +6,7 @@ import {
   FAULT_CATEGORIES_BY_PRODUCT_CATEGORY,
 } from './claimFields'
 
-// Shared mock storage to persist tickets across views within the session
+
 const LOCAL_STORAGE_TICKETS_KEY = 'assurex_v3_tickets'
 
 function loadStoredTickets() {
@@ -14,10 +14,10 @@ function loadStoredTickets() {
     const raw = localStorage.getItem(LOCAL_STORAGE_TICKETS_KEY)
     if (raw) return JSON.parse(raw)
   } catch {
-    // fallback
+
   }
 
-  // Initial seed tickets
+
   return [
     {
       ticket_id: 'TCK-8819201',
@@ -87,7 +87,7 @@ function loadStoredTickets() {
         purchase_invoice: { filename: 'TechWorld_Receipt_4491.pdf', size: '310 KB' },
         serial_image: { filename: 'ThinkPad_Serial_Photo.jpg', size: '980 KB' },
         fault_evidence: { filename: 'Keyboard_Tester_Log.png', size: '640 KB' },
-        repair_report: null, // missing
+        repair_report: null,
       },
       model_features: {
         RepairAuthorized: 'No',
@@ -180,23 +180,23 @@ function friendlyErrorMessage(error, fallback = 'Unable to complete the request.
   return fallback
 }
 
-// ==============================================================================
-// 1. CUSTOMER - WARRANTY CLAIM FORM (CLEAN CUSTOMER INPUTS → FEATURE ENGINE)
-// ==============================================================================
+
+
+
 
 export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCreated, onCancel }) {
-  // Identity comes from the authenticated session and is never a claim source of truth.
+
   const customer = {
     customer_name: customerName || email,
     email,
   }
 
-  // Section 2: Product Identification
+
   const [productCodeInput, setProductCodeInput] = useState('')
   const [productRecord, setProductRecord] = useState(null)
   const [lookingUp, setLookingUp] = useState(false)
 
-  // Section 3: Claim Incident
+
   const [incidentDate, setIncidentDate] = useState('')
   const [problemCategory, setProblemCategory] = useState('')
   const [faultDescription, setFaultDescription] = useState('')
@@ -212,7 +212,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
 
   const isOtherFaultCategory = problemCategory === 'Other'
 
-  // Section 4: Repair History
+
   const [previousRepair, setPreviousRepair] = useState('No')
   const [repairCentre, setRepairCentre] = useState('')
   const [repairDate, setRepairDate] = useState('')
@@ -223,13 +223,13 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     repair_report_available: 'No',
   })
 
-  // Active Preset & State
+
   const [submitting, setSubmitting] = useState(false)
   const [errors, setErrors] = useState({})
   const [createdTicket, setCreatedTicket] = useState(null)
   const [submitError, setSubmitError] = useState('')
 
-  // Handle Product Code Lookup
+
   async function handleProductLookup(code) {
     const targetCode = code !== undefined ? code : productCodeInput
     if (!targetCode.trim()) {
@@ -266,7 +266,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     }
   }
 
-  // Validation
+
   function validate() {
     const errs = {}
     if (!productRecord) errs.product_code = 'Verify a Registered Product Code that belongs to your account.'
@@ -285,7 +285,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     return Object.keys(errs).length === 0
   }
 
-  // Submit Claim
+
   async function handleSubmit(e) {
     e.preventDefault()
     if (submitting) return
@@ -344,9 +344,9 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     setErrors({})
   }
 
-  // ============================================================================
-  // SUCCESS SCREEN
-  // ============================================================================
+
+
+
   if (createdTicket) {
     const isWarranty = createdTicket.ai_prediction === 'WARRANTY'
     const isNotWarranty = createdTicket.ai_prediction === 'NOT_WARRANTY'
@@ -398,7 +398,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </p>
         </div>
 
-        {/* AI Prediction Box */}
+        {}
         <div
           style={{
             background: 'var(--ax-surface-alt, #f8fafc)',
@@ -456,7 +456,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
         </div>
 
-        {/* Active V3 Features Summary */}
+        {}
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
             14 Automated Features Used by Model V3:
@@ -494,7 +494,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
         )}
 
-        {/* Action Buttons */}
+        {}
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           <button type="button" className="button primary" onClick={resetForm}>
             Submit Another Claim
@@ -509,9 +509,9 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
     )
   }
 
-  // ============================================================================
-  // MAIN CLAIM FORM VIEW
-  // ============================================================================
+
+
+
   return (
     <div className="claim-system-container" style={{ maxWidth: '880px', margin: '0 auto', padding: '16px' }}>
       <header className="page-header" style={{ marginBottom: '20px' }}>
@@ -528,7 +528,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
       )}
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* GROUP 1: CUSTOMER INFORMATION */}
+        {}
         <section
           className="panel"
           style={{
@@ -589,7 +589,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
         </section>
 
-        {/* GROUP 2: PRODUCT IDENTIFICATION & DATABASE LOOKUP */}
+        {}
         <section
           className="panel"
           style={{
@@ -609,7 +609,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </h3>
           </div>
 
-          {/* Registered Product Code Lookup Bar */}
+          {}
           <div style={{ marginBottom: '16px', background: '#f8fafc', padding: '14px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '12.5px', fontWeight: 700, color: '#334155' }}>
               Registered Product Code:
@@ -645,7 +645,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             {errors.product_code && <p style={{ color: '#ef4444', fontSize: '11.5px', margin: '6px 0 0' }}>{errors.product_code}</p>}
           </div>
 
-          {/* Autofilled Product Record (Read-Only) */}
+          {}
           {productRecord ? (
             <div
               style={{
@@ -710,7 +710,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           )}
         </section>
 
-        {/* GROUP 3: CLAIM INCIDENT INFORMATION */}
+        {}
         <section
           className="panel"
           style={{
@@ -794,7 +794,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
             </div>
           </div>
 
-          {/* Fault Category Policy & Symptom Helper Box */}
+          {}
           {selectedCategoryInfo && (
             <div
               style={{
@@ -888,7 +888,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           )}
         </section>
 
-        {/* GROUP 4: REPAIR HISTORY */}
+        {}
         <section
           className="panel"
           style={{
@@ -1021,7 +1021,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           )}
         </section>
 
-        {/* GROUP 5: EVIDENCE QUESTIONS */}
+        {}
         <section className="panel" style={{ marginBottom: '20px', padding: '22px', borderRadius: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <span style={{ background: '#eff6ff', color: '#2563eb', width: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 800 }}>5</span>
@@ -1060,7 +1060,7 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
           </div>
         </section>
 
-        {/* FORM ACTIONS */}
+        {}
         <div
           style={{
             display: 'flex',
@@ -1090,9 +1090,9 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
   )
 }
 
-// ==============================================================================
-// 2. REVIEWER - DASHBOARD QUEUE & SPLIT DETAIL VIEW
-// ==============================================================================
+
+
+
 
 export function ReviewerWarrantyDesk() {
   const [tickets, setTickets] = useState([])
@@ -1100,11 +1100,11 @@ export function ReviewerWarrantyDesk() {
   const [error, setError] = useState('')
   const [selectedTicket, setSelectedTicket] = useState(null)
 
-  // Filters
+
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('ALL_QUEUE')
 
-  // Review Decision State
+
   const [reviewerNote, setReviewerNote] = useState('')
   const [submittingDecision, setSubmittingDecision] = useState(false)
   const [decisionFeedback, setDecisionFeedback] = useState('')
@@ -1153,9 +1153,9 @@ export function ReviewerWarrantyDesk() {
     })
   }, [tickets, statusFilter, search])
 
-  // ----------------------------------------------------------------------------
-  // SPLIT DETAIL VIEW
-  // ----------------------------------------------------------------------------
+
+
+
   if (selectedTicket) {
     const isReviewed = selectedTicket.status === 'REVIEWED'
     const isWarranty = selectedTicket.ai_prediction === 'WARRANTY'
@@ -1168,7 +1168,7 @@ export function ReviewerWarrantyDesk() {
 
     return (
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
-        {/* Navigation & Header */}
+        {}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
           <button
             className="button secondary"
@@ -1205,7 +1205,7 @@ export function ReviewerWarrantyDesk() {
           </div>
         )}
 
-        {/* 2-Column Split View */}
+        {}
         <div
           style={{
             display: 'grid',
@@ -1214,9 +1214,9 @@ export function ReviewerWarrantyDesk() {
             alignItems: 'start',
           }}
         >
-          {/* LEFT COLUMN: CUSTOMER INPUTS & 14 DERIVED FEATURES */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Customer & Product Card */}
+            {}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
               <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
                 CUSTOMER & EQUIPMENT RECORD
@@ -1253,7 +1253,7 @@ export function ReviewerWarrantyDesk() {
               </div>
             </div>
 
-            {/* Claim Incident & Evidence */}
+            {}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
               <p className="eyebrow" style={{ color: '#2563eb', fontWeight: 700, fontSize: '11px' }}>
                 FAULT DESCRIPTION
@@ -1275,7 +1275,7 @@ export function ReviewerWarrantyDesk() {
                 </p>
               </div>
 
-              {/* Legacy Evidence Files List if present */}
+              {}
               {selectedTicket.evidence && Object.values(selectedTicket.evidence).some(Boolean) && (
                 <div style={{ marginTop: '14px' }}>
                   <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '8px' }}>
@@ -1299,7 +1299,7 @@ export function ReviewerWarrantyDesk() {
               )}
             </div>
 
-            {/* Active V3 Features Grid */}
+            {}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                 <div>
@@ -1323,7 +1323,7 @@ export function ReviewerWarrantyDesk() {
               </div>
             </div>
 
-            {/* Category policy reference for reviewer decisions */}
+            {}
             <div className="panel" style={{ padding: '20px', borderRadius: '12px', background: '#eff6ff', border: '1px solid #bfdbfe' }}>
               <p className="eyebrow" style={{ color: '#1d4ed8', fontWeight: 800, fontSize: '11px' }}>
                 POLICY REFERENCE
@@ -1348,9 +1348,9 @@ export function ReviewerWarrantyDesk() {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: AI PREDICTION & REVIEWER DECISION */}
+          {}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* AI Prediction Box */}
+            {}
             <div
               className="panel"
               style={{
@@ -1396,7 +1396,7 @@ export function ReviewerWarrantyDesk() {
               </div>
             </div>
 
-            {/* Reviewer Decision Form */}
+            {}
             <div
               className="panel"
               style={{
@@ -1479,9 +1479,9 @@ export function ReviewerWarrantyDesk() {
     )
   }
 
-  // ----------------------------------------------------------------------------
-  // QUEUE TABLE VIEW
-  // ----------------------------------------------------------------------------
+
+
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '16px' }}>
       <header className="page-header" style={{ marginBottom: '16px' }}>
@@ -1491,7 +1491,7 @@ export function ReviewerWarrantyDesk() {
         </div>
       </header>
 
-      {/* Toolbar */}
+      {}
       <div className="toolbar" style={{ marginBottom: '16px', display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
         <input
           type="text"
@@ -1512,7 +1512,7 @@ export function ReviewerWarrantyDesk() {
         </select>
       </div>
 
-      {/* Claims Table */}
+      {}
       <div className="panel" style={{ padding: 0, borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
         <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
           <thead>
@@ -1607,9 +1607,9 @@ export function ReviewerWarrantyDesk() {
   )
 }
 
-// ==============================================================================
-// 3. RETRAINING DATASET VIEWER
-// ==============================================================================
+
+
+
 
 export function WarrantyRetrainingDataset() {
   const tickets = loadStoredTickets().filter((t) => t.ground_truth != null)

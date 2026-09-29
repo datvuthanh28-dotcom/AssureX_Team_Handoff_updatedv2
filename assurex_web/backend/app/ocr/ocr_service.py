@@ -1,5 +1,4 @@
 from pathlib import Path
-
 import pytesseract
 from PIL import (
     Image,
@@ -8,7 +7,6 @@ from PIL import (
     ImageOps,
 )
 from pytesseract import Output
-
 from app.ocr.warranty_parser import (
     extract_warranty_fields,
 )
@@ -18,16 +16,12 @@ def preprocess_image(
     image,
 ):
     image = image.convert("RGB")
-
     gray = ImageOps.grayscale(
         image
     )
-
     gray = ImageOps.autocontrast(
         gray
     )
-
-    # Upscale before OCR.
     gray = gray.resize(
         (
             gray.width * 2,
@@ -35,11 +29,9 @@ def preprocess_image(
         ),
         Image.Resampling.LANCZOS,
     )
-
     gray = ImageEnhance.Contrast(
         gray
     ).enhance(1.5)
-
     gray = gray.filter(
         ImageFilter.UnsharpMask(
             radius=2,
@@ -47,7 +39,6 @@ def preprocess_image(
             threshold=3,
         )
     )
-
     return gray
 
 
@@ -59,7 +50,6 @@ def run_ocr(
         f"--oem 3 --psm {psm} "
         "-c preserve_interword_spaces=1"
     )
-
     raw_text = (
         pytesseract.image_to_string(
             image,
@@ -67,7 +57,6 @@ def run_ocr(
             config=config,
         )
     )
-
     data = (
         pytesseract.image_to_data(
             image,
@@ -76,9 +65,7 @@ def run_ocr(
             config=config,
         )
     )
-
     confidences = []
-
     for value in data.get(
         "conf",
         [],
@@ -92,25 +79,21 @@ def run_ocr(
             ValueError,
         ):
             continue
-
         if confidence >= 0:
             confidences.append(
                 confidence
             )
-
     mean_confidence = (
         sum(confidences)
         / len(confidences)
         if confidences
         else 0.0
     )
-
     extracted = (
         extract_warranty_fields(
             raw_text
         )
     )
-
     field_count = sum(
         value not in {
             None,
@@ -118,20 +101,15 @@ def run_ocr(
         }
         for value in extracted.values()
     )
-
     return {
         "raw_text":
             raw_text,
-
         "ocr_confidence":
             mean_confidence / 100,
-
         "extracted_data":
             extracted,
-
         "field_count":
             field_count,
-
         "psm":
             psm,
     }
@@ -143,13 +121,9 @@ def extract_warranty_image(
     image = Image.open(
         image_path
     )
-
     prepared = preprocess_image(
         image
     )
-
-    # Try both dense-table OCR and
-    # sparse-text OCR.
     candidates = [
         run_ocr(
             prepared,
@@ -160,10 +134,6 @@ def extract_warranty_image(
             11,
         ),
     ]
-
-    # Prefer candidate extracting
-    # more structured fields.
-    # Confidence breaks ties.
     best = max(
         candidates,
         key=lambda item: (
@@ -171,7 +141,6 @@ def extract_warranty_image(
             item["ocr_confidence"],
         ),
     )
-
     return {
         "ocr_confidence": round(
             best[
@@ -179,17 +148,14 @@ def extract_warranty_image(
             ],
             4,
         ),
-
         "extracted_data":
             best[
                 "extracted_data"
             ],
-
         "raw_text":
             best[
                 "raw_text"
             ],
-
         "ocr_psm":
             best["psm"],
     }

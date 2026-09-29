@@ -870,7 +870,7 @@ function AdminCustomerClaims({
           </div>
 
           {false && <>
-          {/* Dual-Model Comparison Card */}
+          {}
           {selected.decision && (
             <div className="claim-analysis" style={{ marginTop: '20px' }}>
               <div className="panel-heading" style={{ marginBottom: '8px' }}>
@@ -1013,13 +1013,13 @@ function AdminCustomerClaims({
             </div>
           )}
 
-          {/* Attached Evidence & Verified Documents Section */}
+          {}
           <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
             <p className="eyebrow">Document Integrity & Evidence</p>
             <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Attached Files (SHA-256 Verified)</h3>
 
             <div className="evidence-upload-grid">
-              {/* Receipt */}
+              {}
               <div className={`evidence-upload-card ${selected.receipt_url ? 'has-file' : ''}`}>
                 <h4><span>📄</span> Purchase Receipt</h4>
                 <p>Retailer proof of purchase & date verification</p>
@@ -1047,7 +1047,7 @@ function AdminCustomerClaims({
                 )}
               </div>
 
-              {/* Product Photo */}
+              {}
               <div className={`evidence-upload-card ${selected.product_image_url ? 'has-file' : ''}`}>
                 <h4><span>📷</span> Product Photo</h4>
                 <p>Physical unit & serial barcode verification</p>
@@ -1075,7 +1075,7 @@ function AdminCustomerClaims({
                 )}
               </div>
 
-              {/* Fault / Damage Evidence */}
+              {}
               <div className={`evidence-upload-card ${selected.evidence_photo_url ? 'has-file' : ''}`}>
                 <h4><span>⚠️</span> Fault / Defect Evidence</h4>
                 <p>Visual verification of defect or screen damage</p>
@@ -1103,7 +1103,7 @@ function AdminCustomerClaims({
                 )}
               </div>
 
-              {/* Repair Diagnostic Report */}
+              {}
               <div className={`evidence-upload-card ${selected.repair_report_url ? 'has-file' : ''}`}>
                 <h4><span>🔧</span> Service Diagnostic Report</h4>
                 <p>Service center diagnostic inspection sheet</p>
@@ -1135,7 +1135,7 @@ function AdminCustomerClaims({
 
           </>}
 
-          {/* Prior Service & Repair History Panel */}
+          {}
           {(selected.repair_center_name || selected.previous_repair_date || selected.replaced_parts || selected.repair_cost) && (
             <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '16px' }}>
               <p className="eyebrow">Service Center Records</p>
@@ -1169,7 +1169,7 @@ function AdminCustomerClaims({
             <ClaimTimeline claimId={selected.claim_id} status={selected.status} />
           </div>
 
-          {/* Reviewer Action Controls */}
+          {}
           {canReview && (
             <div className="decision-actions" style={{ marginTop: '24px' }}>
               <label className="review-note">
@@ -2879,7 +2879,7 @@ function AdminWarranties({ refreshKey }) {
         )}
       </section>
 
-      {/* Selected Warranty Policy Drawer */}
+      {}
       {selectedWarranty && (
         <section className="panel detail-panel" style={{ marginTop: '24px' }}>
           <div className="panel-heading">
@@ -3255,7 +3255,7 @@ function CustomerSubmit({
   const [registeredProducts, setRegisteredProducts] = useState([])
   const [selectedProductId, setSelectedProductId] = useState('')
 
-  // Evidence files state with SHA-256 integrity
+
   const [evidenceFiles, setEvidenceFiles] = useState({
     receipt: null,
     product_image: null,
@@ -3276,7 +3276,7 @@ function CustomerSubmit({
         setHasDraft(true)
       }
     } catch {
-      // ignore
+
     }
   }, [])
 
@@ -3324,7 +3324,7 @@ function CustomerSubmit({
       setDraftMessage('Draft discarded.')
       setTimeout(() => setDraftMessage(''), 3000)
     } catch {
-      // ignore
+
     }
   }
 
@@ -3639,7 +3639,7 @@ function CustomerSubmit({
       try {
         localStorage.removeItem(DRAFT_STORAGE_KEY)
       } catch {
-        // ignore
+
       }
 
       setResult(data)
@@ -4438,7 +4438,7 @@ function CustomerSubmit({
           {uploadError && <div className="alert error" style={{ marginBottom: '14px' }}>{uploadError}</div>}
 
           <div className="evidence-upload-grid">
-            {/* Purchase Receipt */}
+            {}
             <div className={`evidence-upload-card ${evidenceFiles.receipt ? 'has-file' : ''}`}>
               <h4>
                 <span>📄</span> Purchase Receipt
@@ -4489,7 +4489,7 @@ function CustomerSubmit({
               )}
             </div>
 
-            {/* Product Photo */}
+            {}
             <div className={`evidence-upload-card ${evidenceFiles.product_image ? 'has-file' : ''}`}>
               <h4>
                 <span>📷</span> Product Photo
@@ -4540,7 +4540,7 @@ function CustomerSubmit({
               )}
             </div>
 
-            {/* Fault Evidence (Damage Photo / Fault Video) */}
+            {}
             <div className={`evidence-upload-card ${evidenceFiles.fault_evidence ? 'has-file' : ''}`}>
               <h4>
                 <span>⚠️</span> Fault / Damage Evidence
@@ -4593,7 +4593,7 @@ function CustomerSubmit({
           </div>
         </section>
 
-        {/* Step 4: Repair History */}
+        {}
         <section className="panel">
           <div className="panel-heading">
             <div>
@@ -4707,7 +4707,7 @@ function CustomerSubmit({
                   </select>
                 </label>
 
-                {/* Repair Report Upload */}
+                {}
                 <div className="form-field full-width">
                   <span>Previous Diagnostic / Repair Report (optional)</span>
                   <div className={`evidence-upload-card ${evidenceFiles.repair_report ? 'has-file' : ''}`} style={{ marginTop: '6px' }}>
@@ -5111,7 +5111,7 @@ function CustomerClaims({
             <div className="claim-analysis">
               <p className="eyebrow">AI + Rule Analysis & Dual-Model Verification</p>
 
-              {/* Dual-Model Comparison Cards */}
+              {}
               <div className="dual-model-grid">
                 <div className="model-card python-model">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -5179,7 +5179,7 @@ function CustomerClaims({
                 </div>
               </div>
 
-              {/* Consistency & Agreement Bar */}
+              {}
               <div className="consistency-box">
                 <div>
                   <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--ax-text-faint)', fontWeight: 700 }}>
@@ -5252,13 +5252,13 @@ function CustomerClaims({
             </div>
           )}
 
-          {/* Attached Evidence & Documents Section */}
+          {}
           <div className="claim-documents-panel" style={{ marginTop: '20px', borderTop: '1px solid var(--ax-border)', paddingTop: '16px' }}>
             <p className="eyebrow">Evidence & Attached Documents</p>
             <h3 style={{ margin: '4px 0 12px', fontSize: '16px' }}>Uploaded Verification Evidence</h3>
 
             <div className="evidence-upload-grid">
-              {/* Receipt */}
+              {}
               {selected.receipt_url ? (
                 <div className="evidence-upload-card has-file">
                   <h4><span>📄</span> Purchase Receipt</h4>
@@ -5280,7 +5280,7 @@ function CustomerClaims({
                 </div>
               ) : null}
 
-              {/* Product Photo */}
+              {}
               {selected.product_image_url ? (
                 <div className="evidence-upload-card has-file">
                   <h4><span>📷</span> Product Photo</h4>
@@ -5302,7 +5302,7 @@ function CustomerClaims({
                 </div>
               ) : null}
 
-              {/* Damage / Fault Photo */}
+              {}
               {selected.evidence_photo_url ? (
                 <div className="evidence-upload-card has-file">
                   <h4><span>⚠️</span> Fault / Damage Evidence</h4>
@@ -5324,7 +5324,7 @@ function CustomerClaims({
                 </div>
               ) : null}
 
-              {/* Repair Diagnostic Report */}
+              {}
               {selected.repair_report_url ? (
                 <div className="evidence-upload-card has-file">
                   <h4><span>🔧</span> Repair Diagnostic Report</h4>
@@ -5354,7 +5354,7 @@ function CustomerClaims({
             </div>
           </div>
 
-          {/* Prior Repair History Section */}
+          {}
           {(selected.repair_center_name || selected.previous_repair_date || selected.replaced_parts || selected.raw_input?.previous_repair === 'Yes') && (
             <div style={{ marginTop: '20px', borderTop: '1px solid var(--ax-border)', paddingTop: '16px' }}>
               <p className="eyebrow">Service History</p>

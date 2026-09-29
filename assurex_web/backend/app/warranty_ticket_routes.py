@@ -5,13 +5,11 @@ import re
 from pathlib import Path
 from typing import Any, Literal
 import uuid
-
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
-
 from app.database import SessionLocal, get_db
 from app.auth_routes import record_audit, require_roles
 from app.models import (
@@ -25,13 +23,10 @@ from app.models import (
 )
 from app.ml.model_service import MODEL_14_FEATURES, predict_claim
 from app.ocr.ocr_service import extract_warranty_image
-
 router = APIRouter(
     prefix="/api",
     tags=["Warranty Claim Management System"],
 )
-
-# Allowed Product Types according to SRS / Specification
 ALLOWED_PRODUCT_TYPES = {
     "Air Conditioner",
     "Camera",
@@ -46,9 +41,6 @@ ALLOWED_PRODUCT_TYPES = {
     "Other",
 }
 
-# ==============================================================================
-# PYDANTIC SCHEMAS - MODEL V3 CLAIM FLOW
-# ==============================================================================
 
 class EvidenceReference(BaseModel):
     document_id: str
@@ -60,9 +52,7 @@ class EvidenceReference(BaseModel):
 
 class WarrantyClaimCreatePayload(BaseModel):
     """Customer-entered facts only; engineered ML fields are rejected by schema."""
-
     model_config = ConfigDict(extra="forbid")
-
     product_code: str = Field(min_length=1, max_length=30)
     incident_date: date
     problem_category: str = Field(default="Hardware Defect", min_length=2, max_length=150)
@@ -74,16 +64,13 @@ class WarrantyClaimCreatePayload(BaseModel):
     serial_image_available: Literal["Yes", "No"] = "No"
     fault_evidence_available: Literal["Yes", "No"] = "No"
     repair_report_available: Literal["Yes", "No"] = "No"
-    # Backward compatible: older UI/API callers may still pass uploaded evidence references.
     evidence: dict[str, EvidenceReference] = Field(default_factory=dict)
-
     @field_validator("repair_date", mode="before")
     @classmethod
     def blank_repair_date_as_none(cls, value):
         if value == "":
             return None
         return value
-
     @model_validator(mode="after")
     def validate_other_description(self):
         category = (self.problem_category or "").strip().casefold()
@@ -125,10 +112,6 @@ class ReviewerDecisionPayload(BaseModel):
     reviewer_note: str | None = None
 
 
-# ==============================================================================
-# AI MODEL PREDICTION ENGINE (V3 / 14 FINAL FEATURES)
-# ==============================================================================
-
 def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
     """
     Evaluates claim using the finalized V3 features and trained ML model.
@@ -140,14 +123,12 @@ def execute_ai_prediction_14(features_dict: dict[str, Any]) -> dict[str, Any]:
     prediction_result = predict_claim(features_dict)
     raw_class = prediction_result.get("predicted_class", "Manual Review")
     conf = float(prediction_result.get("confidence", 0.85))
-
     if raw_class == "Valid Claim":
         code = "WARRANTY"
     elif raw_class == "Invalid Claim":
         code = "NOT_WARRANTY"
     else:
         code = "REVIEW_REQUIRED"
-
     return {
         "prediction": code,
         "confidence": round(conf, 4),
@@ -164,13 +145,10 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
         raw = data.model_dump()
     else:
         raw = dict(data)
-
-    # Defaults and type conversions for active V3 features.
     try:
         delay = float(raw.get("ClaimReportingDelayDays", 0.0))
     except (ValueError, TypeError):
         delay = 0.0
-
     try:
         remaining_days = float(raw.get("WarrantyRemainingDays", 0.0))
     except (ValueError, TypeError):
@@ -183,12 +161,9 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
         missing_count = float(raw.get("MissingDocumentCount", 0.0))
     except (ValueError, TypeError):
         missing_count = 0.0
-
-    # Auto sync Reporting Within Period if not explicitly set
     rep_period = str(raw.get("ClaimReportingWithinPeriod", "")).strip()
     if not rep_period:
         rep_period = "Yes" if delay <= 30 else "No"
-
     return {
         "RepairAuthorized": str(raw.get("RepairAuthorized") or "Not Applicable").strip(),
         "SerialNumberMatch": str(raw.get("SerialNumberMatch") or "Unknown").strip(),
@@ -205,12 +180,6 @@ def extract_14_features(data: WarrantyClaimCreatePayload | dict) -> dict[str, An
         "ProductIdentityMatch": str(raw.get("ProductIdentityMatch") or "Yes").strip(),
         "OCRQualityBand": str(raw.get("OCRQualityBand") or "Unknown").strip(),
     }
-
-
-# ==============================================================================
-# API ENDPOINTS
-# ==============================================================================
-
 EVIDENCE_DIR = Path("app/uploads/evidence")
 EXCLUDED_FAULT_TERMS = {
     "water", "liquid", "dropped", "falling", "shattered", "physical impact",
@@ -249,7 +218,6 @@ def _owned_product(db: Session, account: CustomerAccount, product_code: str):
         )
     ).first()
     if row is None:
-        # Do not reveal whether the code belongs to a different customer.
         raise HTTPException(status_code=404, detail="Registered product not found.")
     return row
 
@@ -260,9 +228,6 @@ def _serialize_owned_product(registered, product, warranty):
     registration_code = f"REG-{registered.id:05d}"
     return {
         "registered_product_id": registered.id,
-        # `product_code` is kept for the existing frontend form contract.
-        # The explicit names below remove ambiguity between a registered
-        # customer unit and the catalog SKU.
         "product_code": registration_code,
         "registration_code": registration_code,
         "catalog_product_code": f"PRD-{product.id:04d}",
@@ -355,7 +320,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
     ocr_model = str(ocr_data.get("model_number") or "").strip().casefold()
     expected_serial = registered.serial_number.strip().casefold()
     expected_model = product.model.strip().casefold()
-
     serial_proof_available_initial = _evidence_available(payload, "serial_image", "serial_image_available")
     serial_match = "Unknown" if not ocr_serial else ("Yes" if ocr_serial == expected_serial else "No")
     model_match = "Unknown" if not ocr_model else ("Yes" if ocr_model == expected_model else "No")
@@ -368,7 +332,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
         else "No" if "No" in {serial_match, model_match}
         else "Unknown"
     )
-
     duplicate = db.scalar(
         select(func.count()).select_from(WarrantyTicket).where(
             WarrantyTicket.registered_product_id == registered.id,
@@ -385,14 +348,10 @@ def _derive_features(db, account, registered, product, warranty, payload):
         or any(term in description for term in EXCLUDED_FAULT_TERMS)
     )
     fault_covered = "No" if is_excluded else "Yes"
-
-    # Evidence is collected as customer Yes/No answers in the current UI.
-    # Uploaded file references remain supported for backward compatibility.
     purchase_proof_available = _evidence_available(payload, "purchase_invoice", "purchase_invoice_available")
     serial_proof_available = _evidence_available(payload, "serial_image", "serial_image_available")
     fault_evidence_available = _evidence_available(payload, "fault_evidence", "fault_evidence_available")
     repair_report_available = _evidence_available(payload, "repair_report", "repair_report_available")
-
     missing_count = sum(
         1
         for available in (purchase_proof_available, serial_proof_available, fault_evidence_available)
@@ -400,7 +359,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
     )
     if payload.previous_repair == "Yes" and not repair_report_available:
         missing_count += 1
-
     recorded_repair = db.scalar(
         select(func.count()).select_from(WarrantyTicket).where(
             WarrantyTicket.registered_product_id == registered.id,
@@ -408,7 +366,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
         )
     ) or 0
     has_repair_history = payload.previous_repair == "Yes" or bool(recorded_repair)
-
     if not has_repair_history:
         repair_authorized = "Not Applicable"
     elif not repair_report_available:
@@ -416,7 +373,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
     else:
         centre = (payload.repair_centre or "").casefold()
         repair_authorized = "Yes" if any(term in centre for term in AUTHORIZED_REPAIR_TERMS) else "No"
-
     contradiction = any((
         payload.incident_date < date.fromisoformat(registered.purchase_date),
         payload.incident_date > today,
@@ -425,7 +381,6 @@ def _derive_features(db, account, registered, product, warranty, payload):
     ))
     ocr_confidence = ocr_confidence or (0.90 if purchase_proof_available and serial_proof_available else 0.0)
     quality = "High" if ocr_confidence >= .85 else "Medium" if ocr_confidence >= .65 else "Low" if ocr_confidence > 0 else "Missing"
-
     active_features = {
         "RepairAuthorized": repair_authorized,
         "SerialNumberMatch": serial_match,
@@ -451,9 +406,9 @@ def _derive_features(db, account, registered, product, warranty, payload):
         "MissingDocumentCount": float(missing_count),
     }
     return active_features, diagnostic_features, ocr_data
-
-
 @router.get("/claims/v3/product/{product_code}")
+
+
 def lookup_claim_product(
     product_code: str,
     account: CustomerAccount = Depends(require_roles("CUSTOMER")),
@@ -461,12 +416,13 @@ def lookup_claim_product(
 ):
     registered, product, warranty = _owned_product(db, account, product_code)
     return _serialize_owned_product(registered, product, warranty)
-
 @router.post(
     "/claims/v3/ticket",
     status_code=status.HTTP_201_CREATED,
     summary="Customer: submit raw claim facts; backend derives Model V3 features",
 )
+
+
 def create_warranty_claim(
     payload: WarrantyClaimCreatePayload,
     account: CustomerAccount = Depends(require_roles("CUSTOMER")),
@@ -474,7 +430,6 @@ def create_warranty_claim(
 ):
     if payload.previous_repair == "Yes" and not (payload.repair_centre or "").strip():
         raise HTTPException(status_code=422, detail="Repair centre is required for a previously repaired product.")
-
     registered, product, warranty = _owned_product(db, account, payload.product_code)
     active_features, diagnostic_features, ocr_data = _derive_features(
         db, account, registered, product, warranty, payload
@@ -519,7 +474,6 @@ def create_warranty_claim(
         if ticket.status != "AI_ERROR"
         else "Manual Review"
     )
-
     customer_claim = CustomerClaim(
         claim_id=ticket_id,
         customer_name=account.full_name or account.email,
@@ -607,13 +561,13 @@ def create_warranty_claim(
             "created_at": ticket.created_at.isoformat() if ticket.created_at else None,
         },
     }
-
-
 @router.post(
     "/model/predict",
     response_model=ModelPredictResponse,
     summary="Direct AI Model Prediction with active V3 features",
 )
+
+
 def predict_model_endpoint(request: ModelPredictRequest):
     """
     Direct endpoint for predicting a claim using the active V3 features.
@@ -621,7 +575,6 @@ def predict_model_endpoint(request: ModelPredictRequest):
     features_dict = request.model_dump()
     active_features = extract_14_features(features_dict)
     res = execute_ai_prediction_14(active_features)
-
     return ModelPredictResponse(
         prediction=res["prediction"],
         confidence=res["confidence"],
@@ -630,8 +583,6 @@ def predict_model_endpoint(request: ModelPredictRequest):
         model_name=res["model_name"],
         model_version=res["model_version"],
     )
-
-
 @router.get(
     "/warranty/claims",
     summary="List Warranty Claims (Alias for Reviewer and Portal)",
@@ -640,6 +591,8 @@ def predict_model_endpoint(request: ModelPredictRequest):
     "/warranty/reviewer/tickets",
     summary="Reviewer: List Tickets (Queue)",
 )
+
+
 def list_reviewer_tickets(
     status_filter: str = Query("ALL", description="ALL, WAITING_REVIEW, REVIEWED, PENDING_AI, AI_ERROR"),
     search: str | None = Query(None, description="Search by Ticket ID, Model, or Serial"),
@@ -650,13 +603,11 @@ def list_reviewer_tickets(
     Returns list of tickets for Reviewer desk.
     """
     stmt = select(WarrantyTicket)
-
     if status_filter != "ALL":
         if status_filter == "WAITING_REVIEW":
             stmt = stmt.where(WarrantyTicket.status.in_(["WAITING_REVIEW", "REVIEW_REQUIRED"]))
         else:
             stmt = stmt.where(WarrantyTicket.status == status_filter)
-
     if search:
         pattern = f"%{search.strip()}%"
         stmt = stmt.where(
@@ -667,10 +618,8 @@ def list_reviewer_tickets(
                 WarrantyTicket.problem_description.ilike(pattern),
             )
         )
-
     stmt = stmt.order_by(WarrantyTicket.created_at.desc())
     tickets = db.scalars(stmt).all()
-
     items = []
     for t in tickets:
         items.append({
@@ -701,17 +650,16 @@ def list_reviewer_tickets(
             "created_at": t.created_at.isoformat() if t.created_at else None,
             "updated_at": t.updated_at.isoformat() if t.updated_at else None,
         })
-
     return {
         "total": len(items),
         "tickets": items,
     }
-
-
 @router.get(
     "/warranty/reviewer/tickets/{ticket_id}",
     summary="Reviewer: Get Detailed Ticket",
 )
+
+
 def get_ticket_detail(
     ticket_id: str,
     _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
@@ -720,7 +668,6 @@ def get_ticket_detail(
     ticket = db.get(WarrantyTicket, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Warranty ticket not found.")
-
     return {
         "ticket": {
             "ticket_id": ticket.ticket_id,
@@ -749,8 +696,6 @@ def get_ticket_detail(
             "updated_at": ticket.updated_at.isoformat() if ticket.updated_at else None,
         }
     }
-
-
 @router.post(
     "/reviewer/{ticket_id}/decision",
     summary="Reviewer: Submit Final Decision (Short Alias)",
@@ -759,6 +704,8 @@ def get_ticket_detail(
     "/warranty/reviewer/tickets/{ticket_id}/decision",
     summary="Reviewer: Submit Final Decision (Becomes Ground Truth)",
 )
+
+
 def submit_reviewer_decision(
     ticket_id: str,
     payload: ReviewerDecisionPayload,
@@ -768,20 +715,15 @@ def submit_reviewer_decision(
     ticket = db.get(WarrantyTicket, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Warranty ticket not found.")
-
     decision_choice = payload.decision
     if decision_choice not in {"APPROVE", "REJECT"}:
         raise HTTPException(status_code=400, detail="Decision must be APPROVE or REJECT.")
-
-    # Ground truth mapping: APPROVE -> 'Valid Claim', REJECT -> 'Invalid Claim'
     ground_truth = "Valid Claim" if decision_choice == "APPROVE" else "Invalid Claim"
-
     ticket.reviewer_decision = decision_choice
     ticket.ground_truth = ground_truth
     ticket.reviewer_note = payload.reviewer_note.strip() if payload.reviewer_note else None
     ticket.status = "REVIEWED"
     ticket.reviewed_at = datetime.utcnow()
-
     customer_claim = db.scalar(
         select(CustomerClaim).where(CustomerClaim.claim_id == ticket_id)
     )
@@ -794,7 +736,6 @@ def submit_reviewer_decision(
         customer_decision.reviewer_decision = customer_claim.status
         customer_decision.reviewer_comment = ticket.reviewer_note
         customer_decision.reviewed_at = ticket.reviewed_at
-
     record_audit(
         db,
         account=account,
@@ -803,10 +744,8 @@ def submit_reviewer_decision(
         resource_id=ticket_id,
         details={"decision": decision_choice, "ground_truth": ground_truth},
     )
-
     db.commit()
     db.refresh(ticket)
-
     return {
         "success": True,
         "message": f"Ticket {ticket.ticket_id} marked as {decision_choice}. Ground truth set to '{ground_truth}'.",
@@ -819,12 +758,12 @@ def submit_reviewer_decision(
             "reviewed_at": ticket.reviewed_at.isoformat() if ticket.reviewed_at else None,
         },
     }
-
-
 @router.get(
     "/warranty/reviewer/export/retraining-dataset",
     summary="Reviewer: Export Retraining Dataset (V3 Features + Ground Truth)",
 )
+
+
 def export_retraining_dataset(
     format: str = Query("csv", description="Format: csv or json"),
     _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
@@ -840,7 +779,6 @@ def export_retraining_dataset(
         .order_by(WarrantyTicket.reviewed_at.desc())
     )
     tickets = db.scalars(stmt).all()
-
     records = []
     for t in tickets:
         feats = t.model_features or {}
@@ -856,22 +794,17 @@ def export_retraining_dataset(
             "ReviewedAt": t.reviewed_at.isoformat() if t.reviewed_at else "",
         }
         records.append(row)
-
     if format.lower() == "json":
         return JSONResponse(content={"total_records": len(records), "data": records})
-
-    # Output CSV format
     output = io.StringIO()
     if records:
         writer = csv.DictWriter(output, fieldnames=list(records[0].keys()))
         writer.writeheader()
         writer.writerows(records)
     else:
-        # Default header
         fieldnames = ["ClaimID"] + MODEL_14_FEATURES + ["ClaimClass", "ReviewerDecision", "ReviewerNote", "ReviewedAt"]
         writer = csv.DictWriter(output, fieldnames=fieldnames)
         writer.writeheader()
-
     output.seek(0)
     filename = f"warranty_retraining_dataset_14features_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}.csv"
     return StreamingResponse(
@@ -879,12 +812,12 @@ def export_retraining_dataset(
         media_type="text/csv",
         headers={"Content-Disposition": f"attachment; filename={filename}"},
     )
-
-
 @router.get(
     "/retraining/dataset",
     summary="Get Retraining Records (JSON endpoint)",
 )
+
+
 def get_retraining_dataset_json(
     _: CustomerAccount = Depends(require_roles("ADMIN", "REVIEWER")),
     db: Session = Depends(get_db),

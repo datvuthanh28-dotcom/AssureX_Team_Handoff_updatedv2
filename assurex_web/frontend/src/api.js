@@ -1,7 +1,7 @@
 const CUSTOMER_TOKEN_KEY = 'assurex_customer_token'
 const ADMIN_TOKEN_KEY = 'assurex_admin_token'
 
-// Candidate ports to support Windows environments where port 8000 has WinError 10013
+
 const CANDIDATE_PORTS = [8000, 8001, 8080, 5000]
 let activeBaseUrl = (() => {
   try {
@@ -40,7 +40,7 @@ export async function api(
       'application/json'
   }
 
-  // Build candidate server base URLs
+
   const hostnames = [window.location.hostname]
   if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
     hostnames.push('localhost', '127.0.0.1')
@@ -68,17 +68,17 @@ export async function api(
         ...options,
         headers,
       })
-      // Server responded (even if 4xx/5xx, server is running and reachable on this port)
+
       activeBaseUrl = base
       try {
         localStorage.setItem('assurex_active_api_base', base)
       } catch {
-        // ignore
+
       }
       break
     } catch (netErr) {
       lastNetworkError = netErr
-      // Continue to next port
+
     }
   }
 

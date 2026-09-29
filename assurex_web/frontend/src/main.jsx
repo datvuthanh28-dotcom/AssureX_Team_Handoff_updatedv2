@@ -165,7 +165,7 @@ function RootComponent() {
         try {
           await api('/api/auth/logout', { method: 'POST' })
         } catch {
-          // Clear local state even if the API is unavailable.
+
         }
         localStorage.removeItem(ADMIN_SESSION_KEY)
         setAdminRole('')

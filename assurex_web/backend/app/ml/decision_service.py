@@ -1,11 +1,8 @@
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
 THRESHOLD_PATH = WORKSPACE_ROOT / "config" / "decision_thresholds.json"
-
 DEFAULT_THRESHOLDS = {
     "model_comparison": {
         "minimum_confidence": 0.60,
@@ -70,7 +67,6 @@ def apply_business_rules(
     cfg = _load_thresholds()
     cmp_cfg = cfg["model_comparison"]
     evidence_cfg = cfg["evidence"]
-
     min_conf = float(cmp_cfg["minimum_confidence"])
     strong_min = float(cmp_cfg["strong_match_min_confidence"])
     strong_diff = float(cmp_cfg["strong_match_max_difference"])
@@ -78,21 +74,17 @@ def apply_business_rules(
     acceptable_diff = float(cmp_cfg["acceptable_match_max_difference"])
     large_diff = float(cmp_cfg["large_confidence_difference"])
     min_ocr = float(evidence_cfg["minimum_ocr_confidence"])
-
     py_pred = str(ml_prediction or "").strip()
     py_conf = _number(ml_confidence)
-
     gtm_available = (
         gtm_prediction is not None
         and gtm_confidence is not None
     )
-
     if gtm_available:
         gt_pred = str(gtm_prediction).strip()
         gt_conf = _number(gtm_confidence)
         prediction_match = py_pred == gt_pred
         confidence_difference = abs(py_conf - gt_conf)
-
         if not prediction_match:
             consistency = "Model Disagreement"
         elif py_conf < min_conf or gt_conf < min_conf:
@@ -117,12 +109,10 @@ def apply_business_rules(
         prediction_match = False
         confidence_difference = None
         consistency = "Uncertain Result"
-
     hard_fail = []
     manual = []
     warnings = []
     missing_docs = []
-
     if not gtm_available:
         manual.append("GTM G2 V3 inference unavailable")
     else:
@@ -139,30 +129,22 @@ def apply_business_rules(
             manual.append(
                 f"Large model-confidence difference ({confidence_difference:.3f})"
             )
-
     if py_conf < min_conf:
         manual.append(
             f"Python confidence below threshold ({py_conf:.3f})"
         )
-
     if _norm(claim_data.get("WarrantyStatus")) == "expired":
         hard_fail.append("Warranty expired")
-
     if _is_no(claim_data.get("ComponentWarrantyEligible")):
         hard_fail.append("Component not warranty eligible")
-
     if _is_no(claim_data.get("FaultCovered")):
         hard_fail.append("Fault not covered")
-
     if _is_no(claim_data.get("ClaimReportingWithinPeriod")):
         hard_fail.append("Claim reported outside allowed period")
-
     previous_repair = _is_yes(claim_data.get("PreviousRepair"))
     repair_authorized = _norm(claim_data.get("RepairAuthorized"))
-
     if previous_repair and repair_authorized == "no":
         hard_fail.append("Previous repair was unauthorized")
-
     required_complete = _norm(
         claim_data.get("RequiredDocumentsComplete")
     )
@@ -173,7 +155,6 @@ def apply_business_rules(
         missing_docs.append(
             "Required documents incomplete/unknown"
         )
-
     policy_required_complete = _norm(
         claim_data.get("PolicyRequiredEvidenceComplete")
     )
@@ -188,16 +169,13 @@ def apply_business_rules(
             "Category policy evidence missing"
             + (f": {missing_label}" if missing_label else "")
         )
-
     if _is_no(claim_data.get("ComponentWarrantyEligible")):
         hard_fail.append("Component is not covered by the category policy")
-
     if _is_yes(claim_data.get("PolicyInstallationRequired")) and _norm(
         claim_data.get("InstallationEvidenceAvailable")
     ) != "yes":
         manual.append("Category policy requires installation evidence")
         missing_docs.append("Installation evidence required by category policy")
-
     missing_count = _number(
         claim_data.get("MissingDocumentCount")
     )
@@ -208,11 +186,9 @@ def apply_business_rules(
         missing_docs.append(
             f"{int(missing_count)} required document(s) missing"
         )
-
     if _is_yes(claim_data.get("CriticalDocumentMissing")):
         manual.append("Critical document missing")
         missing_docs.append("Critical document missing")
-
     if previous_repair:
         repair_report = _norm(
             claim_data.get("RepairReportAvailable")
@@ -228,47 +204,39 @@ def apply_business_rules(
             manual.append(
                 "Previous repair authorization is unknown"
             )
-
     if _norm(claim_data.get("SerialNumberMatch")) in {
         "no", "unknown", ""
     }:
         manual.append(
             "Serial-number verification requires review"
         )
-
     if _norm(claim_data.get("ProductIdentityMatch")) in {
         "no", "unknown", ""
     }:
         manual.append(
             "Product identity requires review"
         )
-
     if _norm(claim_data.get("ProductModelConsistent")) in {
         "no", "unknown", ""
     }:
         manual.append(
             "Product model consistency requires review"
         )
-
     if _is_yes(claim_data.get("DuplicateClaimIndicator")):
         manual.append("Possible duplicate claim")
-
     if _is_yes(claim_data.get("DocumentDuplicateIndicator")):
         manual.append("Possible duplicate document")
         warnings.append("Duplicate document warning")
-
     if _is_yes(claim_data.get("ContradictionIndicator")):
         manual.append(
             "Contradictory claim evidence detected"
         )
-
     if _is_yes(
         claim_data.get("WarrantyDocumentMismatchIndicator")
     ):
         manual.append(
             "Warranty document mismatch requires review"
         )
-
     ocr_conf = _number(
         claim_data.get("OCRConfidence"),
         default=1.0,
@@ -277,12 +245,10 @@ def apply_business_rules(
         manual.append(
             f"OCR confidence below threshold ({ocr_conf:.3f})"
         )
-
     hard_fail = list(dict.fromkeys(hard_fail))
     manual = list(dict.fromkeys(manual))
     warnings = list(dict.fromkeys(warnings))
     missing_docs = list(dict.fromkeys(missing_docs))
-
     if hard_fail:
         warranty_rule_result = (
             "HARD_FAIL: " + "; ".join(hard_fail)
@@ -293,7 +259,6 @@ def apply_business_rules(
         )
     else:
         warranty_rule_result = "PASS"
-
     if manual:
         final_application_decision = "Manual Review Required"
     elif hard_fail:
@@ -308,7 +273,6 @@ def apply_business_rules(
         final_application_decision = "Likely Invalid"
     else:
         final_application_decision = "Manual Review Required"
-
     reasons = []
     if gtm_available and not prediction_match:
         reasons.append(f"Python={py_pred}; GTM={gt_pred}")
@@ -332,20 +296,14 @@ def apply_business_rules(
         reasons.append(
             "Models and warranty checks are sufficiently consistent"
         )
-
     legacy_final_decision = _legacy_label(
         final_application_decision
     )
-
-    # A model prediction is not a final business decision. Valid predictions
-    # must be confirmed by a reviewer. Invalid predictions are shown to the
-    # customer for confirmation; disagreement is handled as an appeal.
     customer_status = {
         "Likely Valid": "Waiting to proceed",
         "Likely Invalid": "Under Review",
         "Manual Review Required": "Under Review",
     }[final_application_decision]
-
     return {
         "ml_prediction": py_pred,
         "ml_confidence": py_conf,
@@ -354,7 +312,6 @@ def apply_business_rules(
         "requires_admin_review":
             final_application_decision == "Manual Review Required",
         "decision_reasons": reasons,
-
         "python_prediction": py_pred,
         "python_confidence": py_conf,
         "python_probabilities": python_probabilities or {},

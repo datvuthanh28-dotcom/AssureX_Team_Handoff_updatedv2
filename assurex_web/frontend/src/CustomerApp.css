@@ -1,8 +1,8 @@
-/* ===================================================
-   AssureX — Customer Portal light/professional theme
-   Scoped entirely under body.customer-light so it
-   never touches the admin dark dashboard styles.
-=================================================== */
+
+
+
+
+
 
 body.customer-light {
   min-width: 0;
@@ -36,7 +36,7 @@ body.customer-light .app-shell {
   min-height: 100vh;
 }
 
-/* ---------- Sidebar ---------- */
+
 
 body.customer-light .sidebar {
   position: sticky;
@@ -211,7 +211,7 @@ body.customer-light .logout-button:hover {
   background: var(--ax-danger-soft);
 }
 
-/* ---------- Main content / headers ---------- */
+
 
 body.customer-light .main-content {
   padding: 36px 44px 60px;
@@ -246,7 +246,7 @@ body.customer-light .page-description {
   margin: 0;
 }
 
-/* ---------- Hero card ---------- */
+
 
 body.customer-light .customer-hero,
 body.customer-light .hero-card {
@@ -295,7 +295,7 @@ body.customer-light .hero-card .button.primary:hover {
   background: #eef1ff;
 }
 
-/* ---------- Stat cards ---------- */
+
 
 body.customer-light .stats-grid {
   display: grid;
@@ -347,7 +347,7 @@ body.customer-light .stat-card.tone-danger strong {
   color: var(--ax-danger);
 }
 
-/* ---------- Panels / tables ---------- */
+
 
 body.customer-light .panel {
   background: var(--ax-surface);
@@ -440,7 +440,7 @@ body.customer-light .data-table .mono {
   color: var(--ax-text-soft);
 }
 
-/* ---------- Status badges ---------- */
+
 
 body.customer-light .status-badge {
   display: inline-flex;
@@ -472,7 +472,7 @@ body.customer-light .status-badge.status-pending {
   color: var(--ax-warning);
 }
 
-/* ---------- Buttons ---------- */
+
 
 body.customer-light .button {
   border-radius: 10px;
@@ -509,7 +509,7 @@ body.customer-light .button.large {
   font-size: 15px;
 }
 
-/* ---------- Forms (Submit Claim) ---------- */
+
 
 body.customer-light .customer-identity {
   background: var(--ax-surface);
@@ -676,7 +676,7 @@ body.customer-light .ocr-mismatch {
   color: var(--ax-warning);
 }
 
-/* ---------- Result / decision cards ---------- */
+
 
 body.customer-light .decision-success-card,
 body.customer-light .success-card,
@@ -733,7 +733,7 @@ body.customer-light .description-box {
   margin-top: 12px;
 }
 
-/* ---------- Timeline ---------- */
+
 
 body.customer-light .timeline {
   display: flex;
@@ -795,7 +795,7 @@ body.customer-light .timeline-line.complete {
   background: var(--ax-primary);
 }
 
-/* ---------- Empty / loading states ---------- */
+
 
 body.customer-light .empty-state {
   text-align: center;
@@ -820,7 +820,7 @@ body.customer-light .spinner {
   border-top-color: var(--ax-primary);
 }
 
-/* ---------- Alerts ---------- */
+
 
 body.customer-light .alert.error,
 body.customer-light .login-error {
@@ -839,9 +839,9 @@ body.customer-light .alert.success {
   font-size: 13.5px;
 }
 
-/* ===================================================
-   Login screen
-=================================================== */
+
+
+
 
 body.customer-light .login-screen {
   min-height: 100vh;
@@ -1116,7 +1116,7 @@ body.customer-light .login-aside {
   background: #234b91;
 }
 
-/* ---------- Responsive ---------- */
+
 
 @media (max-width: 900px) {
   body.customer-light .login-screen {
@@ -1371,7 +1371,7 @@ body.customer-light .login-aside {
   }
 }
 
-/* ---------- Profile Page Styles ---------- */
+
 body.customer-light .profile-overview-panel,
 body.customer-light .profile-form-panel,
 body.customer-light .profile-password-panel {
@@ -1414,7 +1414,7 @@ body.customer-light .user-id-badge {
   border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-/* Evidence Upload Cards & Badges */
+
 body.customer-light .evidence-upload-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -1479,7 +1479,7 @@ body.customer-light .draft-banner {
   flex-wrap: wrap;
 }
 
-/* Dual-Model Comparison Styles */
+
 body.customer-light .dual-model-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -1521,7 +1521,7 @@ body.customer-light .consistency-box {
   }
 }
 
-/* Enterprise SaaS customer visual refresh - styling only */
+
 body.customer-light {
   --ax-primary: #2563eb;
   --ax-primary-dark: #1d4ed8;
@@ -1885,7 +1885,7 @@ body.customer-light .account-avatar {
   }
 }
 
-/* Notification read/unread states */
+
 body.customer-light .notification-item {
   cursor: default;
   transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
@@ -1923,7 +1923,7 @@ body.customer-light .notification-item:hover {
   border-color: #cbd5e1;
 }
 
-/* Contrast/readability regression fixes - color only */
+
 body.customer-light {
   --color-bg: #f8fafc;
   --color-surface: #ffffff;
@@ -2123,7 +2123,7 @@ body.customer-light .empty-icon {
   opacity: 0.72;
 }
 
-/* Customer portal global layout/readability audit fixes - presentation only */
+
 body.customer-light {
   --assurex-bg-app: #f8fafc;
   --assurex-bg-surface: #ffffff;
@@ -2536,7 +2536,7 @@ body.customer-light .login-screen {
   }
 }
 
-/* Final customer gutter and list readability guard */
+
 body.customer-light .app-shell > .main-content,
 body.customer-light main.main-content {
   padding-left: 48px;
@@ -2596,7 +2596,7 @@ body.customer-light .notification-item.unread {
   }
 }
 
-/* Customer sidebar refinement: compact product navigation */
+
 body.customer-light .sidebar {
   width: 260px;
   flex-basis: 260px;
@@ -2713,4 +2713,3 @@ body.customer-light .guest-actions {
     flex-basis: auto;
   }
 }
-

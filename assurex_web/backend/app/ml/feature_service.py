@@ -1,12 +1,9 @@
 from __future__ import annotations
-
 from datetime import date
 import json
 from pathlib import Path
 import numpy as np
 import pandas as pd
-
-
 WORKSPACE_ROOT = Path(__file__).resolve().parents[4]
 POLICY_PATH = WORKSPACE_ROOT / "config" / "warranty_policies.json"
 try:
@@ -25,8 +22,6 @@ def get_category_policy(category):
         (policy for name, policy in categories.items() if name.casefold() == normalized_category),
         {},
     )
-
-
 DOCUMENT_FIELDS = [
     "receipt_available",
     "warranty_card_available",
@@ -34,20 +29,17 @@ DOCUMENT_FIELDS = [
     "serial_evidence_available",
     "fault_evidence_available",
 ]
-
 CORE_DOCUMENT_FIELDS = [
     "receipt_available",
     "product_image_available",
     "serial_evidence_available",
     "fault_evidence_available",
 ]
-
 COVERED_DAMAGE_TYPES = {
     "Manufacturing Defect",
     "Electrical Failure",
     "Internal Component Failure",
 }
-
 EXCLUDED_DAMAGE_TYPES = {
     "Accidental Damage",
     "Water Damage",
@@ -60,21 +52,15 @@ EXCLUDED_DAMAGE_TYPES = {
 def yes_no(value):
     if value is None:
         return "Unknown"
-
     if isinstance(value, bool):
         return "Yes" if value else "No"
-
     text = str(value).strip().lower()
-
     if text in {"yes", "y", "true", "1"}:
         return "Yes"
-
     if text in {"no", "n", "false", "0"}:
         return "No"
-
     if text in {"not applicable", "n/a", "na"}:
         return "Not Applicable"
-
     return "Unknown"
 
 
@@ -85,7 +71,6 @@ def normalized(value):
 def parse_date(value):
     if not value:
         return None
-
     try:
         return pd.Timestamp(value)
     except Exception:
@@ -101,50 +86,36 @@ def build_claim_features(
     """
     Convert customer-friendly claim data into the exact 22
     model features used by the production model.
-
     No ClaimClass/target information is used.
     """
-
     claim_date = parse_date(
         raw.get("claim_date")
     ) or pd.Timestamp(date.today())
-
     purchase_date = parse_date(
         raw.get("purchase_date")
     )
-
     fault_date = parse_date(
         raw.get("fault_date")
     )
-
     category = str(raw.get("product_category") or "").strip()
     policy = get_category_policy(category)
     common_policy = WARRANTY_POLICY.get("common", {})
     claimed_component = str(raw.get("claimed_component") or "Main Unit").strip()
     component_policy = policy.get("components", {}).get(claimed_component, {})
-
-    # -------------------------------------------------
-    # WARRANTY
-    # -------------------------------------------------
-
     try:
         warranty_months = int(raw.get("warranty_duration_months"))
     except (TypeError, ValueError):
         warranty_months = policy.get("standard_warranty_months")
-
     if component_policy:
         warranty_months = component_policy.get("warranty_months", warranty_months)
     component_warranty_eligible = component_policy.get(
         "warranty_eligible",
         True if policy else None,
     )
-
     extended_warranty = yes_no(
         raw.get("extended_warranty")
     )
-
     warranty_expiry = None
-
     if (
         purchase_date is not None
         and warranty_months is not None
@@ -155,14 +126,12 @@ def build_claim_features(
             if extended_warranty == "Yes"
             else 0
         )
-
         warranty_expiry = (
             purchase_date
             + pd.DateOffset(
                 months=warranty_months + extension
             )
         )
-
     if warranty_expiry is None:
         warranty_remaining_days = np.nan
         warranty_status = "Unknown"
@@ -170,17 +139,11 @@ def build_claim_features(
         warranty_remaining_days = float(
             (warranty_expiry - claim_date).days
         )
-
         warranty_status = (
             "Active"
             if warranty_remaining_days >= 0
             else "Expired"
         )
-
-    # -------------------------------------------------
-    # CLAIM REPORTING
-    # -------------------------------------------------
-
     if fault_date is None:
         reporting_delay = np.nan
         reporting_within_period = "Unknown"
@@ -188,24 +151,16 @@ def build_claim_features(
         reporting_delay = float(
             (claim_date - fault_date).days
         )
-
         reporting_deadline = policy.get("reporting_deadline_days", 30)
         reporting_within_period = "Yes" if reporting_delay <= reporting_deadline else "No"
-
-    # -------------------------------------------------
-    # DAMAGE / COVERAGE
-    # -------------------------------------------------
-
     damage_type = str(
         raw.get("damage_type") or ""
     ).strip()
-
     fault_type = str(raw.get("fault_type") or raw.get("problem_category") or "").strip()
     problem_category = str(raw.get("problem_category") or "").strip()
     fault_desc = str(raw.get("fault_description") or "").lower()
     policy_covered_faults = set(policy.get("potentially_covered_faults", []))
     policy_excluded_causes = set(common_policy.get("common_excluded_causes", [])) | set(policy.get("additional_excluded_causes", []))
-
     excluded_terms = {
         "water", "liquid", "dropped", "falling", "shattered", "physical impact",
         "spilled", "tampered", "cracked glass", "misuse", "accident",
@@ -214,7 +169,6 @@ def build_claim_features(
         "vao nuoc", "vào nước", "ngam nuoc", "ngấm nước", "do nuoc", "đổ nước",
         "physical damage", "liquid damage",
     }
-
     if (
         damage_type in policy_excluded_causes
         or fault_type in policy_excluded_causes
@@ -233,16 +187,10 @@ def build_claim_features(
         fault_covered = "Yes"
     else:
         fault_covered = "Unknown"
-
-    # -------------------------------------------------
-    # DOCUMENTS
-    # -------------------------------------------------
-
     documents = {
         field: yes_no(raw.get(field))
         for field in DOCUMENT_FIELDS
     }
-
     evidence_aliases = {
         "warranty_proof": ["receipt_available", "warranty_card_available", "electronic_warranty_available"],
         "identity_evidence": ["serial_evidence_available", "product_image_available"],
@@ -260,15 +208,12 @@ def build_claim_features(
         aliases = evidence_aliases.get(required_evidence, [required_evidence])
         if not any(yes_no(raw.get(alias)) == "Yes" for alias in aliases):
             policy_missing_evidence.append(required_evidence)
-
     policy_required_complete = "Yes" if not policy_missing_evidence else "No"
-
     observed_documents = [
         value
         for value in documents.values()
         if value != "Unknown"
     ]
-
     if not observed_documents:
         missing_document_count = np.nan
         available_document_count = np.nan
@@ -279,19 +224,16 @@ def build_claim_features(
                 for value in observed_documents
             )
         )
-
         available_document_count = float(
             sum(
                 value == "Yes"
                 for value in observed_documents
             )
         )
-
     required_values = [
         documents[field]
         for field in CORE_DOCUMENT_FIELDS
     ]
-
     if "Unknown" in required_values:
         required_documents_complete = "Unknown"
     else:
@@ -303,53 +245,36 @@ def build_claim_features(
             )
             else "No"
         )
-
     purchase_proof_available = documents[
         "receipt_available"
     ]
-
-    # -------------------------------------------------
-    # REPAIR HISTORY
-    # -------------------------------------------------
-
     previous_repair = yes_no(
         raw.get("previous_repair")
     )
-
     has_repair_history = (
         previous_repair
         if previous_repair in {"Yes", "No"}
         else "Unknown"
     )
-
     try:
         repair_count = int(
             raw.get("repair_count", 0)
         )
     except (TypeError, ValueError):
         repair_count = 0
-
     repair_report_available = yes_no(
         raw.get("repair_report_available")
     )
-
     if previous_repair == "No":
         repair_report_available = (
             "Not Applicable"
         )
-
-    # -------------------------------------------------
-    # SERIAL / MODEL CONSISTENCY
-    # -------------------------------------------------
-
     serial_number = normalized(
         raw.get("serial_number")
     )
-
     evidence_serial = normalized(
         raw.get("evidence_serial_number")
     )
-
     if serial_number and evidence_serial:
         serial_number_match = (
             "Yes"
@@ -358,15 +283,12 @@ def build_claim_features(
         )
     else:
         serial_number_match = "Unknown"
-
     model_number = normalized(
         raw.get("model_number")
     )
-
     evidence_model = normalized(
         raw.get("evidence_model_number")
     )
-
     if model_number and evidence_model:
         product_model_consistent = (
             "Yes"
@@ -375,78 +297,43 @@ def build_claim_features(
         )
     else:
         product_model_consistent = "Unknown"
-
-    # -------------------------------------------------
-    # CONTRADICTION CHECK
-    # -------------------------------------------------
-
     contradiction = False
-
     if (
         purchase_date is not None
         and fault_date is not None
         and fault_date < purchase_date
     ):
         contradiction = True
-
     if (
         purchase_date is not None
         and claim_date < purchase_date
     ):
         contradiction = True
-
     contradiction_indicator = (
         "Yes" if contradiction else "No"
     )
-
     duplicate_indicator = (
         "Yes" if duplicate_claim else "No"
     )
-
-    # -------------------------------------------------
-    # OCR
-    # OCR is intentionally missing until the OCR stage
-    # is integrated. The trained sklearn pipeline has
-    # numerical imputation.
-    # -------------------------------------------------
-
     try:
         ocr_confidence = float(
             raw.get("ocr_confidence")
         )
     except (TypeError, ValueError):
         ocr_confidence = np.nan
-
-    # -------------------------------------------------
-    # CLAIM AMOUNT
-    #
-    # Customer may not know an estimated amount.
-    # Preserve missing values for the sklearn numerical
-    # preprocessing pipeline instead of converting them to 0.
-    # -------------------------------------------------
-
     try:
         claim_amount_raw = raw.get("claim_amount")
-
         claim_amount = (
             float(claim_amount_raw)
             if claim_amount_raw not in {None, ""}
             else np.nan
         )
-
     except (TypeError, ValueError):
         claim_amount = np.nan
-
-    # -------------------------------------------------
-    # ASSUREX V3 - EXACT 14 FROZEN PYTHON FEATURES
-    # -------------------------------------------------
-
     repair_authorized = yes_no(
         raw.get("repair_authorized")
     )
-
     product_identity_match = serial_number_match
-
     try:
         ocr_value = float(ocr_confidence)
         if np.isnan(ocr_value):
@@ -459,7 +346,6 @@ def build_claim_features(
             ocr_quality_band = "High"
     except (TypeError, ValueError):
         ocr_quality_band = "Unknown"
-
     model_features = {
         "RepairAuthorized": repair_authorized,
         "SerialNumberMatch": serial_number_match,
@@ -476,11 +362,8 @@ def build_claim_features(
         "ProductIdentityMatch": product_identity_match,
         "OCRQualityBand": ocr_quality_band,
     }
-
-    # Additional raw values used by Decision Engine.
     rule_data = {
         **model_features,
-
         "PolicyVersion": WARRANTY_POLICY.get("policy_version"),
         "PolicyCategory": category,
         "PolicyComponent": claimed_component,
@@ -502,10 +385,8 @@ def build_claim_features(
             else "No" if component_warranty_eligible is False
             else "Unknown"
         ),
-
         "RepairAuthorized":
             repair_authorized,
-
         "DocumentDuplicateIndicator":
             yes_no(
                 raw.get(
@@ -516,7 +397,6 @@ def build_claim_features(
             raw.get("installation_evidence_available")
         ),
     }
-
     return {
         "model_features": model_features,
         "rule_data": rule_data,

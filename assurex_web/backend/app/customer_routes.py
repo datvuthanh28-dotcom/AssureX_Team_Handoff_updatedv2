@@ -3,12 +3,10 @@ from math import isnan
 from pathlib import Path
 from typing import Any, Literal
 from uuid import uuid4
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
-
 from app.database import get_db
 from app.models import (
     AuditLog,
@@ -24,8 +22,6 @@ from app.ml.decision_service import apply_business_rules
 from app.ml.gtm_service import predict_gtm_claim
 from app.ml.document_compare_service import compare_warranty_data
 from app.ocr.ocr_service import extract_warranty_image
-
-
 router = APIRouter(
     prefix="/api/customer/claims",
     tags=["Customer Claims"],
@@ -37,68 +33,52 @@ class CustomerClaimCreate(BaseModel):
         min_length=2,
         max_length=150,
     )
-
     email: str = Field(
         min_length=3,
         max_length=150,
     )
-
     product_name: str = Field(
         min_length=1,
         max_length=150,
     )
-
     model_number: str | None = None
-
     serial_number: str = Field(
         min_length=1,
         max_length=100,
     )
-
     evidence_serial_number: str | None = None
     evidence_model_number: str | None = None
-
     purchase_date: str
     fault_date: str | None = None
-
     warranty_duration_months: int | None = None
     extended_warranty: str | None = "No"
-
     damage_type: str | None = None
-
     claim_amount: float | None = Field(
         default=None,
         gt=0,
     )
-
     fault_description: str = Field(
         min_length=5,
     )
-
     receipt_available: str | None = None
     warranty_card_available: str | None = None
     product_image_available: str | None = None
     serial_evidence_available: str | None = None
     fault_evidence_available: str | None = None
-
     previous_repair: str | None = "No"
     repair_count: int = 0
     repair_report_available: str | None = None
     repair_authorized: str | None = None
-
     ocr_confidence: float | None = None
     document_duplicate_indicator: str | None = None
-
     warranty_document_id: str | None = None
     warranty_ocr_data: dict[str, Any] | None = None
     warranty_ocr_confidence: float | None = None
-
     receipt_url: str | None = None
     evidence_photo_url: str | None = None
     product_image_url: str | None = None
     repair_report_url: str | None = None
     document_hashes: dict[str, Any] | None = None
-
     previous_repair_date: str | None = None
     repair_center_name: str | None = None
     replaced_parts: str | None = None
@@ -119,7 +99,6 @@ class CustomerClaimStatusUpdate(BaseModel):
         "Rejected",
         "Closed",
     ]
-
     reviewer_comment: str | None = None
 
 
@@ -134,20 +113,14 @@ def json_safe(value: Any):
             key: json_safe(item)
             for key, item in value.items()
         }
-
     if isinstance(value, list):
         return [
             json_safe(item)
             for item in value
         ]
-
     if isinstance(value, float) and isnan(value):
         return None
-
     return value
-
-
-
 WARRANTY_UPLOAD_DIR = Path(
     "app/uploads/warranty_cards"
 )
@@ -159,7 +132,6 @@ def load_warranty_document_ocr(
     safe_id = str(
         document_id
     ).strip()
-
     if (
         not safe_id.startswith("WAR-")
         or "/" in safe_id
@@ -173,9 +145,7 @@ def load_warranty_document_ocr(
                 "document ID."
             ),
         )
-
     document_path = None
-
     for suffix in (
         ".jpg",
         ".png",
@@ -185,11 +155,9 @@ def load_warranty_document_ocr(
             WARRANTY_UPLOAD_DIR
             / f"{safe_id}{suffix}"
         )
-
         if candidate.exists():
             document_path = candidate
             break
-
     if document_path is None:
         raise HTTPException(
             status_code=400,
@@ -198,7 +166,6 @@ def load_warranty_document_ocr(
                 "document was not found."
             ),
         )
-
     try:
         return extract_warranty_image(
             document_path
@@ -233,7 +200,6 @@ def serialize_claim(
         db,
         claim.claim_id,
     )
-
     result = {
         "id": claim.id,
         "claim_id": claim.claim_id,
@@ -262,92 +228,64 @@ def serialize_claim(
         "repair_cost": claim.repair_cost,
         "created_at": claim.created_at,
     }
-
     if decision is None:
         result["decision"] = None
         return result
-
     result["decision"] = {
         "ml_prediction":
             decision.ml_prediction,
-
         "ml_confidence":
             decision.ml_confidence,
-
         "probabilities":
             decision.probabilities,
-
         "final_decision":
             decision.final_decision,
-
         "requires_admin_review":
             bool(
                 decision.requires_admin_review
             ),
-
         "decision_reasons":
             decision.decision_reasons,
-
         "model_name":
             decision.model_name,
-
         "python_model_name":
             decision.python_model_name or decision.model_name,
-
         "python_model_version":
             decision.python_model_version,
-
         "gtm_model_version":
             decision.gtm_model_version,
-
         "google_model_name":
             decision.google_model_name,
-
         "google_model_version":
             decision.google_model_version,
-
         "google_inference_status":
             decision.google_inference_status,
-
         "google_prediction":
             decision.google_prediction,
-
         "google_confidence":
             decision.google_confidence,
-
         "confidence_difference":
             decision.confidence_difference,
-
         "model_consistency_status":
             decision.model_consistency_status,
-
         "analysis_timestamp":
             decision.created_at,
-
         "raw_input":
             decision.raw_input,
-
         "model_features":
             decision.model_features,
-
         "derived_data":
             decision.derived_data,
-
         "reviewer_decision":
             decision.reviewer_decision,
-
         "reviewer_comment":
             decision.reviewer_comment,
-
         "reviewed_at":
             decision.reviewed_at,
-
         "customer_confirmation":
             decision.customer_confirmation,
-
         "customer_confirmed_at":
             decision.customer_confirmed_at,
-
         "customer_action_required": (
             "Confirm Invalid or submit an appeal"
             if decision.final_decision == "Invalid Claim"
@@ -360,11 +298,10 @@ def serialize_claim(
             )
         ),
     }
-
     return result
-
-
 @router.post("")
+
+
 def submit_customer_claim(
     payload: CustomerClaimCreate,
     account: CustomerAccount = Depends(require_roles("CUSTOMER")),
@@ -381,60 +318,37 @@ def submit_customer_claim(
         + "-"
         + uuid4().hex[:6].upper()
     )
-
     raw_input = payload.model_dump()
-
-    # ---------------------------------------------
-    # WARRANTY DOCUMENT VERIFICATION
-    #
-    # Never trust OCR values returned by the
-    # browser. If a document_id exists, OCR the
-    # server-side uploaded image again.
-    # ---------------------------------------------
-
     warranty_ocr_result = None
     warranty_comparison = None
-
     if payload.warranty_document_id:
         warranty_ocr_result = (
             load_warranty_document_ocr(
                 payload.warranty_document_id
             )
         )
-
         extracted = (
             warranty_ocr_result[
                 "extracted_data"
             ]
             or {}
         )
-
-        # Replace browser-supplied OCR values
-        # with server-side OCR values.
         raw_input[
             "warranty_ocr_data"
         ] = extracted
-
         raw_input[
             "warranty_ocr_confidence"
         ] = warranty_ocr_result[
             "ocr_confidence"
         ]
-
-        # Production ML feature.
         raw_input[
             "ocr_confidence"
         ] = warranty_ocr_result[
             "ocr_confidence"
         ]
-
         raw_input[
             "warranty_card_available"
         ] = "Yes"
-
-        # Use values actually extracted from
-        # the uploaded warranty document as
-        # verification evidence.
         if extracted.get(
             "serial_number"
         ):
@@ -443,11 +357,9 @@ def submit_customer_claim(
             ] = extracted[
                 "serial_number"
             ]
-
             raw_input[
                 "serial_evidence_available"
             ] = "Yes"
-
         if extracted.get(
             "model_number"
         ):
@@ -456,36 +368,27 @@ def submit_customer_claim(
             ] = extracted[
                 "model_number"
             ]
-
         warranty_comparison = (
             compare_warranty_data(
                 extracted,
                 raw_input,
             )
         )
-
         raw_input[
             "warranty_document_mismatch"
         ] = warranty_comparison[
             "has_mismatch"
         ]
-
         raw_input[
             "warranty_document_mismatch_fields"
         ] = warranty_comparison[
             "mismatch_fields"
         ]
-
         raw_input[
             "warranty_document_comparison"
         ] = warranty_comparison[
             "comparisons"
         ]
-
-    # ---------------------------------------------
-    # PRIOR CLAIM HISTORY
-    # ---------------------------------------------
-
     prior_claim_count = db.scalar(
         select(func.count())
         .select_from(CustomerClaim)
@@ -494,32 +397,19 @@ def submit_customer_claim(
             == payload.serial_number
         )
     ) or 0
-
-    # ---------------------------------------------
-    # DUPLICATE DETECTION
-    # ---------------------------------------------
-
     duplicate = db.scalar(
         select(CustomerClaim).where(
             CustomerClaim.email
             == payload.email,
-
             CustomerClaim.serial_number
             == payload.serial_number,
-
             CustomerClaim.fault_description
             == payload.fault_description,
         )
     )
-
     duplicate_claim = (
         duplicate is not None
     )
-
-    # ---------------------------------------------
-    # NORMALIZE REPAIR VALUES
-    # ---------------------------------------------
-
     if (
         str(payload.previous_repair)
         .strip()
@@ -529,29 +419,20 @@ def submit_customer_claim(
         raw_input["repair_authorized"] = (
             "Not Applicable"
         )
-
         raw_input[
             "repair_report_available"
         ] = "Not Applicable"
-
-    # ---------------------------------------------
-    # FEATURE BUILDER
-    # ---------------------------------------------
-
     feature_result = build_claim_features(
         raw_input,
         prior_claim_count=prior_claim_count,
         duplicate_claim=duplicate_claim,
     )
-
     model_features = dict(
         feature_result["model_features"]
     )
-
     rule_data = dict(
         feature_result["rule_data"]
     )
-
     if (
         warranty_comparison
         and warranty_comparison[
@@ -563,56 +444,35 @@ def submit_customer_claim(
                 "mismatch_fields"
             ]
         )
-
         rule_data[
             "WarrantyDocumentMismatchIndicator"
         ] = "Yes"
-
         rule_data[
             "WarrantyDocumentMismatchFields"
         ] = mismatch_fields
-
         rule_data[
             "DocumentContradictionIndicator"
         ] = "Yes"
-
-        # Feed detected contradiction into
-        # the existing production feature too.
         model_features[
             "ContradictionIndicator"
         ] = "Yes"
-
     else:
         rule_data[
             "WarrantyDocumentMismatchIndicator"
         ] = "No"
-
         rule_data[
             "WarrantyDocumentMismatchFields"
         ] = []
-
-    # ---------------------------------------------
-    # PYTHON ML
-    # ---------------------------------------------
-
     prediction = predict_claim(
         model_features
     )
-
-    # ---------------------------------------------
-    # DECISION ENGINE
-    # ---------------------------------------------
-
     gtm_result = predict_gtm_claim(
         raw_input=raw_input,
         model_features=model_features,
         rule_data=feature_result["rule_data"],
         derived=feature_result["derived"],
     )
-    # Keep one normalized Google/GTM result object for the decision record,
-    # audit trail, and customer-facing claim summary.
     google_model = gtm_result
-
     decision_result = apply_business_rules(
         feature_result["rule_data"],
         prediction["predicted_class"],
@@ -622,17 +482,7 @@ def submit_customer_claim(
         python_probabilities=prediction.get("probabilities"),
         gtm_probabilities=gtm_result.get("probabilities"),
     )
-
-    # ---------------------------------------------
-    # CUSTOMER STATUS
-    #
-    # Valid    -> Reviewer confirmation required
-    # Invalid  -> Customer confirmation or appeal
-    # Manual   -> Reviewer review
-    # ---------------------------------------------
-
     customer_status = decision_result["customer_status"]
-
     claim = CustomerClaim(
         claim_id=claim_id,
         customer_name=payload.customer_name,
@@ -659,10 +509,8 @@ def submit_customer_claim(
         repair_outcome=payload.repair_outcome,
         repair_cost=payload.repair_cost,
     )
-
     db.add(claim)
     db.flush()
-
     derived_data = dict(
         feature_result["derived"]
     )
@@ -671,46 +519,36 @@ def submit_customer_claim(
         "model_version": google_model["model_version"],
         "inference_status": google_model["inference_status"],
     }
-
     if warranty_ocr_result:
         derived_data[
             "warranty_document"
         ] = {
             "document_id":
                 payload.warranty_document_id,
-
             "ocr_confidence":
                 warranty_ocr_result[
                     "ocr_confidence"
                 ],
-
             "extracted_data":
                 warranty_ocr_result[
                     "extracted_data"
                 ],
-
             "comparison":
                 warranty_comparison,
         }
-
     decision_record = CustomerClaimDecision(
         claim_id=claim_id,
-
         ml_prediction=
             prediction["predicted_class"],
-
         ml_confidence=
             prediction["confidence"],
-
         probabilities=json_safe(
             prediction["probabilities"]
         ),
-
         final_decision=
             decision_result[
                 "final_decision"
             ],
-
         requires_admin_review=(
             1
             if decision_result[
@@ -718,55 +556,38 @@ def submit_customer_claim(
             ]
             else 0
         ),
-
         decision_reasons=json_safe(
             decision_result[
                 "decision_reasons"
             ]
         ),
-
         raw_input=json_safe(
             raw_input
         ),
-
         model_features=json_safe(
             model_features
         ),
-
         derived_data=json_safe(
             derived_data
         ),
-
         model_name=
             prediction["model_name"],
-
         python_model_name=
             prediction["model_name"],
-
         python_model_version=
             prediction["model_version"],
-
         gtm_model_version=gtm_result.get("model_version"),
-
         google_model_name=
             google_model["model_name"],
-
         google_model_version=
             google_model["model_version"],
-
         google_inference_status=gtm_result.get("inference_status"),
-
         google_prediction=gtm_result.get("predicted_class"),
-
         google_confidence=gtm_result.get("confidence"),
-
         confidence_difference=decision_result.get("confidence_difference"),
-
         model_consistency_status=decision_result.get("model_consistency_status"),
     )
-
     db.add(decision_record)
-
     record_audit(
         db,
         account=account,
@@ -785,7 +606,6 @@ def submit_customer_claim(
             "decision_reasons": decision_result["decision_reasons"],
         },
     )
-
     add_notification(
         db,
         account_id=account.id,
@@ -794,7 +614,6 @@ def submit_customer_claim(
         resource_type="CLAIM",
         resource_id=claim_id,
     )
-
     if decision_result["requires_admin_review"]:
         reviewers = db.scalars(
             select(CustomerAccount).where(
@@ -811,42 +630,34 @@ def submit_customer_claim(
                 resource_type="CLAIM",
                 resource_id=claim_id,
             )
-
     db.commit()
     db.refresh(claim)
-
     return serialize_claim(
         claim,
         db,
     )
-
-
 @router.get("")
+
+
 def get_customer_claims(
     email: str | None = Query(
         default=None
     ),
-
     status: str | None = Query(
         default=None
     ),
-
     search: str | None = Query(
         default=None
     ),
-
     requires_review: bool | None = Query(
         default=None
     ),
-
     account: CustomerAccount = Depends(
         require_roles("CUSTOMER", "SERVICE_CENTER", "REVIEWER", "ADMIN")
     ),
-
     db: Session = Depends(get_db),
 ):
     statement = select(CustomerClaim)
-
     if account.role == "CUSTOMER":
         statement = statement.where(
             CustomerClaim.email == account.email
@@ -855,15 +666,12 @@ def get_customer_claims(
         statement = statement.where(
             CustomerClaim.email == email
         )
-
     if status:
         statement = statement.where(
             CustomerClaim.status == status
         )
-
     if search:
         term = f"%{search}%"
-
         statement = statement.where(
             or_(
                 CustomerClaim.claim_id.ilike(
@@ -883,15 +691,12 @@ def get_customer_claims(
                 ),
             )
         )
-
     statement = statement.order_by(
         CustomerClaim.created_at.desc()
     )
-
     claims = db.scalars(
         statement
     ).all()
-
     output = [
         serialize_claim(
             claim,
@@ -899,7 +704,6 @@ def get_customer_claims(
         )
         for claim in claims
     ]
-
     if requires_review is not None:
         output = [
             claim
@@ -912,24 +716,20 @@ def get_customer_claims(
             )
             == requires_review
         ]
-
     return output
-
-
 @router.get("/stats")
+
+
 def get_customer_claim_stats(
     email: str | None = Query(
         default=None
     ),
-
     account: CustomerAccount = Depends(
         require_roles("CUSTOMER", "SERVICE_CENTER", "REVIEWER", "ADMIN")
     ),
-
     db: Session = Depends(get_db),
 ):
     statement = select(CustomerClaim)
-
     if account.role == "CUSTOMER":
         statement = statement.where(
             CustomerClaim.email == account.email
@@ -938,11 +738,9 @@ def get_customer_claim_stats(
         statement = statement.where(
             CustomerClaim.email == email
         )
-
     claims = db.scalars(
         statement
     ).all()
-
     serialized = [
         serialize_claim(
             claim,
@@ -950,27 +748,22 @@ def get_customer_claim_stats(
         )
         for claim in claims
     ]
-
     return {
         "total": len(serialized),
-
         "under_review": sum(
             claim["status"] in {"Under Review", "Manual Review", "Waiting to proceed"}
             for claim in serialized
         ),
-
         "approved": sum(
             claim["status"]
             == "Approved"
             for claim in serialized
         ),
-
         "rejected": sum(
             claim["status"]
             == "Rejected"
             for claim in serialized
         ),
-
         "manual_review": sum(
             bool(
                 claim.get("decision")
@@ -981,9 +774,9 @@ def get_customer_claim_stats(
             for claim in serialized
         ),
     }
-
-
 @router.get("/{claim_id}")
+
+
 def get_customer_claim_detail(
     claim_id: str,
     account: CustomerAccount = Depends(
@@ -997,23 +790,20 @@ def get_customer_claim_detail(
             == claim_id
         )
     )
-
     if claim is None:
         raise HTTPException(
             status_code=404,
             detail="Claim not found.",
         )
-
     if account.role == "CUSTOMER" and claim.email != account.email:
         raise HTTPException(status_code=404, detail="Claim not found.")
-
     return serialize_claim(
         claim,
         db,
     )
-
-
 @router.get("/{claim_id}/history")
+
+
 def get_customer_claim_history(
     claim_id: str,
     account: CustomerAccount = Depends(
@@ -1030,7 +820,6 @@ def get_customer_claim_history(
         account.role == "CUSTOMER" and claim.email != account.email
     ):
         raise HTTPException(status_code=404, detail="Claim not found.")
-
     entries = db.scalars(
         select(AuditLog)
         .where(
@@ -1050,9 +839,9 @@ def get_customer_claim_history(
         }
         for entry in entries
     ]
-
-
 @router.patch("/{claim_id}/confirmation")
+
+
 def confirm_customer_claim_result(
     claim_id: str,
     payload: CustomerClaimConfirmation,
@@ -1067,13 +856,9 @@ def confirm_customer_claim_result(
     )
     if claim is None:
         raise HTTPException(status_code=404, detail="Claim not found.")
-
     decision = get_decision(db, claim_id)
     if decision is None:
         raise HTTPException(status_code=409, detail="This claim has no model result to confirm.")
-
-    # Customer confirmation is intentionally limited to the Invalid path.
-    # Valid and Manual Review results must be handled by a reviewer.
     expected = {
         "Invalid Claim": "Invalid",
     }.get(decision.final_decision)
@@ -1089,13 +874,11 @@ def confirm_customer_claim_result(
         )
     if decision.customer_confirmation is not None:
         raise HTTPException(status_code=409, detail="This claim has already been confirmed.")
-
     now = datetime.utcnow()
     final_status = "Approved" if payload.result == "Valid" else "Rejected"
     decision.customer_confirmation = payload.result
     decision.customer_confirmed_at = now
     claim.status = final_status
-
     record_audit(
         db,
         account=account,
@@ -1112,9 +895,9 @@ def confirm_customer_claim_result(
     db.commit()
     db.refresh(claim)
     return serialize_claim(claim, db)
-
-
 @router.patch("/{claim_id}/status")
+
+
 def update_customer_claim_status(
     claim_id: str,
     payload: CustomerClaimStatusUpdate,
@@ -1129,28 +912,23 @@ def update_customer_claim_status(
             == claim_id
         )
     )
-
     if claim is None:
         raise HTTPException(
             status_code=404,
             detail="Claim not found.",
         )
-
     decision = get_decision(
         db,
         claim_id,
     )
-
     previous_status = claim.status
     claim.status = payload.status
-
     if decision is not None:
         decision.reviewer_decision = payload.status
         decision.reviewed_at = datetime.utcnow()
         decision.reviewer_comment = (
             payload.reviewer_comment
         )
-
     record_audit(
         db,
         account=account,
@@ -1163,7 +941,6 @@ def update_customer_claim_status(
             "reviewer_comment": payload.reviewer_comment,
         },
     )
-
     customer = db.scalar(
         select(CustomerAccount).where(
             CustomerAccount.email == claim.email,
@@ -1180,10 +957,8 @@ def update_customer_claim_status(
             resource_type="CLAIM",
             resource_id=claim_id,
         )
-
     db.commit()
     db.refresh(claim)
-
     return serialize_claim(
         claim,
         db,

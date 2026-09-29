@@ -1,5 +1,5 @@
-// ASSUREX CLAIM ENGINE - MODEL V3 DEFINITIONS & FEATURE ENGINEERING HANDOFF
-// Matching Submit Claim form, user/product database, and 14 active Model V3 features
+
+
 
 export const MODEL_14_FEATURES = [
   'RepairAuthorized',
@@ -21,9 +21,9 @@ export const MODEL_14_FEATURES = [
 export const MODEL_8_FEATURES = MODEL_14_FEATURES
 export const MODEL_9_FEATURES = MODEL_14_FEATURES
 
-// ------------------------------------------------------------------------------
-// FAULT CATEGORIES CUSTOMIZED BY REGISTERED PRODUCT CATEGORY
-// ------------------------------------------------------------------------------
+
+
+
 export const FAULT_CATEGORIES_BY_PRODUCT_CATEGORY = {
   Laptop: [
     {
@@ -530,9 +530,9 @@ export function getFaultCategoriesForProduct(category) {
   return mapped
 }
 
-// ------------------------------------------------------------------------------
-// 1. DEMO DATABASE BUNDLE (Matching SRS & Section 4 of Spec)
-// ------------------------------------------------------------------------------
+
+
+
 export const DEMO_USERS = [
   {
     id: 1,
@@ -675,7 +675,7 @@ export const DEMO_SOLD_PRODUCTS = [
     invoice_number: 'INV-2024-1182',
     warranty_months: 12,
     warranty_start_date: '2024-03-01',
-    warranty_expiry_date: '2025-02-28', // Expired
+    warranty_expiry_date: '2025-02-28',
     extended_warranty: false,
     status: 'expired',
   },
@@ -719,7 +719,7 @@ export const DEMO_SOLD_PRODUCTS = [
   },
 ]
 
-// Lookup helper simulating Backend JOIN query (Section 5)
+
 export function lookupSoldProduct(productCode) {
   if (!productCode) return null
   const cleaned = productCode.trim().toUpperCase()
@@ -744,31 +744,31 @@ export function lookupSoldProduct(productCode) {
   }
 }
 
-// ------------------------------------------------------------------------------
-// 2. FEATURE ENGINEERING ENGINE (Section 7 of Spec)
-// Derives the 14 ML Model features from raw customer inputs + database + evidence
-// ------------------------------------------------------------------------------
+
+
+
+
 export function derive14Features(input, product) {
   const now = new Date()
   const incidentDate = input?.incident_date ? new Date(input.incident_date) : now
   const purchaseDate = product?.purchase_date ? new Date(product.purchase_date) : null
   const expiryDate = product?.warranty_expiry_date ? new Date(product.warranty_expiry_date) : null
 
-  // 1. ClaimReportingDelayDays = ClaimCreatedAt - IncidentDate
+
   const diffTime = now.getTime() - incidentDate.getTime()
   const ClaimReportingDelayDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)))
 
-  // 2. WarrantyRemainingDays = WarrantyExpiryDate - ClaimCreatedAt
+
   let WarrantyRemainingDays = 180
   if (expiryDate) {
     const remainingTime = expiryDate.getTime() - now.getTime()
     WarrantyRemainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
   }
 
-  // 3. ClaimReportingWithinPeriod: within statutory 30-day reporting window
+
   const ClaimReportingWithinPeriod = ClaimReportingDelayDays <= 30 ? 'Yes' : 'No'
 
-  // 4. FaultCovered: based on FaultDescription + warranty coverage/exclusion rules
+
   const desc = `${input?.problem_category || ''} ${input?.fault_description || ''}`.toLowerCase()
   const isExcluded =
     /water|liquid|dropped|falling|shattered|broken screen|physical impact|spilled|tampered|cracked glass|spill|surge|pest|foreign object|non-oem|improper/.test(
@@ -776,7 +776,7 @@ export function derive14Features(input, product) {
     )
   const FaultCovered = isExcluded ? 'No' : 'Yes'
 
-  // 5. RepairAuthorized: PreviousRepair + RepairCentre authorization
+
   let RepairAuthorized = 'Not Applicable'
   if (input?.previous_repair === 'Yes') {
     const centre = (input?.repair_centre || '').toLowerCase()
@@ -785,20 +785,20 @@ export function derive14Features(input, product) {
     RepairAuthorized = isAuthorizedCentre ? 'Yes' : 'No'
   }
 
-  // 6. SerialNumberMatch: verified against sold_products database
+
   const SerialNumberMatch = product?.serial_number ? 'Yes' : 'No'
 
-  // 7. ProductModelConsistent: product/model verified in product_catalog
+
   const ProductModelConsistent = product?.model_number ? 'Yes' : 'No'
 
-  // 8. OCRConfidence: Automated identity verification confidence score
+
   const OCRConfidence = product ? 0.95 : 0.60
 
-  // 9. OCRQualityBand: band derived from OCRConfidence
+
   const OCRQualityBand = OCRConfidence >= 0.85 ? 'High' : OCRConfidence >= 0.7 ? 'Medium' : 'Low'
 
-  // 10. RequiredDocumentsComplete & MissingDocumentCount
-  // Current claim flow uses Yes/No evidence availability questions rather than file uploads.
+
+
   const evidenceAnswers = [
     input?.purchase_invoice_available,
     input?.serial_image_available,
@@ -808,19 +808,19 @@ export function derive14Features(input, product) {
   const MissingDocumentCount = evidenceAnswers.filter((value) => value !== 'Yes').length
   const RequiredDocumentsComplete = MissingDocumentCount === 0 ? 'Yes' : 'No'
 
-  // 11. DuplicateClaimIndicator
+
   const DuplicateClaimIndicator = 'No'
 
-  // 12. ContradictionIndicator: rule check contradictions between dates
+
   let ContradictionIndicator = 'No'
   if (purchaseDate && incidentDate < purchaseDate) {
-    ContradictionIndicator = 'Yes' // Incident reported before product was purchased
+    ContradictionIndicator = 'Yes'
   }
   if (incidentDate > now) {
-    ContradictionIndicator = 'Yes' // Incident date is in the future
+    ContradictionIndicator = 'Yes'
   }
 
-  // 13. ProductIdentityMatch: combined serial/model/database verification
+
   const ProductIdentityMatch =
     SerialNumberMatch === 'Yes' && ProductModelConsistent === 'Yes' ? 'Yes' : 'No'
 
@@ -842,12 +842,12 @@ export function derive14Features(input, product) {
   }
 }
 
-// ------------------------------------------------------------------------------
-// 3. PYTHON MODEL V3 PREDICTION LOGIC
-// Client-side policy preview for the active 14 engineered features
-// ------------------------------------------------------------------------------
+
+
+
+
 export function predictModelV3(features) {
-  // Reject / Ineligible under warranty policy
+
   if (
     features.FaultCovered === 'No' ||
     features.WarrantyRemainingDays < 0 ||
@@ -872,7 +872,7 @@ export function predictModelV3(features) {
     }
   }
 
-  // Review Required / Examination needed
+
   if (
     features.MissingDocumentCount > 0 ||
     features.OCRConfidence < 0.8 ||
@@ -898,7 +898,7 @@ export function predictModelV3(features) {
     }
   }
 
-  // Warranty Valid
+
   return {
     prediction: 'WARRANTY',
     confidence: 0.95,
@@ -908,9 +908,9 @@ export function predictModelV3(features) {
   }
 }
 
-// ------------------------------------------------------------------------------
-// 4. REVIEWER AUDIT DISPLAY METADATA FOR 14 FEATURES
-// ------------------------------------------------------------------------------
+
+
+
 export const claim14FieldGroups = [
   {
     title: 'Product & Identity Verification',
@@ -1034,9 +1034,9 @@ export const claim14FieldGroups = [
 
 export const claimFieldGroups = claim14FieldGroups
 
-// ------------------------------------------------------------------------------
-// 5. TEST PRESETS (Using natural customer inputs)
-// ------------------------------------------------------------------------------
+
+
+
 export const CLAIM_PRESETS = [
   {
     id: 'valid',
@@ -1093,7 +1093,7 @@ export const CLAIM_PRESETS = [
       purchase_invoice: { filename: 'TechWorld_Receipt_4491.pdf', size: '310 KB' },
       serial_image: { filename: 'ThinkPad_Serial_Photo.jpg', size: '980 KB' },
       fault_evidence: { filename: 'Keyboard_Tester_Log.png', size: '640 KB' },
-      repair_report: null, // Missing repair report -> triggers manual review
+      repair_report: null,
     },
   },
   {

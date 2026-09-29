@@ -10,7 +10,6 @@ def strip_accents(value):
         .replace("Đ", "D")
         .replace("đ", "d")
     )
-
     return "".join(
         char
         for char in unicodedata.normalize(
@@ -25,17 +24,14 @@ def strip_accents(value):
 def clean(value):
     if value is None:
         return None
-
     value = re.sub(
         r"\s+",
         " ",
         str(value),
     ).strip()
-
     value = value.strip(
         " \t\r\n:;|"
     )
-
     return value or None
 
 
@@ -53,7 +49,6 @@ def is_label_line(
         normalized(line)
         .strip(" :;|-")
     )
-
     return any(
         re.fullmatch(
             pattern,
@@ -74,45 +69,36 @@ def value_after_label(
             patterns,
         ):
             continue
-
         if index + 1 < len(lines):
             return (
                 lines[index + 1],
                 index + 1,
             )
-
     return None, None
 
 
 def normalize_code(value):
     value = clean(value)
-
     if not value:
         return None
-
     value = value.upper()
-
     value = re.sub(
         r"\s+",
         "",
         value,
     )
-
     value = re.sub(
         r"[^A-Z0-9._/\-]",
         "",
         value,
     )
-
     return value or None
 
 
 def normalize_date(value):
     value = clean(value)
-
     if not value:
         return None
-
     match = re.search(
         r"\b("
         r"\d{1,2}[/-]"
@@ -121,80 +107,60 @@ def normalize_date(value):
         r")\b",
         value,
     )
-
     if not match:
         return None
-
     value = match.group(1)
-
     formats = [
         "%d/%m/%Y",
         "%d-%m-%Y",
         "%Y-%m-%d",
         "%m/%d/%Y",
     ]
-
     for fmt in formats:
         try:
             return datetime.strptime(
                 value,
                 fmt,
             ).strftime("%Y-%m-%d")
-
         except ValueError:
             continue
-
     return None
 
 
 def parse_warranty_months(value):
     value = clean(value)
-
     if not value:
         return None
-
     normalized_value = normalized(
         value
     )
-
     match = re.search(
         r"\b(\d{1,3})\s*"
         r"(thang|months?|nam|years?)\b",
         normalized_value,
     )
-
     if not match:
         return None
-
     amount = int(
         match.group(1)
     )
-
     unit = match.group(2)
-
     if unit in {
         "nam",
         "year",
         "years",
     }:
         return amount * 12
-
     return amount
 
 
 def extract_warranty_fields(text):
     text = text or ""
-
     lines = [
         clean(line)
         for line in text.splitlines()
         if clean(line)
     ]
-
-    # -----------------------------------------
-    # PRODUCT
-    # -----------------------------------------
-
     product_name, _ = value_after_label(
         lines,
         [
@@ -204,11 +170,6 @@ def extract_warranty_fields(text):
             r"product",
         ],
     )
-
-    # -----------------------------------------
-    # MODEL
-    # -----------------------------------------
-
     model_number, _ = value_after_label(
         lines,
         [
@@ -217,14 +178,6 @@ def extract_warranty_fields(text):
             r"ma\s+san\s+pham",
         ],
     )
-
-    # -----------------------------------------
-    # SERIAL
-    #
-    # Tesseract read "Số serial"
-    # as "S6 serial" in this test image.
-    # -----------------------------------------
-
     serial_number, serial_index = (
         value_after_label(
             lines,
@@ -236,11 +189,6 @@ def extract_warranty_fields(text):
             ],
         )
     )
-
-    # -----------------------------------------
-    # WARRANTY NUMBER
-    # -----------------------------------------
-
     warranty_number, _ = value_after_label(
         lines,
         [
@@ -251,11 +199,6 @@ def extract_warranty_fields(text):
             r"warranty\s+number",
         ],
     )
-
-    # -----------------------------------------
-    # CUSTOMER / CONTACT / DEALER
-    # -----------------------------------------
-
     customer_name, _ = value_after_label(
         lines,
         [
@@ -264,7 +207,6 @@ def extract_warranty_fields(text):
             r"customer\s+name",
         ],
     )
-
     phone_number, _ = value_after_label(
         lines,
         [
@@ -274,7 +216,6 @@ def extract_warranty_fields(text):
             r"telephone",
         ],
     )
-
     email, _ = value_after_label(
         lines,
         [
@@ -282,7 +223,6 @@ def extract_warranty_fields(text):
             r"e-mail",
         ],
     )
-
     dealer_name, _ = value_after_label(
         lines,
         [
@@ -292,7 +232,6 @@ def extract_warranty_fields(text):
             r"seller",
         ],
     )
-
     dealer_address, _ = value_after_label(
         lines,
         [
@@ -300,7 +239,6 @@ def extract_warranty_fields(text):
             r"dealer\s+address",
         ],
     )
-
     warranty_status, _ = value_after_label(
         lines,
         [
@@ -308,15 +246,6 @@ def extract_warranty_fields(text):
             r"warranty\s+status",
         ],
     )
-
-    # -----------------------------------------
-    # PURCHASE DATE
-    #
-    # First try explicit label.
-    # OCR sometimes misses the label but
-    # still reads the actual date.
-    # -----------------------------------------
-
     purchase_date, purchase_index = (
         value_after_label(
             lines,
@@ -327,7 +256,6 @@ def extract_warranty_fields(text):
             ],
         )
     )
-
     if not normalize_date(
         purchase_date
     ):
@@ -336,10 +264,8 @@ def extract_warranty_fields(text):
             if serial_index is not None
             else 0
         )
-
         purchase_date = None
         purchase_index = None
-
         for index in range(
             start_index,
             len(lines),
@@ -352,14 +278,6 @@ def extract_warranty_fields(text):
                 )
                 purchase_index = index
                 break
-
-    # -----------------------------------------
-    # WARRANTY DURATION
-    #
-    # OCR may miss "Thời hạn bảo hành:"
-    # while retaining "24 thang".
-    # -----------------------------------------
-
     warranty_duration, _ = (
         value_after_label(
             lines,
@@ -370,7 +288,6 @@ def extract_warranty_fields(text):
             ],
         )
     )
-
     if (
         parse_warranty_months(
             warranty_duration
@@ -386,9 +303,7 @@ def extract_warranty_fields(text):
                 else 0
             )
         )
-
         warranty_duration = None
-
         for index in range(
             start_index,
             min(
@@ -406,51 +321,39 @@ def extract_warranty_fields(text):
                     lines[index]
                 )
                 break
-
     return {
         "product_name":
             clean(product_name),
-
         "model_number":
             normalize_code(
                 model_number
             ),
-
         "serial_number":
             normalize_code(
                 serial_number
             ),
-
         "purchase_date":
             normalize_date(
                 purchase_date
             ),
-
         "warranty_duration_months":
             parse_warranty_months(
                 warranty_duration
             ),
-
         "warranty_number":
             normalize_code(
                 warranty_number
             ),
-
         "customer_name":
             clean(customer_name),
-
         "phone_number":
             clean(phone_number),
-
         "email":
             clean(email),
-
         "dealer_name":
             clean(dealer_name),
-
         "dealer_address":
             clean(dealer_address),
-
         "warranty_status":
             clean(warranty_status),
     }

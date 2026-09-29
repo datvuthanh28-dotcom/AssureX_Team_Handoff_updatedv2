@@ -60,7 +60,7 @@ function loadSession() {
       }
     }
   } catch {
-    // ignore malformed session
+
   }
 
   return null
@@ -348,7 +348,7 @@ function CustomerProducts({ onNavigate }) {
         </div>
       </header>
 
-      {/* Overview Stat Cards */}
+      {}
       <section className="stats-grid">
         <div className="stat-card">
           <span>Registered Products</span>
@@ -364,7 +364,7 @@ function CustomerProducts({ onNavigate }) {
         </div>
       </section>
 
-      {/* Product Registration Form */}
+      {}
       <form className="panel" onSubmit={registerProduct}>
         <div className="panel-heading">
           <div>
@@ -491,7 +491,7 @@ function CustomerProducts({ onNavigate }) {
         </div>
       </form>
 
-      {/* Registered Products Table */}
+      {}
       <section className="panel">
         <div className="panel-heading between">
           <div>
@@ -663,7 +663,7 @@ function CustomerWarranties({ onNavigate }) {
         </div>
       </header>
 
-      {/* Stats row */}
+      {}
       <section className="stats-grid">
         <div className="stat-card">
           <span>Total Warranties</span>
@@ -685,7 +685,7 @@ function CustomerWarranties({ onNavigate }) {
 
       <section className="panel">
         <div className="panel-heading between" style={{ flexWrap: 'wrap', gap: '12px' }}>
-          {/* Status Tabs */}
+          {}
           <div style={{ display: 'flex', gap: '6px' }}>
             {[
               ['ALL', `All (${warranties.length})`],
@@ -705,7 +705,7 @@ function CustomerWarranties({ onNavigate }) {
             ))}
           </div>
 
-          {/* Search */}
+          {}
           <input
             type="text"
             placeholder="Search warranties..."
@@ -1131,7 +1131,7 @@ function CustomerProfile({ session, onUpdateSession }) {
         </div>
       </header>
 
-      {/* Account Overview Card */}
+      {}
       <section className="panel profile-overview-panel">
         <div className="panel-heading">
           <div>
@@ -1162,7 +1162,7 @@ function CustomerProfile({ session, onUpdateSession }) {
         </div>
       </section>
 
-      {/* Contact Information Form */}
+      {}
       <section className="panel profile-form-panel">
         <div className="panel-heading">
           <div>
@@ -1228,7 +1228,7 @@ function CustomerProfile({ session, onUpdateSession }) {
         </form>
       </section>
 
-      {/* Security & Password Change */}
+      {}
       <section className="panel profile-password-panel">
         <div className="panel-heading">
           <div>
@@ -1392,7 +1392,7 @@ function CustomerApp() {
     try {
       await api('/api/auth/logout', { method: 'POST' })
     } catch {
-      // Clear the local session even when the API is unavailable.
+
     }
 
     localStorage.removeItem(TOKEN_KEY)
