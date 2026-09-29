@@ -450,13 +450,8 @@ export function CustomerWarrantyClaimForm({ email = '', customerName = '', onCre
               <span className="days-left-badge active">{createdTicket.status || 'WAITING_REVIEW'}</span>
             </div>
           </div>
-
-          <div style={{ marginTop: '14px', paddingTop: '12px', borderTop: '1px solid #e2e8f0', fontSize: '12.5px', color: 'var(--ax-text-soft, #475569)' }}>
-            <strong>Analysis: </strong>{createdTicket.ai_reason || `${createdTicket.model_name || 'Model V3'} assessment` }
-          </div>
         </div>
 
-        {}
         <div style={{ marginBottom: '24px' }}>
           <h4 style={{ margin: '0 0 10px', fontSize: '13px', fontWeight: 700, color: 'var(--ax-text, #1e293b)' }}>
             14 Automated Features Used by Model V3:
