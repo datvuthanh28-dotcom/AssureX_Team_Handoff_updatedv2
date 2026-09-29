@@ -4812,3 +4812,135 @@ body.admin-light .sidebar:not(.reviewer-sidebar) .admin-logout-button {
   font-size: 13px;
 }
 
+
+/* Reviewer sidebar refinement: compact decision workspace navigation */
+.reviewer-shell .reviewer-sidebar {
+  width: 260px;
+  flex-basis: 260px;
+  padding: 20px 16px 18px;
+  border-right: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.reviewer-shell .reviewer-sidebar .brand {
+  gap: 12px;
+  padding: 0 8px 18px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.reviewer-shell .reviewer-sidebar .brand-mark {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.reviewer-shell .reviewer-sidebar .brand h2 {
+  color: #1d4ed8;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.reviewer-shell .reviewer-sidebar .brand p {
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.reviewer-shell .reviewer-sidebar .sidebar-section-label {
+  padding: 8px 12px 10px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-menu {
+  gap: 2px;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item:hover {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #0f172a;
+}
+
+.reviewer-shell .reviewer-sidebar .nav-item.active {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  box-shadow: inset 3px 0 0 #2563eb;
+}
+
+.reviewer-shell .reviewer-sidebar .reviewer-rail-note {
+  margin: auto 4px 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+}
+
+.reviewer-shell .reviewer-sidebar .reviewer-rail-note strong {
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.reviewer-shell .reviewer-sidebar .reviewer-rail-note span {
+  display: block;
+  margin-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.reviewer-shell .reviewer-sidebar .admin-logout-button {
+  min-height: 38px;
+  border-radius: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* Reviewer claim queue: readable predictions and stable submitted time */
+.claim-queue-table col.claim-col-customer { width: 21%; }
+.claim-queue-table col.claim-col-product { width: 17%; }
+.claim-queue-table col.claim-col-prediction { width: 16%; }
+.claim-queue-table col.claim-col-status { width: 14%; }
+.claim-queue-table col.claim-col-submitted { width: 12%; }
+
+.claim-queue-table td:nth-child(4) .status-badge {
+  display: inline-flex;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.claim-queue-table .claim-submitted-cell {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}

@@ -22,6 +22,18 @@ function formatDate(value) {
   return new Date(value).toLocaleString()
 }
 
+function formatCompactDateTime(value) {
+  if (!value) return '—'
+  return new Date(value).toLocaleString('en-GB', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
+
 
 function formatNumber(value) {
   if (value === null || value === undefined) return '—'
@@ -78,11 +90,18 @@ function modelPredictionSummary(claim) {
   return { code: 'PENDING_MODEL', label: 'Awaiting model result', detail: 'No model prediction recorded yet', tone: 'review' }
 }
 
+function compactPredictionLabel(code) {
+  if (code === 'WARRANTY') return 'Warranty'
+  if (code === 'NOT_WARRANTY') return 'Not warranty'
+  if (code === 'REVIEW_REQUIRED') return 'Review required'
+  return String(code || 'Pending').replaceAll('_', ' ')
+}
+
 function PredictionBadge({ claim, compact = false }) {
   const summary = modelPredictionSummary(claim)
   return (
-    <span className={`status-badge status-${summary.tone}`} title={summary.detail}>
-      {compact ? summary.code : `${summary.code} · ${summary.label}`}
+    <span className={`status-badge status-${summary.tone}`} title={`${summary.code} · ${summary.detail}`}>
+      {compact ? compactPredictionLabel(summary.code) : `${summary.code} · ${summary.label}`}
     </span>
   )
 }
@@ -715,10 +734,8 @@ function AdminCustomerClaims({
                         value={claim.status}
                       />
                     </td>
-                    <td>
-                      {formatDate(
-                        claim.created_at
-                      )}
+                    <td className="claim-submitted-cell">
+                      {formatCompactDateTime(claim.created_at)}
                     </td>
                     <td>
                       <button
@@ -1543,10 +1560,8 @@ function MLHistory({ refreshKey }) {
                       %
                     </td>
                     <td>{claim.model_name}</td>
-                    <td>
-                      {formatDate(
-                        claim.created_at
-                      )}
+                    <td className="claim-submitted-cell">
+                      {formatCompactDateTime(claim.created_at)}
                     </td>
                   </tr>
                 ))}
@@ -5019,10 +5034,8 @@ function CustomerClaims({
                         value={claim.status}
                       />
                     </td>
-                    <td>
-                      {formatDate(
-                        claim.created_at
-                      )}
+                    <td className="claim-submitted-cell">
+                      {formatCompactDateTime(claim.created_at)}
                     </td>
                   </tr>
                 ))}
