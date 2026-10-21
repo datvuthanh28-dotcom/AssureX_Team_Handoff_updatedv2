@@ -4944,3 +4944,49 @@ body.admin-light .sidebar:not(.reviewer-sidebar) .admin-logout-button {
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
 }
+
+/* Final responsive rules: keep every queue column visible without forced horizontal scrolling. */
+.claim-queue-table-wrapper,
+body.admin-light .claim-queue-table-wrapper,
+.reviewer-shell .claim-queue-table-wrapper {
+  overflow-x: hidden;
+  overflow-y: visible;
+  width: 100%;
+  max-width: 100%;
+}
+
+.claim-queue-table,
+body.admin-light .claim-queue-table,
+.reviewer-shell .claim-queue-table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.claim-queue-table th,
+.claim-queue-table td {
+  min-width: 0;
+  white-space: normal;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.claim-queue-table td:nth-child(6),
+.claim-queue-table td:nth-child(7) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.claim-queue-table td:nth-child(7) .claim-detail-button,
+.claim-queue-table td:nth-child(7) .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px;
+  width: 100%;
+  max-width: 82px;
+  white-space: nowrap;
+  overflow: visible;
+}

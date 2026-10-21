@@ -43,3 +43,7 @@ __pycache__/
 # Vite cache
 .vite/
 assurex_web/.vite/
+
+# Local dependency/runtime caches created during development
+.backend_runtime/
+assurex_web/frontend/.npm-cache/
